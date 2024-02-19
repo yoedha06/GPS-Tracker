@@ -60,8 +60,7 @@
                         <a href="">Data User</a>
                     </li>
                 </ul>
-            </li>
-            
+            </li>            
             
             {{-- <li class="sidebar-title">Forms &amp; Tables</li>
             <hr> --}}
