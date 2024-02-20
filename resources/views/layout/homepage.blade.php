@@ -36,24 +36,25 @@
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top ">
         <div class="container d-flex align-items-center">
+            <a href=""><img src="/images/gpslogo.png" alt="Logo" style="width: 150px; height: 70px;">
+                <h1 class="logo me-auto"><a href="">GPS EXPLORER</a></h1>
 
-            <h1 class="logo me-auto"><a href="">GPS EXPLORER</a></h1>
-
-            <nav id="navbar" class="navbar">
-                <ul>
-                    <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-                    <li><a class="nav-link scrollto" href="#about">About</a></li>
-                    <li><a class="nav-link scrollto" href="#team">Team</a></li>
-                    <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-                </ul>
-                <i class="bi bi-list mobile-nav-toggle"></i>
-            </nav><!-- .navbar -->
+                <nav id="navbar" class="navbar">
+                    <ul>
+                        <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+                        <li><a class="nav-link scrollto" href="#about">About</a></li>
+                        <li><a class="nav-link scrollto" href="#team">Team</a></li>
+                        <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                    </ul>
+                    <i class="bi bi-list mobile-nav-toggle"></i>
+                </nav><!-- .navbar -->
 
         </div>
     </header><!-- End Header -->
 
     <!-- ======= Hero Section ======= -->
-    <section id="hero" class="d-flex align-items-center">
+    <section id="hero" style="background-image: url('/images/BG.webp'); background-size: cover;"
+        class="d-flex align-items-center">
 
         <div class="container">
             <div class="row">
@@ -64,9 +65,6 @@
                     <div class="d-flex justify-content-center justify-content-lg-start">
                         <a href="/" class="btn-get-started scrollto">Login di sini</a>
                     </div>
-                </div>
-                <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
-                    <img src="/images/BG.webp" alt="Logo" style="width: 700px; height: 250px;">
                 </div>
             </div>
         </div>
