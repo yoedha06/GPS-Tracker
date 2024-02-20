@@ -23,6 +23,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/homepage', function () {
+    return view('layout.homepage');
+});
+Route::get('/load', function () {
+    return view('layout.load');
+});
 
 
 
