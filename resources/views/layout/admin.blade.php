@@ -13,9 +13,41 @@
     <link rel="shortcut icon" href="{{ asset('template/assets/images/logo/favicon.png') }}" type="image/png">
 
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
+    <style>
+        /* CSS for the splash screen */
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #splash-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            /* You can customize the background color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            /* Set a high z-index value to make it appear on top */
+        }
+
+        #splash-screen img {
+            width: 150px;
+            /* Adjust the width as needed */
+            height: 70px;
+            /* Adjust the height as needed */
+        }
+    </style>
 </head>
 
 <body>
+    <div id="splash-screen">
+        <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
+            alt="Logo" style="width: 300px; height: 300px;">
+    </div>
+
     @yield('content')
     <div id="sidebar" class="active">
         <div class="sidebar-wrapper active">
@@ -93,3 +125,16 @@
 <!-- Need: Apexcharts -->
 <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
 <script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Remove splash screen after a few seconds (e.g., 3 seconds)
+        setTimeout(function() {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }, 1000);
+    });
+</script>
+</body>
+
+</html>

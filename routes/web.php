@@ -23,6 +23,12 @@ Route::get('/', function () {
 Route::get('/admin', function () {
     return view('admin.index');
 });
+Route::get('/homepage', function () {
+    return view('layout.homepage');
+});
+Route::get('/load', function () {
+    return view('layout.load');
+});
 
 Route::post('/customer', [LoginController::class, 'index'])->name('customer');
 
