@@ -148,7 +148,7 @@
                   <span class="h1">GPS</span>
                 </div>
                 <h5 class="fw-normal mb-3">Forgot Password</h5>
-                <p class="mb-4">Enter your email address, and we'll send you a link to reset your password.</p>
+                <p class="mb-4">we will send a link to your email, use that link to reset password</p>
                 <div class="form-outline mb-4">
                   <input type="email" id="form2ExampleForgetEmail" class="form-control form-control-lg" />
                   <label class="form-label" for="form2ExampleForgetEmail">Email address</label>
@@ -183,8 +183,8 @@
 
     function showForgetPasswordForm() {
       document.getElementById('login-page').style.display = 'none';
-      document.getElementById('register-page').style.display = 'none';
-      document.getElementById('forget-password-page').style.display = 'block';
+      document.getElementById('login-page').style.display = 'none';
+    document.getElementById('forget-password-page').style.display = 'block';
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

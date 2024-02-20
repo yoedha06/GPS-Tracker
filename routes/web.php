@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
@@ -35,3 +35,9 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'dologin'])->name('login');
 
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
+
+
+Route::get('admin/user', [UserController::class, 'index'])->name('admin.user');
+Route::post('user', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('user.store');
+
+
