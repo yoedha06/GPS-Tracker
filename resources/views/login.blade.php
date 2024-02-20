@@ -97,7 +97,7 @@
                   <form>
                     <div class="logo-container">
                       <i class="fas fa-cubes"></i>
-                      <span class="h1">Logo</span>
+                      <span class="h1">GPS</span>
                     </div>
                     <h5 class="fw-normal mb-3">Sign into your account</h5>
                     <div class="form-outline mb-4">
@@ -135,7 +135,7 @@
               <form>
                 <div class="logo-container">
                   <i class="fas fa-cubes"></i>
-                  <span class="h1">Logo</span>
+                  <span class="h1">GPS</span>
                 </div>
                 <h5 class="fw-normal mb-3">Register for an account</h5>
                 <div class="form-outline mb-4">
@@ -174,7 +174,7 @@
               <form>
                 <div class="logo-container">
                   <i class="fas fa-cubes"></i>
-                  <span class="h1">Logo</span>
+                  <span class="h1">GPS</span>
                 </div>
                 <h5 class="fw-normal mb-3">Forgot Password</h5>
                 <p class="mb-4">Enter your email address, and we'll send you a link to reset your password.</p>
