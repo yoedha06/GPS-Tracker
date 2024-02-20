@@ -21,7 +21,7 @@
             <div class="sidebar-header position-relative">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="logo">
-                        <a href="">
+                        <a href="/customer">
                             <img src="/images/gpslogo.png" alt="Logo" style="width: 150px; height: 70px;">
                         </a>
                     </div>
@@ -64,7 +64,7 @@
                     <li class="sidebar-title">Menu</li>
                     <hr>
                     <li class="sidebar-item active ">
-                        <a href="index.html" class='sidebar-link'>
+                        <a href="/customer" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
