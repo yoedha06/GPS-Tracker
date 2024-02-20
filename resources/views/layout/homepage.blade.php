@@ -10,9 +10,7 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="assets/img/favicon.png" rel="icon">
-    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
+    <link href="/images/gpslogo.png" rel="icon">
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
@@ -60,10 +58,10 @@
             <div class="row">
                 <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1"
                     data-aos="fade-up" data-aos-delay="200">
-                    <h1>Selamat Datang Di Halaman GPS EXPLORER</h1>
-                    <h2>Silahkan login di bawah ini !</h2>
+                    <h1>Welcome to the GPS EXPLORER Page</h1>
+                    <h2>Please log in below!</h2>
                     <div class="d-flex justify-content-center justify-content-lg-start">
-                        <a href="/" class="btn-get-started scrollto">Login di sini</a>
+                        <a href="/" class="btn-get-started scrollto">Log in here</a>
                     </div>
                 </div>
             </div>
@@ -113,12 +111,12 @@
 
                 <div class="section-title">
                     <h2>Team</h2>
-                    <p>Menjadi bagian dari tim GPS Explorer adalah pengalaman yang luar biasa, di mana setiap anggota
-                        memiliki peran krusial dalam pengembangan dan keberhasilan platform kami. Dalam membentuk tim
-                        GPS Explorer, mari kita bersatu untuk menciptakan solusi yang inovatif dalam penyampaian
-                        informasi lokasi dan navigasi yang memudahkan pengguna dalam menjelajahi dunia.</p>
-
+                    <p>Becoming a part of the GPS Explorer team is an extraordinary experience, where each member plays
+                        a crucial role in the development and success of our platform. In forming the GPS Explorer team,
+                        let's unite to create innovative solutions in delivering location information and navigation
+                        that facilitates users in exploring the world.</p>
                 </div>
+
 
                 <div class="row">
 
@@ -256,6 +254,7 @@
                         <div class="social-links mt-3">
                             <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
                             <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+                            <a href="#" class="youtube"><i class="bx bxl-youtube"></i></a>
                         </div>
                     </div>
 
