@@ -76,7 +76,7 @@
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
-                                <a href="">Data User</a>
+                                <a href="/">Data User</a>
                             </li>
                         </ul>
                     </li>
