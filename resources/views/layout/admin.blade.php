@@ -78,7 +78,7 @@
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
-                                <a href="{{ asset('template/assets/admin') }}" class='sidebar-link'>Data User</a>
+                                <a href="{{ route('admin.user') }}">Data User</a>
                             </li>
                         </ul>
                     </li>

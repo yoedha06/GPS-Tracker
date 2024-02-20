@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +27,6 @@ Route::get('/customer', function () {
 
 Route::get('/admin/profile',[ProfileController::class, 'admin'])->name('admin.profile');
 Route::get('/customer/profile',[ProfileController::class, 'customer'])->name('customer.profile');
+
+
+Route::get('admin/users', [UserController::class, 'index'])->name('admin.user');
