@@ -249,7 +249,7 @@
                 </footer>
             </div>
         </div>
-        <<<<<<< HEAD <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
+        <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
         <script src="{{ asset('template/assets/js/app.js') }}"></script>
 
         <!-- Need: Apexcharts -->
@@ -258,7 +258,3 @@
 
     </body>
 @endsection
-=======
-</body>
-@endsection
->>>>>>> d20e395e20542ae8a55231fc03eb8982855c331c
