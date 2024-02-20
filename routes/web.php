@@ -1,5 +1,8 @@
 <?php
 
+
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,9 +23,15 @@ Route::get('/', function () {
 Route::get('/admin', function () {
     return view('admin.index');
 });
-Route::get('/customer', function () {
-    return view('customer.index');
-});
+
+Route::post('/customer', [LoginController::class, 'index'])->name('customer');
 
 Route::get('/admin/profile',[ProfileController::class, 'admin'])->name('admin.profile');
 Route::get('/customer/profile',[ProfileController::class, 'customer'])->name('customer.profile');
+
+Route::get('/login', [RegisterController::class, 'create'])->name('login');//halaman login dan register
+Route::post('/register', [RegisterController::class, 'store'])->name('register');
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'dologin'])->name('login');
+
+Route::get('/register', [RegisterController::class, 'index'])->name('register');
