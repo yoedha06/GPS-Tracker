@@ -10,6 +10,9 @@
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <link href="/images/gpslogo.png" rel="icon">
+  
   <style>
     body {
       background-color: whitesmoke;
