@@ -56,14 +56,15 @@
                     <i class="bi bi-stack"></i>
                     <span>Components</span>
                 </a>
-                <ul class="submenu">
-                    <li class="submenu-item">
-                        <a href="#">
-                            <i class="fas fa-user"></i>
-                            <span>Data User</span>
-                        </a>
-                    </li>
-                </ul>
+              <ul class="submenu">
+    <li class="submenu-item">
+        <a href="#">
+            <i class="fas fa-user fa-sm"></i>
+            <span>Data User</span>
+        </a>
+    </li>
+</ul>
+
                 
             
             
