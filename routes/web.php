@@ -1,9 +1,12 @@
 <?php
 
-
+use App\Http\Controllers\Auth\LoginController as AuthLoginController;
+use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TampilanController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,29 +20,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('login');
-});
+//bawaan laravel ui
+Auth::routes();
+//bawaan laravel
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//tampilan HOMEPAGE
+Route::get('/',[TampilanController::class, 'homepage'])->name('index.homepage');
 
 
-Route::get('/admin', function () {
-    return view('admin.index');
-});
-Route::get('/homepage', function () {
-    return view('layout.homepage');
-});
-Route::get('/load', function () {
-    return view('layout.load');
-});
+Route::post('/register',[AuthRegisterController::class, 'register'])->name('register')->middleware('auth.redirectIfNotLoggedIn');
+Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
 
-Route::post('/customer', [LoginController::class, 'index'])->name('customer');
 
+//admin
+Route::get('/admin',[TampilanController::class, 'admin'])->name('index.admin');
 Route::get('/admin/profile',[ProfileController::class, 'admin'])->name('admin.profile');
 Route::get('/customer/profile',[ProfileController::class, 'customer'])->name('customer.profile');
 
-Route::get('/login', [RegisterController::class, 'create'])->name('login');//halaman login dan register
-Route::post('/register', [RegisterController::class, 'store'])->name('register');
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'dologin'])->name('login');
 
-Route::get('/register', [RegisterController::class, 'index'])->name('register');
+Route::middleware('auth')->group(function () {
+    Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
+});
+
+Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
+
+
+
+

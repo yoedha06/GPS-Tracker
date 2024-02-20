@@ -61,7 +61,7 @@
                     <h1>Welcome to the GPS EXPLORER Page</h1>
                     <h2>Please log in below!</h2>
                     <div class="d-flex justify-content-center justify-content-lg-start">
-                        <a href="/" class="btn-get-started scrollto">Log in here</a>
+                        <a href="{{ route('login') }}" class="btn-get-started scrollto">Log in here</a>
                     </div>
                 </div>
             </div>
