@@ -1,649 +1,296 @@
-@extends('layout.load')
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomePage GPS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        body {
-            margin: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        /* CSS for header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #f5f5f5;
-            padding: 10px 80px;
-        }
+    <title>GPS EXPLORE | Home</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
 
-        .header .logo-container {
-            display: flex;
-            align-items: center;
-        }
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-        .header .logo {
-            font-size: 25px;
-            font-family: 'Sriracha', cursive;
-            color: #000;
-            text-decoration: none;
-            margin-left: 10px;
-        }
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
 
-        .header .logo img {
-            width: 150px;
-            height: 70px;
-        }
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
-        .header .explorer {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-left: 10px;
-        }
-
-        .header .explorer span {
-            font-size: 18px;
-            color: #333333;
-        }
-
-        .nav-items {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            background-color: #f5f5f5;
-            margin-right: 20px;
-        }
-
-        .nav-items a {
-            text-decoration: none;
-            color: #000;
-            padding: 35px 20px;
-        }
-
-        /* CSS for main element */
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .intro {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 520px;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%),
-                url('{{ asset('images/BG.webp') }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            margin-bottom: 20px;
-        }
-
-        .intro h1 {
-            font-family: sans-serif;
-            font-size: 60px;
-            color: #fff;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin: 0;
-        }
-
-        .intro p {
-            font-size: 20px;
-            color: #d1d1d1;
-            text-transform: uppercase;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .intro a {
-            text-decoration: none;
-        }
-
-        .intro button {
-            background-color: #5edaf0;
-            color: #000;
-            padding: 10px 25px;
-            border: none;
-            border-radius: 5px;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.4);
-        }
-
-        .achievements {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 40px 80px;
-            margin-bottom: 20px;
-        }
-
-        .achievements .work {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 0 40px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            /* Add cursor pointer for clickable effect */
-            transition: transform 0.3s ease;
-            /* Add transition for smooth effect */
-        }
-
-        .achievements .work:hover {
-            transform: scale(1.1);
-            /* Add scaling effect on hover */
-        }
-
-        .achievements .work i {
-            width: fit-content;
-            font-size: 50px;
-            color: #333333;
-            border-radius: 50%;
-            border: 2px solid #333333;
-            padding: 12px;
-        }
-
-        .achievements .work .work-heading {
-            font-size: 20px;
-            color: #333333;
-            text-transform: uppercase;
-            margin: 10px 0;
-        }
-
-        .achievements .work .work-text {
-            font-size: 15px;
-            color: #585858;
-            margin: 10px 0;
-            text-align: center;
-        }
-
-        .achievements table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .achievements td {
-            border: 2px solid #333333;
-            padding: 20px;
-            text-align: center;
-        }
-
-
-        @media screen and (max-width: 768px) {
-
-            /* Adjust styles for smaller screens here */
-            .achievements table {
-                width: auto;
-            }
-
-            .achievements td {
-                padding: 10px;
-            }
-
-            /* Add more responsive styling as needed */
-        }
-
-        .about-me {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding: 40px 80px;
-            border-top: 2px solid #eeeeee;
-            margin-bottom: 20px;
-        }
-
-        .about-me img {
-            width: 500px;
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .about-me-text {
-            text-align: center;
-        }
-
-        .about-me-text h2 {
-            font-size: 30px;
-            color: #333333;
-            text-transform: uppercase;
-            margin: 0;
-        }
-
-        .about-me-text p {
-            font-size: 15px;
-            color: #585858;
-            margin: 10px 0;
-            text-align: center;
-        }
-
-        /* CSS for footer */
-        .footer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #302f49;
-            padding: 40px 80px;
-        }
-
-        .footer .copy {
-            color: #fff;
-            margin-bottom: 20px;
-        }
-
-        .bottom-links {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            width: 100%;
-        }
-
-        .bottom-links .links {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .bottom-links .links span {
-            font-size: 20px;
-            color: #fff;
-            text-transform: uppercase;
-            margin: 10px 0;
-        }
-
-        .bottom-links .links a {
-            text-decoration: none;
-            color: #a1a1a1;
-            padding: 10px 20px;
-        }
-
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
-
-        #splash-screen {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            /* You can customize the background color */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            /* Set a high z-index value to make it appear on top */
-        }
-
-        #splash-screen img {
-            width: 150px;
-            /* Adjust the width as needed */
-            height: 70px;
-            /* Adjust the height as needed */
-        }
-
-            {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            color: #000;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .testimonial {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding-bottom: 5rem;
-        }
-
-        h1 {
-            margin: 20px 0;
-        }
-
-        .line {
-            height: 2px;
-            width: 6rem;
-            background-color: #e26c4f;
-            margin-bottom: calc(3rem + 2vmin);
-        }
-
-        .arrow-wrapper {
-            position: relative;
-            width: 70%;
-            border-radius: 2rem;
-            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-            overflow: hidden;
-            place-items: center;
-        }
-
-        .review-wrap {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding-top: calc(2rem + 1vmin);
-            width: 100%;
-        }
-
-        #imgBox {
-            border-radius: 50%;
-            width: calc(6rem + 4vmin);
-            height: calc(6rem + 4vmin);
-            position: relative;
-            box-shadow: 5px -3px #e26c4f;
-            background-size: cover;
-            margin-bottom: calc(0.7rem + 0.5vmin);
-        }
-
-        #name {
-            margin-bottom: calc(0.7rem + 0.5vmin);
-            font-size: calc(1rem + 0.5vmin);
-            letter-spacing: calc(0.1rem + 0.1vmin);
-            font-weight: bold;
-        }
-
-        #profession {
-            font-size: calc(0.8rem + 0.3vmin);
-            margin-bottom: calc(0.7rem + 0.5vmin);
-            color: #e26c4f;
-        }
-
-        #description {
-            font-size: calc(0.8rem + 0.3vmin);
-            width: 70%;
-            max-width: 40rem;
-            text-align: center;
-            margin-bottom: calc(1.4rem + 1vmin);
-            color: rgb(92, 92, 92);
-            line-height: 2rem;
-        }
-
-        .arrow {
-            width: calc(1.4rem + 0.6vmin);
-            height: calc(1.4rem + 0.6vmin);
-            border: solid #e26c4f;
-            border-width: 0 calc(0.5rem + 0.2vmin) calc(0.5rem + 0.2vmin) 0;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .arrow:hover {
-            transition: 0.3s;
-            transform: scale(1.15);
-        }
-
-        .left-arrow-wrap {
-            position: absolute;
-            top: 50%;
-            left: 5%;
-            transform: rotate(135deg);
-        }
-
-        .right-arrow-wrap {
-            position: absolute;
-            top: 50%;
-            right: 5%;
-            transform: rotate(-45deg);
-        }
-
-        @media screen and (max-width: 900px) {
-            .testimonial {
-                width: 100%;
-            }
-        }
-    </style>
-
-    </style>
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
-    <div id="splash-screen">
-        <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
-            alt="Logo" style="width: 300px; height: 300px;">
-    </div>
 
-    <header class="header">
-        <div class="logo-container">
-            <a href="" class="logo">
-                <img src="/images/gpslogo.png" alt="Logo" style="width: 150px; height: 70px;">
-            </a>
-            <div class="explorer">
-                <span>GPS EXPLORER</span>
-            </div>
+    <!-- ======= Header ======= -->
+    <header id="header" class="fixed-top ">
+        <div class="container d-flex align-items-center">
+
+            <h1 class="logo me-auto"><a href="">GPS EXPLORER</a></h1>
+
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+                    <li><a class="nav-link scrollto" href="#about">About</a></li>
+                    <li><a class="nav-link scrollto" href="#team">Team</a></li>
+                    <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle"></i>
+            </nav><!-- .navbar -->
+
         </div>
-        <nav class="nav-items">
-            <a href="#home">Home</a>
-            <a href="#achievements">About</a>
-            <a href="#about">Contact</a>
-        </nav>
-    </header>
+    </header><!-- End Header -->
 
-    <main>
-        <div id="home" class="intro">
-            <h1>GPS EXPLORER</h1>
-            <p>Welcome to GPS Explorer, your compass to thrilling adventures. Embark on a journey to explore the wonders
-                of the world with us!</p>
-            <a href="/">
-                <button>Learn More</button>
-            </a>
-        </div>
+    <!-- ======= Hero Section ======= -->
+    <section id="hero" class="d-flex align-items-center">
 
-        <div id="achievements" class="achievements">
-            <table>
-                <tr>
-                    <td class="work">
-                        <i class="fas fa-atom"></i>
-                        <p class="work-heading">GPS Projects</p>
-                        <p class="work-text">Embarked on numerous GPS-related projects, showcasing expertise in
-                            navigation and exploration. Always eager to take on new challenges in the realm of GPS
-                            technology.</p>
-                    </td>
-                    <td class="work">
-                        <i class="fas fa-skiing"></i>
-                        <p class="work-heading">GPS Skills</p>
-                        <p class="work-text">Possess a diverse set of skills in the GPS domain. Proficient in developing
-                            and enhancing GPS technologies, ensuring precise and efficient navigation experiences for
-                            users.</p>
-                    </td>
-                    <td class="work">
-                        <i class="fas fa-ethernet"></i>
-                        <p class="work-heading">GPS Network</p>
-                        <p class="work-text">Extensive knowledge in GPS network systems. Excelling in the intricacies of
-                            GPS communication and connectivity, committed to staying at the forefront of advancements in
-                            GPS networking.</p>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        <div id="about" class="about-me">
-            <img src="https://ak.picdn.net/shutterstock/videos/13255625/thumb/1.jpg" alt="GPS Explorer">
-            <div class="about-me-text">
-                <h2>About GPS Explorer</h2>
-                <p>Welcome to GPS Explorer! We are passionate about exploring the world and providing innovative GPS
-                    solutions. Our mission is to make navigation seamless and enjoyable for every adventurer.</p>
-            </div>
-        </div>
-
-
-        <div class="testimonial">
-            <h1>My Team</h1>
-            <div class="line"></div>
-            <!-- arrow wrapper contains the review and the arrows -->
-            <div class="arrow-wrapper">
-                <!-- review section -->
-                <div id="reviewWrap" class="review-wrap">
-                    <div id="imgBox"></div>
-                    <div id="name"></div>
-                    <div id="profession"></div>
-                    <div id="description"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1"
+                    data-aos="fade-up" data-aos-delay="200">
+                    <h1>Selamat Datang Di Halaman GPS EXPLORER</h1>
+                    <h2>Silahkan login di bawah ini !</h2>
+                    <div class="d-flex justify-content-center justify-content-lg-start">
+                        <a href="/" class="btn-get-started scrollto">Login di sini</a>
+                    </div>
                 </div>
-                <!-- left arrow -->
-                <div class="left-arrow-wrap">
-                    <div class="arrow"></div>
-                </div>
-                <!-- right arrow -->
-                <div class="right-arrow-wrap">
-                    <div class="arrow"></div>
+                <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
+                    <img src="/images/BG.webp" alt="Logo" style="width: 700px; height: 250px;">
                 </div>
             </div>
         </div>
 
-    </main>
-    <footer class="footer">
-        <div class="copy">&copy; 2024 BARUDAK CIGS</div>
-        <div class="bottom-links">
-            <div class="links">
-                <span>More Info</span>
-                <a href="#home">Home</a>
-                <a href="#achievements">About</a>
-                <a href="#about">Contact</a>
+    </section><!-- End Hero -->
+
+    <main id="main">
+
+        <!-- ======= About Us Section ======= -->
+        <section id="about" class="about">
+            <div class="container" data-aos="fade-up">
+
+                <div class="section-title">
+                    <h2>About GPS Explorer</h2>
+                </div>
+
+                <div class="row content">
+                    <div class="col-lg-6">
+                        <p>
+                            GPS Explorer is a web-based application that simplifies the management of location-based
+                            data and navigation.
+                        </p>
+                        <ul>
+                            <li><i class="ri-check-double-line"></i> Accessible from anywhere</li>
+                            <li><i class="ri-check-double-line"></i> Minimizes unwanted risks</li>
+                            <li><i class="ri-check-double-line"></i> Efficient storage and data maintenance</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6 pt-4 pt-lg-0">
+                        <p>
+                            GPS Explorer provides a comprehensive platform for managing and exploring geographical data.
+                            It allows users to access and analyze location-related information efficiently. The digital
+                            mapping system aims to enhance traditional navigation methods and provide real-time insights
+                            into geographical data.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <div class="links">
-                <span>Social Links</span>
-                <a href="#"><i class="fab fa-facebook"> Facebook</i></a>
-                <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
-                <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+        </section>
+
+        <!-- End About Us Section -->
+
+        <!-- ======= Team Section ======= -->
+        <section id="team" class="team section-bg">
+            <div class="container" data-aos="fade-up">
+
+                <div class="section-title">
+                    <h2>Team</h2>
+                    <p>Menjadi bagian dari tim GPS Explorer adalah pengalaman yang luar biasa, di mana setiap anggota
+                        memiliki peran krusial dalam pengembangan dan keberhasilan platform kami. Dalam membentuk tim
+                        GPS Explorer, mari kita bersatu untuk menciptakan solusi yang inovatif dalam penyampaian
+                        informasi lokasi dan navigasi yang memudahkan pengguna dalam menjelajahi dunia.</p>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-lg-6" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="member d-flex align-items-start">
+                            <div class="pic"><img
+                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa_yIGv4w2_bngi0rQw8aLXfrMgNSTs1N3WL6wivl1hBt4PN5yhxhwAUa7a9YfIcNUsBM&usqp=CAU"
+                                    class="img-fluid" alt="">
+                            </div>
+                            <div class="member-info">
+                                <h4>Dzaki Ahmad Fuzan</h4>
+                                <span>CIGS</span>
+                                <p>"Belajarlah Dengan Giat,Raihlah Gelar Sampai Dapat Dan Jangan Lupakan Gelar Sejadah"
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="member d-flex align-items-start">
+                            <div class="pic"><img
+                                    src="https://thumbs.dreamstime.com/b/avatar-girl-short-hair-avatar-face-single-icon-cartoon-style-rater-bitmap-symbol-stock-illustration-web-91848067.jpg"
+                                    class="img-fluid" alt="">
+                            </div>
+                            <div class="member-info">
+                                <h4>Yudha Hidayat</h4>
+                                <span>CIGS</span>
+                                <p>"Sabar adalah kunci kesuksesan. Bersabarlah dalam menghadapi cobaan, karena Allah
+                                    selalu bersama orang yang sabar." </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="300">
+                        <div class="member d-flex align-items-start">
+                            <div class="pic"><img
+                                    src="https://as2.ftcdn.net/v2/jpg/01/40/33/03/1000_F_140330375_e7tnFRYyvlcL7TwX5e0uo1zWARI1RmOw.jpg"
+                                    class="img-fluid" alt=""></div>
+                            <div class="member-info">
+                                <h4>Chepy Syaehbudien Basil</h4>
+                                <span>CIGS</span>
+                                <p>"Keberhasilan sejati adalah ketika kita meraih keridhaan Allah, bukan sekadar pujian
+                                    dari manusia."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="400">
+                        <div class="member d-flex align-items-start">
+                            <div class="pic"><img
+                                    src="https://image.freepik.com/free-vector/businessman-profile-cartoon_18591-58479.jpg"
+                                    class="img-fluid" alt=""></div>
+                            <div class="member-info">
+                                <h4>Ryan Rahma Bakti</h4>
+                                <span>CIGS</span>
+                                <p>"Doa adalah senjata seorang mukmin. Teruslah berdoa, karena Allah mendengar setiap
+                                    doa dari hati yang tulus."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section><!-- End Team Section -->
+
+        <!-- ======= Contact Section ======= -->
+        <section id="contact" class="contact">
+            <div class="container" data-aos="fade-up">
+
+                <div class="section-title">
+                    <h2>Contact</h2>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-lg-5 d-flex align-items-stretch">
+                        <div class="info">
+                            <div class="address">
+                                <i class="bi bi-geo-alt"></i>
+                                <h4>Location:</h4>
+                                <p>Jl. HMS Mintareja Sarjana Hukum No.1, Baros, Kec. Cimahi Tengah, Kota Cimahi, Jawa
+                                    Barat 40521</p>
+                            </div>
+
+                            <div class="email">
+                                <i class="bi bi-envelope"></i>
+                                <h4>Email:</h4>
+                                <p>gpsexplorer@gmail.com</p>
+                            </div>
+
+                            <div class="phone">
+                                <i class="bi bi-phone"></i>
+                                <h4>Call:</h4>
+                                <p>+62 80 1234 5678</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
+                        <div class="info map-container">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.9602391902004!2d107.53971757403527!3d-6.895359467475242!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e59b48322cdb%3A0x10a755b12e9aef37!2sBITC%20(Baros%20Information%2C%20Technology%2C%20%26%20Creative%20Center!5e0!3m2!1sid!2sid!4v1708416968822!5m2!1sid!2sid"
+                                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section><!-- End Contact Section -->
+
+    </main><!-- End #main -->
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer">
+
+        <div class="footer-top">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-lg-3 col-md-6 footer-contact">
+                        <h3>GPS Explorer</h3>
+                        <p>
+                            Baros <br>
+                            Sukaraja<br>
+                            Kec. Cicendo <br><br>
+                            <strong>Phone:</strong>+62 80 1234 5678<br>
+                            <strong>Email:</strong> gpsexplorer@gmail.com<br>
+                        </p>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 footer-links">
+                        <h4>Our Social Media</h4>
+                        <div class="social-links mt-3">
+                            <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+                            <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Smooth scroll for navigation links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
+        <div class="container footer-bottom clearfix">
+            <div class="copyright">
+                &copy; Copyright <strong><span>BARUDAK CIGS</span></strong>. All Rights Reserved
+            </div>
+            <div class="credits">
+                <!-- All the links in the footer should remain intact. -->
+                <!-- You can delete the links only if you purchased the pro version. -->
+                <!-- Licensing information: https://bootstrapmade.com/license/ -->
+                <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/ -->
+                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+            </div>
+        </div>
+    </footer><!-- End Footer -->
 
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
-            });
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            // Remove splash screen after a few seconds (e.g., 3 seconds)
-            setTimeout(function() {
-                document.getElementById('splash-screen').style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }, 2000);
-        });
-        const reviewWrap = document.getElementById("reviewWrap");
-        const leftArrow = document.querySelector(".left-arrow-wrap .arrow");
-        const rightArrow = document.querySelector(".right-arrow-wrap .arrow");
-        const imgBox = document.getElementById("imgBox");
-        const name = document.getElementById("name");
-        const profession = document.getElementById("profession");
-        const description = document.getElementById("description");
+    <!-- Vendor JS Files -->
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
+    <script src="assets/vendor/php-email-form/validate.js"></script>
 
-        let people = [{
-                photo: 'url("https://thumbs.dreamstime.com/b/avatar-man-shirt-avatar-face-single-icon-cartoon-style-rater-bitmap-symbol-stock-illustration-web-91847976.jpg")',
-                name: "Dzaki Ahmad Fauzan",
-                profession: "CIGS",
-                description: "Belajarlah Dengan Sungguh-Sungguh,Kejarlah Gelar Sampai Dapat Dan Jangan Lupakan Gelar Sejadah"
-            },
-            {
-                photo: "url('https://thumbs.dreamstime.com/z/avatar-men-white-hair-avatar-face-single-icon-cartoon-style-rater-bitmap-symbol-stock-illustration-web-91847888.jpg')",
-                name: "Yuda Hidayat",
-                profession: "CIGS",
-                description: "Sabar adalah kunci kesuksesan. Bersabarlah dalam menghadapi cobaan, karena Allah selalu bersama orang yang sabar."
-            },
-            {
-                photo: "url('https://image.freepik.com/free-vector/businessman-profile-cartoon_18591-58479.jpg')",
-                name: "Ryan Rahma Bakti",
-                profession: "CIGS",
-                description: "Doa adalah senjata seorang mukmin. Teruslah berdoa, karena Allah mendengar setiap doa dari hati yang tulus."
-            },
-            {
-                photo: "url('https://as2.ftcdn.net/v2/jpg/01/40/33/03/1000_F_140330375_e7tnFRYyvlcL7TwX5e0uo1zWARI1RmOw.jpg')",
-                name: "Chepi Syaehbudien Basil",
-                profession: "CIGS",
-                description: "Keberhasilan sejati adalah ketika kita meraih keridhaan Allah, bukan sekadar pujian dari manusia."
-            }
-        ];
+    <!-- Template Main JS File -->
+    <script src="assets/js/main.js"></script>
 
-        // set the first person
-        imgBox.style.backgroundImage = people[0].photo;
-        name.innerText = people[0].name;
-        profession.innerText = people[0].profession;
-        description.innerText = people[0].description;
-        let currentPerson = 0;
-
-        //Select the side where you want to slide
-        function slide(side, personNumber) {
-            let reviewWrapWidth = reviewWrap.offsetWidth + "px";
-            let descriptionHeight = description.offsetHeight + "px";
-            //(+ or -)
-            let side1symbol = side === "left" ? "" : "-";
-            let side2symbol = side === "left" ? "-" : "";
-
-            setTimeout(() => {
-                imgBox.style.backgroundImage = people[personNumber].photo;
-            }, 0);
-            setTimeout(() => {
-                description.style.height = descriptionHeight;
-            }, 100);
-            setTimeout(() => {
-                name.innerText = people[personNumber].name;
-            }, 200);
-            setTimeout(() => {
-                profession.innerText = people[personNumber].profession;
-            }, 300);
-            setTimeout(() => {
-                description.innerText = people[personNumber].description;
-            }, 400);
-        }
-
-        function setNextCardLeft() {
-            if (currentPerson === 3) {
-                currentPerson = 0;
-                slide("left", currentPerson);
-            } else {
-                currentPerson++;
-            }
-
-            slide("left", currentPerson);
-        }
-
-        function setNextCardRight() {
-            if (currentPerson === 0) {
-                currentPerson = 3;
-                slide("right", currentPerson);
-            } else {
-                currentPerson--;
-            }
-
-            slide("right", currentPerson);
-        }
-
-        leftArrow.addEventListener("click", setNextCardLeft);
-        rightArrow.addEventListener("click", setNextCardRight);
-    </script>
 </body>
 
 </html>
