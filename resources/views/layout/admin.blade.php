@@ -8,6 +8,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
     <link rel="shortcut icon" href="{{ asset('template/assets/images/logo/favicon.svg') }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ asset('template/assets/images/logo/favicon.png') }}" type="image/png">
 
@@ -21,7 +22,7 @@
             <div class="sidebar-header position-relative">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="logo">
-                        <a href="">
+                        <a href="/admin">
                             <img src="/images/gpslogo.png" alt="Logo" style="width: 150px; height: 70px;">
                         </a>
                     </div>
@@ -64,7 +65,7 @@
                     <li class="sidebar-title">Menu</li>
                     <hr>
                     <li class="sidebar-item active ">
-                        <a href="index.html" class='sidebar-link'>
+                        <a href="/admin" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
@@ -77,7 +78,7 @@
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
-                                <a href="">Data User</a>
+                                <a href="{{ asset('template/assets/admin') }}" class='sidebar-link'>Data User</a>
                             </li>
                         </ul>
                     </li>
