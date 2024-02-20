@@ -16,4 +16,10 @@ class TampilanController extends Controller
         //tampilan Admin
         return view('admin.index');
     }
+
+    public function homepage()
+    {
+        //tampilan homepage
+        return view('layouts.homepage');
+    }
 }

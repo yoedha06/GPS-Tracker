@@ -39,6 +39,15 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    public function showLoginForm()
+    {
+        // Cek apakah ada email yang disimpan di session
+        $registered_email = session('registered_email');
+
+        return view('auth.login', compact('registered_email'));
+    }
+
     
     public function logout(Request $request) {
         Auth::logout(); // Logout pengguna

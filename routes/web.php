@@ -20,40 +20,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/homepage', function () {
-    return view('layout.homepage');
-});
-Route::get('/load', function () {
-    return view('layout.load');
-});
+//bawaan laravel ui
+Auth::routes();
+//bawaan laravel
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//tampilan HOMEPAGE
+Route::get('/',[TampilanController::class, 'homepage'])->name('index.homepage');
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Route::post('/register',[AuthRegisterController::class, 'register'])->name('register')->middleware('auth.redirectIfNotLoggedIn');
+Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
 
 
 
@@ -63,20 +39,12 @@ Route::get('/admin/profile',[ProfileController::class, 'admin'])->name('admin.pr
 Route::get('/customer/profile',[ProfileController::class, 'customer'])->name('customer.profile');
 
 
-Route::post('/register', [AuthRegisterController::class]);
-
-
-//bawaan laravel
-Auth::routes();
-
 Route::middleware('auth')->group(function () {
     Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
-    
-    
 });
 
-//bawaan laravel
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
+
+
+
 

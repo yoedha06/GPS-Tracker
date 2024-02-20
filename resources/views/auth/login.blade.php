@@ -104,6 +104,7 @@
               </div>
               <div class="col-md-6 col-lg-7 d-flex align-items-center">
                 <div class="card-body">
+                  <a href="{{route('index.homepage')}}">Back To Dashboard</a>
                     <div class="logo-container">
                       <i class="fas fa-cubes"></i>
                       <span class="h1">GPS</span>
@@ -112,12 +113,12 @@
                     <form method="POST" action="{{ route('login') }}">
                       @csrf
                       <div class="form-outline mb-4">
-                        <input type="email" id="email" class="form-control form-control-lg" name="email" />
                         <label class="form-label" for="email" >Email address</label>
+                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $registered_email ?? old('email') }}" required autocomplete="email" autofocus>
                       </div>
                       <div class="form-outline mb-4">
-                        <input type="password" id="password" class="form-control form-control-lg" name="password" />
                         <label class="form-label" for="password" >Password</label>
+                        <input type="password" id="password" class="form-control form-control-lg" name="password" />
                       </div>
                       <div class="pt-1 mb-4">
                         <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>

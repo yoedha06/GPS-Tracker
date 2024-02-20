@@ -29,7 +29,10 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = 'home';
+    protected function redirectPath()
+    {
+        return '/login';
+    }
 
 
     /**
@@ -39,7 +42,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('auth.redirectIfNotLoggedIn');
     }
 
     /**
@@ -53,7 +56,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required','min:4'],
         ]);
     }
 
@@ -72,6 +75,8 @@ class RegisterController extends Controller
         'password' => Hash::make($data['password']),
         'role' => 'customer',
     ]);
+    
+    session(['registered_email' => $data['email']]);
 
     return $user;
     }
