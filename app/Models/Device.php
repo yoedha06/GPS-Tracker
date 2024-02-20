@@ -15,4 +15,9 @@ class Device extends Model
     {
         return $this->belongsTo(User::class, 'id');
     }
+
+    public function history()
+    {
+        return $this->hasOne(History::class, 'device_id', 'id_device');
+    }
 }

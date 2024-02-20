@@ -32,7 +32,6 @@ Route::post('/register',[AuthRegisterController::class, 'register'])->name('regi
 Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
 
 
-
 //admin
 Route::get('/admin',[TampilanController::class, 'admin'])->name('index.admin');
 Route::get('/admin/profile',[ProfileController::class, 'admin'])->name('admin.profile');

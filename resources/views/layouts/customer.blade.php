@@ -8,8 +8,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
-    <link rel="shortcut icon" href="{{ asset('template/assets/images/logo/favicon.svg') }}" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ asset('template/assets/images/logo/favicon.png') }}" type="image/png">
+    <link href="/images/gpslogo.png" rel="icon">
 
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
 </head>
@@ -125,6 +124,12 @@
                             </li>
                         </ul>
                     </li>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="" class='sidebar-link'>
+                            <i class="bi bi-box-arrow-left"></i>
+                            <span>Logout</span>
+                        </a>
                     </li>
                 </ul>
             </div>
