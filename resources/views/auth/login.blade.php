@@ -104,24 +104,24 @@
               </div>
               <div class="col-md-6 col-lg-7 d-flex align-items-center">
                 <div class="card-body">
-                  <form method="POST" action="{{ route('login') }}">
-                    @csrf
                     <div class="logo-container">
                       <i class="fas fa-cubes"></i>
                       <span class="h1">GPS</span>
                     </div>
                     <h5 class="fw-normal mb-3">Sign into your account</h5>
-                    <div class="form-outline mb-4">
-                      <input type="email" id="form2Example17" class="form-control form-control-lg" />
-                      <label class="form-label" for="form2Example17">Email address</label>
-                    </div>
-                    <div class="form-outline mb-4">
-                      <input type="password" id="form2Example27" class="form-control form-control-lg" />
-                      <label class="form-label" for="form2Example27">Password</label>
-                    </div>
-                    <div class="pt-1 mb-4">
-                      <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
-                    </div>
+                    <form method="POST" action="{{ route('login') }}">
+                      @csrf
+                      <div class="form-outline mb-4">
+                        <input type="email" id="email" class="form-control form-control-lg" name="email" />
+                        <label class="form-label" for="email" >Email address</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <input type="password" id="password" class="form-control form-control-lg" name="password" />
+                        <label class="form-label" for="password" >Password</label>
+                      </div>
+                      <div class="pt-1 mb-4">
+                        <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
+                      </div>
                     <a class="small text-muted" href="javascript:void(0);" onclick="showForgetPasswordForm()">Forgot password?</a>
                     <p class="mb-5" style="color: #393f81;">Don't have an account? <a href="{{route('register')}}" style="color: #393f81;">Register here</a></p>
                     <a href="#!" class="small text-muted">Terms of use.</a>

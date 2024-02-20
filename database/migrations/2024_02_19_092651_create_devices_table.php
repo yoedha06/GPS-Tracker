@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('device', function (Blueprint $table) {
             $table->id('id_device');
-            $table->foreignId('user_id')->references('id_user')->on('users');
+            $table->foreignId('user_id')->references('id')->on('users');
             $table->string('name');
             $table->string('serial_number');
             $table->timestamps();
