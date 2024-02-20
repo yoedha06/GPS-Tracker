@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,3 +25,6 @@ Route::get('/admin', function () {
 Route::get('/customer', function () {
     return view('customer.index');
 });
+
+Route::get('/admin/profile',[ProfileController::class, 'admin'])->name('admin.profile');
+Route::get('/customer/profile',[ProfileController::class, 'customer'])->name('customer.profile');

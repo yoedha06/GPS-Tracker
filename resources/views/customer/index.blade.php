@@ -223,6 +223,7 @@
                                 <div class="card-body py-4 px-4">
                                     <div class="d-flex align-items-center">
                                         <div class="avatar avatar-xl">
+                                            <a href="customer/profile">
                                             <img src="{{ asset('template/assets/images/faces/1.jpg') }}" alt="Face 1">
                                         </div>
                                         <div class="ms-3 name">
