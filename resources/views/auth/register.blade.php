@@ -88,28 +88,53 @@
             <div class="col col-xl-10">
               <div class="card">
                 <div class="card-body">
-                  <form method="POST" action="{{ route('register') }}">
-                    @csrf
+                    <form method="POST" action="{{ route('register') }}">
+                        @csrf
                     <div class="logo-container">
                       <i class="fas fa-cubes"></i>
                       <span class="h1">GPS</span>
                     </div>
                     <h5 class="fw-normal mb-3">Register for an account</h5>
+
                     <div class="form-outline mb-4">
-                      <input type="text" id="name" name="name" class="form-control form-control-lg" />
-                      <label class="form-label" for="name">Name</label>
+                        <label for="name">Name</label>
+                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+
+                        @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                        
                     </div>
+
                     <div class="form-outline mb-4">
-                      <input type="email" id="email" name="email" class="form-control form-control-lg" />
-                      <label class="form-label" for="email">Email address</label>
+                        <label for="email">Email Address</label>
+                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                     </div>
+
                     <div class="form-outline mb-4">
-                      <input type="password" id="password" name="password" class="form-control form-control-lg" />
-                      <label class="form-label" for="password">Password</label>
+                        <label for="password">Password</label>
+                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password">
+
+                                @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                        
                     </div>
+
                     <div class="pt-1 mb-4">
                       <button class="btn btn-dark btn-lg btn-block" type="submit">Register</button>
                     </div>
+
                     <p class="mb-5" style="color: #393f81;">Already have an account? <a href="{{ route("login")}}" style="color: #393f81;">Login here</a></p>
                     <a href="#!" class="small text-muted">Terms of use.</a>
                     <a href="#!" class="small text-muted">Privacy policy</a>
