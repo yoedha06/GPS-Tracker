@@ -237,7 +237,7 @@
                                     </a>
                                     <!-- Dropdown menu for profile options -->
                                     <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                                        <li><a class="dropdown-item" href="customer/profile">Profile</a></li>
+                                        <li><a class="dropdown-item" href="customer/profile"><i class="fas fa-user"></i> Profile</a></li>
                                         <li>
                                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                                 @csrf
