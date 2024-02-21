@@ -9,7 +9,8 @@ class TampilanController extends Controller
     public function index()
     {
         //tampilan Customer
-        return view('customer.index');
+        $user = auth()->user();
+        return view('customer.index', compact('user'));
     }
     public function admin()
     {
@@ -21,5 +22,10 @@ class TampilanController extends Controller
     {
         //tampilan homepage
         return view('layouts.homepage');
+    }
+    public function login()
+    {
+        //tampilan homepage
+        return view('admin.login');
     }
 }
