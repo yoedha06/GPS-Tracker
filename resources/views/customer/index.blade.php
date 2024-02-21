@@ -231,7 +231,7 @@
                                             </div>
                                             @if($user)
                                                 <div class="ms-3 name">
-                                                    <h5 class="font-bold">{{ $user->name }}</h5>
+                                                    <h5 class="font-bold text-truncate" style="max-width: 150px;">{{$user->name}}</h5>
                                                     <h6 class="text-muted mb-0">{{ $user->role }}</h6>
                                                 </div>
                                             @else
