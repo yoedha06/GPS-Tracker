@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-
+<title>Admin</title>
 @section('content')
 
     <body>
@@ -237,18 +237,18 @@
                                     </a>
                                     <!-- Dropdown menu for profile options -->
                                     <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                                        <li><a class="dropdown-item" href="admin/profile">Profile</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('admin.profile') }}">Profile</a></li>
                                         <li>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                            <form id="logout-form" action="{{ route('logout.admin') }}" method="POST" class="d-none">
                                                 @csrf
                                             </form>
-                                            <a class="dropdown-item" href="{{ route('logout') }}" class='sidebar-link'
-                                                onclick="event.preventDefault();
-                                            document.getElementById('logout-form').submit();">
+                                            <a class="dropdown-item" href="{{ route('logout.admin')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                                 <i class="bi bi-box-arrow-left"></i>
                                                 <span>Logout</span>
-                                            </a></li>
-                                    </ul>
+                                            </a>
+                                            
+                                        </li>
+                                    </ul>                                    
                                 </div>
                             </div>
                         </div>

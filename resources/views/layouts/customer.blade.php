@@ -125,12 +125,6 @@
                         </ul>
                     </li>
                     </li>
-                    <li class="sidebar-item">
-                        <a href="" class='sidebar-link'>
-                            <i class="bi bi-box-arrow-left"></i>
-                            <span>Logout</span>
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
