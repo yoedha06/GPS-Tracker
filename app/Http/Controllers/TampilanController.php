@@ -15,7 +15,8 @@ class TampilanController extends Controller
     public function admin()
     {
         //tampilan Admin
-        return view('admin.index');
+        $user = auth()->user();
+        return view('admin.index',compact('user'));
     }
 
     public function homepage()

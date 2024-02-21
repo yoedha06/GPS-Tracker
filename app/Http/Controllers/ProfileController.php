@@ -8,8 +8,8 @@ class ProfileController extends Controller
 {
     public function admin()
     {
-        $title = 'Profile';
-        return view('profile.admin', compact('title'));
+        $user = auth()->user();
+        return view('profile.admin', compact('user'));
     }
     public function customer()
     {
