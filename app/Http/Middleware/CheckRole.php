@@ -17,7 +17,7 @@ class CheckRole
     public function handle(Request $request, Closure $next, $role)
     {
         if (!Auth::check() || Auth::user()->role !== $role) {
-            return abort(403, 'Unauthorized action.'); // Forbidden
+            return response()->view('errors.403', [], 403); // Forbidden
         }
 
         return $next($request);
