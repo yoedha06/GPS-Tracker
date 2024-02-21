@@ -8,50 +8,52 @@
     <title>Document</title>
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
     <link href="/images/gpslogo.png" rel="icon">
 
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
+    <style>
+        /* CSS for the splash screen */
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #splash-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            /* You can customize the background color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            /* Set a high z-index value to make it appear on top */
+        }
+
+        #splash-screen img {
+            width: 150px;
+            /* Adjust the width as needed */
+            height: 70px;
+            /* Adjust the height as needed */
+        }
+    </style>
 </head>
-<style>
-    /* CSS for the splash screen */
-    body {
-        margin: 0;
-        overflow: hidden;
-    }
-
-    #splash-screen {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        background: #ffffff;
-        /* You can customize the background color */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        /* Set a high z-index value to make it appear on top */
-    }
-
-    #splash-screen img {
-        width: 150px;
-        /* Adjust the width as needed */
-        height: 70px;
-        /* Adjust the height as needed */
-    }
-</style>
 
 <body>
     <div id="splash-screen">
         <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
             alt="Logo" style="width: 300px; height: 300px;">
     </div>
+
     @yield('content')
     <div id="sidebar" class="active">
         <div class="sidebar-wrapper active">
             <div class="sidebar-header position-relative">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="logo">
-                        <a href="/customer">
+                        <a href="/admin">
                             <img src="/images/gpslogo.png" alt="Logo" style="width: 150px; height: 70px;">
                         </a>
                     </div>
@@ -94,7 +96,7 @@
                     <li class="sidebar-title">Menu</li>
                     <hr>
                     <li class="sidebar-item active ">
-                        <a href="/customer" class='sidebar-link'>
+                        <a href="/admin" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
@@ -107,23 +109,15 @@
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
-                                <a href="">Data User</a>
-                            </li>
-                        </ul>
-                    <li class="sidebar-item  has-sub">
-                        <a href="#" class='sidebar-link'>
-                            <i class="bi bi-map-fill"></i>
-                            <span>Maps</span>
-                        </a>
-                        <ul class="submenu ">
-                            <li class="submenu-item ">
-                                <a href="ui-map-google-map.html">Google Map</a>
-                            </li>
-                            <li class="submenu-item ">
-                                <a href="ui-map-jsvectormap.html">JS Vector Map</a>
+                                <a href="{{ asset('template/assets/admin') }}" class='sidebar-link'>Data User</a>
                             </li>
                         </ul>
                     </li>
+                    <li class="sidebar-item">
+                        <a href="" class='sidebar-link'>
+                            <i class="bi bi-box-arrow-left"></i>
+                            <span>Logout</span>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -136,6 +130,7 @@
 <!-- Need: Apexcharts -->
 <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
 <script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Remove splash screen after a few seconds (e.g., 3 seconds)
