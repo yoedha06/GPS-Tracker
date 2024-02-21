@@ -114,7 +114,7 @@
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
-                                <a href="history/customer">History</a>
+                                <a href="/history/customer">History</a>
                             </li>
                             <li class="submenu-item ">
                                 <a href="ui-map-jsvectormap.html">JS Vector Map</a>
