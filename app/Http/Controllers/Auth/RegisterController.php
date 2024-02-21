@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -79,5 +79,19 @@ class RegisterController extends Controller
     session(['registered_email' => $data['email']]);
 
     return $user;
+    }
+
+    //login setelah registrasi
+    public function register(Request $request)
+    {
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $this->create($request->all());
+
+        return redirect()->route('login')->with('success', 'Registration successful. Please login.');
     }
 }
