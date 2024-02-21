@@ -1,12 +1,6 @@
-@extends('layout.admin')
+@extends('layouts.admin')
 @section('content')
 <div id="main">
-    <header class="mb-3">
-        <a href="#" class="burger-btn d-block d-xl-none">
-            <i class="bi bi-justify fs-3"></i>
-        </a>
-    </header>
-
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -38,37 +32,27 @@
                             <th>Name</th>
                             <th>Username</th>
                             <th>Email</th>
-                            <th>Password</th>
                             <th>Role</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @auth
-                        @php $no = 1 @endphp
+                        @foreach($users as $user)
                         <tr>
-                            <td>{{ $no++ }}</td>
-                            <td>{{ Auth::user()->name }}</td>
-                            <td>{{ Auth::user()->username }}</td>
-                            <td>{{ Auth::user()->email }}</td>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->username }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ $user->role }}</td>
                             <td>
-                                <div class="input-group">
-                                    <input type="password" id="password" value="{{ Auth::user()->password }}" class="form-control" aria-describedby="basic-addon2" readonly>
-                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                </div>
-                            </td>
-                            <td>{{ Auth::user()->role }}</td>
-                            <td>
-                                @if(Auth::user()->is_verified)
+                                @if($user->is_verified)
                                     <span style="color: green;">Verified</span>
                                 @else
                                     <span style="color: red;">Not Verified</span>
                                 @endif
                             </td>
                         </tr>
-                        @endauth
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -85,13 +69,4 @@
         </div>
     </footer>
 </div>
-<script>
-    document.getElementById('togglePassword').addEventListener('click', function () {
-        const passwordInput = document.getElementById('password');
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        this.querySelector('i').classList.toggle('bi-eye');
-        this.querySelector('i').classList.toggle('bi-eye-slash');
-    });
-</script>
 @endsection
