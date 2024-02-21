@@ -8,6 +8,8 @@
     <title>Document</title>
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <link href="/images/gpslogo.png" rel="icon">
 
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
@@ -100,16 +102,11 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item  has-sub">
+                  
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-stack"></i>
                             <span>Components</span>
                         </a>
-                        <ul class="submenu ">
-                            <li class="submenu-item ">
-                                <a href="">Data User</a>
-                            </li>
-                        </ul>
                     <li class="sidebar-item  has-sub">
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-map-fill"></i>
@@ -117,7 +114,7 @@
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
-                                <a href="ui-map-google-map.html">Google Map</a>
+                                <a href="/history/customer">History</a>
                             </li>
                             <li class="submenu-item ">
                                 <a href="ui-map-jsvectormap.html">JS Vector Map</a>

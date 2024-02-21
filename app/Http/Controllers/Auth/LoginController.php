@@ -48,7 +48,7 @@ class LoginController extends Controller
         return view('auth.login', compact('registered_email'));
     }
 
-    
+
     public function logout(Request $request) {
         Auth::logout();
         return redirect('/');

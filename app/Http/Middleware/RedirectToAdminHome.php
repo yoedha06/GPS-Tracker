@@ -19,15 +19,16 @@ class RedirectToAdminHome
     {
         if (Auth::check()) {
             if ($request->is('logout')) {
-                // Jika pengguna ingin logout, lakukan logout dan redirect ke halaman login admin
                 Auth::logout();
-                return redirect()->route('login.admin')->with('status', 'Anda telah logout.');
+                return redirect()->route('login.admin');
             } elseif (Auth::user()->role === 'admin') {
-                // Jika pengguna adalah admin, arahkan ke dashboard admin
+
                 return redirect()->route('index.admin');
+
             }
         }
 
         return $next($request);
+        
     }
 }

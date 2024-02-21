@@ -15,13 +15,14 @@ class RedirectIfNotLoggedIn
      */
     public function handle(Request $request, Closure $next)
     {
-        // Periksa apakah pengguna sudah masuk
+
         if (!auth()->check() && !$request->is('register')) {
-            // Jika belum masuk dan bukan rute registrasi, arahkan ke halaman login
+
             return redirect()->route('login');
+
         }
 
-        // Lanjutkan permintaan jika pengguna sudah masuk atau sedang di rute registrasi
         return $next($request);
+        
     }
 }
