@@ -84,6 +84,89 @@
             margin-bottom: 3rem !important;
         }
     </style>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Form</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <link href="/images/gpslogo.png" rel="icon">
+  
+  <style>
+    body {
+      background-color: whitesmoke;
+    }
+
+    .card {
+      border-radius: 1rem;
+    }
+
+    .img-container {
+      overflow: hidden;
+      border-radius: 1rem 0 0 1rem;
+      height: 100%;
+      max-height: 400px; /* Sesuaikan tinggi maksimum sesuai kebutuhan */
+    }
+
+    .img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center; /* Menambahkan properti object-position */
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-container i {
+      color: #ff6219;
+      font-size: 2rem;
+      margin-right: 10px;
+    }
+
+    .logo-container span {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .card-body {
+      padding: 4rem 2rem;
+    }
+
+    .form-outline {
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-dark {
+      background-color: #393f81;
+      color: #fff;
+    }
+
+    .btn-dark:hover {
+      background-color: #2b2f5c;
+    }
+
+    .small {
+      font-size: 0.875rem;
+    }
+
+    .text-muted {
+      color: #6c757d;
+    }
+
+    .mb-5 {
+      margin-bottom: 3rem !important;
+    }
+  </style>
 </head>
 
 <body>
