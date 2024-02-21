@@ -229,10 +229,16 @@
                                                 <img src="{{ asset('template/assets/images/faces/1.jpg') }}"
                                                     alt="Face 1">
                                             </div>
-                                            <div class="ms-3 name">
-                                                <h5 class="font-bold">{{$user->name}}</h5>
-                                                <h6 class="text-muted mb-0">{{$user->role}}</h6>
-                                            </div>
+                                            @if($user)
+                                                <div class="ms-3 name">
+                                                    <h5 class="font-bold">{{ $user->name }}</h5>
+                                                    <h6 class="text-muted mb-0">{{ $user->role }}</h6>
+                                                </div>
+                                            @else
+                                                <div class="ms-3 name">
+                                                    <h5 class="font-bold">User not found</h5>
+                                                </div>
+                                            @endif
                                         </div>
                                     </a>
                                     <!-- Dropdown menu for profile options -->

@@ -51,7 +51,7 @@
     </header><!-- End Header -->
 
     <!-- ======= Hero Section ======= -->
-    <section id="hero" style="background-image: url('/images/BG.webp'); background-size: cover;"
+    <section id="hero" style="background-image: url('/images/BG.webp'); background-size: 120%;background-position: center;"
         class="d-flex align-items-center">
 
         <div class="container">

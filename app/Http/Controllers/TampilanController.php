@@ -23,9 +23,4 @@ class TampilanController extends Controller
         //tampilan homepage
         return view('layouts.homepage');
     }
-    public function login()
-    {
-        //tampilan homepage
-        return view('admin.login');
-    }
 }
