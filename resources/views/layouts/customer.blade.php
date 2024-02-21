@@ -100,16 +100,11 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item  has-sub">
+                  
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-stack"></i>
                             <span>Components</span>
                         </a>
-                        <ul class="submenu ">
-                            <li class="submenu-item ">
-                                <a href="">Data User</a>
-                            </li>
-                        </ul>
                     <li class="sidebar-item  has-sub">
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-map-fill"></i>
@@ -138,6 +133,7 @@
 </body>
 <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
 <script src="{{ asset('template/assets/js/app.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Need: Apexcharts -->
 <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
