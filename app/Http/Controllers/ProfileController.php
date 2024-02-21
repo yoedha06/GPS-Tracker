@@ -13,7 +13,7 @@ class ProfileController extends Controller
     }
     public function customer()
     {
-        $title = 'Profile';
-        return view('profile.customer',compact('title'));
+        $user = auth()->user();
+        return view('profile.customer',compact('user'));
     }
 }

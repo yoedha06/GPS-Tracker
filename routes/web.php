@@ -34,6 +34,7 @@ Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login
 
 //admin
 Route::get('/admin',[TampilanController::class, 'admin'])->name('index.admin');
+Route::get('/login/admin',[TampilanController::class, 'login'])->name('admin.login');
 Route::get('/admin/profile',[ProfileController::class, 'admin'])->name('admin.profile');
 Route::get('/customer/profile',[ProfileController::class, 'customer'])->name('customer.profile');
 
