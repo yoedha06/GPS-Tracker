@@ -47,5 +47,5 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
-
-Route::get('/history', [HistoryController::class, 'index']);
+//customer
+Route::get('/history/customer', [HistoryController::class, 'index'])->name('customer.history.index');
