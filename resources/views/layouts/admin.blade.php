@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <link href="/images/gpslogo.png" rel="icon">
 
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
