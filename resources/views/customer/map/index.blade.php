@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPS Project with Leaflet</title>
+    <title>GPS EXPLORER</title>
     <!-- Menggunakan Leaflet dari CDN -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -42,7 +42,6 @@
 
 <body>
     <div class="sidebar">
-        <!-- Add your sidebar content here -->
         <h2>Sidebar</h2>
         <p>This is a sidebar.</p>
     </div>
