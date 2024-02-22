@@ -225,9 +225,12 @@
                                     <a href="#" class="dropdown-toggle" id="profileDropdown" role="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-xl">
-                                                <img src="{{ asset('template/assets/images/faces/1.jpg') }}"
-                                                    alt="Face 1">
+                                            <div class="avatar avatar-xl" style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
+                                                @if(Auth::user()->photo)
+                                                    <img src="/photos/{{ Auth::user()->photo }}" style="width: 100%; height: auto;">
+                                                @else
+                                                    <img src="{{ asset('images/default.jpg') }}" style="width: 100%; height: auto;">
+                                                @endif
                                             </div>
                                             @if($user)
                                                 <div class="ms-3 name">
