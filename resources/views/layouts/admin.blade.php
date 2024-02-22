@@ -13,8 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <link href="/images/geex.png" rel="icon">
-    <link href="/images/gpslogo.png" rel="icon">
-
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
     <style>
         /* CSS for the splash screen */

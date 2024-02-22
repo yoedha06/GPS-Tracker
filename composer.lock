@@ -1049,6 +1049,7 @@
             "name": "laravel/framework",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             "version": "v10.45.1",
             "source": {
                 "type": "git",
@@ -1060,13 +1061,17 @@
 <<<<<<< HEAD
 =======
             "version": "v10.45.0",
+=======
+            "version": "v10.45.1",
+>>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "8b08d8cd79f8093eb51a8c59e21647bedfbf05f2"
+                "reference": "dcf5d1d722b84ad38a5e053289130b6962f830bd"
             },
             "dist": {
                 "type": "zip",
+<<<<<<< HEAD
 >>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 =======
             "version": "v10.45.0",
@@ -1082,6 +1087,8 @@
                 "reference": "8b08d8cd79f8093eb51a8c59e21647bedfbf05f2",
                 "shasum": ""
 =======
+=======
+>>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
                 "url": "https://api.github.com/repos/laravel/framework/zipball/dcf5d1d722b84ad38a5e053289130b6962f830bd",
                 "reference": "dcf5d1d722b84ad38a5e053289130b6962f830bd",
                 "shasum": "",
@@ -1091,6 +1098,9 @@
                         "preferred": true
                     }
                 ]
+<<<<<<< HEAD
+>>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
+=======
 >>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
             },
             "require": {
@@ -1285,6 +1295,7 @@
             },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             "time": "2024-02-21T14:07:36+00:00"
 =======
             "time": "2024-02-20T15:32:48+00:00"
@@ -1292,6 +1303,9 @@
 =======
             "time": "2024-02-20T15:32:48+00:00"
 >>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
+=======
+            "time": "2024-02-21T14:07:36+00:00"
+>>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
         },
         {
             "name": "laravel/prompts",
@@ -5990,12 +6004,15 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 =======
 >>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
                 "shasum": ""
 =======
+=======
+>>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
                 "shasum": "",
                 "mirrors": [
                     {
@@ -6003,6 +6020,9 @@
                         "preferred": true
                     }
                 ]
+<<<<<<< HEAD
+>>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
+=======
 >>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
             },
             "require": {
@@ -6072,12 +6092,15 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 =======
 >>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
                 "shasum": ""
 =======
+=======
+>>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
                 "shasum": "",
                 "mirrors": [
                     {
@@ -6085,6 +6108,9 @@
                         "preferred": true
                     }
                 ]
+<<<<<<< HEAD
+>>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
+=======
 >>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
             },
             "require": {

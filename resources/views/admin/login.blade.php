@@ -129,6 +129,38 @@
             letter-spacing: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) inset;
         }
+
+        .dashboard-link {
+            margin-top: 20px;
+            /* Adjusted margin */
+        }
+
+        .dashboard-link a {
+            color: #fff;
+            background-color: #EC5F20;
+            font-size: 17px;
+            text-transform: capitalize;
+            letter-spacing: 12px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease 0s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .dashboard-link a:hover,
+        .dashboard-link a:focus {
+            font-weight: 600;
+            letter-spacing: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) inset;
+        }
+
+        /* Responsive styles for the Go to Dashboard button */
+        @media (max-width: 576px) {
+            .dashboard-link a {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -157,10 +189,14 @@
             <a href="{{ route('index.homepage') }}">Back to Dashboard</a>
             <button type="submit" class="btn signin">Login</button>
         </form>
+        <div class="dashboard-link">
+            <a href="{{ route('index.homepage') }}" class="btn btn-secondary">GoHome</a>
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

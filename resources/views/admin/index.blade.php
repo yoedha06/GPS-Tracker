@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 <title>Admin</title>
-<title>Admin</title>
+
 @section('content')
 
     <body>
