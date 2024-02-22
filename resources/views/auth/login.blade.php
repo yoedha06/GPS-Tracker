@@ -142,7 +142,7 @@
                                         <a href="#!" class="small text-muted">Privacy policy</a>
                                         <hr>
                                         <a href="{{ route('index.homepage') }}" class="btn btn-dark mb-3">
-                                          <i class="fas fa-arrow-left me-2"></i> Back To Dashboard
+                                          <i class="fas fa-arrow-left me-2"></i> Back To Home
                                       </a>
                                     </form>
                                 </div>
