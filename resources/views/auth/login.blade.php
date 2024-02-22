@@ -204,7 +204,7 @@
 
         function showForgetPasswordForm() {
     document.getElementById('login-page').style.display = 'none';
-    document.getElementById('forget-password-page').style.display = 'block'; // Mengubah nilai display menjadi 'block'
+    window.location.href = "{{ route('password.request') }}";
 }
 
     </script>

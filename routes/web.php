@@ -1,11 +1,11 @@
 <?php
-
-
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\KirimEmailController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\RegisterController;
@@ -65,24 +65,16 @@ Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
 Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
 
-Route::get('/send-email', [SendEmailController::class, 'index']);
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
 
-Route::post('/forgot-password', function (Request $request){
-    $request->validate(['email' => 'required:email']);
+// Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+// ->middleware('guest')
+// ->name('password.request');
 
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
+// Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+// ->middleware('guest')
+// ->name('password.email');
 
-    return $status === Password::RESET_LINK_SENT
-    ? back()->with(['status' => _($status)])
-    : back()->withErrors(['email' => ($status)]);
-
-})->middleware('guest')->name('password.email');
-
+Route::get('kirim', [KirimEmailController::class, 'index']);
 
 
 
