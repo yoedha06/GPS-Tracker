@@ -10,11 +10,8 @@
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<<<<<<< HEAD
     <link href="/images/geex.png" rel="icon">
-=======
     <link href="/images/gpslogo.png" rel="icon">
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
 </head>
@@ -105,48 +102,44 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
-<<<<<<< HEAD
                     <br>
                     <a href="/customer/map" class='sidebar-link'>
                         <i class="bi bi-map-fill"></i>
                         <span>Maps</span>
                     </a>
                     <li class="sidebar-item  has-sub">
-=======
 
-                  
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
+
+
+
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-bar-chart-fill"></i>
                             <span>Users</span>
                         </a>
-<<<<<<< HEAD
                         <ul class="submenu ">
                             <li class="submenu-item ">
                                 <a href="/history/customer"><i class="bi bi-clock-fill"></i> History</a>
                             </li>
                             <li class="submenu-item">
                                 <a href=""><i class="bi bi-tablet-fill"></i> Device</a>
-=======
-                    <li class="sidebar-item  has-sub">
-                        <a href="#" class='sidebar-link'>
-                            <i class="bi bi-map-fill"></i>
-                            <span>Maps</span>
-                        </a>
-                        <ul class="submenu ">
-                            <li class="submenu-item ">
-                                <a href="/history/customer">History</a>
+                            <li class="sidebar-item  has-sub">
+                                <a href="#" class='sidebar-link'>
+                                    <i class="bi bi-map-fill"></i>
+                                    <span>Maps</span>
+                                </a>
+                                <ul class="submenu ">
+                                    <li class="submenu-item ">
+                                        <a href="/history/customer">History</a>
+                                    </li>
+                                    <li class="submenu-item">
+                                        <a href="">Device</a>
+                                    </li>
+
+                                    <li class="submenu-item ">
+                                        <a href="ui-map-jsvectormap.html">JS Vector Map</a>
+                                    </li>
+                                </ul>
                             </li>
-                            <li class="submenu-item">
-                                <a href="">Device</a>
-                            </li>
-                            
-                            <li class="submenu-item ">
-                                <a href="ui-map-jsvectormap.html">JS Vector Map</a>
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
-                            </li>
-                        </ul>
-                    </li>
                     </li>
                 </ul>
             </div>

@@ -1,8 +1,6 @@
 @extends('layouts.admin')
-<<<<<<< HEAD
-=======
 <title>Admin</title>
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
+<title>Admin</title>
 @section('content')
 
     <body>
@@ -233,26 +231,31 @@
                                                     alt="Face 1">
                                             </div>
                                             <div class="ms-3 name">
-                                                <h5 class="font-bold text-truncate" style="max-width: 150px;">{{$user->name}}</h5>
-                                                <h6 class="text-muted mb-0">{{$user->role}}</h6>
+                                                <h5 class="font-bold text-truncate" style="max-width: 150px;">
+                                                    {{ $user->name }}</h5>
+                                                <h6 class="text-muted mb-0">{{ $user->role }}</h6>
                                             </div>
                                         </div>
                                     </a>
                                     <!-- Dropdown menu for profile options -->
                                     <ul class="dropdown-menu" aria-labelledby="profileDropdown">
                                         <li>
-                                            <a class="dropdown-item" href="admin/profile"><i class="fas fa-user"></i> Profile</a></li>
+                                            <a class="dropdown-item" href="admin/profile"><i class="fas fa-user"></i>
+                                                Profile</a>
+                                        </li>
                                         <li>
-                                            <form id="logout-form" action="{{ route('logout.admin') }}" method="POST" class="d-none">
+                                            <form id="logout-form" action="{{ route('logout.admin') }}" method="POST"
+                                                class="d-none">
                                                 @csrf
                                             </form>
-                                            <a class="dropdown-item" href="{{ route('logout.admin')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <a class="dropdown-item" href="{{ route('logout.admin') }}"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                                 <i class="bi bi-box-arrow-left"></i>
                                                 <span>Logout</span>
                                             </a>
-                                            
+
                                         </li>
-                                    </ul>                                    
+                                    </ul>
                                 </div>
                             </div>
                         </div>

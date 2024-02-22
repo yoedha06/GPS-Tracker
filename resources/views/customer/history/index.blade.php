@@ -3,16 +3,16 @@
 @section('content')
     <div id="main">
         <header class="mb-3">
-<<<<<<< HEAD
-        <a href="#" class="burger-btn d-block d-xl-none" id="burger-icon">
-            <i class="bi bi-justify fs-3"></i>
-        </a>
-    </header>
-=======
-            <i class="bi bi-justify fs-3"></i>
+            <a href="#" class="burger-btn d-block d-xl-none" id="burger-icon">
+                <i class="bi bi-justify fs-3"></i>
             </a>
         </header>
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
+        <i class="bi bi-justify fs-3"></i>
+        </a>
+        </header>
+        <i class="bi bi-justify fs-3"></i>
+        </a>
+        </header>
 
         <div class="page-heading">
             <div class="page-title">

@@ -10,21 +10,11 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
-<<<<<<< HEAD
 use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\TampilanController;
-<<<<<<< HEAD
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-=======
-use Illuminate\Http\Request;
->>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
-=======
-use App\Http\Controllers\TampilanController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Support\Facades\Auth;
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -70,22 +60,9 @@ Route::post('admin/login', [AdminController::class, 'login'])->name('admin.login
 
 //hak akses customer
 Route::middleware(['auth', 'role:customer'])->group(function () {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer')->middleware('verified');;
+    Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
     Route::get('/customer/profile', [ProfileController::class, 'customer'])->name('customer.profile');
     Route::get('/history/customer', [HistoryController::class, 'index'])->name('customer.history.index');
-=======
-        Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
-        Route::get('/customer/profile',[ProfileController::class, 'customer'])->name('customer.profile');
-        Route::get('/history/customer', [HistoryController::class, 'index'])->name('customer.history.index');
-        Route::get('/customer/map', [MapController::class, 'index'])->name('customer.map.index');
->>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
-=======
-    Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer')->middleware('verified');;
-    Route::get('/customer/profile', [ProfileController::class, 'customer'])->name('customer.profile');
-    Route::get('/history/customer', [HistoryController::class, 'index'])->name('customer.history.index');
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 });
 
 //hak akses admin
@@ -99,32 +76,3 @@ Route::middleware(['admin'])->group(function () {
 Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
 Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-Route::get('/send-email', [SendEmailController::class, 'index']);
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
-
-Route::post('/forgot-password', function (Request $request){
-    $request->validate(['email' => 'required:email']);
-
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
-
-    return $status === Password::RESET_LINK_SENT
-    ? back()->with(['status' => _($status)])
-    : back()->withErrors(['email' => ($status)]);
-
-})->middleware('guest')->name('password.email');
-
-
-
-
-
->>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
-=======
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a

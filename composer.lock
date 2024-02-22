@@ -1048,6 +1048,7 @@
         {
             "name": "laravel/framework",
 <<<<<<< HEAD
+<<<<<<< HEAD
             "version": "v10.45.1",
             "source": {
                 "type": "git",
@@ -1057,6 +1058,16 @@
             "dist": {
                 "type": "zip",
 <<<<<<< HEAD
+=======
+            "version": "v10.45.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/framework.git",
+                "reference": "8b08d8cd79f8093eb51a8c59e21647bedfbf05f2"
+            },
+            "dist": {
+                "type": "zip",
+>>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 =======
             "version": "v10.45.0",
             "source": {
@@ -1273,7 +1284,11 @@
                 "source": "https://github.com/laravel/framework"
             },
 <<<<<<< HEAD
+<<<<<<< HEAD
             "time": "2024-02-21T14:07:36+00:00"
+=======
+            "time": "2024-02-20T15:32:48+00:00"
+>>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 =======
             "time": "2024-02-20T15:32:48+00:00"
 >>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
@@ -5974,6 +5989,9 @@
                 "reference": "6b127276e3f263f7bb17d5077e9e0269e61b2a0e",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 =======
 >>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
                 "shasum": ""
@@ -6053,6 +6071,9 @@
                 "reference": "a05861ca9b04558b1ec1f36cff521a271a259b6c",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 =======
 >>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
                 "shasum": ""

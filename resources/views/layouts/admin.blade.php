@@ -5,22 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<<<<<<< HEAD
     <title>GEEX</title>
-=======
-    <title>Document</title>
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<<<<<<< HEAD
     <link href="/images/geex.png" rel="icon">
-=======
     <link href="/images/gpslogo.png" rel="icon">
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
     <style>
@@ -49,7 +42,6 @@
             height: 70px;
             /* Adjust the height as needed */
         }
-        
     </style>
 </head>
 
@@ -127,7 +119,7 @@
                                 </a>
                             </li>
                         </ul>
-                        
+
                     </li>
                 </ul>
             </div>

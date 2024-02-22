@@ -142,18 +142,8 @@
                                         <a href="#!" class="small text-muted">Privacy policy</a>
                                         <hr>
                                         <a href="{{ route('index.homepage') }}" class="btn btn-dark mb-3">
-<<<<<<< HEAD
-<<<<<<< HEAD
                                             <i class="fas fa-arrow-left me-2"></i> Back To Dashboard
                                         </a>
-=======
-                                          <i class="fas fa-arrow-left me-2"></i> Back To Home
-                                      </a>
->>>>>>> 4aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
-=======
-                                            <i class="fas fa-arrow-left me-2"></i> Back To Dashboard
-                                        </a>
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
                                     </form>
                                 </div>
                             </div>
@@ -213,10 +203,10 @@
         }
 
         function showForgetPasswordForm() {
-    document.getElementById('login-page').style.display = 'none';
-    document.getElementById('forget-password-page').style.display = 'block'; // Mengubah nilai display menjadi 'block'
-}
-
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('forget-password-page').style.display =
+                'block'; // Mengubah nilai display menjadi 'block'
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">

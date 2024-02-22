@@ -66,15 +66,10 @@
             color: #000;
             font-size: 16px;
             font-weight: 600;
-<<<<<<< HEAD
             height: 40px;
             /* Adjusted height */
             padding: 5px 10px 5px 40px;
             /* Adjusted padding */
-=======
-            height: 40px; /* Adjusted height */
-            padding: 5px 10px 5px 40px; /* Adjusted padding */
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
             margin: 0 0 5px;
             border: none;
             border-bottom: 2px solid #e7e7e7;
@@ -121,12 +116,8 @@
             text-transform: capitalize;
             letter-spacing: 2px;
             width: 100%;
-<<<<<<< HEAD
             padding: 10px;
             /* Adjusted padding */
-=======
-            padding: 10px; /* Adjusted padding */
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             transition: all 0.4s ease 0s;
             cursor: pointer;
@@ -138,50 +129,11 @@
             letter-spacing: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) inset;
         }
-<<<<<<< HEAD
-
-        .dashboard-link {
-            margin-top: 20px;
-            /* Adjusted margin */
-        }
-
-        .dashboard-link a {
-            color: #fff;
-            background-color: #EC5F20;
-            font-size: 17px;
-            text-transform: capitalize;
-            letter-spacing: 12px;
-            padding: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            transition: all 0.4s ease 0s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .dashboard-link a:hover,
-        .dashboard-link a:focus {
-            font-weight: 600;
-            letter-spacing: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) inset;
-        }
-
-        /* Responsive styles for the Go to Dashboard button */
-        @media (max-width: 576px) {
-            .dashboard-link a {
-                width: 100%;
-            }
-        }
-=======
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
     </style>
 </head>
 
 <body>
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
     <div class="form-container">
         <div class="form-icon">
             <i class="fa fa-user-circle"></i>
@@ -197,37 +149,18 @@
                 <input type="password" name="password" class="form-control" placeholder="Password">
                 <span class="forgot"><a href="#">Forgot Password?</a></span>
             </div>
-<<<<<<< HEAD
             @if (session('error'))
-=======
-            @if(session('error'))
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
                 <div class="alert alert-warning" role="alert">
                     <b>{{ session('error') }}</b>
                 </div>
             @endif
-<<<<<<< HEAD
+            <a href="{{ route('index.homepage') }}">Back to Dashboard</a>
             <button type="submit" class="btn signin">Login</button>
         </form>
-        <div class="dashboard-link">
-            <a href="{{ route('index.homepage') }}" class="btn btn-secondary">GoHome</a>
-        </div>
-=======
-            <a href="{{route('index.homepage')}}">Back to Dashboard</a>
-            <button type="submit" class="btn signin">Login</button>
-        </form>
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<<<<<<< HEAD
-
 </body>
 
 </html>
-=======
-</body>
-
-</html>
->>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
