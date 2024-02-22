@@ -1,5 +1,4 @@
 @extends('layouts.admin')
-<title>Admin</title>
 @section('content')
 
     <body>
