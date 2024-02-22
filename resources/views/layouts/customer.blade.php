@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>GEEX</title>
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <link href="/images/gpslogo.png" rel="icon">
+    <link href="/images/geex.png" rel="icon">
 
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
 </head>
@@ -54,7 +54,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="logo">
                         <a href="/customer">
-                            <img src="/images/gpslogo.png" alt="Logo" style="width: 150px; height: 70px;">
+                            <img src="/images/geex.png" alt="Logo" style="width: 145px; height: 100px;">
                         </a>
                     </div>
                     <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
@@ -101,31 +101,48 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
-
-                  
-                        <a href="#" class='sidebar-link'>
-                            <i class="bi bi-stack"></i>
-                            <span>Components</span>
-                        </a>
+                    <br>
+                    <a href="/customer/map" class='sidebar-link'>
+                        <i class="bi bi-map-fill"></i>
+                        <span>Maps</span>
+                    </a>
                     <li class="sidebar-item  has-sub">
+
+
+
+
                         <a href="#" class='sidebar-link'>
-                            <i class="bi bi-map-fill"></i>
-                            <span>Maps</span>
+                            <i class="bi bi-bar-chart-fill"></i>
+                            <span>Users</span>
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
-                                <a href="/history/customer">History</a>
+                                <a href="/history/customer"><i class="bi bi-clock-fill"></i> History</a>
                             </li>
                             <li class="submenu-item">
-                                <a href="">Device</a>
+                                <a href=""><i class="bi bi-tablet-fill"></i> Device</a>
+                            <li class="sidebar-item  has-sub">
+                                <a href="#" class='sidebar-link'>
+                                    <i class="bi bi-map-fill"></i>
+                                    <span>Maps</span>
+                                </a>
+                                <ul class="submenu ">
+                                    <li class="submenu-item ">
+                                        <a href="/history/customer">History</a>
+                                    </li>
+                                    <li class="submenu-item">
+                                        <a href="">Device</a>
+                                    </li>
+
+                                    <li class="submenu-item ">
+                                        <a href="ui-map-jsvectormap.html">JS Vector Map</a>
+                                    </li>
+                                </ul>
                             </li>
-                            
-                            <li class="submenu-item ">
-                                <a href="ui-map-jsvectormap.html">JS Vector Map</a>
-                            </li>
-                        </ul>
                     </li>
-                    </li>
+                </ul>
+                </li>
+                </li>
                 </ul>
             </div>
         </div>

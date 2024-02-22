@@ -3,7 +3,8 @@
 @section('content')
     <div id="main">
         <header class="mb-3">
-            <i class="bi bi-justify fs-3"></i>
+            <a href="#" class="burger-btn d-block d-xl-none" id="burger-icon">
+                <i class="bi bi-justify fs-3"></i>
             </a>
         </header>
 
