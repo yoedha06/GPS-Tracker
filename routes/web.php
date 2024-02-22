@@ -9,8 +9,11 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\TampilanController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,6 +62,24 @@ Route::middleware(['admin'])->group(function () {
 Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
 Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
+
+Route::get('/send-email', [SendEmailController::class, 'index']);
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->middleware('guest')->name('password.request');
+
+Route::post('/forgot-password', function (Request $request){
+    $request->validate(['email' => 'required:email']);
+
+    $status = Password::sendResetLink(
+        $request->only('email')
+    );
+
+    return $status === Password::RESET_LINK_SENT
+    ? back()->with(['status' => _($status)])
+    : back()->withErrors(['email' => ($status)]);
+
+})->middleware('guest')->name('password.email');
 
 
 
