@@ -8,12 +8,12 @@ class ProfileController extends Controller
 {
     public function admin()
     {
-        $title = 'Profile';
-        return view('profile.admin', compact('title'));
+        $user = auth()->user();
+        return view('profile.admin', compact('user'));
     }
     public function customer()
     {
-        $title = 'Profile';
-        return view('profile.customer',compact('title'));
+        $user = auth()->user();
+        return view('profile.customer',compact('user'));
     }
 }

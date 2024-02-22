@@ -5,56 +5,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>GEEX</title>
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
-    <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<<<<<<< HEAD
+    <link href="/images/geex.png" rel="icon">
+=======
     <link href="/images/gpslogo.png" rel="icon">
+>>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
-    <style>
-        /* CSS for the splash screen */
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
-
-        #splash-screen {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            /* You can customize the background color */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            /* Set a high z-index value to make it appear on top */
-        }
-
-        #splash-screen img {
-            width: 150px;
-            /* Adjust the width as needed */
-            height: 70px;
-            /* Adjust the height as needed */
-        }
-    </style>
 </head>
+<style>
+    /* CSS for the splash screen */
+    body {
+        margin: 0;
+        overflow: hidden;
+    }
+
+    #splash-screen {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+        /* You can customize the background color */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        /* Set a high z-index value to make it appear on top */
+    }
+
+    #splash-screen img {
+        width: 150px;
+        /* Adjust the width as needed */
+        height: 70px;
+        /* Adjust the height as needed */
+    }
+</style>
 
 <body>
     <div id="splash-screen">
         <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
             alt="Logo" style="width: 300px; height: 300px;">
     </div>
-
     @yield('content')
     <div id="sidebar" class="active">
         <div class="sidebar-wrapper active">
             <div class="sidebar-header position-relative">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="logo">
-                        <a href="/admin">
-                            <img src="/images/gpslogo.png" alt="Logo" style="width: 150px; height: 70px;">
+                        <a href="/customer">
+                            <img src="/images/geex.png" alt="Logo" style="width: 145px; height: 100px;">
                         </a>
                     </div>
                     <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
@@ -96,22 +100,53 @@
                     <li class="sidebar-title">Menu</li>
                     <hr>
                     <li class="sidebar-item active ">
-                        <a href="/admin" class='sidebar-link'>
+                        <a href="/customer" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
+<<<<<<< HEAD
+                    <br>
+                    <a href="/customer/map" class='sidebar-link'>
+                        <i class="bi bi-map-fill"></i>
+                        <span>Maps</span>
+                    </a>
+                    <li class="sidebar-item  has-sub">
+=======
 
+                  
+>>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
+                        <a href="#" class='sidebar-link'>
+                            <i class="bi bi-bar-chart-fill"></i>
+                            <span>Users</span>
+                        </a>
+<<<<<<< HEAD
+                        <ul class="submenu ">
+                            <li class="submenu-item ">
+                                <a href="/history/customer"><i class="bi bi-clock-fill"></i> History</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href=""><i class="bi bi-tablet-fill"></i> Device</a>
+=======
                     <li class="sidebar-item  has-sub">
                         <a href="#" class='sidebar-link'>
-                            <i class="bi bi-stack"></i>
-                            <span>Components</span>
+                            <i class="bi bi-map-fill"></i>
+                            <span>Maps</span>
                         </a>
                         <ul class="submenu ">
                             <li class="submenu-item ">
-                                <a href="{{ asset('template/assets/admin') }}" class='sidebar-link'>Data User</a>
+                                <a href="/history/customer">History</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="">Device</a>
+                            </li>
+                            
+                            <li class="submenu-item ">
+                                <a href="ui-map-jsvectormap.html">JS Vector Map</a>
+>>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
                             </li>
                         </ul>
+                    </li>
                     </li>
                 </ul>
             </div>
@@ -120,11 +155,11 @@
 </body>
 <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
 <script src="{{ asset('template/assets/js/app.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Need: Apexcharts -->
 <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
 <script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Remove splash screen after a few seconds (e.g., 3 seconds)

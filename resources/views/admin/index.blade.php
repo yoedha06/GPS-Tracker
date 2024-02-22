@@ -1,5 +1,8 @@
-@extends('layout.admin')
-
+@extends('layouts.admin')
+<<<<<<< HEAD
+=======
+<title>Admin</title>
+>>>>>>> 9d113701464c49c7f4a69e245663a370e96f395a
 @section('content')
 
     <body>
@@ -221,16 +224,35 @@
                         <div class="col-12 col-lg-3">
                             <div class="card">
                                 <div class="card-body py-4 px-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar avatar-xl">
-                                            <a href="admin/profile">
-                                            <img src="{{ asset('template/assets/images/faces/1.jpg') }}" alt="Face 1">
+                                    <!-- Wrap the entire column content in an anchor tag -->
+                                    <a href="#" class="dropdown-toggle" id="profileDropdown" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar avatar-xl">
+                                                <img src="{{ asset('template/assets/images/faces/1.jpg') }}"
+                                                    alt="Face 1">
+                                            </div>
+                                            <div class="ms-3 name">
+                                                <h5 class="font-bold text-truncate" style="max-width: 150px;">{{$user->name}}</h5>
+                                                <h6 class="text-muted mb-0">{{$user->role}}</h6>
+                                            </div>
                                         </div>
-                                        <div class="ms-3 name">
-                                            <h5 class="font-bold">John Duck</h5>
-                                            <h6 class="text-muted mb-0">@johnducky</h6>
-                                        </div>
-                                    </div>
+                                    </a>
+                                    <!-- Dropdown menu for profile options -->
+                                    <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="admin/profile"><i class="fas fa-user"></i> Profile</a></li>
+                                        <li>
+                                            <form id="logout-form" action="{{ route('logout.admin') }}" method="POST" class="d-none">
+                                                @csrf
+                                            </form>
+                                            <a class="dropdown-item" href="{{ route('logout.admin')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                <i class="bi bi-box-arrow-left"></i>
+                                                <span>Logout</span>
+                                            </a>
+                                            
+                                        </li>
+                                    </ul>                                    
                                 </div>
                             </div>
                         </div>
@@ -240,11 +262,11 @@
                 <footer>
                     <div class="footer clearfix mb-0 text-muted">
                         <div class="float-start">
-                            <p>2021 &copy; Mazer</p>
+                            <p>2021 &copy; GEEX</p>
                         </div>
                         <div class="float-end">
                             <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                    href="https://saugi.me">Saugi</a></p>
+                                    href="https://saugi.me">BARUDAK CIGS</a></p>
                         </div>
                     </div>
                 </footer>
