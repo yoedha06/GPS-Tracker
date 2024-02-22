@@ -107,6 +107,10 @@
                         <span>Maps</span>
                     </a>
                     <li class="sidebar-item  has-sub">
+
+
+
+
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-bar-chart-fill"></i>
                             <span>Users</span>
@@ -117,10 +121,28 @@
                             </li>
                             <li class="submenu-item">
                                 <a href=""><i class="bi bi-tablet-fill"></i> Device</a>
+                            <li class="sidebar-item  has-sub">
+                                <a href="#" class='sidebar-link'>
+                                    <i class="bi bi-map-fill"></i>
+                                    <span>Maps</span>
+                                </a>
+                                <ul class="submenu ">
+                                    <li class="submenu-item ">
+                                        <a href="/history/customer">History</a>
+                                    </li>
+                                    <li class="submenu-item">
+                                        <a href="">Device</a>
+                                    </li>
+
+                                    <li class="submenu-item ">
+                                        <a href="ui-map-jsvectormap.html">JS Vector Map</a>
+                                    </li>
+                                </ul>
                             </li>
-                        </ul>
                     </li>
-                    </li>
+                </ul>
+                </li>
+                </li>
                 </ul>
             </div>
         </div>

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,10 +23,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'username',
         'email',
+        'photo',
         'password',
         'role',
     ];
-    
+
     /**
      * The attributes that should be hidden for serialization.
      *

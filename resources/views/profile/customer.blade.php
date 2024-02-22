@@ -29,13 +29,23 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex justify-content-center align-items-center flex-column">
-                                <div class="avatar avatar-2xl">
-                                    <img src="http://smkn11bdg.sch.id/fotoGuru/1620289429.jpg" alt="Avatar"
-                                        style="width: 150px; height: 200px; border">
+                                <div class="avatar avatar-2xl" style="width: 180px; height: 180px; overflow: hidden; border-radius: 50%;">
+                                    @if(Auth::user()->photo)
+                                        <img src="/photos/{{ Auth::user()->photo }}" style="width: 100%; height: auto;">
+                                    @else
+                                        <img src="{{ asset('images/default.jpg') }}" style="width: 100%; height: auto;">
+                                    @endif
                                 </div>
-
+                                
                                 <h3 class="mt-3">{{ $user->name }}</h3>
-                                <p class="text-small">{{ $user->role }}</p>
+
+                                @if ($user->photo)
+                                <form action="{{ route('delete.photo.customer') }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger mt-2">Hapus Foto</button>
+                                </form>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -43,7 +53,9 @@
                 <div class="col-12 col-lg-8">
                     <div class="card">
                         <div class="card-body">
-                            <form action="#" method="get">
+                            <form action="{{ route('customer.profile.update', $user->id)}}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
                                 <div class="form-group">
                                     <label for="name" class="form-label">Name</label>
                                     <input type="text" name="name" id="name" class="form-control"
@@ -62,14 +74,10 @@
                                         placeholder="Your Email" value="{{ $user->email }}" fdprocessedid="cgz6v">
                                 </div>
 
-                                <form action="/upload" method="post" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label for="profile_picture" class="form-label">Profile Picture</label>
-                                        <input type="file" name="profile_picture" id="profile_picture"
-                                            class="form-control" accept="image/*">
-                                    </div>
-                                </form>
+                                <div class="form-group">
+                                    <label for="photo" class="form-label">Profile Picture</label>
+                                    <input type="file" name="photo" id="photo" class="form-control" accept="image/*">
+                                </div>
 
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-primary" fdprocessedid="vp6voe">Save

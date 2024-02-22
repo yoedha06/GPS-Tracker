@@ -186,6 +186,7 @@
                     <b>{{ session('error') }}</b>
                 </div>
             @endif
+            <a href="{{ route('index.homepage') }}">Back to Dashboard</a>
             <button type="submit" class="btn signin">Login</button>
         </form>
         <div class="dashboard-link">

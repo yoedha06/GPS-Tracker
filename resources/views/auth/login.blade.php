@@ -142,8 +142,8 @@
                                         <a href="#!" class="small text-muted">Privacy policy</a>
                                         <hr>
                                         <a href="{{ route('index.homepage') }}" class="btn btn-dark mb-3">
-                                          <i class="fas fa-arrow-left me-2"></i> Back To Home
-                                      </a>
+                                            <i class="fas fa-arrow-left me-2"></i> Back To Home
+                                        </a>
                                     </form>
                                 </div>
                             </div>
@@ -205,8 +205,7 @@
         function showForgetPasswordForm() {
     document.getElementById('login-page').style.display = 'none';
     window.location.href = "{{ route('password.request') }}";
-}
-
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">

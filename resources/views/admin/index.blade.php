@@ -1,4 +1,6 @@
 @extends('layouts.admin')
+<title>Admin</title>
+
 @section('content')
 
     <body>
@@ -224,31 +226,40 @@
                                     <a href="#" class="dropdown-toggle" id="profileDropdown" role="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-xl">
-                                                <img src="{{ asset('template/assets/images/faces/1.jpg') }}"
-                                                    alt="Face 1">
+                                            <div class="avatar avatar-xl" style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
+                                                @if(Auth::user()->photo)
+                                                    <img src="/photos/{{ Auth::user()->photo }}" style="width: 100%; height: auto;">
+                                                @else
+                                                    <img src="{{ asset('images/default.jpg') }}
+                                                    " style="width: 100%; height: auto;">
+                                                @endif
                                             </div>
                                             <div class="ms-3 name">
-                                                <h5 class="font-bold text-truncate" style="max-width: 150px;">{{$user->name}}</h5>
-                                                <h6 class="text-muted mb-0">{{$user->role}}</h6>
+                                                <h5 class="font-bold text-truncate" style="max-width: 150px;">
+                                                    {{ $user->name }}</h5>
+                                                <h6 class="text-muted mb-0">{{ $user->role }}</h6>
                                             </div>
                                         </div>
                                     </a>
                                     <!-- Dropdown menu for profile options -->
                                     <ul class="dropdown-menu" aria-labelledby="profileDropdown">
                                         <li>
-                                            <a class="dropdown-item" href="admin/profile"><i class="fas fa-user"></i> Profile</a></li>
+                                            <a class="dropdown-item" href="admin/profile"><i class="fas fa-user"></i>
+                                                Profile</a>
+                                        </li>
                                         <li>
-                                            <form id="logout-form" action="{{ route('logout.admin') }}" method="POST" class="d-none">
+                                            <form id="logout-form" action="{{ route('logout.admin') }}" method="POST"
+                                                class="d-none">
                                                 @csrf
                                             </form>
-                                            <a class="dropdown-item" href="{{ route('logout.admin')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <a class="dropdown-item" href="{{ route('logout.admin') }}"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                                 <i class="bi bi-box-arrow-left"></i>
                                                 <span>Logout</span>
                                             </a>
-                                            
+
                                         </li>
-                                    </ul>                                    
+                                    </ul>
                                 </div>
                             </div>
                         </div>
