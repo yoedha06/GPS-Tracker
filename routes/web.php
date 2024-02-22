@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MapController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TampilanController;
@@ -45,6 +46,7 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
         Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
         Route::get('/customer/profile',[ProfileController::class, 'customer'])->name('customer.profile');
         Route::get('/history/customer', [HistoryController::class, 'index'])->name('customer.history.index');
+        Route::get('/customer/map', [MapController::class, 'index'])->name('customer.map.index');
 });
 
 //hak akses admin
