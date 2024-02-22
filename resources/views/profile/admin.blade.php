@@ -29,13 +29,23 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex justify-content-center align-items-center flex-column">
-                                <div class="avatar avatar-2xl">
-                                    <img src="https://i0.wp.com/pbs.twimg.com/media/EYFB2FJU0AA4NeQ.jpg " alt="Avatar"
-                                        style="width: 150px; height: 200px;">
+                                <div class="avatar avatar-2xl" style="width: 180px; height: 180px; overflow: hidden; border-radius: 50%;">
+                                    @if(Auth::user()->photo)
+                                        <img src="/photos/{{ Auth::user()->photo }}" style="width: 100%; height: auto;">
+                                    @else
+                                        <img src="{{ asset('images/default.jpg') }}" style="width: 100%; height: auto;">
+                                    @endif
                                 </div>
-
                                 <h3 class="mt-3">{{ $user->name }}</h3>
-                                <p class="text-small">{{ $user->role }}</p>
+                            
+                                <!-- Tombol Hapus Foto -->
+                                @if ($user->photo)
+                                <form action="{{ route('delete.photo') }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger mt-2">Hapus Foto</button>
+                                </form>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -43,30 +53,28 @@
                 <div class="col-12 col-lg-8">
                     <div class="card">
                         <div class="card-body">
-                            <form action="#" method="get">
+                            <form action="{{ route('admin.profile.update', $user->id)}}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
                                 <div class="form-group">
                                     <label for="name" class="form-label">Name</label>
                                     <input type="text" name="name" id="name" class="form-control"
-                                        placeholder="Your Name" value="{{ $user->name }}" fdprocessedid="pczq" readonly>
+                                        placeholder="Your Name" value="{{ $user->name }}" fdprocessedid="pczq">
                                 </div>
                                 <div class="form-group">
                                     <label for="username" class="form-label">Username</label>
                                     <input type="text" name="username" id="username" class="form-control"
-                                        placeholder="Your Username" value="{{ $user->username }}" fdprocessedid="cgz6v">
+                                        placeholder="Your Username" value="{{ $user->username }}" fdprocessedid="cgz6v" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="text" name="email" id="email" class="form-control"
                                         placeholder="Your Email" value="{{ $user->email }}" fdprocessedid="4hujis">
                                 </div>
-                                <form action="/upload" method="post" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label for="profile_picture" class="form-label">Profile Picture</label>
-                                        <input type="file" name="profile_picture" id="profile_picture"
-                                            class="form-control" accept="image/*">
-                                    </div>
-                                </form> 
+                                <div class="form-group">
+                                    <label for="photo" class="form-label">Profile Picture</label>
+                                    <input type="file" name="photo" id="photo" class="form-control" accept="image/*">
+                                </div>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-primary" fdprocessedid="vp6voe">Save
                                         Changes</button>
