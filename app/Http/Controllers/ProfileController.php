@@ -21,41 +21,6 @@ class ProfileController extends Controller
         }
     }
 
-    public function update(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . auth()->id(),
-            'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        $user = Auth::user();
-
-        // Jika ada file foto yang diupload, simpan file tersebut dan update path foto di database
-        if ($request->hasFile('photo')) {
-            
-            $photo = time().'.'.$request->photo->getClientOriginalExtension();
-            $request->photo->move(public_path('photos'), $photo);
-
-            $user->photo = $photo;
-            $user->save();
-
-        }
-
-        // Update data pengguna
-        $user->name = $validatedData['name'];
-        $user->username = $validatedData['email'];
-        $user->email = $validatedData['email'];
-
-        $user->save();
-
-        // Redirect ke halaman profil dengan pesan sukses
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.profile')->with('success', 'Profil berhasil diperbarui!');
-        } else {
-            return redirect()->route('customer.profile')->with('success', 'Profil berhasil diperbarui!');
-        }
-    }
 
     public function deletePhoto(Request $request)
     {
@@ -74,5 +39,4 @@ class ProfileController extends Controller
             return redirect()->route('customer.profile')->with('success', 'Profil berhasil diperbarui!');
         }
     }
-    
 }

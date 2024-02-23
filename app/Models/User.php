@@ -47,6 +47,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
+    protected $dates = [
+        'email_verified_at',
+    ];
+
+
     public function devices()
     {
         return $this->hasMany(Device::class);

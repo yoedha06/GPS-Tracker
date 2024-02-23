@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -82,6 +83,40 @@ class RegisterController extends Controller
 
         Auth::login($user);
     }
+
+    public function update(Request $request)
+    {
+        $user = $request->user(); // Get the authenticated user
+
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            // Add any other validation rules as necessary
+        ]);
+
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->username = $request['email'];
+        // Update other fields as necessary
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+            $user->save();
+            $user->sendEmailVerificationNotification();
+        }
+
+        // Handle photo upload if a file is present
+        if ($request->hasFile('photo')) {
+            $photo = time() . '.' . $request->photo->getClientOriginalExtension();
+            $request->photo->move(public_path('photos'), $photo);
+            $user->photo = $photo;
+        }
+
+        $user->save();
+
+        return redirect()->back()->with('status', 'Profile updated successfully. Please verify your new email address if you changed it.');
+    }
+
     //login setelah registrasi
     public function register(Request $request)
     {
