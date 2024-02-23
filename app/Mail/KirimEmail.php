@@ -5,23 +5,21 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class TestSendEmail extends Mailable
+class KirimEmail extends Mailable
 {
     use Queueable, SerializesModels;
-
-    public $users;
+    public $data_email;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($users)
+    public function __construct($data_email)
     {
-        $this->users = $users;
+        $this->data_email = $data_email;
     }
 
     /**
@@ -30,7 +28,7 @@ class TestSendEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Test Send Email',
+            subject: $this->data_email['subject']
         );
     }
 
@@ -40,7 +38,7 @@ class TestSendEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.test-mail',
+            view: 'auth.passwords.reset'
         );
     }
 
