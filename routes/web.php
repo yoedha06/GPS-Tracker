@@ -31,9 +31,10 @@ use Illuminate\Http\Request;
 */
 
 //bawaan laravel ui
-Auth::routes();
+Auth::routes(['verify' => true]);
 //bawaan laravel
-Route::post('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('verification.resend')->middleware('verified');
+Route::post('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('verification.resend');
+
 //tampilan HOMEPAGE
 Route::get('/', [TampilanController::class, 'homepage'])->name('index.homepage');
 
@@ -49,32 +50,30 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect()->route('login'); // Ubah redirect ini
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-
 //login
 Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
-
 //tampilan login admin
 Route::get('/admin/login', [AdminController::class, 'index'])->name('login.admin');
 //submit login admin
 Route::post('admin/login', [AdminController::class, 'login'])->name('admin.login.submit')->middleware('admin.redirect');
 
 //hak akses customer
-Route::middleware(['auth', 'role:customer'])->group(function () {
-        Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
-        Route::get('/customer/profile',[ProfileController::class, 'index'])->name('customer.profile');
-        Route::get('/history/customer', [HistoryController::class, 'index'])->name('customer.history.index');
-        Route::put('/customer/profile/update', [ProfileController::class, 'update'])->name('customer.profile.update');
-        Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
-        Route::get('/customer/map', [MapController::class, 'index'])->name('customer.map.index');
+Route::middleware(['verified', 'auth', 'role:customer'])->group(function () {
+    Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
+    Route::get('/customer/profile', [ProfileController::class, 'index'])->name('customer.profile');
+    Route::get('/history/customer', [HistoryController::class, 'index'])->name('customer.history.index');
+    Route::put('/customer/profile/update', [ProfileController::class, 'update'])->name('customer.profile.update');
+    Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
+    Route::get('/customer/map', [MapController::class, 'index'])->name('customer.map.index');
 });
 
 //hak akses admin
 Route::middleware(['admin'])->group(function () {
-        Route::get('/admin',[TampilanController::class, 'admin'])->name('index.admin');
-        Route::get('/admin/profile',[ProfileController::class, 'index'])->name('admin.profile');
-        Route::put('/admin/profile/update', [ProfileController::class, 'update'])->name('admin.profile.update');
-        Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
-        Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
+    Route::get('/admin', [TampilanController::class, 'admin'])->name('index.admin');
+    Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
+    Route::put('/admin/profile/update', [ProfileController::class, 'update'])->name('admin.profile.update');
+    Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
+    Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
 });
 
 //logout customer
