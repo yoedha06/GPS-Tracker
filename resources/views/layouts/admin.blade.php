@@ -116,6 +116,12 @@
                                     <span>Data User</span>
                                 </a>
                             </li>
+                            <li class="submenu-item">
+                                <a href="{{ route('admin.device.index') }}">
+                                    <i class="fas fa-user"></i> <!-- Ikon user -->
+                                    <span>Data Device</span>
+                                </a>
+                            </li>
                         </ul>
 
                     </li>

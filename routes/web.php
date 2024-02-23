@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
+use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\KirimEmailController;
@@ -66,6 +67,15 @@ Route::middleware(['verified', 'auth', 'role:customer'])->group(function () {
     Route::put('/customer/profile/update', [AuthRegisterController::class, 'update'])->name('customer.profile.update');
     Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
     Route::get('/customer/map', [MapController::class, 'index'])->name('customer.map.index');
+
+    //device
+    Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
+    Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
+    Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
+    Route::put('/device/{id_device}', [DeviceController::class, 'update'])->name('device.update');
+    Route::delete('/device/{id}', [DeviceController::class, 'destroy'])->name('device.destroy');
+
+
 });
 
 //hak akses admin
@@ -75,6 +85,9 @@ Route::middleware(['verified', 'admin'])->group(function () {
     Route::put('/admin/profile/update', [AuthRegisterController::class, 'update'])->name('admin.profile.update');
     Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
     Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
+
+    //device
+    Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');
 });
 
 
