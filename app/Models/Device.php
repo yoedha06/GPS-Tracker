@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Device extends Model
 {
     use HasFactory;
-    protected $table = "Device";
+    protected $table = "device";
 
     protected $primaryKey = "id_device";
     protected $fillable = ["user_id", "name", "serial_number"];

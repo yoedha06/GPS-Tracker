@@ -67,27 +67,35 @@ class DeviceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request->all()); // Dump request data
         $device = Device::findOrFail($id);
 
         $request->validate([
-            'user_id' => 'required',
             'name' => 'required',
             'serial_number' => 'required|unique:device,serial_number,' . $id . ',id_device',
         ]);
 
         $device->update($request->all());
-        dd('Device updated successfully.');
-
 
         return redirect()->route('customer.device.index')->with('success', 'Device updated successfully.');
     }
 
+
+
     /** 
      * Remove the specified resource from storage.
      */
-    public function destroy(Device $device)
+    public function destroy($id)
     {
-        //
+        $device = Device::findOrFail($id);
+        $device->delete();
+
+        return redirect()->route('customer.device.index')->with('success', 'Device deleted successfully.');
+    }
+
+
+    public function indexadmin()
+    {
+        $device = Device::all();
+        return view('admin.device.index',compact('device'));
     }
 }

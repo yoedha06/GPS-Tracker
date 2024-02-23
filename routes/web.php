@@ -72,7 +72,9 @@ Route::middleware(['verified', 'auth', 'role:customer'])->group(function () {
     Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
     Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
     Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
-    Route::put('/device/{id}', [DeviceController::class, 'update'])->name('device.update');
+    Route::put('/device/{id_device}', [DeviceController::class, 'update'])->name('device.update');
+    Route::delete('/device/{id}', [DeviceController::class, 'destroy'])->name('device.destroy');
+
 
 });
 
@@ -85,7 +87,7 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
 
     //device
-    Route::get('/admin/device', [DeviceController::class, 'index'])->name('admin.device.index');
+    Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');
 });
 
 
