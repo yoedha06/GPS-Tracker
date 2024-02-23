@@ -28,7 +28,7 @@ class KirimEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Kirim Email',
+            subject: $this->data_email['subject']
         );
     }
 
@@ -38,7 +38,7 @@ class KirimEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.KirimEmail',
+            view: 'auth.passwords.reset'
         );
     }
 

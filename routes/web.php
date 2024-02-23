@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\KirimEmailController;
 use App\Http\Controllers\LoginController;
@@ -50,8 +51,19 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 
-//login
-Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
+//login 
+// Define the route for showing the email verification notice
+Route::get('/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
+
+// Define the route for handling the email verification process
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
+
+// Define the route for resending the email verification notification
+Route::post('/email/verification-notification', [VerificationController::class, 'resend'])->name('verification.resend');
+Route::get('/email/verify', function () {
+    return redirect()->route('login');
+})->middleware(['auth', 'verified'])->name('verification.verify');
+
 
 //tampilan login admin
 Route::get('/admin/login', [AdminController::class, 'index'])->name('login.admin');
@@ -81,16 +93,6 @@ Route::middleware(['admin'])->group(function () {
 Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
 Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
-
-
-
-// Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
-// ->middleware('guest')
-// ->name('password.request');
-
-// Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
-// ->middleware('guest')
-// ->name('password.email');
 
 Route::get('kirim', [KirimEmailController::class, 'index']);
 
