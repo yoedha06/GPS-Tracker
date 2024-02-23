@@ -33,13 +33,12 @@ class ProfileController extends Controller
 
         // Jika ada file foto yang diupload, simpan file tersebut dan update path foto di database
         if ($request->hasFile('photo')) {
-            
-            $photo = time().'.'.$request->photo->getClientOriginalExtension();
+
+            $photo = time() . '.' . $request->photo->getClientOriginalExtension();
             $request->photo->move(public_path('photos'), $photo);
 
             $user->photo = $photo;
             $user->save();
-
         }
 
         // Update data pengguna
@@ -74,5 +73,4 @@ class ProfileController extends Controller
             return redirect()->route('customer.profile')->with('success', 'Profil berhasil diperbarui!');
         }
     }
-    
 }
