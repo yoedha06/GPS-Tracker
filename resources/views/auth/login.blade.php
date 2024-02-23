@@ -112,8 +112,8 @@
                             <div class="col-md-6 col-lg-7 d-flex align-items-center">
                                 <div class="card-body">
                                     <div class="logo-container">
-                                        <i class="fas fa-cubes"></i>
-                                        <span class="h1">GPS</span>
+                                        <img src="/images/g.png" alt="Logo" style="width: 130px; height: 100px;">
+                                        <span class="h1">GEEX</span>
                                     </div>
                                     <h5 class="fw-normal mb-3">Sign into your account</h5>
                                     <form method="POST" action="{{ route('login') }}">
@@ -204,18 +204,21 @@
 
         function showForgetPasswordForm() {
             <<
-            << << < HEAD
+            <<
+            << < HEAD
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('forget-password-page').style.display =
                 'block'; // Mengubah nilai display menjadi 'block'
         } ===
-        === =
+        ===
+        =
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('forget-password-page').style.display = 'block'; // Mengubah nilai display menjadi 'block'
         }
 
         >>>
-        >>> > 4 aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
+        >>>
+        > 4 aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">

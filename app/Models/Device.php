@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Device extends Model
 {
     use HasFactory;
+    protected $table = "Device";
     protected $fillable = ["user_id", "name", "serial_number"];
 
     public function user()
@@ -19,4 +20,5 @@ class Device extends Model
     {
         return $this->hasOne(History::class, 'device_id', 'id_device');
     }
+    
 }

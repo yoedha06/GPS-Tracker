@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
+use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MapController;
@@ -66,6 +67,12 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
         Route::put('/customer/profile/update', [ProfileController::class, 'update'])->name('customer.profile.update');
         Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
         Route::get('/customer/map', [MapController::class, 'index'])->name('customer.map.index');
+      
+        //device
+        Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
+        Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
+        Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
+        Route::put('/device/{id}', [DeviceController::class, 'update'])->name('device.update');
 });
 
 //hak akses admin
