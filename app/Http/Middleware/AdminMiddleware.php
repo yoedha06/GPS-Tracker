@@ -20,8 +20,12 @@ class AdminMiddleware
         if (Auth::check() && Auth::user()->role === 'admin') {
             return $next($request);
         }
-        
-        return redirect()->route('login.admin');
 
+        if (Auth::guest()) {
+            return redirect()->route('login.admin');
+        }
+        
+        abort(403, 'Forbidden');
+        
     }
 }

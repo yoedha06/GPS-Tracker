@@ -78,8 +78,10 @@ Route::middleware(['verified', 'admin'])->group(function () {
 });
 
 
-Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
+//logout customer
+Route::post('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
+//logout admin
 Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
 
 

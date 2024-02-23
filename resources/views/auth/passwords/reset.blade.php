@@ -17,7 +17,7 @@
 
         .card {
             border-radius: 1rem;
-            margin-top: 100px;
+            margin-top: 55px;
         }
 
         .card-body {
@@ -56,10 +56,9 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="logo-container text-center">
-                            <i class="fas fa-cubes fa-2x"></i>
-                            <span class="h1">GPS</span>
+                            <img src="{{ asset('images/geex.png') }}" style="width:200px;height:160px;" alt="">
                         </div>
-                        <h5 class="fw-normal mb-3 text-center">Reset Password</h5>
+                        <h5 class="fw-normal mb-3 text-center">New Password</h5>
                         <form method="POST" action="{{ route('password.update') }}">
                             @csrf
 
