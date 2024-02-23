@@ -99,16 +99,23 @@ class RegisterController extends Controller
         $user->username = $request['email'];
         // Update other fields as necessary
 
-        if ($user->isDirty('email')) { // Check if the email has been changed
-            $user->email_verified_at = null; // Reset the email verification timestamp
-            $user->sendEmailVerificationNotification(); // Trigger the email verification notification
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+            $user->save();
+            $user->sendEmailVerificationNotification();
+        }
+
+        // Handle photo upload if a file is present
+        if ($request->hasFile('photo')) {
+            $photo = time() . '.' . $request->photo->getClientOriginalExtension();
+            $request->photo->move(public_path('photos'), $photo);
+            $user->photo = $photo;
         }
 
         $user->save();
 
         return redirect()->back()->with('status', 'Profile updated successfully. Please verify your new email address if you changed it.');
     }
-
 
     //login setelah registrasi
     public function register(Request $request)
