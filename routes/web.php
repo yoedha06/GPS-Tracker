@@ -1,12 +1,12 @@
 <?php
-
-
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\KirimEmailController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\RegisterController;
@@ -32,9 +32,10 @@ use Illuminate\Http\Request;
 */
 
 //bawaan laravel ui
-Auth::routes();
+Auth::routes(['verify' => true]);
 //bawaan laravel
-Route::post('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('verification.resend')->middleware('verified');
+Route::post('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('verification.resend');
+
 //tampilan HOMEPAGE
 Route::get('/', [TampilanController::class, 'homepage'])->name('index.homepage');
 
@@ -50,58 +51,56 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect()->route('login'); // Ubah redirect ini
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-
 //login
 Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
-
 //tampilan login admin
 Route::get('/admin/login', [AdminController::class, 'index'])->name('login.admin');
 //submit login admin
 Route::post('admin/login', [AdminController::class, 'login'])->name('admin.login.submit')->middleware('admin.redirect');
 
 //hak akses customer
-Route::middleware(['auth', 'role:customer'])->group(function () {
-        Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
-        Route::get('/customer/profile',[ProfileController::class, 'index'])->name('customer.profile');
-        Route::get('/history/customer', [HistoryController::class, 'index'])->name('customer.history.index');
-        Route::put('/customer/profile/update', [ProfileController::class, 'update'])->name('customer.profile.update');
-        Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
-        Route::get('/customer/map', [MapController::class, 'index'])->name('customer.map.index');
-      
-        //device
-        Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
-        Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
-        Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
-        Route::put('/device/{id}', [DeviceController::class, 'update'])->name('device.update');
+Route::middleware(['verified', 'auth', 'role:customer'])->group(function () {
+    Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
+    Route::get('/customer/profile', [ProfileController::class, 'index'])->name('customer.profile');
+    Route::get('/history/customer', [HistoryController::class, 'index'])->name('customer.history.index');
+    Route::put('/customer/profile/update', [ProfileController::class, 'update'])->name('customer.profile.update');
+    Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
+    Route::get('/customer/map', [MapController::class, 'index'])->name('customer.map.index');
+
+    //device
+    Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
+    Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
+    Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
+    Route::put('/device/{id}', [DeviceController::class, 'update'])->name('device.update');
+
 });
 
 //hak akses admin
 Route::middleware(['admin'])->group(function () {
-        Route::get('/admin',[TampilanController::class, 'admin'])->name('index.admin');
-        Route::get('/admin/profile',[ProfileController::class, 'index'])->name('admin.profile');
-        Route::put('/admin/profile/update', [ProfileController::class, 'update'])->name('admin.profile.update');
-        Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
-        Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
+    Route::get('/admin', [TampilanController::class, 'admin'])->name('index.admin');
+    Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
+    Route::put('/admin/profile/update', [ProfileController::class, 'update'])->name('admin.profile.update');
+    Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
+    Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
 });
 
-//logout customer
+
 Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
 Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
 
-Route::get('/send-email', [SendEmailController::class, 'index']);
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
 
-Route::post('/forgot-password', function (Request $request) {
-    $request->validate(['email' => 'required:email']);
 
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
+// Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+// ->middleware('guest')
+// ->name('password.request');
 
-    return $status === Password::RESET_LINK_SENT
-        ? back()->with(['status' => _($status)])
-        : back()->withErrors(['email' => ($status)]);
-})->middleware('guest')->name('password.email');
+// Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+// ->middleware('guest')
+// ->name('password.email');
+
+Route::get('kirim', [KirimEmailController::class, 'index']);
+
+
+
+
