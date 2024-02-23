@@ -8,13 +8,20 @@
                     <div class="card-header">{{ __('Dashboard') }}</div>
 
                     <div class="card-body">
-                        @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
+
+                        @if ($message = session('success'))
+                            <div class="alert alert-primary d-flex align-items-center" role="alert">
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img"
+                                    aria-label="Info:">
+                                    <use xlink:href="#info-fill" />
+                                </svg>
+                                <div>
+                                    {{ $message }}
+                                </div>
                             </div>
                         @endif
-
-                        {{ __('You are logged in!') }}
+                        <a href="{{ route('index.customer') }}" class="btn btn-dark mb-3"> Masuk
+                        </a>
                     </div>
                 </div>
             </div>

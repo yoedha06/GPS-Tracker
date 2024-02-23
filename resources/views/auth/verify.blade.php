@@ -32,10 +32,8 @@
                         <p style="font-size: 18px;">{{ __('If you did not receive the email') }},</p>
                         <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
                             @csrf
-                            <button type="submit"
-                                class="btn btn-link p-0 m-0 align-baseline" style="font-size: 18px;">{{ __('click here to request another') }}</button>.
+                            <a href="https://www.gmail.com">Visit Gmail</a>
                         </form>
-
                     </div>
                 </div>
             </div>
