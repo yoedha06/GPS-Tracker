@@ -203,19 +203,9 @@
         }
 
         function showForgetPasswordForm() {
-            <<
-            << << < HEAD
-            document.getElementById('login-page').style.display = 'none';
-            document.getElementById('forget-password-page').style.display =
-                'block'; // Mengubah nilai display menjadi 'block'
-        } ===
-        === =
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('forget-password-page').style.display = 'block'; // Mengubah nilai display menjadi 'block'
+    document.getElementById('login-page').style.display = 'none';
+    window.location.href = "{{ route('password.request') }}";
         }
-
-        >>>
-        >>> > 4 aed63c0ceb57ae1981213c1fe1ce6cb617ef11f
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
