@@ -8,35 +8,42 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <style>
-        body {
-            background-color: whitesmoke;
-            overflow: hidden;
-        }
-
-        .card {
-            border-radius: 1rem;
-        }
-
-        .card-header {
-            background-color: #393f81;
-            color: #fff;
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-
-        .btn-primary {
-            background-color: #393f81;
-            border-color: #393f81;
-        }
-
-        .btn-primary:hover {
-            background-color: #2b2f5c;
-            border-color: #2b2f5c;
-        }
-    </style>
+        <style>
+            body {
+                background-color: whitesmoke;
+                overflow: hidden;
+                height: 100vh; /* Tambahkan */
+                display: flex; /* Tambahkan */
+                align-items: center; /* Tambahkan */
+                justify-content: center; /* Tambahkan */
+            }
+        
+            .card {
+                border-radius: 1rem;
+                width: 100%; /* Tambahkan */
+                max-width: 800px; /* Tambahkan */
+            }
+        
+            .card-header {
+                background-color: #393f81;
+                color: #fff;
+            }
+        
+            .card-body {
+                padding: 2rem;
+            }
+        
+            .btn-primary {
+                background-color: #393f81;
+                border-color: #393f81;
+            }
+        
+            .btn-primary:hover {
+                background-color: #2b2f5c;
+                border-color: #2b2f5c;
+            }
+        </style>
+        
 </head>
 
 <body>
