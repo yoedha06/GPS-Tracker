@@ -82,6 +82,9 @@ Route::middleware(['admin'])->group(function () {
     Route::put('/admin/profile/update', [ProfileController::class, 'update'])->name('admin.profile.update');
     Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
     Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
+
+    //device
+    Route::get('/admin/device', [DeviceController::class, 'index'])->name('admin.device.index');
 });
 
 
