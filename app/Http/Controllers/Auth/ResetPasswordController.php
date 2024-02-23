@@ -27,7 +27,7 @@ class ResetPasswordController extends Controller
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
+            'password' => 'required|min:4|confirmed',
         ]);
 
         $status = Password::reset(
@@ -40,7 +40,7 @@ class ResetPasswordController extends Controller
         );
 
         if ($status == Password::PASSWORD_RESET) {
-            return redirect('/login')->with('success', 'Password telah diganti,silahkan login kembali');
+            return redirect('/login')->with('success', 'Password has been changed, please login again');
         } else {
             return back()->withInput()->withErrors(['email' => __($status)]);
         }

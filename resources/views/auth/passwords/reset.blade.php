@@ -80,7 +80,7 @@
                                 <label for="password" class="form-label">Password</label>
                                 <input id="password" type="password"
                                     class="form-control @error('password') is-invalid @enderror" name="password"
-                                    required autocomplete="new-password">
+                                    required autocomplete="new-password"> <!-- Tambahkan atribut minlength="4" untuk membatasi minimal 4 karakter -->
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
