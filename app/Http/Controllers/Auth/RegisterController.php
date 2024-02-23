@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -82,6 +83,33 @@ class RegisterController extends Controller
 
         Auth::login($user);
     }
+
+    public function update(Request $request)
+    {
+        $user = $request->user(); // Get the authenticated user
+
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            // Add any other validation rules as necessary
+        ]);
+
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->username = $request['email'];
+        // Update other fields as necessary
+
+        if ($user->isDirty('email')) { // Check if the email has been changed
+            $user->email_verified_at = null; // Reset the email verification timestamp
+            $user->sendEmailVerificationNotification(); // Trigger the email verification notification
+        }
+
+        $user->save();
+
+        return redirect()->back()->with('status', 'Profile updated successfully. Please verify your new email address if you changed it.');
+    }
+
+
     //login setelah registrasi
     public function register(Request $request)
     {
