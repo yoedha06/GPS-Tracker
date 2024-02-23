@@ -49,7 +49,7 @@
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->role }}</td>
                             <td>
-                                @if($user->is_verified)
+                                @if($user->email_verified_at)
                                     <span style="color: green;">Verified</span>
                                 @else
                                     <span style="color: red;">Not Verified</span>
