@@ -107,10 +107,6 @@
                         <span>Maps</span>
                     </a>
                     <li class="sidebar-item  has-sub">
-
-
-
-
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-bar-chart-fill"></i>
                             <span>Users</span>
@@ -119,25 +115,8 @@
                             <li class="submenu-item ">
                                 <a href="/history/customer"><i class="bi bi-clock-fill"></i> History</a>
                             </li>
-                            <li class="submenu-item">
-                                <a href=""><i class="bi bi-tablet-fill"></i> Device</a>
-                            <li class="sidebar-item  has-sub">
-                                <a href="#" class='sidebar-link'>
-                                    <i class="bi bi-map-fill"></i>
-                                    <span>Maps</span>
-                                </a>
-                                <ul class="submenu ">
-                                    <li class="submenu-item ">
-                                        <a href="/history/customer">History</a>
-                                    </li>
-                                    <li class="submenu-item">
-                                        <a href="">Device</a>
-                                    </li>
-
-                                    <li class="submenu-item ">
-                                        <a href="ui-map-jsvectormap.html">JS Vector Map</a>
-                                    </li>
-                                </ul>
+                            <li class="submenu-item ">
+                                <a href="/customer/device"><i class="fas fa-tablet"></i> Device</a>
                             </li>
                     </li>
                 </ul>
@@ -150,6 +129,7 @@
 </body>
 <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
 <script src="{{ asset('template/assets/js/app.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Need: Apexcharts -->
@@ -162,6 +142,23 @@
             document.getElementById('splash-screen').style.display = 'none';
             document.body.style.overflow = 'auto';
         }, 1000);
+    });
+    $(document).ready(function () {
+        $('#selectUser').change(function () {
+            var userId = $(this).val();
+
+            // Use Ajax to update the table based on the selected user
+            $.ajax({
+                url: '/admin/device/' + userId, // Update the URL based on your Laravel routes
+                type: 'GET',
+                success: function (data) {
+                    $('#table1 tbody').html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
     });
 </script>
 </body>

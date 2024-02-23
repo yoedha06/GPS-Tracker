@@ -11,7 +11,7 @@
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="/customer">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">History</li>
+                                <li class="breadcrumb-item active" aria-current="page">Data Device</li>
                             </ol>
                         </nav>
                     </div>
@@ -23,7 +23,7 @@
             <div class="page-title">
                 <div class="row">
                     <div class="col-12 col-md-6 order-md-1 order-last">
-                        <h3>History</h3>
+                        <h3>Device</h3>
                     </div>
                 </div>
             </div>
@@ -31,34 +31,28 @@
 
         <section class="section">
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Data History</h4>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title">Device User</h4>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1" style="table-layout: auto">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>latlng</th>
-                                <th>bounds</th>
-                                <th>accuracy</th>
-                                <th>altitude</th>
-                                <th>altitude_acuracy</th>
-                                <th>heading</th>
-                                <th>speeds</th>
+                                <th>Name</th>
+                                <th>Name</th>
+                                <th>Serial Number</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($history as $h)
+                            @foreach ($device as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $h->latlng }}</td>
-                                    <td>{{ $h->bounds }}</td>
-                                    <td>{{ $h->accuracy }}</td>
-                                    <td>{{ $h->altitude }}</td>
-                                    <td>{{ $h->altitude_acuracy }}</td>
-                                    <td>{{ $h->heading }}</td>
-                                    <td>{{ $h->speeds }}</td>
+                                    <td>{{ optional($item->user)->name }}</td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>{{ $item->serial_number }}</td>
+                                    <td>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -66,7 +60,6 @@
                 </div>
             </div>
         </section>
-
         <footer>
             <div class="footer clearfix mb-0 text-muted">
                 <div class="float-start">

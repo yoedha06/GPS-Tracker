@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Device extends Model
 {
     use HasFactory;
+    protected $table = "device";
+
+    protected $primaryKey = "id_device";
     protected $fillable = ["user_id", "name", "serial_number"];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function history()
