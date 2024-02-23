@@ -72,7 +72,7 @@
             </div>
         </section>
 
-        <!-- ADD Device Modals -->
+        <!-- ADD Device Modalss -->
         <div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
