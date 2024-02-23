@@ -21,11 +21,11 @@
         }
 
         .card-body {
-            padding: 4rem 2rem;
+            padding: 2rem;
         }
 
-        .form-outline {
-            margin-bottom: 1.5rem;
+        .logo-container {
+            margin-bottom: 2rem;
         }
 
         .btn-primary {
@@ -38,12 +38,13 @@
             border-color: #2b2f5c;
         }
 
-        .text-muted {
-            color: #6c757d;
+        .form-label {
+            margin-bottom: 0.5rem;
         }
 
-        .mb-5 {
-            margin-bottom: 3rem !important;
+        .invalid-feedback {
+            display: block;
+            margin-top: 0.25rem;
         }
     </style>
 </head>
@@ -54,8 +55,8 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <div class="logo-container text-center mb-5">
-                            <i class="fas fa-cubes"></i>
+                        <div class="logo-container text-center">
+                            <i class="fas fa-cubes fa-2x"></i>
                             <span class="h1">GPS</span>
                         </div>
                         <h5 class="fw-normal mb-3 text-center">Reset Password</h5>
@@ -68,7 +69,7 @@
                                 <label for="email" class="form-label">Email Address</label>
                                 <input id="email" type="email"
                                     class="form-control @error('email') is-invalid @enderror" name="email"
-                                    value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
+                                    value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus readonly>
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
