@@ -79,10 +79,10 @@ Route::middleware(['verified', 'auth', 'role:customer'])->group(function () {
 });
 
 //hak akses admin
-Route::middleware(['admin'])->group(function () {
+Route::middleware(['verified', 'admin'])->group(function () {
     Route::get('/admin', [TampilanController::class, 'admin'])->name('index.admin');
     Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
-    Route::put('/admin/profile/update', [ProfileController::class, 'update'])->name('admin.profile.update');
+    Route::put('/admin/profile/update', [AuthRegisterController::class, 'update'])->name('admin.profile.update');
     Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
     Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
 
@@ -91,8 +91,10 @@ Route::middleware(['admin'])->group(function () {
 });
 
 
-Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
+//logout customer
+Route::post('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
+//logout admin
 Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
 
 
