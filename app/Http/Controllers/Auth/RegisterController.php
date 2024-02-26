@@ -81,7 +81,25 @@ class RegisterController extends Controller
         ]);
         event(new Registered($user));
 
+        // Comment out or remove the line that logs in the user immediately after registration
         Auth::login($user);
+
+        // Redirect the user to the verification page instead
+        return redirect()->route('verification.notice');
+    }
+
+    //login setelah registrasi
+    public function register(Request $request)
+    {
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $this->create($request->all());
+
+        return redirect()->route('login')->with('success', 'Registration successful. Please login.');
     }
 
     public function update(Request $request)
@@ -115,19 +133,5 @@ class RegisterController extends Controller
         $user->save();
 
         return redirect()->back()->with('status', 'Profile updated successfully. Please verify your new email address if you changed it.');
-    }
-
-    //login setelah registrasi
-    public function register(Request $request)
-    {
-        $validator = $this->validator($request->all());
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $this->create($request->all());
-
-        return redirect()->route('login')->with('success', 'Registration successful. Please login.');
     }
 }
