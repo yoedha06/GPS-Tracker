@@ -74,7 +74,7 @@ class LoginController extends Controller
 
             // For admin users, redirect to the main dashboard
             if ($user->role == 'admin') {
-                return redirect()->route('main.dashboard');
+                return redirect()->route('index.admix');
             } else {
                 // For non-admin users, redirect to the home page or any other intended route
                 return redirect()->intended('/home');
