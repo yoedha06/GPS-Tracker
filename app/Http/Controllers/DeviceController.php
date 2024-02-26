@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -93,9 +94,19 @@ class DeviceController extends Controller
     }
 
 
-    public function indexadmin()
+    public function indexadmin(Request $request)
     {
-        $device = Device::all();
-        return view('admin.device.index',compact('device'));
+        $users = User::all();
+        $userId = $request->input('user');
+
+        if ($userId) {
+            $device = Device::whereHas('user', function ($query) use ($userId) {
+                $query->where('id', $userId);
+            })->get();
+        } else {
+            $device = Device::all();
+        }
+
+        return view('admin.device.index', compact('device', 'users'));
     }
 }

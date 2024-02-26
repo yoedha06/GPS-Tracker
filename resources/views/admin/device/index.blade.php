@@ -1,22 +1,9 @@
-@extends('layouts.customer')
+@extends('layouts.admin')
 
 @section('content')
     <div id="main">
         <div class="page-heading">
-            <div class="page-title">
-                <div class="row">
-                    <div class="col-12 col-md-6 order-md-1 order-last">
-                    </div>
-                    <div class="col-12 col-md-6 order-md-2 order-first">
-                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/customer">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Data Device</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
-            </div>
+            <!-- ... (kode sebelumnya) ... -->
         </div>
 
         <div class="page-heading">
@@ -27,6 +14,19 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="user_filter" class="form-label">Filter by User:</label>
+            <select class="form-select" id="user_filter" name="user_filter">
+                <option value="">All Users</option>
+                @foreach ($users as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                @endforeach
+            </select>
+            <button class="btn btn-primary mt-2" onclick="applyFilter()">
+                <i class="fas fa-filter"></i> Apply Filter
+            </button>
         </div>
 
         <section class="section">
@@ -40,7 +40,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Name</th>
-                                <th>Name</th>
+                                <th>Device</th>
                                 <th>Serial Number</th>
                             </tr>
                         </thead>
@@ -70,4 +70,11 @@
             </div>
         </footer>
     </div>
+
+    <script>
+        function applyFilter() {
+            var userId = document.getElementById('user_filter').value;
+            window.location.href = '{{ route('admin.device.index') }}' + (userId ? '?user=' + userId : '');
+        }
+    </script>
 @endsection

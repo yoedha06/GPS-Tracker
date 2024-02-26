@@ -102,11 +102,22 @@
                         </a>
                     </li>
                     <br>
-                    <a href="/customer/map" class='sidebar-link'>
+                    <a href="/customer/map" class="sidebar-link">
                         <i class="bi bi-map-fill"></i>
                         <span>Maps</span>
                     </a>
-                    <li class="sidebar-item  has-sub">
+
+                    <a href="/history/customer" class="sidebar-link">
+                        <i class="bi bi-clock-fill"></i>
+                        <span>History</span>
+                    </a>
+
+                    <a href="/customer/device" class="sidebar-link">
+                        <i class="fas fa-tablet"></i>
+                        <span>Device</span>
+                    </a>
+
+                    {{-- <li class="sidebar-item  has-sub">
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-bar-chart-fill"></i>
                             <span>Users</span>
@@ -118,7 +129,7 @@
                             <li class="submenu-item ">
                                 <a href="/customer/device"><i class="fas fa-tablet"></i> Device</a>
                             </li>
-                    </li>
+                    </li> --}}
                 </ul>
                 </li>
                 </li>
@@ -143,18 +154,18 @@
             document.body.style.overflow = 'auto';
         }, 1000);
     });
-    $(document).ready(function () {
-        $('#selectUser').change(function () {
+    $(document).ready(function() {
+        $('#selectUser').change(function() {
             var userId = $(this).val();
 
             // Use Ajax to update the table based on the selected user
             $.ajax({
                 url: '/admin/device/' + userId, // Update the URL based on your Laravel routes
                 type: 'GET',
-                success: function (data) {
+                success: function(data) {
                     $('#table1 tbody').html(data);
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.error(xhr.responseText);
                 }
             });
