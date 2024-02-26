@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,12 +15,14 @@
     <link href="/images/geex.png" rel="icon">
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
 </head>
+
 <body>
     <div class="container">
         <div class="row justify-content-center mt-5">
             <div class="col-md-8">
                 <div class="card p-4" style="border-radius: 10px;">
-                    <div class="card-header text-center" style="font-size: 24px; background-color: #f8f9fa;">{{ __('Verify Your Email Address') }}</div>
+                    <div class="card-header text-center" style="font-size: 24px; background-color: #f8f9fa;">
+                        {{ __('Verify Your Email Address') }}</div>
 
                     <div class="card-body">
                         @if (session('resent'))
@@ -28,12 +31,21 @@
                             </div>
                         @endif
 
-                        <p style="font-size: 18px;">{{ __('Before proceeding, please check your email for a verification link.') }}</p>
-                        <p style="font-size: 18px;">{{ __('If you did not receive the email') }},</p>
+                        <p style="font-size: 18px;">
+                            {{ __('Masuk ke dalam Gmail.com.') }}</p>
                         <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
                             @csrf
                             <a href="https://www.gmail.com">Visit Gmail</a>
                         </form>
+                        <p style="font-size: 18px;">
+                            {{ __('Kirim ulang Email Verfikasi.') }}</p>
+                        {{-- <p style="font-size: 18px;">{{ __('If you did not receive the email') }},</p> --}}
+                        <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
+                            @csrf
+                            <button type="submit"
+                                class="btn btn-link p-0 m-0 align-baseline">{{ __('click here to request another') }}</button>
+                        </form>
+
                     </div>
                 </div>
             </div>
@@ -47,4 +59,5 @@
     <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script>
 </body>
+
 </html>
