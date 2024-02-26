@@ -10,14 +10,18 @@ class KirimEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $subject = "Contoh Email dengan Lampiran";
+
+    public $attachmentPath;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($attachmentPath)
     {
-        //
+        $this->attachmentPath = $attachmentPath;
     }
 
     /**
@@ -27,6 +31,10 @@ class KirimEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('mail.KirimEmail');
+        return $this->view('emails.example')
+                    ->attach($this->attachmentPath, [
+                        'as' => 'logo.png',
+                        'mime' => 'image/png',
+                    ]);
     }
 }

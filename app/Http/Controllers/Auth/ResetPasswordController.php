@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\KirimEmail;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 
 class ResetPasswordController extends Controller
@@ -12,6 +14,7 @@ class ResetPasswordController extends Controller
     use ResetsPasswords;
 
     protected $redirectTo = '/login';
+
 
     // Menampilkan form reset password
     public function showResetForm(Request $request, $token = null)
