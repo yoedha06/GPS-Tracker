@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
+
 
 class LoginController extends Controller
 {
@@ -46,6 +47,28 @@ class LoginController extends Controller
         $registered_email = session('registered_email');
 
         return view('auth.login', compact('registered_email'));
+    }
+
+    public function login(Request $request)
+    {
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        $credentials = [
+            'email' => $email,
+            'password' => $password
+        ];
+
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            if ($user->role == 'admin') {
+                return redirect()->intended('/admin');
+            } else {
+                return redirect()->intended('/customer');
+            }
+        }
+
+        return redirect('/login')->with('error', 'Invalid credentials');
     }
 
 
