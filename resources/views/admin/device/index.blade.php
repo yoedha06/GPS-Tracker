@@ -21,13 +21,16 @@
             <select class="form-select" id="user_filter" name="user_filter">
                 <option value="">All Users</option>
                 @foreach ($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    @if ($user->role === 'customer')
+                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    @endif
                 @endforeach
             </select>
             <button class="btn btn-primary mt-2" onclick="applyFilter()">
                 <i class="fas fa-filter"></i> Apply Filter
             </button>
         </div>
+        
 
         <section class="section">
             <div class="card">
