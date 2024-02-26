@@ -105,15 +105,14 @@
                     <div class="card">
                         <div class="row g-0">
                             <div class="col-md-6 col-lg-5 d-none d-md-block">
-                                <div class="img-container" style="margin-top: 100px; border-radius:50%">
-                                    <img src="/images/gps.png" alt="login form" class="img-fluid" />
+                                <div class="img-container" style="margin-top: 100px;">
+                                    <img src="/images/g.png" alt="login form" class="img-fluid" />
                                 </div>
                             </div>
                             <div class="col-md-6 col-lg-7 d-flex align-items-center">
                                 <div class="card-body">
                                     <div class="logo-container">
-                                        <i class="fas fa-cubes"></i>
-                                        <span class="h1">GPS</span>
+                                        <span class="h1">GEEX</span>
                                     </div>
                                     <h5 class="fw-normal mb-3">Sign into your account</h5>
                                     <form method="POST" action="{{ route('login') }}">

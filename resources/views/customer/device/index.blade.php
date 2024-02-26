@@ -55,7 +55,7 @@
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->serial_number }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#editDeviceModal{{ $item->id_device }}">
                                             <i class="bi bi-pencil"></i>
                                         </button>

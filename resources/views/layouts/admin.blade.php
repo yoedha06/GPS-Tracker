@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 
     <link href="/images/geex.png" rel="icon">
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
@@ -107,7 +108,7 @@
                     <li class="sidebar-item  has-sub">
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-stack"></i>
-                            <span>Components</span>
+                            <span>Users</span>
                         </a>
                         <ul class="submenu">
                             <li class="submenu-item">
@@ -118,7 +119,7 @@
                             </li>
                             <li class="submenu-item">
                                 <a href="{{ route('admin.device.index') }}">
-                                    <i class="fas fa-user"></i> <!-- Ikon user -->
+                                    <i class="fas fa-laptop-code"></i> <!-- Ikon user -->
                                     <span>Data Device</span>
                                 </a>
                             </li>
