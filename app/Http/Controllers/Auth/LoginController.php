@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 
+
 class LoginController extends Controller
 {
     /*
@@ -61,16 +62,27 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+
+            // Check if the user's email is verified
+            if (!$user->hasVerifiedEmail()) {
+                // If the email is not verified, send a verification email
+                $user->sendEmailVerificationNotification();
+
+                // Optionally, redirect to a custom page to inform the user to check their email
+                return redirect('/email/verify')->with('status', 'A verification link has been sent to your email address.');
+            }
+
+            // For admin users, redirect to the main dashboard
             if ($user->role == 'admin') {
-                return redirect()->intended('/admin');
+                return redirect()->route('main.dashboard');
             } else {
-                return redirect()->intended('/customer');
+                // For non-admin users, redirect to the home page or any other intended route
+                return redirect()->intended('/home');
             }
         }
 
         return redirect('/login')->with('error', 'Invalid credentials');
     }
-
 
     public function logout(Request $request)
     {
