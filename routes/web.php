@@ -1,24 +1,18 @@
 <?php
-use App\Http\Controllers\AdminController;
+
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\DeviceController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\KirimEmailController;
-use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MapController;
-use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\TampilanController;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 
 
 /*
@@ -49,7 +43,7 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect()->route('login'); // Ubah redirect ini
+    return redirect()->route('login'); // Or any route you want to redirect to after verification
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 //login
@@ -76,10 +70,9 @@ Route::middleware(['verified', 'auth'])->group(function () {
         Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
         Route::put('/device/{id_device}', [DeviceController::class, 'update'])->name('device.update');
         Route::delete('/device/{id}', [DeviceController::class, 'destroy'])->name('device.destroy');
-
     });
 
-    Route::middleware(['role:admin'])->group(function() {
+    Route::middleware(['role:admin'])->group(function () {
         Route::get('/admin', [TampilanController::class, 'admin'])->name('index.admin');
         Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
         Route::put('/admin/profile/update', [AuthRegisterController::class, 'update'])->name('admin.profile.update');
@@ -108,7 +101,3 @@ Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 // ->name('password.email');
 
 Route::get('kirim', [KirimEmailController::class, 'index']);
-
-
-
-

@@ -20,9 +20,9 @@ class RedirectIfAuthenticated
         if (Auth::guard($guard)->check()) {
             $user = Auth::user();
             if ($user->role == 'admin') {
-                return redirect('index.admin');
+                return redirect('admin');
             } else {
-                return redirect('index.customer');
+                return redirect('customer');
             }
         }
 
