@@ -63,8 +63,8 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="username" class="form-label">Username</label>
-                                    <input type="text" name="username" id="username" class="form-control"
+                                    <label class="form-label">Username</label>
+                                    <input type="text" name="username" class="form-control"
                                         placeholder="Your Username" value="{{ $user->username }}" fdprocessedid="cgz6v" style="background-color: #f8f8f8;" readonly>
                                 </div>
 

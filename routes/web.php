@@ -54,48 +54,48 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
 //login
 Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
-//tampilan login admin
-Route::get('/admin/login', [AdminController::class, 'index'])->name('login.admin');
-//submit login admin
-Route::post('admin/login', [AdminController::class, 'login'])->name('admin.login.submit')->middleware('admin.redirect');
+Route::post('/login', [AuthLoginController::class, 'login']);
+// //tampilan login admin
+// Route::get('/admin/login', [AdminController::class, 'index'])->name('login.admin');
+// //submit login admin
+// Route::post('admin/login', [AdminController::class, 'login'])->name('admin.login.submit')->middleware('admin.redirect');
 
-//hak akses customer
-Route::middleware(['verified', 'auth', 'role:customer'])->group(function () {
-    Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
-    Route::get('/customer/profile', [ProfileController::class, 'index'])->name('customer.profile');
-    Route::get('/history/customer', [HistoryController::class, 'index'])->name('customer.history.index');
-    Route::put('/customer/profile/update', [AuthRegisterController::class, 'update'])->name('customer.profile.update');
-    Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
-    Route::get('/customer/map', [MapController::class, 'index'])->name('customer.map.index');
+//hak akses
+Route::middleware(['verified', 'auth'])->group(function () {
+    Route::middleware(['role:customer'])->group(function () {
+        Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
+        Route::get('/customer/profile', [ProfileController::class, 'index'])->name('customer.profile');
+        Route::get('/history/customer', [HistoryController::class, 'index'])->name('customer.history.index');
+        Route::put('/customer/profile/update', [AuthRegisterController::class, 'update'])->name('customer.profile.update');
+        Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
+        Route::get('/customer/map', [MapController::class, 'index'])->name('customer.map.index');
 
-    //device
-    Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
-    Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
-    Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
-    Route::put('/device/{id_device}', [DeviceController::class, 'update'])->name('device.update');
-    Route::delete('/device/{id}', [DeviceController::class, 'destroy'])->name('device.destroy');
+        //device
+        Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
+        Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
+        Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
+        Route::put('/device/{id_device}', [DeviceController::class, 'update'])->name('device.update');
+        Route::delete('/device/{id}', [DeviceController::class, 'destroy'])->name('device.destroy');
 
+    });
 
+    Route::middleware(['role:admin'])->group(function() {
+        Route::get('/admin', [TampilanController::class, 'admin'])->name('index.admin');
+        Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
+        Route::put('/admin/profile/update', [AuthRegisterController::class, 'update'])->name('admin.profile.update');
+        Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
+        Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
+
+        //device
+        Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');
+    });
 });
-
-//hak akses admin
-Route::middleware(['verified', 'admin'])->group(function () {
-    Route::get('/admin', [TampilanController::class, 'admin'])->name('index.admin');
-    Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
-    Route::put('/admin/profile/update', [AuthRegisterController::class, 'update'])->name('admin.profile.update');
-    Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
-    Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
-
-    //device
-    Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');
-});
-
 
 //logout customer
-Route::post('/logout', [AuthLoginController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
-//logout admin
-Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
+// //logout admin
+// Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
 
 
 
