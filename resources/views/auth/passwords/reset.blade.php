@@ -68,13 +68,14 @@
                                 <label for="email" class="form-label">Email Address</label>
                                 <input id="email" type="email"
                                     class="form-control @error('email') is-invalid @enderror" name="email"
-                                    value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus readonly>
+                                    value="{{ $email }}" required autocomplete="email" autofocus readonly>
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
                             </div>
+
 
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>

@@ -29,4 +29,5 @@ class KirimEmail extends Mailable
     {
         return $this->view('mail.KirimEmail');
     }
+
 }

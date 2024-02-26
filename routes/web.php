@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\KirimEmailController;
@@ -96,8 +97,6 @@ Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 // ->middleware('guest')
 // ->name('password.request');
 
-// Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
-// ->middleware('guest')
-// ->name('password.email');
+Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 
 Route::get('kirim', [KirimEmailController::class, 'index']);
