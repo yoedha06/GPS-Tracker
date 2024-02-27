@@ -119,18 +119,22 @@
                                         @csrf
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="email">Email address</label>
-                                            <input id="email" type="email"
-                                                class="form-control @error('email') is-invalid @enderror" name="email"
-                                                value="{{ $registered_email ?? old('email') }}" required
-                                                autocomplete="email" autofocus>
+                                            <input id="email" type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" name="email"
+                                                value="{{ $registered_email ?? old('email') }}"  value="{{ old('email') }}" required>
+                                                @error('email')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
                                         </div>
+
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="password">Password</label>
                                             <div class="input-group"> <!-- Tambahkan input-group di sini -->
                                                 <input type="password" id="password" class="form-control form-control-lg" name="password" />
                                                 <button type="button" class="btn btn-outline-dark" id="showPasswordBtn"><i class="fas fa-eye"></i></button>
                                             </div>
+
                                         </div>
+
                                         <div class="pt-1 mb-4">
                                             <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
                                         </div>

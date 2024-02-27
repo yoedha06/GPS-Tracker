@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
+use App\Http\Controllers\Auth\VerificationController as AuthVerificationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HistoryController;
@@ -30,7 +31,9 @@ use Illuminate\Support\Facades\Route;
 //bawaan laravel ui
 Auth::routes(['verify' => true]);
 //bawaan laravel
-Route::post('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('verification.resend');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
+
+Route::get('/email/resend',[AuthVerificationController::class,'resend'])->name('verification.resend');
 
 //tampilan HOMEPAGE
 Route::get('/', [TampilanController::class, 'homepage'])->name('index.homepage');
@@ -44,16 +47,12 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect()->route('login'); // Or any route you want to redirect to after verification
+    return redirect()->route('login');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 //login
 Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthLoginController::class, 'login']);
-// //tampilan login admin
-// Route::get('/admin/login', [AdminController::class, 'index'])->name('login.admin');
-// //submit login admin
-// Route::post('admin/login', [AdminController::class, 'login'])->name('admin.login.submit')->middleware('admin.redirect');
 
 //hak akses
 Route::middleware(['verified', 'auth'])->group(function () {
@@ -101,3 +100,4 @@ Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 
 Route::get('kirim', [KirimEmailController::class, 'index']);
+

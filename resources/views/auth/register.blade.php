@@ -96,9 +96,12 @@
                         <form method="POST" action="{{ route('register') }}">
                             @csrf
                             <div class="logo-container">
-                                <i class="fas fa-cubes"></i>
-                                <span class="h1">GPS</span>
+                                <div style="display: flex; align-items: center; margin-top: 10px;">
+                                    <img src="/images/g.png" alt="GPS logo" style="max-width: 16%; height: auto; margin-right: 10px;" />
+                                    <span style="font-weight: bold;">GEEX</span>
+                                </div>
                             </div>
+                            
                             <h5 class="fw-normal mb-3">Register for an account</h5>
 
                             <div class="form-outline mb-4">

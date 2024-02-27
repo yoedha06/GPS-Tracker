@@ -4,60 +4,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>GEEX</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('template/assets/css/main/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
-    <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
+    <title>Verification</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: whitesmoke;
+        }
 
-    <link href="/images/geex.png" rel="icon">
-    <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
+        .card {
+            border-radius: 1rem;
+            margin-top: 55px;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            background-color: #393f81;
+            border-color: #393f81;
+        }
+
+        .btn-primary:hover {
+            background-color: #2b2f5c;
+            border-color: #2b2f5c;
+        }
+
+        .form-label {
+            margin-bottom: 0.5rem;
+        }
+
+        .invalid-feedback {
+            display: block;
+            margin-top: 0.25rem;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="row justify-content-center mt-5">
-            <div class="col-md-8">
-                <div class="card p-4" style="border-radius: 10px;">
-                    <div class="card-header text-center" style="font-size: 24px; background-color: #f8f9fa;">
-                        {{ __('Verify Your Email Address') }}</div>
-
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
                     <div class="card-body">
-                        @if (session('resent'))
-                            <div class="alert alert-success" role="alert">
-                                {{ __('A fresh verification link has been sent to your email address.') }}
+                        <div class="logo-container text-center">
+                            <img src="{{ asset('images/geex.png') }}" style="width:200px;height:160px;" alt="">
+                        </div>
+                        <h5 class="fw-normal mb-3 text-center">Resend Verification</h5>
+                        <p class="text-center">A verification link has been sent to your email address.</p>
+                        <form method="POST" action="{{ route('verification.resend') }}">
+                            @csrf
+                            <div class="mb-3 text-center">
+                                <button type="submit" class="btn btn-primary btn-lg">Resend Verification Email</button>
                             </div>
-                        @endif
-
-                        <p style="font-size: 18px;">
-                            {{ __('Masuk ke dalam Gmail.com.') }}</p>
-                        <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
-                            @csrf
-                            <a href="https://www.gmail.com">Visit Gmail</a>
                         </form>
-                        <p style="font-size: 18px;">
-                            {{ __('Kirim ulang Email Verfikasi.') }}</p>
-                        {{-- <p style="font-size: 18px;">{{ __('If you did not receive the email') }},</p> --}}
-                        <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
-                            @csrf
-                            <button type="submit"
-                                class="btn btn-link p-0 m-0 align-baseline">{{ __('click here to request another') }}</button>
-                        </form>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
-    <script src="{{ asset('template/assets/js/app.js') }}"></script>
-
-    <!-- Need: Apexcharts -->
-    <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
 </body>
 
 </html>

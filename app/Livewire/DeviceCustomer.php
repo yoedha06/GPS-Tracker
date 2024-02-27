@@ -18,13 +18,13 @@ class DeviceCustomer extends Component
 
     public function render()
     {
-        $device = Device::when($this->search, function ($query) {
-            $query->where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('serial_number', 'like', '%' . $this->search . '%');
-        })->paginate(10); // Adjust the number based on your preference
-
         return view('livewire.device-customer', [
-            'device' => $device,
+            'device' => Device::when($this->search, function($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('serial_number', 'like', '%' . $this->search . '%');
+            })->paginate(10),
         ]);
     }
+    
+    
 }
