@@ -81,6 +81,7 @@ Route::middleware(['verified', 'auth'])->group(function () {
 
         //device
         Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');
+        Route::get('/admin/device/search', [DeviceController::class, 'search'])->name('admin.device.search');
     });
 });
 

@@ -12,9 +12,18 @@ class HistoryController extends Controller
      */
     public function index()
     {
-        $history =  History::all();
+        // Get the authenticated user
+        $user = auth()->user();
+
+        // Fetch all device IDs associated with the authenticated user
+        $deviceIds = $user->devices->pluck('id_device');
+
+        // Fetch history records associated with the authenticated user's devices
+        $history = History::whereIn('device_id', $deviceIds)->get();
+
         return view('customer.history.index', ['history' => $history]);
     }
+
 
     /**
      * Show the form for creating a new resource.
