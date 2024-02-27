@@ -1,7 +1,6 @@
 @extends('layouts.customer')
 
 @section('content')
-
     <div id="main">
         <div class="page-heading">
             <div class="page-title">
@@ -32,10 +31,6 @@
 
         <section class="section">
             <div class="card">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="search">Search</span>
-                    <input type="text" class="form-control" placeholder="Search name or email" aria-label="Search name or email" aria-describedby="search" wire:model="search">
-                </div>
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Device User</h4>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDeviceModal">
@@ -43,8 +38,47 @@
                     </button>
                 </div>
 
-                @livewire('device-customer')
-
+                <div class="card-body">
+                    @if (Session::has('success'))
+                        <div class="alert alert-success">
+                            {{ Session::get('success') }}
+                        </div>
+                    @endif
+                    <table class="table table-striped" id="table1" style="table-layout: auto">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Serial Number</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($device as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->name }}</td>
+                                    <td>{{ $item->serial_number }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#editDeviceModal{{ $item->id_device }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#deleteDeviceModal{{ $item->id_device }}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        @if ($errors && $errors->has('serial_number'))
+                            <div class="alert alert-danger">
+                                {{ $errors->first('serial_number') }}
+                            </div>
+                        @endif
+                    </table>
+                </div>
             </div>
         </section>
 
@@ -66,6 +100,11 @@
                             <div class="mb-3">
                                 <label for="serial_number" class="form-label">Serial Number</label>
                                 <input type="text" class="form-control" id="serial_number" name="serial_number" required>
+                                @if ($errors->has('serial_number'))
+                                    <div class="alert alert-danger">
+                                        {{ $errors->first('serial_number') }}
+                                    </div>
+                                @endif
                             </div>
                             <button type="submit" class="btn btn-primary">Add Device</button>
                         </form>
@@ -147,5 +186,4 @@
             </div>
         </footer>
     </div>
-
 @endsection

@@ -6,6 +6,9 @@ use App\Models\Device;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+
 
 
 class DeviceController extends Controller
@@ -52,11 +55,34 @@ class DeviceController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|alpha_num|max:255',
+            'serial_number' => 'required|string|alpha_num|max:50|unique:device,serial_number', // Ganti "device" menjadi "devices"
+        ]);
+
+        // Validasi tambahan untuk memeriksa apakah serial number sudah ada di device lain
+        $existingDevice = Device::where('serial_number', $request->input('serial_number'))->first();
+        if ($existingDevice) {
+            $validator->after(function ($validator) {
+                $validator->errors()->add('serial_number', 'Serial number sudah digunakan di device lain.');
+            });
+        }
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors($validator);
+        }
+
         $device = new Device([
             'name' => $request->input('name'),
             'serial_number' => $request->input('serial_number'),
         ]);
-        $user->devices()->save($device);  // Use 'devices()' instead of 'device()'
+
+        $user->devices()->save($device);
+
+        Session::flash('success', 'Berhasil Input Data.');
 
         return redirect()->route('customer.device.index');
     }
@@ -82,18 +108,18 @@ class DeviceController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $user = Auth::user();
+
+        // Validasi input seperti pada metode store
+
         $device = Device::findOrFail($id);
+        $device->name = $request->input('name');
+        $device->save();
 
-        $request->validate([
-            'name' => 'required',
-            'serial_number' => 'required|unique:device,serial_number,' . $id . ',id_device',
-        ]);
+        Session::flash('success', 'Data berhasil diupdate.');
 
-        $device->update($request->all());
-
-        return redirect()->route('customer.device.index')->with('success', 'Device updated successfully.');
+        return redirect()->route('customer.device.index');
     }
-
 
 
     /** 
@@ -104,7 +130,9 @@ class DeviceController extends Controller
         $device = Device::findOrFail($id);
         $device->delete();
 
-        return redirect()->route('customer.device.index')->with('success', 'Device deleted successfully.');
+        Session::flash('success', 'Data berhasil dihapus.');
+
+        return redirect()->route('customer.device.index');
     }
 
 
