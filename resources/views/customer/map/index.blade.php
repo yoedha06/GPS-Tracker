@@ -67,7 +67,7 @@
                 // Event triggered when the location is found
                 mymap.on('locationfound', function(e) {
                     var marker = L.marker(e.latlng).addTo(mymap);
-                    marker.bindPopup('Aku Disini!').openPopup();
+                    marker.bindPopup('Anda Disini!').openPopup();
                 });
 
                 // Event triggered if the location is not found

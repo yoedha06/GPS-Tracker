@@ -6,7 +6,12 @@
 @if ($level === 'error')
 # @lang('Whoops!')
 @else
-# @lang('Hello!!')
+@if (!empty($username))
+    # @lang('Hello :username', ['username' => $username])
+@else
+    # @lang('Hello')
+@endif
+
 @endif
 @endif
 
