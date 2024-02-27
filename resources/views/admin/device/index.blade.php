@@ -16,22 +16,21 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <label for="user_filter" class="form-label">Filter by User:</label>
-            <select class="form-select" id="user_filter" name="user_filter">
-                <option value="">All Users</option>
-                @foreach ($users as $user)
-                    @if ($user->role === 'customer')
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                    @endif
-                @endforeach
-            </select>
-            <button class="btn btn-primary mt-2" onclick="applyFilter()">
-                <i class="fas fa-filter"></i> Apply Filter
-            </button>
-        </div>
-        
-
+        <body>
+            <div class="mb-3">
+                <label for="user_filter" class="form-label">Filter by User:</label>
+                <select class="form-select" id="user_filter" name="user_filter" oninput="filterUsers(this.value)">
+                    <option value="">Select Users</option>
+                    @foreach ($users as $user)
+                        @if ($user->role === 'customer')
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endif
+                    @endforeach
+                </select>
+                <button class="btn btn-primary mt-2" onclick="applyFilter()">
+                    <i class="fas fa-filter"></i> Lihat Semua Users
+                </button>
+            </div>
         <section class="section">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -74,10 +73,36 @@
         </footer>
     </div>
 
+    
+
     <script>
+        // Function to automatically apply filter when the user is selected
+        function autoApplyFilter() {
+            var userId = document.getElementById('user_filter').value;
+            
+            // Check if "All Users" is selected
+            if (userId !== "") {
+                window.location.href = '{{ route('admin.device.index') }}' + '?user=' + userId;
+            } else {
+                // If "All Users" is selected, trigger the filter immediately
+                applyFilter();
+            }
+        }
+    
+        // Event listener for the dropdown change to trigger auto apply filter
+        document.getElementById('user_filter').addEventListener('change', autoApplyFilter);
+    
+        // Function to apply the filter
         function applyFilter() {
             var userId = document.getElementById('user_filter').value;
-            window.location.href = '{{ route('admin.device.index') }}' + (userId ? '?user=' + userId : '');
+            window.location.href = '{{ route('admin.device.index') }}' + '?user=' + userId;
         }
+    
+        // Event listener for "Select All Users" button
+        document.getElementById('select_all_users').addEventListener('click', applyFilter);
+        
+        
     </script>
+    
+    
 @endsection
