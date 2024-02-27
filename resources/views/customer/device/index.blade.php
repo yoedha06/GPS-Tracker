@@ -1,7 +1,7 @@
 @extends('layouts.customer')
 
 @section('content')
-@livewireStyles
+
     <div id="main">
         <div class="page-heading">
             <div class="page-title">
@@ -34,7 +34,7 @@
             <div class="card">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="search">Search</span>
-                    <input type="text" class="form-control" placeholder="search name or serial number" aria-label="search name or serial number" wire:model="search">
+                    <input type="text" class="form-control" placeholder="Search name or email" aria-label="Search name or email" aria-describedby="search" wire:model="search">
                 </div>
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Device User</h4>
@@ -147,5 +147,5 @@
             </div>
         </footer>
     </div>
-@livewireScripts
+
 @endsection

@@ -100,3 +100,4 @@ Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 
 Route::get('kirim', [KirimEmailController::class, 'index']);
+

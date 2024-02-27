@@ -27,8 +27,8 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
-    <div class="d-flex justify-content-center">
+    </table>  
+    <div class="card-body">
         {{ $device->links() }}
     </div>
 </div>
