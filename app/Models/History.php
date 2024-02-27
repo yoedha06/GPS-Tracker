@@ -19,6 +19,7 @@ class History extends Model
         'altitude_acuracy',
         'heading',
         'speeds',
+        'date_time',
     ];
 
     public function device()

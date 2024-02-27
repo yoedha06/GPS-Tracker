@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Device;
 use App\Models\History;
 use Illuminate\Http\Request;
 
@@ -26,6 +27,16 @@ class HistoryController extends Controller
      */
     public function store(Request $request)
     {
+        $device = Device::where('serial_number', $request->serial_number)->first();
+
+        if ($device == null) {
+            return response()->json([
+                // 'status' => false,
+                'massage' => 'Serial number tidak di temukan',
+                // 'data' => $device
+            ]);
+        }
+
         $history = [
             'device_id' => $request->device_id,
             'latlng' => $request->latlng,
@@ -34,11 +45,13 @@ class HistoryController extends Controller
             'altitude' => $request->altitude,
             'altitude_acuracy' => $request->altitude_acuracy,
             'heading' => $request->heading,
-            'speeds' => $request->speeds
+            'speeds' => $request->speeds,
+            'date_time' => $request->date_time,
         ];
 
+
         $history = new History();
-        $history->device_id = $request->device_id;
+        $history->device_id = $device->id_device; // Perbaikan di sini
         $history->latlng = $request->latlng;
         $history->bounds = $request->bounds;
         $history->accuracy = $request->accuracy;
@@ -46,11 +59,12 @@ class HistoryController extends Controller
         $history->altitude_acuracy = $request->altitude_acuracy;
         $history->heading = $request->heading;
         $history->speeds = $request->speeds;
+        $history->date_time = $request->date_time;
         $history->save();
 
         return response()->json([
             'status' => true,
-            'massage' => 'success',
+            'message' => 'Success', // Perbaikan typo di sini
             'data' => $history
         ]);
     }

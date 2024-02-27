@@ -24,6 +24,20 @@ class DeviceController extends Controller
     }
 
 
+    public function search(Request $request)
+    {
+        $query = $request->get('q');
+        $devices = Device::where('name', 'LIKE', "%{$query}%")->paginate(10);
+
+        $data = [
+            'items' => $devices->items(),
+            'pagination' => [
+                'more' => $devices->hasMorePages()
+            ]
+        ];
+
+        return response()->json($data);
+    }
 
     /**
      * Show the form for creating a new resource.
