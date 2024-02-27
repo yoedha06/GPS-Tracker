@@ -46,6 +46,7 @@
                                 <th>altitude_acuracy</th>
                                 <th>heading</th>
                                 <th>speeds</th>
+                                <th>waktu</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,6 +60,7 @@
                                     <td>{{ $h->altitude_acuracy }}</td>
                                     <td>{{ $h->heading }}</td>
                                     <td>{{ $h->speeds }}</td>
+                                    <td>{{ $h->date_time }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
