@@ -63,25 +63,25 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-            // Check if the user's email is verified
             if (!$user->hasVerifiedEmail()) {
-                // If the email is not verified, send a verification email
+                
                 $user->sendEmailVerificationNotification();
 
-                // Optionally, redirect to a custom page to inform the user to check their email
                 return redirect('/email/verify')->with('status', 'A verification link has been sent to your email address.');
             }
 
             // For admin users, redirect to the main dashboard
             if ($user->role == 'admin') {
                 return redirect()->route('index.admin');
-            } else {
-                // For non-admin users, redirect to the home page or any other intended route
-                return redirect()->intended('/home');
+            }
+
+            // For user users, redirect to the main dashboard
+            if ($user->role == 'customer') {
+                return redirect()->route('index.customer');
             }
         }
 
-        return redirect('/login')->with('error', 'Invalid credentials');
+        return redirect('/login')->withErrors(['email' => 'Email or password is incorrect','password' => 'Email or password is incorrect']);
     }
 
     public function logout(Request $request)
