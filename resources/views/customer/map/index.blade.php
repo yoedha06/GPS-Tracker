@@ -58,7 +58,10 @@
                 var mymap = L.map('map');
 
                 // Use Leaflet's locate method to get the user's current location
-                mymap.locate({ setView: true, maxZoom: 13 });
+                mymap.locate({
+                    setView: true,
+                    maxZoom: 13
+                });
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '© OpenStreetMap contributors'

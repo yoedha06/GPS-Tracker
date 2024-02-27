@@ -21,6 +21,7 @@ return new class extends Migration
             $table->float('altitude_acuracy');
             $table->float('heading');
             $table->float('speeds');
+            $table->timestamp('date_time');
             $table->timestamps();
         });
     }
