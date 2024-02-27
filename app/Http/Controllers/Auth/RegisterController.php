@@ -85,7 +85,7 @@ class RegisterController extends Controller
         Auth::login($user);
 
         // Redirect the user to the verification page instead
-        return redirect()->route('verification.notice');
+        // return redirect()->route('verification.notice');
     }
 
     //login setelah registrasi
