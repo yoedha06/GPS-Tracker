@@ -57,17 +57,19 @@ class DeviceController extends Controller
         $user = Auth::user();
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|alpha_num|max:255',
-            'serial_number' => 'required|string|alpha_num|max:50|unique:device,serial_number', // Ganti "device" menjadi "devices"
+            'name' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'max:255'],
+            'serial_number' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'string', 'max:50', 'unique:device,serial_number'],
+        ], [
+            'name.regex' => 'Name can only contain letters, numbers, and spaces.',
+            'serial_number.regex' => 'Serial Number can only contain letters, numbers, and spaces.',
         ]);
 
-        // Validasi tambahan untuk memeriksa apakah serial number sudah ada di device lain
-        $existingDevice = Device::where('serial_number', $request->input('serial_number'))->first();
-        if ($existingDevice) {
-            $validator->after(function ($validator) {
+        $validator->after(function ($validator) use ($request) {
+            $existingDevice = Device::where('serial_number', $request->input('serial_number'))->first();
+            if ($existingDevice) {
                 $validator->errors()->add('serial_number', 'Serial number sudah digunakan di device lain.');
-            });
-        }
+            }
+        });
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -151,4 +153,20 @@ class DeviceController extends Controller
 
         return view('admin.device.index', compact('device', 'users'));
     }
+
+    public function filter(Request $request)
+    {
+        $userId = $request->input('userId');
+    
+        // If $userId is empty, retrieve all devices with user information
+        if (empty($userId)) {
+            $devices = Device::with('user')->get();
+        } else {
+            // Retrieve devices based on the selected user ID with user information
+            $devices = Device::where('user_id', $userId)->with('user')->get();
+        }
+    
+        return response()->json($devices);
+    }
+    
 }

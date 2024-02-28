@@ -3,22 +3,33 @@
 @section('content')
     <div id="main">
         <div class="page-heading">
-            <!-- ... (kode sebelumnya) ... -->
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Device</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="page-heading">
             <div class="page-title">
                 <div class="row">
                     <div class="col-12 col-md-6 order-md-1 order-last">
-                        <h3>Device</h3>
+                        <h3>User Device</h3>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="mb-3">
-            <label for="user_filter" class="form-label">Filter by User:</label>
-            <select class="form-select" id="user_filter" name="user_filter">
+        <div class="mb-2">
+            <select id="selectDevice" class="form-select" aria-label="Default select example">
                 <option value="">Select Users</option>
                 @foreach ($users as $user)
                     @if ($user->role === 'customer')
@@ -26,16 +37,24 @@
                     @endif
                 @endforeach
             </select>
-            <button class="btn btn-primary mt-2" onclick="applyFilter()">
-                <i class="fas fa-filter"></i> Lihat Semua Users
+        </div>
+
+        <div class="mb-2">
+            <button class="btn btn-primary" id="showAllDataBtn">
+                <i class="fas fa-eye"></i> Lihat Semua Data
             </button>
         </div>
 
+
         <section class="section">
             <div class="card">
+                <div id="validationMessage">
+                    Successfully selected data!
+                </div>
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Device User</h4>
                 </div>
+
                 <div class="card-body">
                     <table class="table table-striped" id="table1" style="table-layout: auto">
                         <thead>
@@ -73,33 +92,100 @@
         </footer>
     </div>
 
-    <script>
-        // Function to automatically apply filter when the user is selected
-        function autoApplyFilter() {
-            var userId = document.getElementById('user_filter').value;
-            
-            // Check if "All Users" is selected
-            if (userId !== "") {
-                window.location.href = '{{ route('admin.device.index') }}' + '?user=' + userId;
-            } else {
-                // If "All Users" is selected, trigger the filter immediately
-                applyFilter();
-            }
-        }
-    
-        // Event listener for the dropdown change to trigger auto apply filter
-        document.getElementById('user_filter').addEventListener('change', autoApplyFilter);
-    
-        // Function to apply the filter
-        function applyFilter() {
-            var userId = document.getElementById('user_filter').value;
-            window.location.href = '{{ route('admin.device.index') }}' + '?user=' + userId;
-        }
-    
-        // Event listener for "Select All Users" button
-        document.getElementById('select_all_users').addEventListener('click', applyFilter);
-        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+        integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
+        < script src = "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" >
     </script>
-    
-    
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Inisialisasi Select2
+            $("#selectDevice").select2({
+                placeholder: "Select Users",
+                allowClear: true,
+                data: {!! $users->pluck('name', 'id')->toJson() !!}, // Populate initial data
+            });
+
+            // Tambahkan event listener untuk perubahan nilai atau pencarian
+            $("#selectDevice").on('change', function() {
+                var userId = $(this).val();
+                fetchData(userId);
+                // Show validation message when a user is selected
+                showValidationMessage(userId ? 'Successfully selected user: ' + $(
+                    "#selectDevice option:selected").text() : '');
+            });
+
+            // Tambahkan event listener untuk tombol "Lihat Semua Data"
+            $("#showAllDataBtn").on('click', function() {
+                // Call the fetchData function with an empty user ID to get all data
+                fetchData('');
+                // Show validation message when showing all data
+                showValidationMessage('Successfully showing all data!');
+            });
+
+            // Fungsi untuk memperbarui tabel dengan data yang diterima
+            function updateDeviceTable(data) {
+                var tableBody = $("#table1 tbody");
+                tableBody.empty();
+
+                // Iterasi melalui data dan tambahkan baris ke tabel
+                $.each(data, function(index, item) {
+                    console.log('Processing item:', item);
+                    var row = `<tr>
+                        <td>${index + 1}</td>
+                        <td>${item.user ? item.user.name : ''}</td>
+                        <td>${item.name}</td>
+                        <td>${item.serial_number}</td>
+                    </tr>`;
+
+                    tableBody.append(row);
+                });
+            }
+
+
+
+            // Fungsi untuk menampilkan pesan validasi
+            function showValidationMessage(message) {
+                var validationMessage = $("#validationMessage");
+                validationMessage.text(message);
+                validationMessage.show();
+
+                // Hide the validation message after 3 seconds
+                setTimeout(function() {
+                    validationMessage.hide();
+                }, 3000);
+            }
+
+            // Fungsi untuk mengambil data dari server berdasarkan user ID
+            function fetchData(userId) {
+                // Kirim permintaan Ajax untuk mendapatkan data berdasarkan nilai yang dipilih
+                $.ajax({
+                    url: '/getDevicesByUser',
+                    type: 'GET',
+                    data: {
+                        userId: userId
+                    },
+                    success: function(response) {
+                        console.log('Received response:', response);
+
+                        // Check if the response is an array and not empty
+                        if (Array.isArray(response) && response.length > 0) {
+                            // Perbarui tabel atau bagian tampilan dengan data yang diterima
+                            updateDeviceTable(response);
+                        } else {
+                            console.error('Invalid or empty response:', response);
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error fetching devices:', error);
+                    }
+                });
+            }
+        });
+    </script>
 @endsection

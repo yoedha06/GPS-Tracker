@@ -101,3 +101,4 @@ Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showRese
 
 Route::get('kirim', [KirimEmailController::class, 'index']);
 
+Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
