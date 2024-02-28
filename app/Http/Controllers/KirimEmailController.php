@@ -23,4 +23,3 @@ class KirimEmailController extends Controller
         }
     }
 }
-

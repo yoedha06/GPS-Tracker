@@ -22,6 +22,7 @@ class HistoryController extends Controller
         ]);
     }
 
+
     /**
      * Store a newly created resource in storage.
      */
@@ -34,7 +35,7 @@ class HistoryController extends Controller
                 // 'status' => false,
                 'massage' => 'Serial number tidak di temukan',
                 // 'data' => $device
-            ]);
+            ], 401);
         }
 
         $history = [
@@ -49,6 +50,14 @@ class HistoryController extends Controller
             'date_time' => $request->date_time,
         ];
 
+        $date_time = History::where('date_time', $request->date_time)->first();
+
+        if ($date_time) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data dengan tanggal waktu yang sama sudah ada',
+            ], 403);
+        }
 
         $history = new History();
         $history->device_id = $device->id_device; // Perbaikan di sini
