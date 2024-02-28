@@ -33,13 +33,13 @@ Auth::routes(['verify' => true]);
 //bawaan laravel
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
 
-Route::get('/email/resend',[AuthVerificationController::class,'resend'])->name('verification.resend');
-
 //tampilan HOMEPAGE
 Route::get('/', [TampilanController::class, 'homepage'])->name('index.homepage');
 
 //register customer
 Route::post('/register', [AuthRegisterController::class, 'register'])->name('register');
+
+Route::get('/email/resend',[AuthVerificationController::class,'resend'])->name('verification.resend');
 
 Route::get('/email/verify', function () {
     return view('auth.verify');
@@ -86,7 +86,7 @@ Route::middleware(['verified', 'auth'])->group(function () {
 });
 
 //logout customer
-Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
 // //logout admin
 // Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
