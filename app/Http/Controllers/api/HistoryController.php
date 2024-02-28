@@ -34,7 +34,7 @@ class HistoryController extends Controller
                 // 'status' => false,
                 'massage' => 'Serial number tidak di temukan',
                 // 'data' => $device
-            ]);
+            ], 401);
         }
 
         $history = [

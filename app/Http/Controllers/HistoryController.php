@@ -10,6 +10,7 @@ class HistoryController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
         // Get the authenticated user
