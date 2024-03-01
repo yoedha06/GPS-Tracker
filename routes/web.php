@@ -120,5 +120,7 @@ Route::get('/map/select-device', [HistoryController::class, 'selectDevice']);
 //filter
 
 //filter Select+Search
+// Route::get('/getHistoryByDevice/{deviceId}', [DeviceController::class, 'filter']);
+Route::get('/gethistorybydevice/{deviceId}', [HistoryController::class, 'getHistoryByDevice'])->name('getHistoryByDevice');
 
 Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
