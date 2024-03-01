@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\History;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HistoryController extends Controller
 {
@@ -72,5 +73,12 @@ class HistoryController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function map()
+    {
+        $history = DB::table('history')->get();
+
+        return view('customer.map.index', compact('history'));
     }
 }

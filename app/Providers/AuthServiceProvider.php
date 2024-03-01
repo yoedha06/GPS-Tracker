@@ -30,7 +30,8 @@ class AuthServiceProvider extends ServiceProvider
             Log::info('Verification email triggered for user: ' . $notifiable->email);
             return (new MailMessage)
                 ->subject('Verify Email Address')
-                ->line('Click the button below to verify your email address.')
+                ->line('Jika Anda tidak meregistrasi akun ini, abaikan email ini.')
+                ->line('Jika Anda memerlukan bantuan, silakan hubungi kami di support@example.com')
                 ->action('Verify Email Address', $url);
         });
     }

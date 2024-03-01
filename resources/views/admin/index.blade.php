@@ -187,7 +187,6 @@
                                                             <td class="col-3">
                                                                 <div class="d-flex align-items-center">
                                                                     <div class="avatar avatar-md">
-                                                                        <img src="assets/images/faces/5.jpg">
                                                                     </div>
                                                                     <p class="font-bold ms-3 mb-0">Si Cantik</p>
                                                                 </div>
@@ -200,7 +199,6 @@
                                                             <td class="col-3">
                                                                 <div class="d-flex align-items-center">
                                                                     <div class="avatar avatar-md">
-                                                                        <img src="assets/images/faces/2.jpg">
                                                                     </div>
                                                                     <p class="font-bold ms-3 mb-0">Si Ganteng</p>
                                                                 </div>
@@ -226,12 +224,15 @@
                                     <a href="#" class="dropdown-toggle" id="profileDropdown" role="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-xl" style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
-                                                @if(Auth::user()->photo)
-                                                    <img src="/photos/{{ Auth::user()->photo }}" style="width: 100%; height: auto;">
+                                            <div class="avatar avatar-xl"
+                                                style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
+                                                @if (Auth::user()->photo)
+                                                    <img src="/photos/{{ Auth::user()->photo }}"
+                                                        style="width: 100%; height: auto;">
                                                 @else
                                                     <img src="{{ asset('images/default.jpg') }}
-                                                    " style="width: 100%; height: auto;">
+                                                    "
+                                                        style="width: 100%; height: auto;">
                                                 @endif
                                             </div>
                                             <div class="ms-3 name">
