@@ -107,6 +107,11 @@
                         </a>
                     </li>
                     <br>
+                    <a href="" class="sidebar-link">
+                        <i class="bi bi-map-fill"></i>
+                        <span>Last Location</span>
+                    </a>
+
                     <a href="/customer/map" class="sidebar-link">
                         <i class="bi bi-map-fill"></i>
                         <span>Maps</span>

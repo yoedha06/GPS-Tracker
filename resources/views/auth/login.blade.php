@@ -90,16 +90,6 @@
 <body>
     <section class="vh-100" id="login-page">
         <div class="container py-5 h-100">
-            @if ($message = session('success'))
-                <div class="alert alert-primary d-flex align-items-center" role="alert">
-                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:">
-                        <use xlink:href="#info-fill" />
-                    </svg>
-                    <div>
-                        {{ $message }}
-                    </div>
-                </div>
-            @endif
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col col-xl-10">
                     <div class="card">
@@ -111,6 +101,14 @@
                             </div>
                             <div class="col-md-6 col-lg-7 d-flex align-items-center">
                                 <div class="card-body">
+
+                                    @if (Session::has('success'))
+                                        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                                            {{ Session::get('success') }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    @endif
+
                                     <div class="logo-container">
                                         <span class="h1">GEEX</span>
                                     </div>

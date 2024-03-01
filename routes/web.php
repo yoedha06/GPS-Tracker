@@ -47,15 +47,21 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect()->route('login');
+    // Cek apakah pengguna sudah login
+    if (Auth::check()) {
+        Auth::logout();
+        return redirect()->route('login')->with('success', 'Your email has been verified. Please log in.');
+    } else {
+        return redirect()->route('login')->with('success', 'Your email has been verified. Please log in.');
+    }
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 //login
-Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
+Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
 Route::post('/login', [AuthLoginController::class, 'login']);
 
 //hak akses
-Route::middleware(['verified', 'auth'])->group(function () {
+Route::middleware(['auth','verified'])->group(function () {
     Route::middleware(['role:customer'])->group(function () {
         Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
         Route::get('/customer/profile', [ProfileController::class, 'index'])->name('customer.profile');
@@ -86,7 +92,7 @@ Route::middleware(['verified', 'auth'])->group(function () {
 });
 
 //logout customer
-Route::post('/logout', [AuthLoginController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
 // //logout admin
 // Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');

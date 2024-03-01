@@ -4,36 +4,19 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 
 class VerificationController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Email Verification Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller is responsible for handling email verification for any
-    | user that recently registered with the application. Emails may also
-    | be re-sent if the user didn't receive the original email message.
-    |
-    */
-
     use VerifiesEmails;
 
-    /**
-     * Where to redirect users after verification.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/login';
+    protected $redirectTo = '/login'; // Mengarahkan ke halaman login setelah verifikasi
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -41,20 +24,38 @@ class VerificationController extends Controller
         $this->middleware('throttle:6,1')->only('verify', 'resend');
     }
 
-    public function resend(Request $request)
+    public function showVerificationPage()
     {
-        $user = $request->user();
+        $verified = Auth::user()->hasVerifiedEmail();
+        return view('auth.verify', ['verified' => $verified]);
+    }
 
-        if ($user->hasVerifiedEmail()) {
-            if ($user->role == 'admin') {
-                return redirect('/admin');
-            } else {
-                return redirect('/customer');
-            }
+    public function verify(Request $request)
+    {
+        // Mengarahkan pengguna kembali ke halaman login jika belum diverifikasi
+        if (!$request->user()->hasVerifiedEmail()) {
+            return redirect()->route('login'); 
         }
 
-        $user->sendEmailVerificationNotification();
+        $request->fulfill();
+        $user = $request->user();
+        event(new Verified($user));
 
-        return redirect()->back()->with('resent', true);
+        Auth::logout();
+
+        return redirect($this->redirectPath());
+    }
+
+    public function resend(Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->route('login')->with('error', 'Email Anda sudah diverifikasi.');
+        }
+
+        $request->user()->sendEmailVerificationNotification();
+
+        session()->flash('resent', true);
+
+        return back()->with('successs', 'Email verification has been successfully resent.');
     }
 }
