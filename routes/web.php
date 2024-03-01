@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Api\HistoryController as ApiHistoryController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\Auth\VerificationController as AuthVerificationController;
@@ -11,7 +13,9 @@ use App\Http\Controllers\KirimEmailController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TampilanController;
+use App\Http\Controllers\ValidationController;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -102,10 +106,19 @@ Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 // Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
 // ->middleware('guest')
 // ->name('password.request');
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
-Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::get('/password/reset/{token}/{email}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+// Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
-Route::get('kirim', [KirimEmailController::class, 'index']);
+Route::get('/validation', [ValidationController::class, 'index'])->name('validation');
+
+
+// Route::get('/map', [MapController::class, 'index'])->name('map.index');
+Route::get('/map/select-device', [HistoryController::class, 'selectDevice']);
+//filter
 
 //filter Select+Search
+
 Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class HistoryController extends Controller
 {
-    /** 
+    /**
      * Display a listing of the resource.
      */
 
@@ -79,12 +79,18 @@ class HistoryController extends Controller
         //
     }
 
-    public function map()
-    {
-        $history = DB::table('history')->get();
 
-        return view('customer.map.index', compact('history'));
-    }
+        public function map()
+        {
+            // Ambil data perangkat dari basis data
+            $devices = Device::all();
+
+            // Ambil riwayat dari basis data atau dari sumber lain jika diperlukan
+            $history = DB::table('history')->get();
+
+            // Melewatkan data ke view menggunakan compact
+            return view('customer.map.index', compact('devices', 'history'));
+        }
     public function getHistoryByDevice($deviceId)
     {
         logger('Request for device history. Device ID: ' . $deviceId);
@@ -112,4 +118,21 @@ class HistoryController extends Controller
 
         return response()->json($response);
     }
+
+    public function selectDevice(Request $request)
+    {
+        $searchTerm = $request->input('searchDevice');
+        $devices = Device::where('name', 'like', "%$searchTerm%")->paginate(10);
+    
+        return response()->json([
+            'data' => $devices->items(),
+            'current_page' => $devices->currentPage(),
+            'last_page' => $devices->lastPage()
+        ]);
+    }
+    
+
+
+
+
 }

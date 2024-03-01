@@ -63,18 +63,17 @@
                             @csrf
 
                             <input type="hidden" name="token" value="{{ $token }}">
-
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email Address</label>
-                                <input id="email" type="email"
-                                    class="form-control @error('email') is-invalid @enderror" name="email"
-                                    value="{{ $email }}" required autocomplete="email" autofocus readonly>
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email }}" required autocomplete="email" autofocus readonly>
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
                             </div>
+
+
 
 
                             <div class="mb-3">
