@@ -10,6 +10,7 @@ class History extends Model
     use HasFactory;
     protected $table = "history";
 
+    protected $primaryKey = "id_history";
     protected $fillable = [
         'device_id',
         'latlng',

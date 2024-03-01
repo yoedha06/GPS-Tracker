@@ -186,7 +186,6 @@
                                                             <td class="col-3">
                                                                 <div class="d-flex align-items-center">
                                                                     <div class="avatar avatar-md">
-                                                                        <img src="assets/images/faces/5.jpg">
                                                                     </div>
                                                                     <p class="font-bold ms-3 mb-0">Si Cantik</p>
                                                                 </div>
@@ -199,7 +198,6 @@
                                                             <td class="col-3">
                                                                 <div class="d-flex align-items-center">
                                                                     <div class="avatar avatar-md">
-                                                                        <img src="assets/images/faces/2.jpg">
                                                                     </div>
                                                                     <p class="font-bold ms-3 mb-0">Si Ganteng</p>
                                                                 </div>
@@ -225,16 +223,20 @@
                                     <a href="#" class="dropdown-toggle" id="profileDropdown" role="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-xl" style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
-                                                @if(Auth::user()->photo)
-                                                    <img src="/photos/{{ Auth::user()->photo }}" style="width: 100%; height: auto;">
+                                            <div class="avatar avatar-xl"
+                                                style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
+                                                @if (Auth::user()->photo)
+                                                    <img src="/photos/{{ Auth::user()->photo }}"
+                                                        style="width: 100%; height: auto;">
                                                 @else
-                                                    <img src="{{ asset('images/default.jpg') }}" style="width: 100%; height: auto;">
+                                                    <img src="{{ asset('images/default.jpg') }}"
+                                                        style="width: 100%; height: auto;">
                                                 @endif
                                             </div>
-                                            @if($user)
+                                            @if ($user)
                                                 <div class="ms-3 name">
-                                                    <h5 class="font-bold text-truncate" style="max-width: 150px;">{{$user->name}}</h5>
+                                                    <h5 class="font-bold text-truncate" style="max-width: 150px;">
+                                                        {{ $user->name }}</h5>
                                                     <h6 class="text-muted mb-0">{{ $user->role }}</h6>
                                                 </div>
                                             @else
@@ -246,16 +248,20 @@
                                     </a>
                                     <!-- Dropdown menu for profile options -->
                                     <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                                        <li><a class="dropdown-item" href="customer/profile"><i class="fas fa-user"></i> Profile</a></li>
+                                        <li><a class="dropdown-item" href="customer/profile"><i class="fas fa-user"></i>
+                                                Profile</a></li>
                                         <li>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                class="d-none">
                                                 @csrf
                                             </form>
-                                            <a class="dropdown-item" href="{{ route('logout') }}" class='sidebar-link' onclick="event.preventDefault();
+                                            <a class="dropdown-item" href="{{ route('logout') }}" class='sidebar-link'
+                                                onclick="event.preventDefault();
                                             document.getElementById('logout-form').submit();">
                                                 <i class="bi bi-box-arrow-left"></i>
                                                 <span>Logout</span>
-                                            </a></li>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
