@@ -34,7 +34,6 @@ Auth::routes(['verify' => true]);
 //bawaan laravel
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
 
-
 //tampilan HOMEPAGE
 Route::get('/', [TampilanController::class, 'homepage'])->name('index.homepage');
 
