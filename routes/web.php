@@ -110,8 +110,12 @@ Route::get('/password/reset/{token}/{email}', [ResetPasswordController::class, '
 
 Route::get('/validation', [ValidationController::class, 'index'])->name('validation');
 
+
 Route::get('/map', [MapController::class, 'index'])->name('map.index');
 Route::get('/map/select-device', [MapController::class, 'selectDevice'])->name('map.selectDevice');
 //filter
+
+//filter Select+Search
+
 Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
 Route::get('/getHistoryByDevice/{deviceId}', [HistoryController::class, 'getHistoryByDevice'])->name('history.getHistoryByDevice');
