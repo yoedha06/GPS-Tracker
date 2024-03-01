@@ -74,13 +74,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
         Route::get('/customer/map', [HistoryController::class, 'map'])->name('customer.map.index');
 
-        //device customer
+        //device
         Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
         Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
         Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
         Route::put('/device/{id_device}', [DeviceController::class, 'update'])->name('device.update');
         Route::delete('/device/{id}', [DeviceController::class, 'destroy'])->name('device.destroy');
-        Route::delete('/delete-photo/{id}', [DeviceController::class, 'deletePhoto'])->name('delete.photo');
     });
 
     Route::middleware(['role:admin'])->group(function () {
@@ -98,6 +97,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 //logout customer
 Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
+
+// //logout admin
+// Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
+
+
 
 // Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
 // ->middleware('guest')
@@ -118,4 +122,3 @@ Route::get('/map/select-device', [MapController::class, 'selectDevice'])->name('
 //filter Select+Search
 
 Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
-Route::get('/getHistoryByDevice/{deviceId}', [HistoryController::class, 'getHistoryByDevice'])->name('history.getHistoryByDevice');
