@@ -67,21 +67,17 @@ class LoginController extends Controller
                 
                 $user->sendEmailVerificationNotification();
 
-                return redirect('/email/verify')->with('status', 'A verification link has been sent to your email address.');
+                return redirect('/email/verify')
+                    ->with('success','A verification link has been sent to your email address.');
             }
-
-            // For admin users, redirect to the main dashboard
-            if ($user->role == 'admin') {
-                return redirect()->route('index.admin');
-            }
-
-            // For user users, redirect to the main dashboard
-            if ($user->role == 'customer') {
-                return redirect()->route('index.customer');
-            }
+            // Jika sudah diverifikasi, arahkan ke halaman login
+            return redirect()
+                    ->route('login')
+                    ->with('success', 'You have successfully verified your email. Please login.');
         }
 
-        return redirect('/login')->withErrors(['email' => 'Email or password is incorrect','password' => 'Email or password is incorrect']);
+        return redirect('/login')
+                ->withErrors(['email' => 'Email or password is incorrect','password' => 'Email or password is incorrect']);
     }
 
     public function logout(Request $request)

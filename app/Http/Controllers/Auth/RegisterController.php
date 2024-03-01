@@ -81,11 +81,7 @@ class RegisterController extends Controller
         ]);
         event(new Registered($user));
 
-        // Comment out or remove the line that logs in the user immediately after registration
         Auth::login($user);
-
-        // Redirect the user to the verification page instead
-        // return redirect()->route('verification.notice');
     }
 
     //login setelah registrasi
@@ -99,7 +95,8 @@ class RegisterController extends Controller
 
         $this->create($request->all());
 
-        return redirect()->route('login')->with('success', 'Registration successful. Please login.');
+        return redirect('/email/verify')
+        ->with('success','A verification link has been sent to your email address.');
     }
 
     public function update(Request $request)

@@ -55,11 +55,25 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
+                {{-- email berhasil dikirim --}}
+                        @if (Session::has('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ Session::get('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+                {{-- email resend berhasil dikirim --}}
+                        @if (Session::has('successs'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ Session::get('successs') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+                        
                         <div class="logo-container text-center">
                             <img src="{{ asset('images/geex.png') }}" style="width:200px;height:160px;" alt="">
                         </div>
                         <h5 class="fw-normal mb-3 text-center">Resend Verification</h5>
-                        <p class="text-center">A verification link has been sent to your email address.</p>
                         <form method="POST" action="{{ route('verification.resend') }}">
                             @csrf
                             <div class="mb-3 text-center">
