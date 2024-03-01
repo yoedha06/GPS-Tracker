@@ -22,11 +22,12 @@ class HistoryController extends Controller
         // Fetch all devices associated with the authenticated user
         $devices = $user->devices ?? collect();
 
-        // Fetch history records associated with the authenticated user's devices
         $deviceIds = $devices->pluck('id_device')->toArray(); // Convert to array
 
-        // Use whereIn instead of where, as you're dealing with an array of device IDs
-        $history = History::whereIn('device_id', $deviceIds)->get();
+        $history = History::whereIn('device_id', $deviceIds)
+                            ->orderBy('date_time', 'desc')
+                            ->get();
+
 
         return view('customer.history.index', ['history' => $history, 'devices' => $devices]);
     }
