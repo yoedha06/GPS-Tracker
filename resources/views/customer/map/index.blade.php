@@ -8,6 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
+</style>
 @section('content')
 <div id="main">
     <div class="form-group ml-3">
@@ -63,47 +64,64 @@
         pointer-events: none;
     }
 </style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var mymap = L.map('map');
-
-        mymap.locate({
-            setView: true,
-            maxZoom: 13
+    <script>
+        var map = L.map('map', {
+            center: [-6.8955992330108895, 107.54240919668543],
+            zoom: 13
         });
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(mymap);
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-        mymap.on('locationfound', function (e) {
-            var marker = L.marker(e.latlng).addTo(mymap);
-            marker.bindPopup('Anda Disini!').openPopup();
-        });
+        var historyData = @json($history);
 
-        mymap.on('locationerror', function (e) {
-            console.log(e.message);
-        });
-    });
-</script>
-<script>
-    $(document).ready(function(){
-    $("#device-select").select2({
-        placeholder: "Select Device",
-        ajax: {
-            url: "{{ route('map.selectDevice') }}", // Perbaiki nama route sesuai dengan yang Anda tentukan di dalam route
-            dataType: 'json',
-            delay: 250,
-            processResults: function (data) {
-                return {
-                    results: data
-                };
-            },
-            cache: true
+        var layerGroup = L.layerGroup().addTo(map);
+        var polylinePoints = [];
+
+        for (var i = 0; i < historyData.length; i++) {
+            var latlngStr = historyData[i].latlng;
+            var latlngArr = latlngStr.split(", ");
+            var lat = parseFloat(latlngArr[0]);
+            var lng = parseFloat(latlngArr[1]);
+            var speed = parseFloat(historyData[i].speeds);
+            var accuracy = parseFloat(historyData[i].accuracy);
+
+            var color;
+            if (speed < 20) {
+                color = 'green';
+            } else if (speed >= 20 && speed <= 40) {
+                color = 'yellow';
+            } else {
+                color = 'red';
+            }
+
+            var popupContent = "Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m";
+
+            var circleMarker = L.circleMarker([lat, lng], {
+                radius: 10,
+                stroke: false,
+                color: color,
+                fillOpacity: 1
+            }).bindPopup(popupContent).addTo(layerGroup);
+
+            polylinePoints.push([lat, lng]);
+
+            // Adding a Polyline connecting the circle markers
+            var polyline = L.polyline(polylinePoints, {
+                color: color,
+                weight: 5,
+                opacity: 5
+            }).addTo(layerGroup);
         }
-    });
-});
 
 
-</script>
+        // Zoom ke lokasi marker pertama
+        if (historyData.length > 0) {
+            map.setView([historyData[0].latlng.split(',')[0], historyData[0].latlng.split(',')[1]], 15);
+        }
+
+        layerGroup.addTo(map);
+    </script>
+@endsection
+

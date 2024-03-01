@@ -11,8 +11,7 @@ class Device extends Model
     protected $table = "device";
 
     protected $primaryKey = "id_device";
-    protected $fillable = ["user_id", "name", "serial_number"];
-
+    protected $fillable = ['name', 'serial_number', 'photo', 'plat_nomor'];
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -22,4 +21,5 @@ class Device extends Model
     {
         return $this->hasOne(History::class, 'device_id', 'id_device');
     }
+
 }

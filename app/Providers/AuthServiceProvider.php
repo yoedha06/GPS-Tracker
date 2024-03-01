@@ -25,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
             Log::info('Password reset email triggered for user: ' . $email);
 
             return (new MailMessage)
+
                 ->subject(Lang::get('Reset Password Notification!'))
                 ->greeting('Selamat datang ' . $user->username)
                 ->line(Lang::get('Anda menerima email ini karena kami menerima permintaan pengaturan ulang kata sandi untuk akun Anda.'))
@@ -33,6 +34,7 @@ class AuthServiceProvider extends ServiceProvider
                     url(config('app.url').route('password.reset', ['token' => $token, 'email' => $email], false))
                 )
                 ->line(Lang::get('Tautan pengaturan ulang kata sandi ini akan kedaluwarsa dalam :count hitungan menit.', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]));
+
         });
 
     }
