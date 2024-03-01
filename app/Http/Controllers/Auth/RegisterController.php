@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -78,7 +79,12 @@ class RegisterController extends Controller
             'username' => $data['email'],
             'password' => Hash::make($data['password']),
             'role' => 'customer',
+            'verification_token' => Str::random(60),
+            'verification_expiry' => now()->addseconds(60),
         ]);
+
+        $user->sendEmailVerificationNotification();
+
         event(new Registered($user));
 
         Auth::login($user);

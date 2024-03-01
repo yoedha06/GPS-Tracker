@@ -2,37 +2,41 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * The model to policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
-     */
-    protected $policies = [
-        //
-    ];
-
-    /**
      * Register any authentication / authorization services.
-     */
-    public function boot()
+     *
+     * @return void
+        */
+        public function boot()
     {
-        $this->registerPolicies();
+        // Menghapus panggilan registerPolicies()
 
-        VerifyEmail::toMailUsing(function ($notifiable, $url) {
-            Log::info('Verification email triggered for user: ' . $notifiable->email);
+        ResetPassword::toMailUsing(function ($user, $token) {
+            $email = $user->email; // Mengambil alamat email dari objek user
+
+            Log::info('Password reset email triggered for user: ' . $email);
+
             return (new MailMessage)
-                ->subject('Verify Email Address')
-                ->line('Jika Anda tidak meregistrasi akun ini, abaikan email ini.')
-                ->line('Jika Anda memerlukan bantuan, silakan hubungi kami di support@example.com')
-                ->action('Verify Email Address', $url);
+
+                ->subject(Lang::get('Reset Password Notification!'))
+                ->greeting('Selamat datang ' . $user->username)
+                ->line(Lang::get('Anda menerima email ini karena kami menerima permintaan pengaturan ulang kata sandi untuk akun Anda.'))
+                ->action(
+                    Lang::get('Reset Password'),
+                    url(config('app.url').route('password.reset', ['token' => $token, 'email' => $email], false))
+                )
+                ->line(Lang::get('Tautan pengaturan ulang kata sandi ini akan kedaluwarsa dalam :count hitungan menit.', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]));
+
         });
+
     }
 }
+

@@ -126,11 +126,11 @@
 
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="password">Password</label>
-                                            <input type="password" id="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}"
-                                            value="{{ old('password') }}" name="password" required/>
-                                                @error('password')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
+                                            <div class="input-group"> <!-- Tambahkan input-group di sini -->
+                                                <input type="password" id="password" class="form-control form-control-lg" name="password" />
+                                                <button type="button" class="btn btn-outline-dark" id="showPasswordBtn"><i class="fas fa-eye"></i></button>
+                                            </div>
+
                                         </div>
 
                                         <div class="pt-1 mb-4">
@@ -193,6 +193,14 @@
     </section>
 
     <script>
+         document.getElementById("showPasswordBtn").addEventListener("click", function() {
+        var passwordInput = document.getElementById("password");
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+        } else {
+            passwordInput.type = "password";
+        }
+    });
         function showRegisterForm() {
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('register-page').style.display = 'block';

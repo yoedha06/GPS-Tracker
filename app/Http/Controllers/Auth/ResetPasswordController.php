@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
+use App\Models\User;
 
 class ResetPasswordController extends Controller
 {
@@ -16,13 +17,13 @@ class ResetPasswordController extends Controller
     protected $redirectTo = '/login';
 
 
-    // Menampilkan form reset password
     public function showResetForm(Request $request, $token = null)
-    {
-        return view('auth.passwords.reset')->with(
-            ['token' => $token, 'email' => $request->email]
-        );
-    }
+{
+    $email = $request->email;
+
+    return view('auth.passwords.reset', compact('token', 'email'));
+}
+
 
     // Melakukan reset password
     public function reset(Request $request)
@@ -47,5 +48,6 @@ class ResetPasswordController extends Controller
         } else {
             return back()->withInput()->withErrors(['email' => __($status)]);
         }
+
     }
 }

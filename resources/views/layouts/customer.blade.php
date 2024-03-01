@@ -110,7 +110,7 @@
                     </li>
                     <br>
                     <a href="" class="sidebar-link">
-                        <i class="bi bi-map-fill"></i>
+                        <i class="fas fa-map-marker-alt"></i>
                         <span>Last Location</span>
                     </a>
 

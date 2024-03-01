@@ -57,7 +57,7 @@
                     <div class="card-body">
                 {{-- email berhasil dikirim --}}
                         @if (Session::has('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <div class="alert alert-primary alert-dismissible fade show" role="alert">
                                 {{ Session::get('success') }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
@@ -66,6 +66,13 @@
                         @if (Session::has('successs'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 {{ Session::get('successs') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+                {{-- email expired --}}
+                        @if (Session::has('error'))
+                            <div class="alert alert-dangger alert-dismissible fade show" role="alert">
+                                {{ Session::get('error') }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @endif
