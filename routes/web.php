@@ -109,6 +109,8 @@ Route::get('/password/reset/{token}/{email}', [ResetPasswordController::class, '
 // Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 Route::get('/validation', [ValidationController::class, 'index'])->name('validation');
+
+Route::get('/map', [MapController::class, 'index'])->name('map.index');
 Route::get('/map/select-device', [MapController::class, 'selectDevice'])->name('map.selectDevice');
 //filter
 Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
