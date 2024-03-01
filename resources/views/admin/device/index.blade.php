@@ -54,7 +54,6 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Device User</h4>
                 </div>
-
                 <div class="card-body">
                     <table class="table table-striped" id="table1" style="table-layout: auto">
                         <thead>
@@ -63,6 +62,8 @@
                                 <th>Name</th>
                                 <th>Device</th>
                                 <th>Serial Number</th>
+                                <th>Nopol</th>
+                                <th>Photo</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -72,7 +73,15 @@
                                     <td>{{ optional($item->user)->name }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->serial_number }}</td>
+                                    <td>{{ $item->plat_nomor }}</td>
                                     <td>
+                                        @if ($item->photo)
+                                            <img src="{{ asset('storage/' . $item->photo) }}" alt="Device Photo"
+                                                style="max-width: 100px; max-height: 100px;">
+                                        @else
+                                            No Image
+                                        @endif
+                                    </td>
                                     </td>
                                 </tr>
                             @endforeach
@@ -137,17 +146,18 @@
                 $.each(data, function(index, item) {
                     console.log('Processing item:', item);
                     var row = `<tr>
-                        <td>${index + 1}</td>
-                        <td>${item.user ? item.user.name : ''}</td>
-                        <td>${item.name}</td>
-                        <td>${item.serial_number}</td>
-                    </tr>`;
-
+            <td>${index + 1}</td>
+            <td>${item.user ? item.user.name : ''}</td>
+            <td>${item.name}</td>
+            <td>${item.serial_number}</td>
+            <td>${item.plat_nomor}</td>
+            <td>
+                ${item.photo ? `<img src="/storage/${item.photo}" alt="Device Photo" style="max-width: 100px; max-height: 100px;">` : 'No Image'}
+            </td>
+        </tr>`;
                     tableBody.append(row);
                 });
             }
-
-
 
             // Fungsi untuk menampilkan pesan validasi
             function showValidationMessage(message) {
