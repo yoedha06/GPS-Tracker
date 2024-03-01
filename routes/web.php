@@ -36,13 +36,13 @@ Auth::routes(['verify' => true]);
 //bawaan laravel
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
 
-Route::get('/email/resend',[AuthVerificationController::class,'resend'])->name('verification.resend');
-
 //tampilan HOMEPAGE
 Route::get('/', [TampilanController::class, 'homepage'])->name('index.homepage');
 
 //register customer
 Route::post('/register', [AuthRegisterController::class, 'register'])->name('register');
+
+Route::get('/email/resend',[AuthVerificationController::class,'resend'])->name('verification.resend');
 
 Route::get('/email/verify', function () {
     return view('auth.verify');
@@ -50,15 +50,21 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect()->route('login');
+    // Cek apakah pengguna sudah login
+    if (Auth::check()) {
+        Auth::logout();
+        return redirect()->route('login')->with('success', 'Your email has been verified. Please log in.');
+    } else {
+        return redirect()->route('login')->with('success', 'Your email has been verified. Please log in.');
+    }
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 //login
-Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
+Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
 Route::post('/login', [AuthLoginController::class, 'login']);
 
 //hak akses
-Route::middleware(['verified', 'auth'])->group(function () {
+Route::middleware(['auth','verified'])->group(function () {
     Route::middleware(['role:customer'])->group(function () {
         Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
         Route::get('/customer/profile', [ProfileController::class, 'index'])->name('customer.profile');
@@ -119,3 +125,4 @@ Route::get('/validation', [ValidationController::class, 'index'])->name('validat
 
 
 
+Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);

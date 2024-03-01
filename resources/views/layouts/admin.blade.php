@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/main/app-dark.css') }}">
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 
@@ -40,6 +41,30 @@
             /* Adjust the width as needed */
             height: 70px;
             /* Adjust the height as needed */
+        }
+
+        #validationMessage {
+            display: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            10%,
+            90% {
+                opacity: 1;
+            }
         }
     </style>
 </head>

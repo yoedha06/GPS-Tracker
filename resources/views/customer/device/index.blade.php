@@ -23,18 +23,23 @@
             <div class="page-title">
                 <div class="row">
                     <div class="col-12 col-md-6 order-md-1 order-last">
-                        <h3>Device</h3>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div class="mb-3">
+            <label for="search" class="form-label">Search:</label>
+            <input type="text" id="search" class="form-control" oninput="liveSearch()">
+        </div>
+
+        <div id="searchResults" class="mt-3"></div>
         <section class="section">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Device User</h4>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDeviceModal">
-                        <i class="bi bi-plus"></i>
+                        <i class="bi bi-plus"></i> Add Device
                     </button>
                 </div>
 
@@ -44,7 +49,7 @@
                             {{ Session::get('success') }}
                         </div>
                     @endif
-                    <table class="table table-striped" id="table1" style="table-layout: auto">
+                    <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -54,7 +59,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($device as $item)
+                            @forelse ($device as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->name }}</td>
@@ -62,15 +67,19 @@
                                     <td>
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#editDeviceModal{{ $item->id_device }}">
-                                            <i class="bi bi-pencil"></i>
+                                            <i class="bi bi-pencil"></i> Edit
                                         </button>
                                         <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                             data-bs-target="#deleteDeviceModal{{ $item->id_device }}">
-                                            <i class="bi bi-trash"></i>
+                                            <i class="bi bi-trash"></i> Delete
                                         </button>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">No devices found</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                         @if ($errors && $errors->has('serial_number'))
                             <div class="alert alert-danger">
@@ -186,4 +195,45 @@
             </div>
         </footer>
     </div>
+    <script>
+        function liveSearch() {
+            const searchInput = document.getElementById('search');
+            const searchTerm = searchInput.value.toLowerCase();
+            const tableBody = document.getElementById('table1').getElementsByTagName('tbody')[0];
+            const deviceData = {!! json_encode($device) !!}; // Convert PHP array to JavaScript
+
+            // Filter devices based on the search term
+            const filteredResults = deviceData.filter(device => device.name.toLowerCase().includes(searchTerm) || device
+                .serial_number.toLowerCase().includes(searchTerm));
+
+            // Display search results
+            if (filteredResults.length > 0) {
+                tableBody.innerHTML = ''; // Clear existing table body
+
+                filteredResults.forEach((device, index) => {
+                    const resultItem = document.createElement('tr');
+                    resultItem.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${device.name}</td>
+                        <td>${device.serial_number}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#editDeviceModal${device.id_device}">
+                                <i class="bi bi-pencil"></i> Edit
+                            </button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteDeviceModal${device.id_device}">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(resultItem);
+                });
+
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center">No devices found</td></tr>';
+            }
+        }
+        
+    </script>
 @endsection
