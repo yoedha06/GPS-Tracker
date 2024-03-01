@@ -108,4 +108,5 @@ Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showRese
 Route::get('kirim', [KirimEmailController::class, 'index']);
 
 //filter Select+Search
-Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
+// Route::get('/getHistoryByDevice/{deviceId}', [DeviceController::class, 'filter']);
+Route::get('/gethistorybydevice/{deviceId}', [HistoryController::class, 'getHistoryByDevice'])->name('getHistoryByDevice');

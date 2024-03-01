@@ -16,6 +16,9 @@ class HistoryController extends Controller
 
     public function index()
     {
+
+        $devices = Device::all();
+
         // Get the authenticated user
         $user = Auth::user();
 
@@ -100,7 +103,7 @@ class HistoryController extends Controller
         // Fetch history records for the specified device
         $history = History::where('device_id', $deviceId)->get();
 
-        logger('History data retrieved:', $history);
+        logger('History data retrieved:', $history->toArray()); // Convert collection to array
 
         // Include device information in the JSON response
         $response = [
@@ -108,7 +111,8 @@ class HistoryController extends Controller
             'history' => $history,
         ];
 
-        logger('Response sent:', $response);
+        // Log device name directly or convert it to an array
+        logger('Device name:', $device->toArray()); // or logger('Device name: ' . $device->name);
 
         return response()->json($response);
     }
