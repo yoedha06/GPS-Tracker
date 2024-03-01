@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\History;
 use App\Models\Device;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class HistoryController extends Controller
@@ -78,6 +79,12 @@ class HistoryController extends Controller
         //
     }
 
+    public function map()
+    {
+        $history = DB::table('history')->get();
+
+        return view('customer.map.index', compact('history'));
+    }
     public function getHistoryByDevice($deviceId)
     {
         logger('Request for device history. Device ID: ' . $deviceId);
