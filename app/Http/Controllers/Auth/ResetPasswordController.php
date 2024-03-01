@@ -48,5 +48,6 @@ class ResetPasswordController extends Controller
         } else {
             return back()->withInput()->withErrors(['email' => __($status)]);
         }
+
     }
 }
