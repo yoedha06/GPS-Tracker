@@ -55,6 +55,8 @@
                                 <th>No</th>
                                 <th>Name</th>
                                 <th>Serial Number</th>
+                                <th>Plat Nomor</th>
+                                <th>Photo</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -64,6 +66,19 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->serial_number }}</td>
+                                    <td>{{ $item->plat_nomor }}</td>
+                                    <td>
+                                        @if ($item->photo)
+                                            <button type="button" class="btn btn-link" data-bs-toggle="modal"
+                                                data-bs-target="#viewPhotoModal{{ $item->id_device }}">
+                                                <img src="{{ asset('storage/' . $item->photo) }}" alt="View Photo"
+                                                    style="max-width: 100px; border-radius: 5px">
+                                            </button>
+                                        @else
+                                            No Image
+                                        @endif
+                                    </td>
+
                                     <td>
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#editDeviceModal{{ $item->id_device }}">
@@ -91,7 +106,7 @@
             </div>
         </section>
 
-        <!-- ADD Device Modalss -->
+        <!-- ADD Device Modal -->
         <div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -100,7 +115,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('device.store') }}" method="POST">
+                        <form action="{{ route('device.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
@@ -109,20 +124,29 @@
                             <div class="mb-3">
                                 <label for="serial_number" class="form-label">Serial Number</label>
                                 <input type="text" class="form-control" id="serial_number" name="serial_number" required>
-                                @if ($errors->has('serial_number'))
-                                    <div class="alert alert-danger">
-                                        {{ $errors->first('serial_number') }}
-                                    </div>
-                                @endif
+                            </div>
+                            <!-- Add Photo and Plat Nomor fields -->
+                            <div class="mb-3">
+                                <label for="photo" class="form-label">Photo</label>
+                                <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                            </div>
+                            <div class="mb-3">
+                                <label for="plat_nomor" class="form-label">Plat Nomor</label>
+                                <input type="text" class="form-control" id="plat_nomor" name="plat_nomor" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Add Device</button>
+                            @if ($errors->has('serial_number'))
+                                <div class="alert alert-danger">
+                                    {{ $errors->first('serial_number') }}
+                                </div>
+                            @endif
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Edit Device Modals -->
+        <!-- Edit Device Modal -->
         @foreach ($device as $item)
             <div class="modal fade" id="editDeviceModal{{ $item->id_device }}" tabindex="-1"
                 aria-labelledby="editDeviceModalLabel{{ $item->id_device }}" aria-hidden="true">
@@ -130,9 +154,11 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="editDeviceModalLabel{{ $item->id_device }}">Edit Device</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
-                        <form action="{{ route('device.update', $item->id_device) }}" method="POST">
+                        <form action="{{ route('device.update', $item->id_device) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="modal-body">
@@ -147,6 +173,30 @@
                                     <input type="text" class="form-control"
                                         id="edit_serial_number{{ $item->id_device }}" name="serial_number"
                                         value="{{ $item->serial_number }}" required readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="file" class="form-control" id="edit_photo{{ $item->id_device }}"
+                                        name="photo" onchange="previewEditPhoto(this, {{ $item->id_device }})">
+                                    @if ($item->photo)
+                                        <div class="mt-2">
+                                            <img id="editPhotoPreview{{ $item->id_device }}"
+                                                src="{{ asset('storage/' . $item->photo) }}" alt="Current Device Photo"
+                                                style="max-width: 200px; max-height: 200px;">
+                                        </div>
+                                        <button type="button" class="btn btn-danger mt-2"
+                                            onclick="deletePhoto({{ $item->id_device }})">
+                                            <i class="fas fa-trash"></i> Delete Photo
+                                        </button>
+                                    @else
+                                        <p>No photo available.</p>
+                                    @endif
+                                </div>
+                                <div class="mb-3">
+                                    <label for="edit_plat_nomor{{ $item->id_device }}" class="form-label">Plat
+                                        Nomor</label>
+                                    <input type="text" class="form-control"
+                                        id="edit_plat_nomor{{ $item->id_device }}" name="plat_nomor"
+                                        value="{{ $item->plat_nomor }}" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -185,6 +235,31 @@
             </div>
         @endforeach
 
+        <!-- Modals Photo device -->
+        @foreach ($device as $item)
+            <div class="modal fade" id="viewPhotoModal{{ $item->id_device }}" tabindex="-1"
+                aria-labelledby="viewPhotoModalLabel{{ $item->id_device }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewPhotoModalLabel{{ $item->id_device }}">Picture -
+                                {{ $item->name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            @if ($item->photo)
+                                <img src="{{ asset('storage/' . $item->photo) }}" alt="Device Photo"
+                                    style="max-width: 100%; max-height: 100vh; border-radius: 10px">
+                            @else
+                                No Image
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+
         <footer>
             <div class="footer clearfix mb-0 text-muted">
                 <div class="float-start">
@@ -195,16 +270,20 @@
             </div>
         </footer>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         function liveSearch() {
             const searchInput = document.getElementById('search');
             const searchTerm = searchInput.value.toLowerCase();
             const tableBody = document.getElementById('table1').getElementsByTagName('tbody')[0];
-            const deviceData = {!! json_encode($device) !!}; // Convert PHP array to JavaScript
+            const deviceData = {!! json_encode($device) !!};
 
             // Filter devices based on the search term
-            const filteredResults = deviceData.filter(device => device.name.toLowerCase().includes(searchTerm) || device
-                .serial_number.toLowerCase().includes(searchTerm));
+            const filteredResults = deviceData.filter(device =>
+                device.name.toLowerCase().includes(searchTerm) ||
+                device.serial_number.toLowerCase().includes(searchTerm) ||
+                device.plat_nomor.toLowerCase().includes(searchTerm) // Added condition for Plat Nomor
+            );
 
             // Display search results
             if (filteredResults.length > 0) {
@@ -213,27 +292,81 @@
                 filteredResults.forEach((device, index) => {
                     const resultItem = document.createElement('tr');
                     resultItem.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${device.name}</td>
-                        <td>${device.serial_number}</td>
-                        <td>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#editDeviceModal${device.id_device}">
-                                <i class="bi bi-pencil"></i> Edit
-                            </button>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteDeviceModal${device.id_device}">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </td>
-                    `;
+            <td>${index + 1}</td>
+            <td>${device.name}</td>
+            <td>${device.serial_number}</td>
+            <td>${device.plat_nomor}</td>
+            <td>
+                ${device.photo
+                    ? `<img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">`
+                    : 'No photo available'}
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editDeviceModal${device.id_device}">
+                    <i class="bi bi-pencil"></i> Edit
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDeviceModal${device.id_device}">
+                    <i class="bi bi-trash"></i> Delete
+                </button>
+            </td>
+        `;
+
                     tableBody.appendChild(resultItem);
                 });
-
             } else {
-                tableBody.innerHTML = '<tr><td colspan="4" class="text-center">No devices found</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="6" class="text-center">No devices found</td></tr>';
             }
         }
-        
+
+        function deletePhoto(deviceId) {
+            // Send an AJAX request to your server to delete the photo
+            $.ajax({
+                type: 'DELETE',
+                url: '/delete-photo/' + deviceId,
+                data: {
+                    "_token": "{{ csrf_token() }}", // Include the CSRF token
+                },
+                success: function(response) {
+                    // If the photo is successfully deleted, update the UI
+                    $('#edit_photo' + deviceId).val('');
+                    $('#edit_photo' + deviceId).siblings('.mt-2').remove();
+                    $('#edit_photo' + deviceId).siblings('button').remove();
+                    $('#edit_photo' + deviceId).siblings('p').text('No photo available.');
+
+                    // Display success message in editPhotoMessage div
+                    $('#editPhotoMessage').html(
+                        '<div class="alert alert-success">Photo deleted successfully</div>');
+                },
+                error: function(error) {
+                    console.error('Error deleting photo:', error);
+                    // Display error message in editPhotoMessage div
+                    $('#editPhotoMessage').html('<div class="alert alert-danger">Failed to delete photo</div>');
+                }
+            });
+
+            function previewEditPhoto(input, imageId) {
+                var previewId = 'editPhotoPreview' + imageId;
+                var fileInput = input.files[0];
+
+                if (fileInput) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        document.getElementById(previewId).src = e.target.result;
+                    };
+
+                    reader.readAsDataURL(fileInput);
+                }
+            }
+
+            function deletePhoto(imageId) {
+                // Fungsi untuk menghapus foto (harap disesuaikan sesuai kebutuhan)
+                // ...
+
+                // Setelah menghapus, update pratinjau atau hapus pratinjau jika perlu
+                var previewId = 'editPhotoPreview' + imageId;
+                document.getElementById(previewId).src = ''; // Menghapus pratinjau
+            }
+        }
     </script>
 @endsection
