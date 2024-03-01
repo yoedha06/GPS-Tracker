@@ -51,11 +51,19 @@
         <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
             alt="Logo" style="width: 300px; height: 300px;">
     </div>
+<<<<<<< HEAD
+
+=======
+>>>>>>> 358c944bcedb2ae11a6f8b285f729a490a008cb4
     <header class="mb-3">
         <a href="#" class="burger-btn d-block d-xl-none">
             <i class="bi bi-justify fs-3"></i>
         </a>
     </header>
+<<<<<<< HEAD
+
+=======
+>>>>>>> 358c944bcedb2ae11a6f8b285f729a490a008cb4
     @yield('content')
     <div id="sidebar" class="active">
         <div class="sidebar-wrapper active">
