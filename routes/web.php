@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Api\HistoryController as ApiHistoryController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\Auth\VerificationController as AuthVerificationController;
@@ -33,7 +34,7 @@ Auth::routes(['verify' => true]);
 //bawaan laravel
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
 
-Route::get('/email/resend',[AuthVerificationController::class,'resend'])->name('verification.resend');
+Route::get('/email/resend', [AuthVerificationController::class, 'resend'])->name('verification.resend');
 
 //tampilan HOMEPAGE
 Route::get('/', [TampilanController::class, 'homepage'])->name('index.homepage');
@@ -64,12 +65,13 @@ Route::middleware(['verified', 'auth'])->group(function () {
         Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
         Route::get('/customer/map', [MapController::class, 'index'])->name('customer.map.index');
 
-        //device
+        //device customer
         Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
         Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
         Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
         Route::put('/device/{id_device}', [DeviceController::class, 'update'])->name('device.update');
         Route::delete('/device/{id}', [DeviceController::class, 'destroy'])->name('device.destroy');
+        Route::delete('/delete-photo/{id}', [DeviceController::class, 'deletePhoto'])->name('delete.photo');
     });
 
     Route::middleware(['role:admin'])->group(function () {
@@ -101,4 +103,12 @@ Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showRese
 
 Route::get('kirim', [KirimEmailController::class, 'index']);
 
+//filter
 Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
+Route::get('/getHistoryByDevice/{deviceId}', [HistoryController::class,'getHistoryByDevice'])->name('history.getHistoryByDevice');
+
+
+
+ 
+
+
