@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+
 
 class VerificationController extends Controller
 {
@@ -32,25 +36,32 @@ class VerificationController extends Controller
 
     public function verify(Request $request)
     {
-        // Mengarahkan pengguna kembali ke halaman login jika belum diverifikasi
-        if (!$request->user()->hasVerifiedEmail()) {
-            return redirect()->route('login'); 
+        $user = User::where('verification_token', $request->route('token'))->firstOrFail();
+
+        if ($user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+            event(new Verified($user));
+
+            // Hapus token dan waktu kadaluarsa karena email sudah diverifikasi
+            $user->verification_token = null;
+            $user->verification_expiry = null;
+            $user->save();
+
+            return redirect($this->redirectPath())->with('success', 'Email already verified.');
         }
-
-        $request->fulfill();
-        $user = $request->user();
-        event(new Verified($user));
-
-        Auth::logout();
-
-        return redirect($this->redirectPath());
     }
+
 
     public function resend(Request $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->route('login')->with('error', 'Email Anda sudah diverifikasi.');
         }
+
+        $token =  Str::random(40);
+        $request->user()->verification_token = $token;
+        $request->user()->verification_expiry = Carbon::now()->addMinute(60);
+        $request->user()->save();
 
         $request->user()->sendEmailVerificationNotification();
 

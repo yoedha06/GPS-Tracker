@@ -19,7 +19,9 @@ class HistoryController extends Controller
         $deviceIds = $user->devices->pluck('id_device');
 
         // Fetch history records associated with the authenticated user's devices
-        $history = History::whereIn('device_id', $deviceIds)->get();
+        $history = History::whereIn('device_id', $deviceIds)
+                            ->orderBy('date_time', 'desc')
+                            ->get();
 
         return view('customer.history.index', ['history' => $history]);
     }
