@@ -7,7 +7,7 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 
-</style>
+
 @section('content')
 <div id="main">
     <div class="form-group ml-3">
@@ -22,23 +22,26 @@
 
 
     <div class="date-time-input ml-auto">
-        <label for="start-date" class="date-label">
-            Start Date:
-            <div class="input-group">
-                <input type="date" id="start-date" class="form-control">
-                <div class="input-group-append">
+        <div class="d-flex flex-row-reverse">
+            <button id="filter-button" class="btn btn-primary ml-2">Filter</button> <!-- Tombol filter -->
+            <div class="date-label mr-2">
+                <label for="end-date">End Date:</label>
+                <div class="input-group">
+                    <input type="date" id="end-date" class="form-control">
+                    <div class="input-group-append"></div>
                 </div>
             </div>
-        </label>
-        <label for="end-date" class="date-label">
-            End Date:
-            <div class="input-group">
-                <input type="date" id="end-date" class="form-control">
-                <div class="input-group-append">
+            <div class="date-label">
+                <label for="start-date">Start Date:</label>
+                <div class="input-group">
+                    <input type="date" id="start-date" class="form-control">
+                    <div class="input-group-append"></div>
                 </div>
             </div>
-        </label>
+        </div>
     </div>
+    <div id="map" style="height: 50%; width: 100%;"></div>
+
     <div id="map" style="height: 50%; width: 100%;"></div>
 </div>
 
@@ -50,17 +53,19 @@
 <style>
     .date-time-input {
         display: flex;
-        justify-content: flex-end;
-        margin-top: 10px;
+        align-items: center;
     }
+
     .date-label {
         position: relative;
         display: inline-block;
         margin-right: 10px;
     }
+
     .date-label input[type="date"] {
         padding-right: 30px;
     }
+
     .date-label i.fas.fa-calendar {
         position: absolute;
         top: 50%;
@@ -68,64 +73,113 @@
         transform: translateY(-50%);
         pointer-events: none;
     }
+
+    #filter-button {
+        margin-left: 10px;
+    }
 </style>
 <script>
-    var map = L.map('map', {
-        center: [-6.8955992330108895, 107.54240919668543],
-        zoom: 13
-    });
+    var map = L.map('map').setView([-6.8955992330108895, 107.54240919668543], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    var historyData = @json($history);
+    var historyData = {!! json_encode($history) !!};
+    var deviceData = {!! json_encode($device) !!};
 
     var layerGroup = L.layerGroup().addTo(map);
     var polylinePoints = [];
 
-    // Loop through history data to create markers and build polyline points
-    for (var i = 0; i < historyData.length; i++) {
-        var latlngStr = historyData[i].latlng;
-        var latlngArr = latlngStr.split(", ");
-        var lat = parseFloat(latlngArr[0]);
-        var lng = parseFloat(latlngArr[1]);
-        var speed = parseFloat(historyData[i].speeds);
-        var accuracy = parseFloat(historyData[i].accuracy);
-
-        var color;
-        if (speed < 20) {
-            color = 'green';
-        } else if (speed >= 20 && speed <= 40) {
-            color = 'yellow';
-        } else {
-            color = 'red';
-        }
-
-        var popupContent = "Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m";
-
-        // Create circle marker for each point
-        var circleMarker = L.circleMarker([lat, lng], {
-            radius: 10,
-            stroke: false,
-            color: color,
-            fillOpacity: 1
-        }).bindPopup(popupContent).addTo(layerGroup);
-
-        // Push coordinates to polylinePoints array
-        polylinePoints.push([lat, lng]);
+    // Function to filter history data by date range
+    function filterHistoryDataByDate(startDate, endDate) {
+        return historyData.filter(function(record) {
+            var recordDate = new Date(record.waktu);
+            return recordDate >= startDate && recordDate <= endDate;
+        });
     }
 
-    // Create polyline with the polylinePoints array
+    // Function to refresh markers and polyline based on filtered data
+function refreshMapMarkersAndPolyline(filteredData) {
+    // Clear existing markers and polyline
+    layerGroup.clearLayers();
+    polylinePoints = [];
+
+    // Loop through filtered data to create markers and build polyline points
+    filteredData.forEach(function(record) {
+        var latlngArr = record.latlng.split(", ");
+        var lat = parseFloat(latlngArr[0]);
+        var lng = parseFloat(latlngArr[1]);
+        var speed = parseFloat(record.speeds);
+        var accuracy = parseFloat(record.accuracy);
+
+        // Check if lat and lng are valid numbers
+        if (!isNaN(lat) && !isNaN(lng)) {
+            // Find device information
+            var deviceId = record.device_id;
+            var deviceInfo = Array.isArray(deviceData) ? deviceData.find(function(device) {
+                return device.id === deviceId;
+            }) : null;
+            var deviceName = deviceInfo ? deviceInfo.name : "Unknown";
+
+            var color;
+            if (speed < 20) {
+                color = 'green';
+            } else if (speed >= 20 && speed <= 40) {
+                color = 'yellow';
+            } else {
+                color = 'red';
+            }
+
+            var popupContent = "Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m<br>Device: " + deviceName;
+
+            // Create circle marker for each point
+            var circleMarker = L.circleMarker([lat, lng], {
+                radius: 10,
+                stroke: false,
+                color: color,
+                fillOpacity: 1
+            }).bindPopup(popupContent).addTo(layerGroup);
+
+            // Push coordinates to polylinePoints array
+            polylinePoints.push([lat, lng]);
+        }
+    });
+
+    // Create polyline with the new polylinePoints array
     var polyline = L.polyline(polylinePoints, {
         color: 'blue', // Set the color of the polyline
-        weight: 5, // Set the weight of the polyline
-        opacity: 5 // Set the opacity of the polyline
+        weight: 10, // Set the weight of the polyline
+        opacity: 0.5 // Set the opacity of the polyline
     }).addTo(layerGroup);
 
-    // Fit the map to the bounds of the polyline
-    map.fitBounds(polyline.getBounds());
+    // Check if polylinePoints is not empty before fitting bounds
+    if (polylinePoints.length > 0) {
+        // Fit the map to the bounds of the polyline
+        map.fitBounds(polyline.getBounds());
+    }
+}
+
+
+    // Event listener for when the date inputs change
+    $("#start-date, #end-date").change(function() {
+        var startDate = new Date($("#start-date").val());
+        var endDate = new Date($("#end-date").val());
+
+        // Filter history data by date range
+        var filteredData = filterHistoryDataByDate(startDate, endDate);
+
+        // Refresh markers and polyline based on filtered data
+        refreshMapMarkersAndPolyline(filteredData);
+    });
+
+    // Initially load markers and polyline based on full history data
+    refreshMapMarkersAndPolyline(historyData);
 </script>
+
+
+
+
 
 
 <script>
