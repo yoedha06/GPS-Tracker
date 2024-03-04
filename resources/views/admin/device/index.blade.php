@@ -172,7 +172,7 @@
                 // Hide the validation message after 3 seconds
                 setTimeout(function() {
                     validationMessage.hide();
-                }, 3000);
+                }, 1500);
             }
 
             // Fungsi untuk mengambil data dari server berdasarkan user ID
