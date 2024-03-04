@@ -23,7 +23,6 @@
         </select>
     </div>
 
-
     <div class="date-time-input ml-auto">
         <label for="start-date" class="date-label">
             Start Date:
