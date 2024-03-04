@@ -21,9 +21,9 @@
 
         <div class="container">
             <form class="mt-2 row g-3">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                     <label for="selectDevice" class="form-label">Select Device</label>
-                    <select id="selectDevice" class="form-select" aria-label="Select Device">
+                    <select id="selectDevice" class="form-select" aria-label="Select Device" style="width: 202%">
                         <option value="" selected>Select Device</option>
                         @foreach ($devices as $device)
                             <option value="{{ $device->id_device }}">{{ $device->name }}</option>
@@ -31,10 +31,16 @@
                     </select>
                 </div>
             </form>
+        </div>        
 
             <section class="section">
                 <div class="card">
                     <div class="card-header">
+                        <div class="col-md-6 mb-3">
+                            <button id="refreshButton" class="btn btn-primary">
+                                Lihat Semua History <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                         <h4 class="card-title">Data History</h4>
                     </div>
                     <div class="card-body">
@@ -71,6 +77,9 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="mt-3">
+                        {{ $history->links() }}
+                    </div>
                 </div>
             </section>
 
@@ -84,11 +93,18 @@
                 </div>
             </footer>
         </div>
-        <!-- Include jQuery -->
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <!-- Include Select2 JS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+          <!-- Include jQuery -->
+          <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+          <!-- Include Select2 JS -->
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+              integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+              crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+          <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
         <script>
             $(document).ready(function() {
@@ -99,6 +115,7 @@
                 $('#selectDevice').on('select2:select', function(e) {
                     var selectedDeviceId = e.params.data.id;
                     console.log("contoh", selectedDeviceId);
+
 
                     // Periksa eta perangkat dipilih
                     if (selectedDeviceId) {
@@ -143,6 +160,10 @@
                 if (initialDeviceId) {
                     $('#selectDevice').trigger('change');
                 }
+                $('#refreshButton').on('click', function() {
+                    // Reload the current page
+                    location.reload();
+                });
             });
         </script>
     @endsection

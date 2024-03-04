@@ -41,7 +41,7 @@
 
         <div class="mb-2">
             <button class="btn btn-primary" id="showAllDataBtn">
-                <i class="fas fa-eye"></i> Lihat Semua Data
+                <i class="fas fa-eye"></i> See All Device
             </button>
         </div>
 
@@ -87,6 +87,10 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="card-body">
+                        {{ $device->links('vendor.pagination.bootstrap-5') }}
+                    </div>
+                    
                 </div>
             </div>
         </section>
@@ -196,6 +200,10 @@
                     }
                 });
             }
+            $("#showAllDataBtn").on('click', function () {
+                // Reload the current page
+                location.reload();
+            });
         });
     </script>
 @endsection
