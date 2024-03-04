@@ -1,4 +1,4 @@
-@extends('layouts.customer')
+@extends('layouts.admin')
 
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -69,80 +69,74 @@
         pointer-events: none;
     }
 </style>
-<script>
-    var map = L.map('map', {
-        center: [-6.8955992330108895, 107.54240919668543],
-        zoom: 13
-    });
+    <script>
+        var map = L.map('map', {
+            center: [-6.8955992330108895, 107.54240919668543],
+            zoom: 13
+        });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-    var historyData = @json($history);
+        var historyData = @json($history);
 
-    var layerGroup = L.layerGroup().addTo(map);
-    var polylinePoints = [];
+        var layerGroup = L.layerGroup().addTo(map);
+        var polylinePoints = [];
 
-    // Loop through history data to create markers and build polyline points
-    for (var i = 0; i < historyData.length; i++) {
-        var latlngStr = historyData[i].latlng;
-        var latlngArr = latlngStr.split(", ");
-        var lat = parseFloat(latlngArr[0]);
-        var lng = parseFloat(latlngArr[1]);
-        var speed = parseFloat(historyData[i].speeds);
-        var accuracy = parseFloat(historyData[i].accuracy);
+        for (var i = 0; i < historyData.length; i++) {
+            var latlngStr = historyData[i].latlng;
+            var latlngArr = latlngStr.split(", ");
+            var lat = parseFloat(latlngArr[0]);
+            var lng = parseFloat(latlngArr[1]);
+            var speed = parseFloat(historyData[i].speeds);
+            var accuracy = parseFloat(historyData[i].accuracy);
 
-        var color;
-        if (speed < 20) {
-            color = 'green';
-        } else if (speed >= 20 && speed <= 40) {
-            color = 'yellow';
-        } else {
-            color = 'red';
+            var color;
+            if (speed < 20) {
+                color = 'green';
+            } else if (speed >= 20 && speed <= 40) {
+                color = 'yellow';
+            } else {
+                color = 'red';
+            }
+
+            var popupContent = "Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m";
+
+            var circleMarker = L.circleMarker([lat, lng], {
+                radius: 10,
+                stroke: false,
+                color: color,
+                fillOpacity: 1
+            }).bindPopup(popupContent).addTo(layerGroup);
+
+            polylinePoints.push([lat, lng]);
+
+            // Adding a Polyline connecting the circle markers
+            var polyline = L.polyline(polylinePoints, {
+                color: color,
+                weight: 5,
+                opacity: 5
+            }).addTo(layerGroup);
         }
 
-        var popupContent = "Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m";
 
-        // Create circle marker for each point
-        var circleMarker = L.circleMarker([lat, lng], {
-            radius: 10,
-            stroke: false,
-            color: color,
-            fillOpacity: 1
-        }).bindPopup(popupContent).addTo(layerGroup);
+        // Zoom ke lokasi marker pertama
+        if (historyData.length > 0) {
+            map.setView([historyData[0].latlng.split(',')[0], historyData[0].latlng.split(',')[1]], 15);
+        }
 
-        // Push coordinates to polylinePoints array
-        polylinePoints.push([lat, lng]);
-    }
+        layerGroup.addTo(map);
 
-    // Create polyline with the polylinePoints array
-    var polyline = L.polyline(polylinePoints, {
-        color: 'blue', // Set the color of the polyline
-        weight: 5, // Set the weight of the polyline
-        opacity: 5 // Set the opacity of the polyline
-    }).addTo(layerGroup);
-
-    // Fit the map to the bounds of the polyline
-    map.fitBounds(polyline.getBounds());
-</script>
-
-
-<script>
         $(document).ready(function() {
     $('#device-select').on('change', function() {
         var deviceId = $(this).val();
 
         $.ajax({
-            url: '/admin/get-related-data/' + deviceId,
+            url: '/get-related-data/' + deviceId,
             method: 'GET',
             success: function(data) {
-                var historyData = data.devices.find(device => device.id == deviceId).history;
-                $('#related-data-select').empty(); // Kosongkan dropdown terlebih dahulu
-                $.each(historyData, function(index, history) {
-                    $('#related-data-select').append('<option value="' + history.id + '">' + history.name + '</option>');
-                });
-                $('#related-data-select').trigger('change');
+                // Manipulasi data terkait dan perbarui dropdown kedua di sini
             },
             error: function(error) {
                 console.error('Error fetching related data:', error);
@@ -152,6 +146,8 @@
 
     $('#device-select').select2();
 });
+
+
 
     </script>
 @endsection

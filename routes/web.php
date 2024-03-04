@@ -115,8 +115,12 @@ Route::get('/password/reset/{token}/{email}', [ResetPasswordController::class, '
 Route::get('/validation', [ValidationController::class, 'index'])->name('validation');
 
 
-// Route::get('/map', [MapController::class, 'index'])->name('map.index');
-Route::get('/map/select-device', [HistoryController::class, 'selectDevice']);
+ Route::get('/map', [MapController::class, 'index'])->name('map.index');
+Route::get('/get-related-data/{deviceId}', [HistoryController::class, 'getRelatedData']);
+Route::get('/admin/get-related-data/{deviceId}', [HistoryController::class, 'fetchData'])->name('admin.fetch_data');
+Route::get('/admin/map', [HistoryController::class, 'showMap'])->name('admin.map');
+
+
 //filter
 
 //filter Select+Search
