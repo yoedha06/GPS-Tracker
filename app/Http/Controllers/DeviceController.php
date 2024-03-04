@@ -61,12 +61,11 @@ class DeviceController extends Controller
             'name' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'max:255'],
             'serial_number' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'string', 'max:50', 'unique:device,serial_number'],
             'plat_nomor' => ['required', 'max:255'],
-            'photo' => ['nullable', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'photo' => ['nullable', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'], // Added 'webp' to supported file formats
         ], [
             'name.regex' => 'Name can only contain letters, numbers, and spaces.',
             'serial_number.regex' => 'Serial Number can only contain letters, numbers, and spaces.',
         ]);
-
 
         $validator->after(function ($validator) use ($request) {
             $existingDevice = Device::where('serial_number', $request->input('serial_number'))->first();
@@ -81,21 +80,33 @@ class DeviceController extends Controller
                 ->withErrors($validator);
         }
 
+        $file = $request->file('photo');
+
+        // Check if the 'photo' input is provided
+        if ($file) {
+            // Check if the file format is supported
+            $allowedExtensions = ['jpeg', 'jpg', 'png', 'gif', 'webp'];
+
+            if (!in_array($file->getClientOriginalExtension(), $allowedExtensions)) {
+                // Flash the error message for unsupported file format
+                Session::flash('photo_format_error', 'File format not supported. Please upload a valid photo.');
+                return redirect()->back()->withInput();
+            }
+
+            // Handle file upload and store in the 'photos' folder
+            $photoPath = $file->store('photos', 'public');
+        } else {
+            // 'photo' input is not provided, set it to null
+            $photoPath = null;
+        }
+
         $device = new Device([
             'name' => $request->input('name'),
             'serial_number' => $request->input('serial_number'),
             'plat_nomor' => $request->input('plat_nomor'), // Add plat_nomor to the Device instance
+            'photo' => $photoPath,
         ]);
 
-        // Check if the 'photo' input is provided
-        if ($request->hasFile('photo')) {
-            // Handle file upload and store in the 'photos' folder
-            $photoPath = $request->file('photo')->store('photos', 'public');
-            $device->photo = $photoPath;
-        } else {
-            // 'photo' input is not provided, set it to null
-            $device->photo = null;
-        }
         $user->devices()->save($device);
 
         Session::flash('success', 'Berhasil Input Data.');
@@ -141,10 +152,10 @@ class DeviceController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'max:255'],
             'plat_nomor' => ['required', 'max:255'],
-            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'], // Added 'webp' to supported file formats
         ], [
             'name.regex' => 'Name can only contain letters, numbers, and spaces.',
-            'photo.mimes' => 'The photo must be a valid image file (jpeg, png, jpg, gif).',
+            'photo.mimes' => 'The photo must be a valid image file (jpeg, png, jpg, gif, webp).', // Added 'webp' to the error message
         ]);
 
         if ($validator->fails()) {
@@ -159,6 +170,15 @@ class DeviceController extends Controller
 
         // Check if a new photo is provided
         if ($request->hasFile('photo')) {
+            // Check if the file format is supported
+            $allowedExtensions = ['jpeg', 'jpg', 'png', 'gif', 'webp'];
+
+            if (!in_array($request->file('photo')->getClientOriginalExtension(), $allowedExtensions)) {
+                // Flash the error message for unsupported file format
+                Session::flash('photo_format_error', 'File format not supported. Please upload a valid photo.');
+                return redirect()->back()->withInput();
+            }
+
             // Handle file upload and store in the 'photos' folder
             $photoPath = $request->file('photo')->store('photos', 'public');
             $device->photo = $photoPath;
@@ -170,6 +190,7 @@ class DeviceController extends Controller
 
         return redirect()->route('customer.device.index');
     }
+
 
 
     /** 
