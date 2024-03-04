@@ -14,10 +14,10 @@ class HistoryController extends Controller
      */
     public function index()
     {
-        $history =  History::all();
+        $history = History::all();
         return response()->json([
             'status' => true,
-            'masage' => 'success',
+            'message' => 'success',
             'data' => $history
         ]);
     }
@@ -29,39 +29,17 @@ class HistoryController extends Controller
     public function store(Request $request)
     {
         $device = Device::where('serial_number', $request->serial_number)->first();
-
+    
         if ($device == null) {
             return response()->json([
-                // 'status' => false,
-                'massage' => 'Serial number tidak di temukan',
-                // 'data' => $device
+                'massage' => 'Serial number tidak ditemukan',
             ], 401);
         }
-
-        $history = [
-            'device_id' => $request->device_id,
-            'latlng' => $request->latlng,
-            'bounds' => $request->bounds,
-            'accuracy' => $request->accuracy,
-            'altitude' => $request->altitude,
-            'altitude_acuracy' => $request->altitude_acuracy,
-            'heading' => $request->heading,
-            'speeds' => $request->speeds,
-            'date_time' => $request->date_time,
-        ];
-
-        $date_time = History::where('date_time', $request->date_time)->first();
-
-        if ($date_time) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Data dengan tanggal waktu yang sama sudah ada',
-            ], 403);
-        }
-
+    
         $history = new History();
-        $history->device_id = $device->id_device; // Perbaikan di sini
-        $history->latlng = $request->latlng;
+        $history->device_id = $device->id_device;
+        $history->latitude = $request->latitude;
+        $history->longitude = $request->longitude;
         $history->bounds = $request->bounds;
         $history->accuracy = $request->accuracy;
         $history->altitude = $request->altitude;
@@ -70,10 +48,10 @@ class HistoryController extends Controller
         $history->speeds = $request->speeds;
         $history->date_time = $request->date_time;
         $history->save();
-
+    
         return response()->json([
             'status' => true,
-            'message' => 'Success', // Perbaikan typo di sini
+            'message' => 'Success',
             'data' => $history
         ]);
     }

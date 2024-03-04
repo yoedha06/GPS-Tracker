@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('history', function (Blueprint $table) {
             $table->id('id_history');
             $table->foreignId('device_id')->references('id_device')->on('device');
-            $table->string('latlng');
+            $table->decimal('latitude', 10, 7); // Menyimpan nilai latitude dengan presisi 10 digit dan 7 digit di belakang koma
+            $table->decimal('longitude', 10, 7); // Menyimpan nilai longitude dengan presisi 10 digit dan 7 digit di belakang koma
             $table->string('bounds');
             $table->float('accuracy');
             $table->float('altitude');
