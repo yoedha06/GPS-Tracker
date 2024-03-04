@@ -13,7 +13,7 @@
     <div class="form-group ml-3">
         <label for="device-select">Select Device:</label>
         <select id="device-select" class="form-control">
-            <option></option>
+            <option value="" disabled selected>Select Device</option>
             @foreach($devices as $device)
                 <option value="{{ $device->id_device }}">{{ $device->name }}</option>
             @endforeach
