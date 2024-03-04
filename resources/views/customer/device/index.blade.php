@@ -272,6 +272,11 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
+        $('#table1').on('click', '[data-bs-toggle="modal"]', function() {
+            var targetModalId = $(this).data('bs-target');
+            $(targetModalId).modal('show');
+        });
+
         function liveSearch() {
             const searchInput = document.getElementById('search');
             const searchTerm = searchInput.value.toLowerCase();
@@ -292,24 +297,29 @@
                 filteredResults.forEach((device, index) => {
                     const resultItem = document.createElement('tr');
                     resultItem.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${device.name}</td>
-            <td>${device.serial_number}</td>
-            <td>${device.plat_nomor}</td>
-            <td>
-                ${device.photo
-                    ? `<img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">`
-                    : 'No photo available'}
-            </td>
-            <td>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editDeviceModal${device.id_device}">
-                    <i class="bi bi-pencil"></i> Edit
-                </button>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDeviceModal${device.id_device}">
-                    <i class="bi bi-trash"></i> Delete
-                </button>
-            </td>
-        `;
+                    <td>${index + 1}</td>
+                    <td>${device.name}</td>
+                    <td>${device.serial_number}</td>
+                    <td>${device.plat_nomor}</td>
+                    <td>
+                        ${device.photo
+                            ? `<button type="button" class="btn btn-link view-photo-btn" data-bs-toggle="modal" data-bs-target="#viewPhotoModal${device.id_device}">
+                                            <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
+                                        </button>`
+                            : 'No photo available'}
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editDeviceModal${device.id_device}">
+                            <i class="bi bi-pencil"></i> Edit
+                        </button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDeviceModal${device.id_device}">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                        <!-- Add this block to attach the event handler for View Photo button -->
+                        <button type="button" class="btn btn-link view-photo-btn" data-bs-toggle="modal" data-bs-target="#viewPhotoModal${device.id_device}">
+                        </button>
+                    </td>
+                `;
 
                     tableBody.appendChild(resultItem);
                 });
@@ -344,26 +354,23 @@
                 }
             });
 
-            function previewEditPhoto(input, imageId) {
-                var previewId = 'editPhotoPreview' + imageId;
-                var fileInput = input.files[0];
+            function previewEditPhoto(input, deviceId) {
+                var previewId = 'editPhotoPreview' + deviceId;
+                var preview = document.getElementById(previewId);
 
-                if (fileInput) {
+                var file = input.files[0];
+                if (file) {
                     var reader = new FileReader();
-
                     reader.onload = function(e) {
-                        document.getElementById(previewId).src = e.target.result;
+                        preview.src = e.target.result;
                     };
-
-                    reader.readAsDataURL(fileInput);
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = ''; // Clear preview if no file is selected
                 }
             }
 
             function deletePhoto(imageId) {
-                // Fungsi untuk menghapus foto (harap disesuaikan sesuai kebutuhan)
-                // ...
-
-                // Setelah menghapus, update pratinjau atau hapus pratinjau jika perlu
                 var previewId = 'editPhotoPreview' + imageId;
                 document.getElementById(previewId).src = ''; // Menghapus pratinjau
             }

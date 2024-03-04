@@ -29,7 +29,7 @@ class HistoryController extends Controller
 
         $history = History::whereIn('device_id', $deviceIds)
                             ->orderBy('date_time', 'desc')
-                            ->get();
+                            ->paginate(10);
 
 
         return view('customer.history.index', ['history' => $history, 'devices' => $devices]);
