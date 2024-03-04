@@ -124,18 +124,42 @@ class HistoryController extends Controller
         return response()->json($response);
     }
 
-    public function selectDevice(Request $request)
+
+    public function getRelatedData($userId)
+{
+    $devices = Device::where('user_id', $userId)
+                     ->with('history') // Memuat data history untuk setiap perangkat
+                     ->get();
+
+    return response()->json([
+        'devices' => $devices
+    ]);
+}
+
+public function fetchData($deviceId)
+{
+    // Ambil data terkait berdasarkan deviceId
+    $relatedData = History::where('device_id', $deviceId)->get();
+
+    // Sesuaikan respons JSON sesuai dengan kebutuhan Anda
+    return response()->json([
+        'related_data' => $relatedData
+    ]);
+}
+
+public function showMap()
+{
+
     {
-        $searchTerm = $request->input('searchDevice');
-        $devices = Device::where('name', 'like', "%$searchTerm%")->paginate(10);
-    
-        return response()->json([
-            'data' => $devices->items(),
-            'current_page' => $devices->currentPage(),
-            'last_page' => $devices->lastPage()
+        $devices = Device::all(); // Mengambil semua data perangkat
+        $history = History::all(); // Mengambil semua data histori
+
+        return view('admin.map.index', [
+            'devices' => $devices,
+            'history' => $history
         ]);
     }
-    
+}
 
 
 

@@ -51,14 +51,16 @@
                             <tr>
                                 <th>No</th>
                                 <th>Device</th>
-                                <th>lating</th>
-                                <th>Bounds</th>
-                                <th>Accuracy</th>
-                                <th>Altitude</th>
-                                <th>Altitude Acuracy</th>
-                                <th>Heading</th>
-                                <th>Speeds</th>
-                                <th>Time</th>
+                                <th>latitude</th>
+                                <th>Longitude</th>
+                                <th>bounds</th>
+                                <th>accuracy</th>
+                                <th>altitude</th>
+                                <th>altitude_acuracy</th>
+                                <th>heading</th>
+                                <th>speeds</th>
+                                <th>waktu</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -79,6 +81,17 @@
                                 @endforeach
                             @else
                                 <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ optional($h->device)->name }}</td>
+                                    <td>{{ $h->latitude }}</td>
+                                    <td>{{ $h->longitude }}</td>
+                                    <td>{{ $h->bounds }}</td>
+                                    <td>{{ $h->accuracy }}</td>
+                                    <td>{{ $h->altitude }}</td>
+                                    <td>{{ $h->altitude_acuracy }}</td>
+                                    <td>{{ $h->heading }}</td>
+                                    <td>{{ $h->speeds }}</td>
+                                    <td>{{ $h->date_time }}</td>
                                     <td colspan="10" class="text-center">
                                         <span style="font-size: 3rem;">&#x1F5FF;</span>
                                         <p class="mt-2">Data not available, sorry.</p>

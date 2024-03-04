@@ -73,9 +73,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/customer/profile/update', [AuthRegisterController::class, 'update'])->name('customer.profile.update');
         Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
         Route::get('/customer/map', [HistoryController::class, 'map'])->name('customer.map.index');
+
+        Route::get('/get-related-data/{deviceId}', [HistoryController::class, 'getRelatedData']);
+
         Route::get('/lastlocation',[MapController::class, 'lastloc'])->name('lastlocation');
 
+
         //device Customer
+
         Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
         Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
         Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
@@ -117,11 +122,15 @@ Route::get('/password/reset/{token}/{email}', [ResetPasswordController::class, '
 Route::get('/validation', [ValidationController::class, 'index'])->name('validation');
 
 
-// Route::get('/map', [MapController::class, 'index'])->name('map.index');
-Route::get('/map/select-device', [HistoryController::class, 'selectDevice']);
+ Route::get('/map', [MapController::class, 'index'])->name('map.index');
+
+Route::get('/admin/get-related-data/{deviceId}', [HistoryController::class, 'fetchData'])->name('admin.fetch_data');
+Route::get('/admin/map', [HistoryController::class, 'showMap'])->name('admin.map');
+
+
 //filter
 
-//filter Select+Search
+
 // Route::get('/getHistoryByDevice/{deviceId}', [DeviceController::class, 'filter']);
 Route::get('/gethistorybydevice/{deviceId}', [HistoryController::class, 'getHistoryByDevice'])->name('getHistoryByDevice');
 

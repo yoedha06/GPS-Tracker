@@ -152,9 +152,23 @@
                                 </a>
                             </li>
                         </ul>
-
                     </li>
+                    <li class="sidebar-item  has-sub">
+                        <a href="#" class='sidebar-link'>
+                            <i class="bi bi-map-fill"></i>
+                            <span>Map</span>
+                        </a>
+                        <ul class="submenu">
+                            <li class="submenu-item">
+                                <a href="{{ route('admin.map') }}">
+                                    <i class="bi bi-clock-fill"></i>
+                                    <span class="ml-1">History</span> <!-- Tambahkan margin kiri untuk memisahkan ikon dan teks -->
+                                </a>
+                            </li>   
+                        </ul>
+
                 </ul>
+
             </div>
         </div>
     </div>
