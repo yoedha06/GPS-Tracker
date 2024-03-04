@@ -3,32 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
+use App\Models\History;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MapController extends Controller
 {
-//     public function index()
-// {
-//     // Mendapatkan data perangkat dari database
-//     $devices = Device::all();
+    public function lastloc()
+    {
+        $devices = Device::all();
+        
+        $lastLocations = History::select('device_id', DB::raw('MAX(date_time) as latest'))
+            ->groupBy('device_id')
+            ->pluck('latest', 'device_id');
 
-//     // Menampilkan tampilan dengan variabel $devices disertakan
-//     return view('customer.map.index', ['devices' => $devices]);
-// }
+        $locations = History::whereIn('date_time', $lastLocations)->get();
+        
 
-    // public function selectDevice(Request $request)
+        return view('customer.map.lastlocation', compact('devices', 'locations'));
+    }
+
+    // public function getLastLocation($deviceId)
     // {
-    //     // Ambil data perangkat berdasarkan input pengguna
-    //     $searchTerm = $request->input('term');
-    //     $devices = Device::where('name', 'LIKE', "%$searchTerm%")->get();
-
-    //     // Format data dalam bentuk yang diperlukan oleh Select2
-    //     $formattedDevices = [];
-    //     foreach ($devices as $device) {
-    //         $formattedDevices[] = ['id_device' => $device->id_device, 'text' => $device->name];
-    //     }
-
-    //     // Kembalikan data dalam format JSON
-    //     return response()->json($formattedDevices);
+    //     $lastLocation = History::where('device_id', $deviceId)->latest('date_time')->first();
+    //     return response()->json($lastLocation);
     // }
 }
