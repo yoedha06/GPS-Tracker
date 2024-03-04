@@ -35,9 +35,10 @@
                 </div>
             </label>
         </div>
+        <br>
         <div id="map" style="height: 50%; width: 100%;"></div>
     </div>
-
+    
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
