@@ -75,12 +75,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/customer/map', [HistoryController::class, 'map'])->name('customer.map.index');
         Route::get('/lastlocation',[MapController::class, 'lastloc'])->name('lastlocation');
 
-        //device
+        //device Customer
         Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
         Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
         Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
         Route::put('/device/{id_device}', [DeviceController::class, 'update'])->name('device.update');
         Route::delete('/device/{id}', [DeviceController::class, 'destroy'])->name('device.destroy');
+        Route::delete('/delete-photo/{id}', [DeviceController::class,'deletePhoto'])->name('delete-photo');
     });
 
     Route::middleware(['role:admin'])->group(function () {
@@ -90,7 +91,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
         Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
 
-        //device
+        //device Admin
         Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');
         Route::get('/admin/device/search', [DeviceController::class, 'search'])->name('admin.device.search');
     });
