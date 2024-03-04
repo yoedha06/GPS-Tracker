@@ -78,104 +78,102 @@
     }
 </style>
 <script>
-    var map = L.map('map').setView([-6.8955992330108895, 107.54240919668543], 13);
-
+    var map = L.map('map').setView([-6.895364793103795, 107.53971757412086], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    var historyData = {!! json_encode($history) !!};
-    var deviceData = {!! json_encode($device) !!};
+    var historyData = @json($history);
 
-    var layerGroup = L.layerGroup().addTo(map);
+    var layerGroup = L.layerGroup();
     var polylinePoints = [];
 
-    // Function to filter history data by date range
-    function filterHistoryDataByDate(startDate, endDate) {
-        return historyData.filter(function(record) {
-            var recordDate = new Date(record.waktu);
-            return recordDate >= startDate && recordDate <= endDate;
-        });
-    }
-
-    // Function to refresh markers and polyline based on filtered data
-function refreshMapMarkersAndPolyline(filteredData) {
-    // Clear existing markers and polyline
-    layerGroup.clearLayers();
-    polylinePoints = [];
-
-    // Loop through filtered data to create markers and build polyline points
-    filteredData.forEach(function(record) {
-        var latlngArr = record.latlng.split(", ");
+    for (var i = 0; i < historyData.length; i++) {
+        var latlngStr = historyData[i].latlng;
+        var latlngArr = latlngStr.split(", ");
         var lat = parseFloat(latlngArr[0]);
         var lng = parseFloat(latlngArr[1]);
-        var speed = parseFloat(record.speeds);
-        var accuracy = parseFloat(record.accuracy);
+        var speed = parseFloat(historyData[i].speeds);
+        var accuracy = parseFloat(historyData[i].accuracy);
+        var bounds = historyData[i].bounds;
 
-        // Check if lat and lng are valid numbers
-        if (!isNaN(lat) && !isNaN(lng)) {
-            // Find device information
-            var deviceId = record.device_id;
-            var deviceInfo = Array.isArray(deviceData) ? deviceData.find(function(device) {
-                return device.id === deviceId;
-            }) : null;
-            var deviceName = deviceInfo ? deviceInfo.name : "Unknown";
-
-            var color;
-            if (speed < 20) {
-                color = 'green';
-            } else if (speed >= 20 && speed <= 40) {
-                color = 'yellow';
-            } else {
-                color = 'red';
-            }
-
-            var popupContent = "Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m<br>Device: " + deviceName;
-
-            // Create circle marker for each point
-            var circleMarker = L.circleMarker([lat, lng], {
-                radius: 10,
-                stroke: false,
-                color: color,
-                fillOpacity: 1
-            }).bindPopup(popupContent).addTo(layerGroup);
-
-            // Push coordinates to polylinePoints array
-            polylinePoints.push([lat, lng]);
+        // Menentukan warna marker lingkaran berdasarkan kecepatan
+        var markerColor;
+        if (speed < 20) {
+            markerColor = 'green';
+        } else if (speed >= 20 && speed <= 40) {
+            markerColor = 'yellow';
+        } else {
+            markerColor = 'red';
         }
-    });
 
-    // Create polyline with the new polylinePoints array
-    var polyline = L.polyline(polylinePoints, {
-        color: 'blue', // Set the color of the polyline
-        weight: 10, // Set the weight of the polyline
-        opacity: 0.5 // Set the opacity of the polyline
-    }).addTo(layerGroup);
+        // Membuat marker lingkaran dengan warna yang ditentukan
+        var circleMarker = L.circleMarker([lat, lng], {
+            radius: 0,
+            color: markerColor,
+            stroke: false,
+        });
+        layerGroup.addLayer(circleMarker);
 
-    // Check if polylinePoints is not empty before fitting bounds
-    if (polylinePoints.length > 0) {
-        // Fit the map to the bounds of the polyline
-        map.fitBounds(polyline.getBounds());
+        // Menambahkan titik dan batas ke polylinePoints
+        polylinePoints.push({lat: lat, lng: lng, bounds: bounds});
+
+        // Menentukan warna polyline berdasarkan akurasi
+        var polylineColor;
+        if (accuracy >= 10 && accuracy < 20) {
+            polylineColor = 'green';
+        } else if (accuracy >= 20 && accuracy <= 50) {
+            polylineColor = 'yellow';
+        } else {
+            polylineColor = 'red';
+        }
+
+        // Menentukan berat polyline berdasarkan akurasi
+        var polylineWeight;
+        if (accuracy >= 10 && accuracy < 20) {
+            polylineWeight = 10;
+        } else if (accuracy >= 20 && accuracy <= 50) {
+            polylineWeight = 5;
+        } else {
+            polylineWeight = 2;
+        }
+
+        // Membuat polyline dengan warna dan berat yang ditentukan
+        if (polylinePoints.length > 1) {
+            var polyline = L.polyline(polylinePoints.slice(-2), {
+                color: polylineColor,
+                weight: polylineWeight,
+                opacity: 1.0,
+            }).addTo(map);
+
+            // Menambahkan popup dengan data ke polyline
+            var popupContent = "Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m";
+            polyline.bindPopup(popupContent);
+        }
+
+        // Menambahkan marker untuk data terbaru dan data terakhir
+        if (i === 0 || i === historyData.length - 1) {
+            var marker = L.marker([lat, lng], {
+                color: i === 0 ? 'blue' : 'red' // Data terbaru berwarna biru, data terakhir berwarna merah
+            }).addTo(map);
+
+            // Menambahkan popup dengan informasi lengkap, termasuk batas
+            var popupContent = "<div style='max-width: 200px; overflow: hidden; text-overflow: ellipsis;'>" +
+                "<div style='font-size: 12px;'>" +
+                "Latitude: " + lat.toFixed(7) +
+                "<br>Longitude: " + lng.toFixed(7) +
+                "<br>Bounds: " + bounds + // Menampilkan data batas di dalam popup
+
+                "</div>" +
+                "</div>";
+
+            marker.bindPopup(popupContent);
+        }
     }
-}
 
-
-    // Event listener for when the date inputs change
-    $("#start-date, #end-date").change(function() {
-        var startDate = new Date($("#start-date").val());
-        var endDate = new Date($("#end-date").val());
-
-        // Filter history data by date range
-        var filteredData = filterHistoryDataByDate(startDate, endDate);
-
-        // Refresh markers and polyline based on filtered data
-        refreshMapMarkersAndPolyline(filteredData);
-    });
-
-    // Initially load markers and polyline based on full history data
-    refreshMapMarkersAndPolyline(historyData);
+    // Menambahkan layerGroup ke peta
+    layerGroup.addTo(map);
 </script>
-
 
 
 
