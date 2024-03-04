@@ -9,17 +9,38 @@
 
      <style>
         #map { 
-            height: 180px; 
+            height: 500px; 
         }
      </style>
 
 @section('content')
 
 <div id="main">
+    <select id="selectDevice" class="form-select" aria-label="Select Device">
+        <option value="" selected>Select Device</option>
+        @foreach ($devices as $device)
+            <option value="{{ $device->id_device }}">{{ $device->name }}</option>
+        @endforeach
+    </select>
+    <br>
     <div id="map"></div>
 </div>
 
 <script>
-   var map = L.map('map').setView([51.505, -0.09], 13);
+    var map = L.map('map').setView([-2.548926, 118.0148634], 5);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    var locations = @json($locations);
+    console.log(locations);
+
+    locations.forEach(function(location) {
+        var latlngObj = JSON.parse(location.latlng);
+        L.marker([latlngObj.lat, latlngObj.lng]).addTo(map)
+            .bindPopup("Device ID: " + location.device_id);
+    });
 </script>
+
 @endsection

@@ -73,7 +73,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/customer/profile/update', [AuthRegisterController::class, 'update'])->name('customer.profile.update');
         Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
         Route::get('/customer/map', [HistoryController::class, 'map'])->name('customer.map.index');
+<<<<<<< HEAD
         Route::get('/get-related-data/{deviceId}', [HistoryController::class, 'getRelatedData']);
+=======
+        Route::get('/lastlocation',[MapController::class, 'lastloc'])->name('lastlocation');
+>>>>>>> 663181bb683aafdec528b54e6fad54c6a87220f4
 
         //device
         Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');

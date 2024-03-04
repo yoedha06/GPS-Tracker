@@ -36,19 +36,17 @@ class VerificationController extends Controller
 
     public function verify(Request $request)
     {
-        $user = User::where('verification_token', $request->route('token'))->firstOrFail();
-
-        if ($user->hasVerifiedEmail()) {
-            $user->markEmailAsVerified();
-            event(new Verified($user));
-
-            // Hapus token dan waktu kadaluarsa karena email sudah diverifikasi
-            $user->verification_token = null;
-            $user->verification_expiry = null;
-            $user->save();
-
-            return redirect($this->redirectPath())->with('success', 'Email already verified.');
+        if (!$request->user()->hasVerifiedEmail()) {
+            return redirect()->route('login');
         }
+
+        $request->fulfill();
+        $user = $request->user();
+        event(new Verified($user));
+
+        Auth::logout();
+
+        return redirect($this->redirectPath());
     }
 
 
@@ -57,11 +55,6 @@ class VerificationController extends Controller
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->route('login')->with('error', 'Email Anda sudah diverifikasi.');
         }
-
-        $token =  Str::random(40);
-        $request->user()->verification_token = $token;
-        $request->user()->verification_expiry = Carbon::now()->addMinute(60);
-        $request->user()->save();
 
         $request->user()->sendEmailVerificationNotification();
 
