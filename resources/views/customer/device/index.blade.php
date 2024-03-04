@@ -102,20 +102,23 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">No devices found</td>
+                                    <td colspan="6" class="text-center">
+                                        <span style="font-size: 3rem;">&#x1F5FF;</span>
+                                        <p class="mt-2">Data not available, sorry.</p>
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
-                        @if ($errors && $errors->has('serial_number'))
-                            <div class="alert alert-danger">
-                                {{ $errors->first('serial_number') }}
-                            </div>
-                        @endif
                     </table>
+
+                    @if ($errors && $errors->has('serial_number'))
+                        <div class="alert alert-danger">
+                            {{ $errors->first('serial_number') }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </section>
-
         <!-- ADD Device Modal -->
         <div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -138,7 +141,8 @@
                             <!-- Add Photo and Plat Nomor fields -->
                             <div class="mb-3">
                                 <label for="photo" class="form-label">Photo</label>
-                                <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                                <input type="file" class="form-control" id="photo" name="photo"
+                                    accept="image/*">
                             </div>
                             <div class="mb-3">
                                 <label for="plat_nomor" class="form-label">Plat Nomor</label>
@@ -314,8 +318,8 @@
                     <td>
                         ${device.photo
                             ? `<button type="button" class="btn btn-link view-photo-btn" data-bs-toggle="modal" data-bs-target="#viewPhotoModal${device.id_device}">
-                                                                <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
-                                                            </button>`
+                                                                    <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
+                                                                </button>`
                             : 'No photo available'}
                     </td>
                     <td>
