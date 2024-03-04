@@ -51,14 +51,14 @@
                             <tr>
                                 <th>No</th>
                                 <th>Device</th>
-                                <th>latlng</th>
-                                <th>bounds</th>
-                                <th>accuracy</th>
-                                <th>altitude</th>
-                                <th>altitude_acuracy</th>
-                                <th>heading</th>
-                                <th>speeds</th>
-                                <th>waktu</th>
+                                <th>lating</th>
+                                <th>Bounds</th>
+                                <th>Accuracy</th>
+                                <th>Altitude</th>
+                                <th>Altitude Acuracy</th>
+                                <th>Heading</th>
+                                <th>Speeds</th>
+                                <th>Time</th>
                             </tr>
                         </thead>
                         <tbody>
