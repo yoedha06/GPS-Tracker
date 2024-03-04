@@ -10,8 +10,8 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all(); // Mengambil semua data pengguna
-        return view('admin.user', compact('users')); // Mengirimkan data pengguna ke view 'admin.user'
+        $users = User::paginate(10);
+        return view('admin.user', compact('users'));
     }
 
     public function store(Request $request)

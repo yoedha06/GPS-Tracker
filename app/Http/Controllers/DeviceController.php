@@ -145,7 +145,7 @@ class DeviceController extends Controller
         ], [
             'name.regex' => 'Name can only contain letters, numbers, and spaces.',
             'photo.mimes' => 'The photo must be a valid image file (jpeg, png, jpg, gif).',
-        ]);        
+        ]);
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -197,15 +197,18 @@ class DeviceController extends Controller
         $userId = $request->input('user');
 
         if ($userId) {
-            $device = Device::whereHas('user', function ($query) use ($userId) {
+            $deviceQuery = Device::whereHas('user', function ($query) use ($userId) {
                 $query->where('id', $userId);
-            })->get();
+            });
         } else {
-            $device = Device::all();
+            $deviceQuery = Device::query();
         }
+
+        $device = $deviceQuery->paginate(5); // Change 10 to the number of items per page you want
 
         return view('admin.device.index', compact('device', 'users'));
     }
+
 
     public function filter(Request $request)
     {
