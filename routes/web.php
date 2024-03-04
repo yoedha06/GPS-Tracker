@@ -73,6 +73,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/customer/profile/update', [AuthRegisterController::class, 'update'])->name('customer.profile.update');
         Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
         Route::get('/customer/map', [HistoryController::class, 'map'])->name('customer.map.index');
+        Route::get('/get-related-data/{deviceId}', [HistoryController::class, 'getRelatedData']);
 
         //device
         Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
@@ -116,7 +117,7 @@ Route::get('/validation', [ValidationController::class, 'index'])->name('validat
 
 
  Route::get('/map', [MapController::class, 'index'])->name('map.index');
-Route::get('/get-related-data/{deviceId}', [HistoryController::class, 'getRelatedData']);
+
 Route::get('/admin/get-related-data/{deviceId}', [HistoryController::class, 'fetchData'])->name('admin.fetch_data');
 Route::get('/admin/map', [HistoryController::class, 'showMap'])->name('admin.map');
 
