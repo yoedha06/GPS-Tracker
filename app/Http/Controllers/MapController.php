@@ -6,20 +6,22 @@ use App\Models\Device;
 use App\Models\History;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class MapController extends Controller
 {
     public function lastloc()
     {
-        $devices = Device::all();
+        // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk
+        $devices = Device::where('user_id', Auth::id())->get();
         
         $lastLocations = History::select('device_id', DB::raw('MAX(date_time) as latest'))
+            ->whereIn('device_id', $devices->pluck('id_device'))
             ->groupBy('device_id')
             ->pluck('latest', 'device_id');
-
+    
         $locations = History::whereIn('date_time', $lastLocations)->get();
         
-
         return view('customer.map.lastlocation', compact('devices', 'locations'));
     }
 

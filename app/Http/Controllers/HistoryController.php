@@ -84,17 +84,17 @@ class HistoryController extends Controller
     }
 
 
-        public function map()
-        {
-            // Ambil data perangkat dari basis data
-            $devices = Device::all();
-
-            // Ambil riwayat dari basis data atau dari sumber lain jika diperlukan
-            $history = DB::table('history')->get();
-
-            // Melewatkan data ke view menggunakan compact
-            return view('customer.map.index', compact('devices', 'history'));
-        }
+    public function map()
+    {
+        // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk
+        $devices = Device::where('user_id', Auth::id())->get();
+    
+        // Ambil riwayat dari basis data atau dari sumber lain jika diperlukan
+        $history = DB::table('history')->get();
+    
+        // Melewatkan data ke view menggunakan compact
+        return view('customer.map.index', compact('devices', 'history'));
+    }
     public function getHistoryByDevice($deviceId)
     {
         logger('Request for device history. Device ID: ' . $deviceId);
