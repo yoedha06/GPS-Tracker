@@ -59,6 +59,16 @@
                             {{ Session::get('photo_format_error') }}
                         </div>
                     @endif
+                    @if ($errors->has('plat_nomor'))
+                        <div class="alert alert-danger">
+                            {{ $errors->first('plat_nomor') }}
+                        </div>
+                    @endif
+                    @if ($errors && $errors->has('serial_number'))
+                        <div class="alert alert-danger">
+                            {{ $errors->first('serial_number') }}
+                        </div>
+                    @endif
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
@@ -110,12 +120,6 @@
                             @endforelse
                         </tbody>
                     </table>
-
-                    @if ($errors && $errors->has('serial_number'))
-                        <div class="alert alert-danger">
-                            {{ $errors->first('serial_number') }}
-                        </div>
-                    @endif
                 </div>
             </div>
         </section>
@@ -188,8 +192,9 @@
                                         value="{{ $item->serial_number }}" required readonly>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="file" class="form-control" id="edit_photo{{ $item->id_device }}"
-                                        name="photo" onchange="previewEditPhoto(this, {{ $item->id_device }})">
+                                    <input type="file" class="form-control edit-photo-input"
+                                        id="edit_photo{{ $item->id_device }}" name="photo"
+                                        onchange="previewEditPhoto(this, {{ $item->id_device }})">
                                     @if ($item->photo)
                                         <div class="mt-2">
                                             <img id="editPhotoPreview{{ $item->id_device }}"
@@ -317,8 +322,8 @@
                     <td>
                         ${device.photo
                             ? `<button type="button" class="btn btn-link view-photo-btn" data-bs-toggle="modal" data-bs-target="#viewPhotoModal${device.id_device}">
-                                                                                <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
-                                                                            </button>`
+                                                                                                        <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
+                                                                                                    </button>`
                             : 'No photo available'}
                     </td>
                     <td>
@@ -362,8 +367,17 @@
                 var reader = new FileReader();
 
                 reader.onload = function(e) {
+                    // Update preview of newly uploaded photo
                     preview.src = e.target.result;
-                    preview.setAttribute('data-new-photo-url', e.target.result);
+                    preview.style.display = 'block';
+
+                    // Update preview in the form popup if it's open
+                    if (window.opener && !window.opener.closed) {
+                        var editPhotoPreview = window.opener.document.getElementById(previewId);
+                        if (editPhotoPreview) {
+                            editPhotoPreview.src = e.target.result;
+                        }
+                    }
                 };
 
                 reader.readAsDataURL(input.files[0]);
