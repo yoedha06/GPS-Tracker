@@ -51,7 +51,8 @@
                             <tr>
                                 <th>No</th>
                                 <th>Device</th>
-                                <th>latlng</th>
+                                <th>latitude</th>
+                                <th>longitude</th>
                                 <th>bounds</th>
                                 <th>accuracy</th>
                                 <th>altitude</th>
@@ -66,7 +67,8 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ optional($h->device)->name }}</td>
-                                    <td>{{ $h->latlng }}</td>
+                                    <td>{{ $h->latitude }}</td>
+                                    <td>{{ $h->longitude }}</td>
                                     <td>{{ $h->bounds }}</td>
                                     <td>{{ $h->accuracy }}</td>
                                     <td>{{ $h->altitude }}</td>
