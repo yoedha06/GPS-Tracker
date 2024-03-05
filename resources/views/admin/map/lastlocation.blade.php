@@ -34,11 +34,12 @@
         @foreach($devices as $device)
             @if($device->latestHistory && $device->user)
                 var marker = L.marker([{{ $device->latestHistory->latitude }}, {{ $device->latestHistory->longitude }}]).addTo(map);
-                var popupContent = "<b>Customer:</b> {{ $device->user->name }}<br>" +
-                                   "<b>Device:</b> {{ $device->name }}<br>" +
-                                   "<b>Latitude:</b> {{ $device->latestHistory->latitude . ',' . $device->latestHistory->longitude   }}<br>" +
-                                   "<b>Plat Nomor:</b> {{ $device->plat_nomor }}<br>" +
-                                   "<b>Date Time:</b> {{ $device->latestHistory->date_time }}<br>";
+                var popupContent = "<center><b style='margin-top: 5px;'>Device:</b> {{ $device->name }}</center>" +
+                                   "<b>Name cust:</b> {{ $device->user->name }}<br>" +
+                                   "<b>Latlng:</b> {{ $device->latestHistory->latitude . ',' . $device->latestHistory->longitude   }}<br>" +
+                                   "<b>PlatNo:</b> {{ $device->plat_nomor }}<br>" +
+                                   "<b>Date:</b> {{ $device->latestHistory->date_time }}<br>" +
+                                   "<img src='{{asset('storage/' . $device->photo) }}'style='width: 199px; height: 115px;' >";
                                    
                 marker.bindPopup(popupContent);
             @endif
