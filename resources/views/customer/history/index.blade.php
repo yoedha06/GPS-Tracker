@@ -51,12 +51,12 @@
                             <tr>
                                 <th>No</th>
                                 <th>Device</th>
-                                <th>latitude</th>
-                                <th>longitude</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
                                 <th>Bounds</th>
                                 <th>Accuracy</th>
                                 <th>Altitude</th>
-                                <th>Altitude Acuracy</th>
+                                <th>Altitude Accuracy</th>
                                 <th>Heading</th>
                                 <th>Speeds</th>
                                 <th>Time</th>
@@ -64,9 +64,10 @@
                         </thead>
                         <tbody>
                             @if (count($history) > 0)
+                                @php $iteration = 1 @endphp
                                 @foreach ($history as $h)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $iteration++ }}</td>
                                         <td>{{ optional($h->device)->name }}</td>
                                         <td>{{ $h->latitude }}</td>
                                         <td>{{ $h->longitude }}</td>
@@ -81,18 +82,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ optional($h->device)->name }}</td>
-                                    <td>{{ $h->latitude }}</td>
-                                    <td>{{ $h->longitude }}</td>
-                                    <td>{{ $h->bounds }}</td>
-                                    <td>{{ $h->accuracy }}</td>
-                                    <td>{{ $h->altitude }}</td>
-                                    <td>{{ $h->altitude_acuracy }}</td>
-                                    <td>{{ $h->heading }}</td>
-                                    <td>{{ $h->speeds }}</td>
-                                    <td>{{ $h->date_time }}</td>
-                                    <td colspan="10" class="text-center">
+                                    <td colspan="11" class="text-center">
                                         <span style="font-size: 3rem;">&#x1F5FF;</span>
                                         <p class="mt-2">Data not available, sorry.</p>
                                     </td>
@@ -101,6 +91,7 @@
                         </tbody>
                     </table>
                 </div>
+                
                 <div class="mt-3">
                     {{ $history->links() }}
                 </div>
@@ -152,7 +143,8 @@
                             if (data.history.length > 0) {
                                 // Mengurutkan data berdasarkan date_time secara descending
                                 data.history.sort(function(a, b) {
-                                    return new Date(b.date_time) - new Date(a.date_time);
+                                    return new Date(b.date_time) - new Date(a
+                                    .date_time);
                                 });
 
                                 // Tambahkeun data anyar kana tabel
@@ -183,7 +175,8 @@
                                         </td>
                                     </tr>
                                 `);
-                                showValidationMessage('No history data found for the selected device.');
+                                showValidationMessage(
+                                    'No history data found for the selected device.');
                             }
                         },
 
