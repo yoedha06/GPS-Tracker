@@ -25,6 +25,7 @@ class MapController extends Controller
     public function deviceuser($id_device)
     {
         $device = Device::find($id_device);
+        $history = History::find($id_device);
 
         if (!$device) {
             return response()->json(['error' => 'Device not found'], 404);
@@ -32,8 +33,8 @@ class MapController extends Controller
 
         return response()->json([
             'name' => $device->name,
-            'latitude' => $device->latitude,
-            'longitude' => $device->longitude,
+            'latitude' => $history->latitude,
+            'longitude' => $history->longitude,
             'plat_nomor' => $device->plat_nomor,
             'photo' => asset('storage/' . $device->photo),
         ]);

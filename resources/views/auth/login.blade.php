@@ -105,7 +105,8 @@
                                     @if (Session::has('success'))
                                         <div class="alert alert-primary alert-dismissible fade show" role="alert">
                                             {{ Session::get('success') }}
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
                                         </div>
                                     @endif
 
@@ -117,18 +118,22 @@
                                         @csrf
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="email">Email address</label>
-                                            <input id="email" type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" name="email"
-                                                value="{{ $registered_email ?? old('email') }}"  value="{{ old('email') }}" required>
-                                                @error('email')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
+                                            <input id="email" type="email"
+                                                class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
+                                                name="email" value="{{ $registered_email ?? old('email') }}"
+                                                value="{{ old('email') }}" required>
+                                            @error('email')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
 
                                         <div class="form-outline mb-4">
                                             <label class="form-label" for="password">Password</label>
                                             <div class="input-group"> <!-- Tambahkan input-group di sini -->
-                                                <input type="password" id="password" class="form-control form-control-lg" name="password" />
-                                                <button type="button" class="btn btn-outline-dark" id="showPasswordBtn"><i class="fas fa-eye"></i></button>
+                                                <input type="password" id="password"
+                                                    class="form-control form-control-lg" name="password" />
+                                                <button type="button" class="btn btn-outline-dark"
+                                                    id="showPasswordBtn"><i class="fas fa-eye"></i></button>
                                             </div>
 
                                         </div>
@@ -193,14 +198,15 @@
     </section>
 
     <script>
-         document.getElementById("showPasswordBtn").addEventListener("click", function() {
-        var passwordInput = document.getElementById("password");
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-        } else {
-            passwordInput.type = "password";
-        }
-    });
+        document.getElementById("showPasswordBtn").addEventListener("click", function() {
+            var passwordInput = document.getElementById("password");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+            }
+        });
+
         function showRegisterForm() {
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('register-page').style.display = 'block';
@@ -214,8 +220,8 @@
         }
 
         function showForgetPasswordForm() {
-    document.getElementById('login-page').style.display = 'none';
-    window.location.href = "{{ route('password.request') }}";
+            document.getElementById('login-page').style.display = 'none';
+            window.location.href = "{{ route('password.request') }}";
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
