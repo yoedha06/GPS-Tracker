@@ -25,7 +25,7 @@ class MapController extends Controller
     public function deviceuser($id_device)
     {
         $device = Device::find($id_device);
-        $history = History::find($id_device);
+        $history = History::where('device_id', $id_device)->orderBy('date_time', 'desc')->first();
 
         if (!$device) {
             return response()->json(['error' => 'Device not found'], 404);
