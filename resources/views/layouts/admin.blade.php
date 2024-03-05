@@ -87,6 +87,7 @@
                         <a href="/admin">
                             <img src="/images/geex.png" alt="Logo" style="width: 145px; height: 100px;">
                         </a>
+
                     </div>
                     <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -162,12 +163,17 @@
                             <li class="submenu-item">
                                 <a href="{{ route('admin.map') }}">
                                     <i class="bi bi-clock-fill"></i>
-                                    <span class="ml-1">History</span> <!-- Tambahkan margin kiri untuk memisahkan ikon dan teks -->
+                                    <span class="ml-1">History</span>
                                 </a>
-                            </li>   
+                            </li> 
+                            <li class="submenu-item">
+                                <a href="{{ route('admin.lastlocation')}}">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span class="ml-1">Last Locations</span>
+                                </a>
+                            </li>
                         </ul>
-
-                </ul>
+                    </li>
 
             </div>
         </div>
