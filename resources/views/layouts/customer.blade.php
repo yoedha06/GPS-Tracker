@@ -12,7 +12,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.20.0/font/bootstrap-icons.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-8a4bI/7Nb+C8Fm55o/G3GLJUswGch5o7kP9iHgxy2CjsMP9SDf9u+LydFziF4+irf7kNUewa2oa0bOXkJQHjw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link href="/images/geex.png" rel="icon">
 
@@ -51,11 +51,6 @@
         <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
             alt="Logo" style="width: 300px; height: 300px;">
     </div>
-    <header class="mb-3">
-        <a href="#" class="burger-btn d-block d-xl-none">
-            <i class="bi bi-justify fs-3"></i>
-        </a>
-    </header>
     @yield('content')
     <div id="sidebar" class="active">
         <div class="sidebar-wrapper active">
