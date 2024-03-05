@@ -34,12 +34,12 @@
         @foreach($devices as $device)
             @if($device->latestHistory && $device->user)
                 var marker = L.marker([{{ $device->latestHistory->latitude }}, {{ $device->latestHistory->longitude }}]).addTo(map);
-                var popupContent = "<b>Device:</b> {{ $device->name }}<br>" +
-                                   "<b>Latitude:</b> {{ $device->latestHistory->latitude }}<br>" +
-                                   "<b>Longitude:</b> {{ $device->latestHistory->longitude }}<br>" +
+                var popupContent = "<b>Customer:</b> {{ $device->user->name }}<br>" +
+                                   "<b>Device:</b> {{ $device->name }}<br>" +
+                                   "<b>Latitude:</b> {{ $device->latestHistory->latitude . ',' . $device->latestHistory->longitude   }}<br>" +
                                    "<b>Plat Nomor:</b> {{ $device->plat_nomor }}<br>" +
-                                   "<b>Date Time:</b> {{ $device->latestHistory->date_time }}<br>" +
-                                   "<b>Customer:</b> {{ $device->user->name }}";
+                                   "<b>Date Time:</b> {{ $device->latestHistory->date_time }}<br>";
+                                   
                 marker.bindPopup(popupContent);
             @endif
         @endforeach
