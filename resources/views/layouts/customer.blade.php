@@ -111,7 +111,7 @@
                         </a>
                     </li>
                     <br>
-                    <a href="{{route('lastlocation')}}" class="sidebar-link">
+                    <a href="{{ route('lastlocation') }}" class="sidebar-link">
                         <i class="fas fa-map-marker-alt"></i>
                         <span>Last Location</span>
                     </a>
