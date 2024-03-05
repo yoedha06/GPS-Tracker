@@ -91,7 +91,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 <div class="mt-3">
                     {{ $history->links() }}
                 </div>
@@ -144,7 +144,7 @@
                                 // Mengurutkan data berdasarkan date_time secara descending
                                 data.history.sort(function(a, b) {
                                     return new Date(b.date_time) - new Date(a
-                                    .date_time);
+                                        .date_time);
                                 });
 
                                 // Tambahkeun data anyar kana tabel
