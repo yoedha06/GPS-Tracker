@@ -149,8 +149,8 @@ class HistoryController extends Controller
 
     public function showMap()
     { {
-            $devices = Device::all(); // Mengambil semua data perangkat
-            $history = History::all(); // Mengambil semua data histori
+            $devices = Device::all();
+            $history = History::all();
 
             return view('admin.map.index', [
                 'devices' => $devices,
