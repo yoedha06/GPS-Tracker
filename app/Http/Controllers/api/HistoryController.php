@@ -33,8 +33,21 @@ class HistoryController extends Controller
         if ($device == null) {
             return response()->json([
                 'massage' => 'Serial number tidak ditemukan',
-            ], 401);
+            ], 404);
         }
+
+        $existingHistory = History::where('device_id', $device->id_device)
+                                   ->where('date_time', $request->date_time)
+                                   ->first();
+
+         if ($existingHistory) {
+            
+          if ($existingHistory->device_id == $device->id_device) {
+              return response()->json([
+                  'message' => 'Data dengan tanggal waktu yang sama sudah ada untuk perangkat yang sama',
+              ], 403);
+          }
+      }
     
         $history = new History();
         $history->device_id = $device->id_device;
@@ -50,12 +63,10 @@ class HistoryController extends Controller
         $history->save();
     
         return response()->json([
-            'status' => true,
-            'message' => 'Success',
+            'message' => 'Data berhasil disimpan',
             'data' => $history
-        ]);
+        ], 201);
     }
-
     /**
      * Display the specified resource.
      */

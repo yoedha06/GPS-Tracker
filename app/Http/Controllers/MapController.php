@@ -12,22 +12,18 @@ class MapController extends Controller
 {
     public function lastloc()
     {
-        // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk
-        $devices = Device::where('user_id', Auth::id())->get();
-        
-        // $lastLocations = History::select('device_id', DB::raw('MAX(date_time) as latest'))
-        //     ->whereIn('device_id', $devices->pluck('id_device'))
-        //     ->groupBy('device_id')
-        //     ->pluck('latest', 'device_id');
-    
-            $histories = History::all();
-        
-        return view('customer.map.lastlocation', compact('devices', 'histories'));
+        // Mengambil semua perangkat
+        $devices = Device::all();
+
+        // Mengambil data history terbaru untuk setiap perangkat
+        $latestHistories = collect();
+        foreach ($devices as $device) {
+            $latestHistory = $device->history()->latest('date_time')->first();
+            $latestHistories->push($latestHistory);
+        }
+
+        return view('customer.map.lastlocation', compact('latestHistories','devices'));
     }
 
-    // public function getLastLocation($deviceId)
-    // {
-    //     $lastLocation = History::where('device_id', $deviceId)->latest('date_time')->first();
-    //     return response()->json($lastLocation);
-    // }
+    
 }
