@@ -138,11 +138,11 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="serial_number" class="form-label">Serial Number</label>
-                                <input type="text" class="form-control" id="serial_number" name="serial_number" required>
+                                <input type="text" class="form-control" id="serial_number" name="serial_number" value="{{ old('serial_number') }}"required>
                             </div>
                             <!-- Add Photo and Plat Nomor fields -->
                             <div class="mb-3">
@@ -150,11 +150,11 @@
                                 <input type="file" class="form-control" id="photo" name="photo"
                                     accept="image/*" onchange="previewPhoto(event)">
                                 <img id="photoPreview" src="#" alt="Photo Preview"
-                                    style="max-width: 100%; margin-top: 10px; display: none;">
+                                style="max-width: 100%; margin-top: 10px; {{ old('photo') ? '' : 'display: none;' }}">
                             </div>
                             <div class="mb-3">
                                 <label for="plat_nomor" class="form-label">Plat Nomor</label>
-                                <input type="text" class="form-control" id="plat_nomor" name="plat_nomor" required>
+                                <input type="text" class="form-control" id="plat_nomor" name="plat_nomor"  value="{{ old('plat_nomor') }}"required>
                             </div>
                             <button type="submit" class="btn btn-primary">Add Device</button>
                         </form>
