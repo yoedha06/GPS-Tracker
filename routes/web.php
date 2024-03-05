@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\KirimEmailController;
+use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\LocationController as AdminLocationController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TampilanController;
@@ -95,6 +97,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/admin/profile/update', [AuthRegisterController::class, 'update'])->name('admin.profile.update');
         Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
         Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
+        Route::get('/admin/lastlocation',[LocationController::class, 'index'])->name('admin.lastlocation');
 
         //device Admin
         Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');

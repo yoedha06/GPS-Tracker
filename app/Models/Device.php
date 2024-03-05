@@ -22,4 +22,9 @@ class Device extends Model
         return $this->hasOne(History::class, 'device_id', 'id_device');
     }
 
+    public function latestHistory()
+    {
+        return $this->hasOne(History::class, 'device_id', 'id_device')->latest();
+    }
+
 }
