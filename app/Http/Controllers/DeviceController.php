@@ -60,11 +60,12 @@ class DeviceController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'max:255'],
             'serial_number' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'string', 'max:50', 'unique:device,serial_number'],
-            'plat_nomor' => ['required', 'max:255'],
+            'plat_nomor' => ['required', 'max:255', 'regex:/^[A-Za-z0-9]+$/'], // Tambahkan aturan regex untuk memastikan plat_nomor tidak mengandung spasi
             'photo' => ['nullable', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'], // Added 'webp' to supported file formats
         ], [
             'name.regex' => 'Name can only contain letters, numbers, and spaces.',
             'serial_number.regex' => 'Serial Number can only contain letters, numbers, and spaces.',
+            'plat_nomor.regex' => 'Plat Nomor cannot contain spaces.', // Pesan kesalahan khusus untuk plat_nomor dengan spasi
         ]);
 
         $validator->after(function ($validator) use ($request) {
@@ -151,11 +152,12 @@ class DeviceController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'max:255'],
-            'plat_nomor' => ['required', 'max:255'],
-            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'], // Added 'webp' to supported file formats
+            'plat_nomor' => ['required', 'max:255', 'regex:/^[A-Za-z0-9]+$/'], // Tambahkan aturan regex untuk memastikan plat_nomor tidak mengandung spasi
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ], [
             'name.regex' => 'Name can only contain letters, numbers, and spaces.',
-            'photo.mimes' => 'The photo must be a valid image file (jpeg, png, jpg, gif, webp).', // Added 'webp' to the error message
+            'photo.mimes' => 'The photo must be a valid image file (jpeg, png, jpg, gif, webp).',
+            'plat_nomor.regex' => 'Plat Nomor cannot contain spaces.',
         ]);
 
         if ($validator->fails()) {
