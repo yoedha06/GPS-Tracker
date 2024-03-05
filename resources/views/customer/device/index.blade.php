@@ -119,6 +119,7 @@
                 </div>
             </div>
         </section>
+
         <!-- ADD Device Modal -->
         <div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -128,7 +129,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('device.store') }}" method="POST" enctype="multipart/form-data">
+                        <form id="addDeviceForm" action="{{ route('device.store') }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
@@ -142,18 +144,15 @@
                             <div class="mb-3">
                                 <label for="photo" class="form-label">Photo</label>
                                 <input type="file" class="form-control" id="photo" name="photo"
-                                    accept="image/*">
+                                    accept="image/*" onchange="previewPhoto(event)">
+                                <img id="photoPreview" src="#" alt="Photo Preview"
+                                    style="max-width: 100%; margin-top: 10px; display: none;">
                             </div>
                             <div class="mb-3">
                                 <label for="plat_nomor" class="form-label">Plat Nomor</label>
                                 <input type="text" class="form-control" id="plat_nomor" name="plat_nomor" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Add Device</button>
-                            @if ($errors->has('serial_number'))
-                                <div class="alert alert-danger">
-                                    {{ $errors->first('serial_number') }}
-                                </div>
-                            @endif
                         </form>
                     </div>
                 </div>
@@ -318,8 +317,8 @@
                     <td>
                         ${device.photo
                             ? `<button type="button" class="btn btn-link view-photo-btn" data-bs-toggle="modal" data-bs-target="#viewPhotoModal${device.id_device}">
-                                                                    <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
-                                                                </button>`
+                                                                                <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
+                                                                            </button>`
                             : 'No photo available'}
                     </td>
                     <td>
@@ -340,6 +339,19 @@
             } else {
                 tableBody.innerHTML = '<tr><td colspan="6" class="text-center">No devices found</td></tr>';
             }
+        }
+
+        function previewPhoto(event) {
+            var input = event.target;
+            var reader = new FileReader();
+
+            reader.onload = function() {
+                var preview = document.getElementById('photoPreview');
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            };
+
+            reader.readAsDataURL(input.files[0]);
         }
 
         function previewEditPhoto(input, deviceId) {
@@ -386,24 +398,5 @@
                 }
             });
         }
-
-        $('#editDeviceModal').on('shown.bs.modal', function(e) {
-            var deviceId = $(e.relatedTarget).data('device-id');
-            var previewId = 'editPhotoPreview' + deviceId;
-            var preview = document.getElementById(previewId);
-
-            $('#updatePhotoBtn').on('click', function() {
-                var newPhotoUrl = preview.getAttribute('data-new-photo-url');
-
-                if (newPhotoUrl) {
-                    preview.src = newPhotoUrl;
-                    $('#deletePhotoBtn').hide();
-                }
-            });
-
-            $('#deletePhotoBtn').on('click', function() {
-                deletePhoto(deviceId);
-            });
-        });
     </script>
 @endsection
