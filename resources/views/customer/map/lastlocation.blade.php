@@ -9,7 +9,7 @@
 
 <style>
     #map { 
-        height: 500px; 
+        height: 90%; 
     }
 </style>
 
@@ -22,6 +22,7 @@
 
 
 <div id="main">
+    
     <div id="map"></div>
 
     <script>
@@ -31,13 +32,17 @@
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
     
-        // Tambahkan marker untuk setiap posisi terbaru dari setiap perangkat
         @foreach($latestHistories as $history)
             var marker = L.marker([{{ $history->latitude }}, {{ $history->longitude }}]).addTo(map);
-            marker.bindPopup('<b>Nama Device:</b> {{ $history->device->name }}<br><b>Latitude:</b> {{ $history->latitude }}<br><b>Longitude:</b> {{ $history->longitude }}<br><b>Plat Nomor:</b> {{ $history->device->plat_nomor }}<br><b>Date Time:</b> {{ $history->date_time }}');
+            marker.bindPopup(
+                `<center><b>Device: {{ $history->device->name }}</b></center><br>` +
+                `<b>Latlng:</b> {{ $history->latitude . ',' . $history->longitude }}<br>` +
+                `<b>Plat Nomor:</b> {{ $history->device->plat_nomor }}<br>` +
+                `<b>Date Time:</b> {{ $history->date_time }}<br>` +
+                `<img src="{{ asset('storage/' . $history->device->photo) }}" style="width: 199px; height: 115px;">`
+            );
         @endforeach
     
-        // Sesuaikan tampilan peta agar mencakup semua marker
         var bounds = L.latLngBounds([
             @foreach($latestHistories as $history)
                 [{{ $history->latitude }}, {{ $history->longitude }}],

@@ -53,17 +53,33 @@
                                 <th>Device</th>
                                 <th>latitude</th>
                                 <th>longitude</th>
-                                <th>bounds</th>
-                                <th>accuracy</th>
-                                <th>altitude</th>
-                                <th>altitude_acuracy</th>
-                                <th>heading</th>
-                                <th>speeds</th>
-                                <th>waktu</th>
+                                <th>Bounds</th>
+                                <th>Accuracy</th>
+                                <th>Altitude</th>
+                                <th>Altitude Acuracy</th>
+                                <th>Heading</th>
+                                <th>Speeds</th>
+                                <th>Time</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($history as $h)
+                            @if (count($history) > 0)
+                                @foreach ($history as $h)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ optional($h->device)->name }}</td>
+                                        <td>{{ $h->latitude }}</td>
+                                        <td>{{ $h->longitude }}</td>
+                                        <td>{{ $h->bounds }}</td>
+                                        <td>{{ $h->accuracy }}</td>
+                                        <td>{{ $h->altitude }}</td>
+                                        <td>{{ $h->altitude_acuracy }}</td>
+                                        <td>{{ $h->heading }}</td>
+                                        <td>{{ $h->speeds }}</td>
+                                        <td>{{ $h->date_time }}</td>
+                                    </tr>
+                                @endforeach
+                            @else
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ optional($h->device)->name }}</td>
@@ -76,8 +92,12 @@
                                     <td>{{ $h->heading }}</td>
                                     <td>{{ $h->speeds }}</td>
                                     <td>{{ $h->date_time }}</td>
+                                    <td colspan="10" class="text-center">
+                                        <span style="font-size: 3rem;">&#x1F5FF;</span>
+                                        <p class="mt-2">Data not available, sorry.</p>
+                                    </td>
                                 </tr>
-                            @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -130,33 +150,47 @@
                             $('#table1 tbody').empty();
 
                             if (data.history.length > 0) {
+                                // Mengurutkan data berdasarkan date_time secara descending
+                                data.history.sort(function(a, b) {
+                                    return new Date(b.date_time) - new Date(a.date_time);
+                                });
+
                                 // Tambahkeun data anyar kana tabel
                                 $.each(data.history, function(index, history) {
                                     $('#table1 tbody').append(`
-                                <tr>
-                                    <td>${index + 1}</td>
-                                    <td>${data.device_name}</td>
-                                    <td>${history.latlng}</td>
-                                    <td>${history.bounds}</td>
-                                    <td>${history.accuracy}</td>
-                                    <td>${history.altitude}</td>
-                                    <td>${history.altitude_acuracy}</td>
-                                    <td>${history.heading}</td>
-                                    <td>${history.speeds}</td>
-                                    <td>${history.date_time}</td>
-                                </tr>
-                            `);
+                                        <tr>
+                                            <td>${index + 1}</td>
+                                            <td>${data.device_name}</td>
+                                            <td>${history.latitude}</td>
+                                            <td>${history.longitude}</td>
+                                            <td>${history.bounds}</td>
+                                            <td>${history.accuracy}</td>
+                                            <td>${history.altitude}</td>
+                                            <td>${history.altitude_acuracy}</td>
+                                            <td>${history.heading}</td>
+                                            <td>${history.speeds}</td>
+                                            <td>${history.date_time}</td>
+                                        </tr>
+                                    `);
                                 });
                                 showValidationMessage('Device selected successfully!');
                             } else {
-                                showValidationMessage(
-                                    'No history data found for the selected device.', true);
+                                $('#table1 tbody').append(`
+                                    <tr>
+                                        <td colspan="10" class="text-center">
+                                            <span style="font-size: 3rem;">&#x1F5FF;</span>
+                                            <p class="mt-2">Data not available, sorry.</p>
+                                        </td>
+                                    </tr>
+                                `);
+                                showValidationMessage('No history data found for the selected device.');
                             }
                         },
+
                         error: function(error) {
                             console.error('Error fetching history data:', error);
                             showValidationMessage(
-                                'Error fetching history data. Please try again.', true);
+                                'Error fetching history data. Please try again.');
                         }
                     });
                 } else {

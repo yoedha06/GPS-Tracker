@@ -49,6 +49,16 @@
                             {{ Session::get('success') }}
                         </div>
                     @endif
+                    @if (Session::has('photo_format_error'))
+                        <div class="alert alert-danger">
+                            {{ Session::get('photo_format_error') }}
+                        </div>
+                    @endif
+                    @if (Session::has('photo_format_error'))
+                        <div class="alert alert-danger">
+                            {{ Session::get('photo_format_error') }}
+                        </div>
+                    @endif
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
@@ -92,16 +102,20 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">No devices found</td>
+                                    <td colspan="6" class="text-center">
+                                        <span style="font-size: 3rem;">&#x1F5FF;</span>
+                                        <p class="mt-2">Data not available, sorry.</p>
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
-                        @if ($errors && $errors->has('serial_number'))
-                            <div class="alert alert-danger">
-                                {{ $errors->first('serial_number') }}
-                            </div>
-                        @endif
                     </table>
+
+                    @if ($errors && $errors->has('serial_number'))
+                        <div class="alert alert-danger">
+                            {{ $errors->first('serial_number') }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </section>
@@ -115,7 +129,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('device.store') }}" method="POST" enctype="multipart/form-data">
+                        <form id="addDeviceForm" action="{{ route('device.store') }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
@@ -128,18 +143,16 @@
                             <!-- Add Photo and Plat Nomor fields -->
                             <div class="mb-3">
                                 <label for="photo" class="form-label">Photo</label>
-                                <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                                <input type="file" class="form-control" id="photo" name="photo"
+                                    accept="image/*" onchange="previewPhoto(event)">
+                                <img id="photoPreview" src="#" alt="Photo Preview"
+                                    style="max-width: 100%; margin-top: 10px; display: none;">
                             </div>
                             <div class="mb-3">
                                 <label for="plat_nomor" class="form-label">Plat Nomor</label>
                                 <input type="text" class="form-control" id="plat_nomor" name="plat_nomor" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Add Device</button>
-                            @if ($errors->has('serial_number'))
-                                <div class="alert alert-danger">
-                                    {{ $errors->first('serial_number') }}
-                                </div>
-                            @endif
                         </form>
                     </div>
                 </div>
@@ -304,8 +317,8 @@
                     <td>
                         ${device.photo
                             ? `<button type="button" class="btn btn-link view-photo-btn" data-bs-toggle="modal" data-bs-target="#viewPhotoModal${device.id_device}">
-                                            <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
-                                        </button>`
+                                                                                <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
+                                                                            </button>`
                             : 'No photo available'}
                     </td>
                     <td>
@@ -328,13 +341,42 @@
             }
         }
 
+        function previewPhoto(event) {
+            var input = event.target;
+            var reader = new FileReader();
+
+            reader.onload = function() {
+                var preview = document.getElementById('photoPreview');
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        function previewEditPhoto(input, deviceId) {
+            var previewId = 'editPhotoPreview' + deviceId;
+            var preview = document.getElementById(previewId);
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.setAttribute('data-new-photo-url', e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         function deletePhoto(deviceId) {
             // Send an AJAX request to your server to delete the photo
             $.ajax({
                 type: 'DELETE',
                 url: '/delete-photo/' + deviceId,
                 data: {
-                    "_token": "{{ csrf_token() }}", // Include the CSRF token
+                    "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     // If the photo is successfully deleted, update the UI
@@ -343,37 +385,18 @@
                     $('#edit_photo' + deviceId).siblings('button').remove();
                     $('#edit_photo' + deviceId).siblings('p').text('No photo available.');
 
-                    // Display success message in editPhotoMessage div
+                    var previewId = 'editPhotoPreview' + deviceId;
+                    var preview = document.getElementById(previewId);
+                    preview.removeAttribute('data-new-photo-url');
+
                     $('#editPhotoMessage').html(
                         '<div class="alert alert-success">Photo deleted successfully</div>');
                 },
                 error: function(error) {
                     console.error('Error deleting photo:', error);
-                    // Display error message in editPhotoMessage div
                     $('#editPhotoMessage').html('<div class="alert alert-danger">Failed to delete photo</div>');
                 }
             });
-
-            function previewEditPhoto(input, deviceId) {
-                var previewId = 'editPhotoPreview' + deviceId;
-                var preview = document.getElementById(previewId);
-
-                var file = input.files[0];
-                if (file) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    preview.src = ''; // Clear preview if no file is selected
-                }
-            }
-
-            function deletePhoto(imageId) {
-                var previewId = 'editPhotoPreview' + imageId;
-                document.getElementById(previewId).src = ''; // Menghapus pratinjau
-            }
         }
     </script>
 @endsection

@@ -12,18 +12,18 @@ class MapController extends Controller
 {
     public function lastloc()
     {
-    
         // Mengambil semua perangkat
-    $devices = Device::all();
+        $devices = Device::all();
 
-    // Mengambil data history terbaru untuk setiap perangkat
-    $latestHistories = collect();
-    foreach ($devices as $device) {
-        $latestHistory = $device->history()->latest('date_time')->first();
-        $latestHistories->push($latestHistory);
+        // Mengambil data history terbaru untuk setiap perangkat
+        $latestHistories = collect();
+        foreach ($devices as $device) {
+            $latestHistory = $device->history()->latest('date_time')->first();
+            $latestHistories->push($latestHistory);
+        }
+
+        return view('customer.map.lastlocation', compact('latestHistories','devices'));
     }
 
-    return view('customer.map.lastlocation', compact('latestHistories','devices'));
-        
-    }
+    
 }
