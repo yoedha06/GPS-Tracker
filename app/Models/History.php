@@ -13,7 +13,8 @@ class History extends Model
     protected $primaryKey = "id_history";
     protected $fillable = [
         'device_id',
-        'latlng',
+        'latitude',
+        'longitude',
         'bounds',
         'accuracy',
         'altitude',
