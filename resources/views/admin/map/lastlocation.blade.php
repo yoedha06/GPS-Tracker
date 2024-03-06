@@ -22,23 +22,19 @@
     <div id="main">
         <div class="form-group">
             <label class="form-label">Pilih User Dan Device</label>
-            <form method="post" action="{{ route('locations.filter') }}">
-                @csrf
-                <select name="user_device" id="user_device" class="form-select input" onchange="this.form.submit()">
-                    <option value="" disabled selected>Pilih</option>
-                    @foreach ($users as $user)
-                        @if ($user->role == 'customer')
-                            @foreach ($devices as $device)
-                                <option value="user_{{ $user->id }}_device_{{ $device->id }}">
-                                    {{ $user->name }} - {{ $device->name }}
-                                </option>
-                            @endforeach
-                        @endif
-                    @endforeach
-                </select>
-            </form>
+            <select id="user_device" class="form-select input">
+                <option value="" disabled selected>Pilih</option>
+                @foreach ($users as $user)
+                    @if ($user->role == 'customer')
+                        @foreach ($devices as $device)
+                            <option value="user_{{ $user->id }}_device_{{ $device->id }}">
+                                {{ $user->name }} - {{ $device->name }}
+                            </option>
+                        @endforeach
+                    @endif
+                @endforeach
+            </select>
         </div>
-
         <div id="map"></div>
 
         <!-- Include jQuery -->
@@ -66,8 +62,8 @@
                 // Function to update the map with filtered data
                 function updateMap(filter) {
                     $.ajax({
-                        type: 'POST',
-                        url: '{{ route("locations.filter") }}',
+                        type: 'GET',
+                        url: '',
                         data: { filter: filter, _token: '{{ csrf_token() }}' },
                         dataType: 'json',
                         success: function (data) {
