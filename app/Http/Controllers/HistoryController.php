@@ -148,15 +148,16 @@ class HistoryController extends Controller
     }
 
     public function showMap()
-    { {
-            $devices = Device::all();
-            $history = History::all();
+    {
+        $user = Auth::user();
+        $devices = $user->devices;
 
-            return view('admin.map.index', [
-                'devices' => $devices,
-                'history' => $history
-            ]);
-        }
+        $history = History::whereIn('device_id', $devices->pluck('id'))->get();
+
+        return view('admin.map.index', [
+            'devices' => $devices,
+            'history' => $history
+        ]);
     }
 
     public function filterByDate(Request $request)

@@ -18,16 +18,4 @@ class LocationController extends Controller
         return view('admin.map.lastlocation', compact('devices', 'users'));
     }
 
-    public function filterLocations(Request $request)
-    {
-        $filter = $request->input('filter');
-        list($userId, $deviceId) = explode('_', $filter);
-
-        $filteredData = History::where('user_id', $userId)
-            ->where('device_id', $deviceId)
-            ->with(['device', 'user'])
-            ->get();
-
-        return response()->json($filteredData);
-    }
 }
