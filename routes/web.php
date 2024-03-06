@@ -126,6 +126,8 @@ Route::get('/validation', [ValidationController::class, 'index'])->name('validat
 
 Route::get('/admin/get-related-data/{deviceId}', [HistoryController::class, 'fetchData'])->name('admin.fetch_data');
 Route::get('/admin/map', [HistoryController::class, 'showMap'])->name('admin.map');
+Route::get('/get-history-data', [HistoryController::class, 'getHistoryData'])->name('get-history-data');
+
 
 
 //filter

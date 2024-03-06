@@ -64,22 +64,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (count($history) > 0)
-                                @foreach ($history as $h)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ optional($h->device)->name }}</td>
-                                        <td>{{ $h->latlng }}</td>
-                                        <td>{{ $h->bounds }}</td>
-                                        <td>{{ $h->accuracy }}</td>
-                                        <td>{{ $h->altitude }}</td>
-                                        <td>{{ $h->altitude_acuracy }}</td>
-                                        <td>{{ $h->heading }}</td>
-                                        <td>{{ $h->speeds }}</td>
-                                        <td>{{ $h->date_time }}</td>
-                                    </tr>
-                                @endforeach
-                            @else
+                            @if ($history->count() > 0)
+                                    @foreach ($history as $h)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ optional($h->device)->name }}</td>
+                                            <td>{{ $h->latitude }}</td>
+                                            <td>{{ $h->longitude }}</td>
+                                            <td>{{ $h->bounds }}</td>
+                                            <td>{{ $h->accuracy }}</td>
+                                            <td>{{ $h->altitude }}</td>
+                                            <td>{{ $h->altitude_acuracy }}</td>
+                                            <td>{{ $h->heading }}</td>
+                                            <td>{{ $h->speeds }}</td>
+                                            <td>{{ $h->date_time }}</td>
+                                        </tr>
+                                    @endforeach
+                                @else
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ optional($h->device)->name }}</td>

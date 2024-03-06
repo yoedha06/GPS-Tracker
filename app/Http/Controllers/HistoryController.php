@@ -88,10 +88,10 @@ class HistoryController extends Controller
     {
         // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk
         $devices = Device::where('user_id', Auth::id())->get();
-    
+
         // Ambil riwayat dari basis data atau dari sumber lain jika diperlukan
         $history = DB::table('history')->get();
-    
+
         // Melewatkan data ke view menggunakan compact
         return view('customer.map.index', compact('devices', 'history'));
     }
@@ -147,21 +147,36 @@ public function fetchData($deviceId)
     ]);
 }
 
-public function showMap()
-{
-
+    public function showMap()
     {
-        $devices = Device::all(); // Mengambil semua data perangkat
-        $history = History::all(); // Mengambil semua data histori
+    //         $devices = Device::all(); // Mengambil semua data perangkat
+    //         $history = History::all(); // Mengambil semua data histori
 
-        return view('admin.map.index', [
-            'devices' => $devices,
-            'history' => $history
-        ]);
+            $devices = DB::table('device')->get();
+            $history = DB::table('history')->get();
+
+            return view('admin.map.index', [
+                'devices' => $devices,
+                'history' => $history
+            ]);
+
     }
+
+    public function getHistoryData(Request $request)
+{
+    $startDate = $request->input('startDate');
+    $endDate = $request->input('endDate');
+    $deviceId = $request->input('deviceId'); // Menambahkan input untuk device_id
+
+    // Ambil data history dari database berdasarkan tanggal dan device_id
+    $query = History::whereBetween('date_time', [$startDate, $endDate]);
+    if ($deviceId) {
+        $query->where('device_id', $deviceId);
+    }
+    $historyData = $query->get();
+
+    // Mengembalikan data dalam bentuk JSON
+    return response()->json(['historyData' => $historyData]);
 }
-
-
-
 
 }
