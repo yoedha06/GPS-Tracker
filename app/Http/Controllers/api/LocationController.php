@@ -20,7 +20,16 @@ class LocationController extends Controller
 
     public function store(Request $request)
     {
-        Location::create(['original' => json_encode($request->all())]);
+        $location = $request->validate([
+            'lat' => 'required',
+            'lon' => 'required',
+        ]);
+
+        $location = Location::create([
+            'lat' => $request->lat,
+            'lon' => $request->lon,
+            'original' => json_encode($request->all())
+        ]);
 
         return response()->json([
             'message' => true,
