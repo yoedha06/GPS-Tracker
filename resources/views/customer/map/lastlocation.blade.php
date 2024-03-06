@@ -41,11 +41,13 @@
                     </select>
                 </div>
             </form>
+            <button id="refreshButton" class="btn btn-primary">Lihat Semua</button>
+        </div>
+        
+        <div id="alertMessage" class="alert alert-success" style="display: none;">
         </div>
         {{-- @dump($userDevices) --}}
         <div id="map"></div>
-
-
         <script>
             $(document).ready(function() {
                 $('#selectDevice').change(function() {
@@ -87,6 +89,7 @@
                                     `<center><b>Device: ${data.name}</b></center><br>` +
                                     `<b>Latlng:</b> ${data.latitude},${data.longitude}<br>` +
                                     `<b>Plat Nomor:</b> ${data.plat_nomor}<br>` +
+                                    `<b>Date Time:</b> ${data.date_time}<br>` +
                                     `<img src="${data.photo}" style="width: 199px; height: 115px;">`
                                 );
 
@@ -94,10 +97,26 @@
 
                                 // Perbarui tampilan peta untuk memusatkan pada marker baru
                                 map.setView([data.latitude, data.longitude], 15);
+                                var alertMessage = $('#alertMessage');
+                                alertMessage.html('Data berhasil ditemukan!');
+                                alertMessage.removeClass('alert-danger').addClass('alert-success');
+                                alertMessage.show();
+
+                                map.flyTo([data.latitude, data.longitude], 18, {
+                                    animate: true,
+                                    duration: 2 // Adjust the duration of the animation (in seconds)
+                                });
                             },
                             error: function(error) {
                                 console.error('Error fetching device information:', error);
+
+                                // Tampilkan pesan alert untuk kesalahan
+                                var alertMessage = $('#alertMessage');
+                                alertMessage.html('Perangkat Tidak Ditemukan.');
+                                alertMessage.removeClass('alert-success').addClass('alert-danger');
+                                alertMessage.show();
                             }
+
                         });
                     }
                 }
@@ -128,6 +147,9 @@
                     ]);
                     map.fitBounds(bounds);
                 @endif
+                $('#refreshButton').click(function() {
+                    location.reload(); // Reload the current page
+                });
             });
         </script>
     </div>

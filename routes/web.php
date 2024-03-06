@@ -132,13 +132,14 @@ Route::get('/admin/map', [HistoryController::class, 'showMap'])->name('admin.map
 
 
 //filter
-
-
 // Route::get('/getHistoryByDevice/{deviceId}', [DeviceController::class, 'filter']);
 Route::get('/gethistorybydevice/{deviceId}', [HistoryController::class, 'getHistoryByDevice'])->name('getHistoryByDevice');
 Route::get('/history-filter', [HistoryController::class, 'filterByDate']);
 Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
 Route::get('/deviceuser/{id_device}', [MapController::class, 'deviceuser']);
+Route::get('/autoselect/{userId}', [LocationController::class, 'autoselect']);
+Route::post('/locations/filter', [LocationController::class, 'filterLocations'])->name('locations.filter');
+
 
 
 
