@@ -150,6 +150,7 @@ class HistoryController extends Controller
     public function showMap()
     {
         $user = Auth::user();
+        
         $devices = $user->devices;
 
         $history = History::whereIn('device_id', $devices->pluck('id'))->get();
