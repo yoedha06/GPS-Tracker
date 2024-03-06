@@ -23,6 +23,7 @@ return new class extends Migration
             $table->float('heading')->nullable();
             $table->float('speeds')->nullable();
             $table->timestamp('date_time')->nullable();
+            $table->json('original')->nullable();
             $table->timestamps();
         });
     }
