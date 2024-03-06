@@ -20,7 +20,7 @@
     </header>
 
     <div id="main">
-        <div class="form-group mb-3">
+        <div class="form-group">
             <label class="form-label">Pilih User Dan Device</label>
             <form method="post" action="{{ route('locations.filter') }}">
                 @csrf

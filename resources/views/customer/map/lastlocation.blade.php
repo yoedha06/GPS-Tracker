@@ -28,7 +28,7 @@
             <i class="bi bi-justify fs-3"></i>
         </a>
     </header>
-    <div id="main">
+    <div id="main" style="padding-top:5px;">
         <div class="container">
             <form class="mt-2 row g-3">
                 <div class="col-md-6 mb-3">
@@ -41,13 +41,19 @@
                     </select>
                 </div>
             </form>
-            <button id="refreshButton" class="btn btn-primary">Lihat Semua</button>
+            <div class="container group">
+                
+                <button id="refreshButton" class="btn btn-primary" style="margin-top:-20px;">Lihat Semua</button>
+                <div id="alertMessage" class="alert alert-success" style="display: none;margin-top: 5px;">
+            </div>
         </div>
         
-        <div id="alertMessage" class="alert alert-success" style="display: none;">
+        
+
         </div>
         {{-- @dump($userDevices) --}}
-        <div id="map"></div>
+        <div id="map" style="margin-top: 10px;"></div>
+
         <script>
             $(document).ready(function() {
                 $('#selectDevice').change(function() {
