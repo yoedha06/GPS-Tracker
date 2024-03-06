@@ -51,7 +51,8 @@
     </header><!-- End Header -->
 
     <!-- ======= Hero Section ======= -->
-    <section id="hero" style="background-image: url('/images/BG.webp');background-position: right;background-size: cover;
+    <section id="hero"
+        style="background-image: url('/images/BG.webp');background-position: right;background-size: cover;
     background-repeat: no-repeat;"
         class="d-flex align-items-center">
 
@@ -157,7 +158,7 @@
                                     src="https://as2.ftcdn.net/v2/jpg/01/40/33/03/1000_F_140330375_e7tnFRYyvlcL7TwX5e0uo1zWARI1RmOw.jpg"
                                     class="img-fluid" alt=""></div>
                             <div class="member-info">
-                                <h4>Chepy Syaehbudien Basil</h4>
+                                <h4>Chepi Syaehbudien Basil</h4>
                                 <span>CIGS</span>
                                 <p>"Keberhasilan sejati adalah ketika kita meraih keridhaan Allah, bukan sekadar pujian
                                     dari manusia."</p>
