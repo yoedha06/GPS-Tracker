@@ -59,6 +59,16 @@
                             {{ Session::get('photo_format_error') }}
                         </div>
                     @endif
+                    @if ($errors->has('plat_nomor'))
+                        <div class="alert alert-danger">
+                            {{ $errors->first('plat_nomor') }}
+                        </div>
+                    @endif
+                    @if ($errors && $errors->has('serial_number'))
+                        <div class="alert alert-danger">
+                            {{ $errors->first('serial_number') }}
+                        </div>
+                    @endif
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
@@ -110,15 +120,10 @@
                             @endforelse
                         </tbody>
                     </table>
-
-                    @if ($errors && $errors->has('serial_number'))
-                        <div class="alert alert-danger">
-                            {{ $errors->first('serial_number') }}
-                        </div>
-                    @endif
                 </div>
             </div>
         </section>
+
         <!-- ADD Device Modal -->
         <div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -128,32 +133,30 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('device.store') }}" method="POST" enctype="multipart/form-data">
+                        <form id="addDeviceForm" action="{{ route('device.store') }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="serial_number" class="form-label">Serial Number</label>
-                                <input type="text" class="form-control" id="serial_number" name="serial_number" required>
+                                <input type="text" class="form-control" id="serial_number" name="serial_number" value="{{ old('serial_number') }}"required>
                             </div>
                             <!-- Add Photo and Plat Nomor fields -->
                             <div class="mb-3">
                                 <label for="photo" class="form-label">Photo</label>
                                 <input type="file" class="form-control" id="photo" name="photo"
-                                    accept="image/*">
+                                    accept="image/*" onchange="previewPhoto(event)">
+                                <img id="photoPreview" src="#" alt="Photo Preview"
+                                style="max-width: 100%; margin-top: 10px; {{ old('photo') ? '' : 'display: none;' }}">
                             </div>
                             <div class="mb-3">
                                 <label for="plat_nomor" class="form-label">Plat Nomor</label>
-                                <input type="text" class="form-control" id="plat_nomor" name="plat_nomor" required>
+                                <input type="text" class="form-control" id="plat_nomor" name="plat_nomor"  value="{{ old('plat_nomor') }}"required>
                             </div>
                             <button type="submit" class="btn btn-primary">Add Device</button>
-                            @if ($errors->has('serial_number'))
-                                <div class="alert alert-danger">
-                                    {{ $errors->first('serial_number') }}
-                                </div>
-                            @endif
                         </form>
                     </div>
                 </div>
@@ -189,8 +192,9 @@
                                         value="{{ $item->serial_number }}" required readonly>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="file" class="form-control" id="edit_photo{{ $item->id_device }}"
-                                        name="photo" onchange="previewEditPhoto(this, {{ $item->id_device }})">
+                                    <input type="file" class="form-control edit-photo-input"
+                                        id="edit_photo{{ $item->id_device }}" name="photo"
+                                        onchange="previewEditPhoto(this, {{ $item->id_device }})">
                                     @if ($item->photo)
                                         <div class="mt-2">
                                             <img id="editPhotoPreview{{ $item->id_device }}"
@@ -318,8 +322,8 @@
                     <td>
                         ${device.photo
                             ? `<button type="button" class="btn btn-link view-photo-btn" data-bs-toggle="modal" data-bs-target="#viewPhotoModal${device.id_device}">
-                                                                    <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
-                                                                </button>`
+                                                                                                        <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
+                                                                                                    </button>`
                             : 'No photo available'}
                     </td>
                     <td>
@@ -342,6 +346,19 @@
             }
         }
 
+        function previewPhoto(event) {
+            var input = event.target;
+            var reader = new FileReader();
+
+            reader.onload = function() {
+                var preview = document.getElementById('photoPreview');
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+
         function previewEditPhoto(input, deviceId) {
             var previewId = 'editPhotoPreview' + deviceId;
             var preview = document.getElementById(previewId);
@@ -350,8 +367,17 @@
                 var reader = new FileReader();
 
                 reader.onload = function(e) {
+                    // Update preview of newly uploaded photo
                     preview.src = e.target.result;
-                    preview.setAttribute('data-new-photo-url', e.target.result);
+                    preview.style.display = 'block';
+
+                    // Update preview in the form popup if it's open
+                    if (window.opener && !window.opener.closed) {
+                        var editPhotoPreview = window.opener.document.getElementById(previewId);
+                        if (editPhotoPreview) {
+                            editPhotoPreview.src = e.target.result;
+                        }
+                    }
                 };
 
                 reader.readAsDataURL(input.files[0]);
@@ -386,24 +412,5 @@
                 }
             });
         }
-
-        $('#editDeviceModal').on('shown.bs.modal', function(e) {
-            var deviceId = $(e.relatedTarget).data('device-id');
-            var previewId = 'editPhotoPreview' + deviceId;
-            var preview = document.getElementById(previewId);
-
-            $('#updatePhotoBtn').on('click', function() {
-                var newPhotoUrl = preview.getAttribute('data-new-photo-url');
-
-                if (newPhotoUrl) {
-                    preview.src = newPhotoUrl;
-                    $('#deletePhotoBtn').hide();
-                }
-            });
-
-            $('#deletePhotoBtn').on('click', function() {
-                deletePhoto(deviceId);
-            });
-        });
     </script>
 @endsection

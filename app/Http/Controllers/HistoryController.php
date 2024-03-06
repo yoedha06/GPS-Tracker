@@ -28,8 +28,8 @@ class HistoryController extends Controller
         $deviceIds = $devices->pluck('id_device')->toArray(); // Convert to array
 
         $history = History::whereIn('device_id', $deviceIds)
-                            ->orderBy('date_time', 'desc')
-                            ->paginate(10);
+            ->orderBy('date_time', 'desc')
+            ->paginate(10);
 
 
         return view('customer.history.index', ['history' => $history, 'devices' => $devices]);
@@ -126,6 +126,7 @@ class HistoryController extends Controller
 
 
     public function getRelatedData($userId)
+
 {
     $devices = Device::where('user_id', $userId)
                      ->with('history') // Memuat data history untuk setiap perangkat
@@ -147,12 +148,13 @@ public function fetchData($deviceId)
     ]);
 }
 
+
+
     public function showMap()
     {
-    //         $devices = Device::all(); // Mengambil semua data perangkat
-    //         $history = History::all(); // Mengambil semua data histori
+        $user = Auth::user();
 
-            $devices = DB::table('device')->get();
+        $devices = DB::table('device')->get();
             $history = DB::table('history')->get();
 
             return view('admin.map.index', [
@@ -161,6 +163,7 @@ public function fetchData($deviceId)
             ]);
 
     }
+
 
     public function getHistoryData(Request $request)
 {
@@ -178,5 +181,19 @@ public function fetchData($deviceId)
     // Mengembalikan data dalam bentuk JSON
     return response()->json(['historyData' => $historyData]);
 }
+
+
+    public function filterByDate(Request $request)
+    {
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+        $deviceId = $request->input('deviceId');
+
+        $filteredData = History::where('device_id', $deviceId)
+            ->whereBetween('date_time', [$startDate, $endDate])
+            ->get();
+
+        return response()->json($filteredData);
+    }
 
 }
