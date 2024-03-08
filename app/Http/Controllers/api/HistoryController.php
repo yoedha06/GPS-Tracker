@@ -63,7 +63,6 @@ class HistoryController extends Controller
         ]);
         // History::create(['original' => json_encode($request->all())]);
 
-
         return response()->json([
             'message' => true,
             'status' => $history,

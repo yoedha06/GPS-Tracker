@@ -78,8 +78,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/get-related-data/{deviceId}', [HistoryController::class, 'getRelatedData']);
 
-        Route::get('/lastlocation',[MapController::class, 'lastloc'])->name('lastlocation');
-        
+        Route::get('/customer/lastlocation',[MapController::class, 'lastloc'])->name('lastlocation');
 
 
         //device Customer
@@ -141,6 +140,8 @@ Route::get('/history-filter', [HistoryController::class, 'filterByDate']);
 Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
 Route::get('/deviceuser/{id_device}', [MapController::class, 'deviceuser']);
 Route::get('/autoselect/{userId}', [LocationController::class, 'autoselect']);
+Route::get('/get-device-history/{deviceId}', [LocationController::class, 'getDeviceHistory']);
+
 
 
 
