@@ -31,11 +31,16 @@ class MapController extends Controller
             return response()->json(['error' => 'Device not found'], 404);
         }
 
+        if (!$history) {
+            return response()->json(['error' => 'Device history not found'], 404);
+        }
+
         return response()->json([
             'name' => $device->name,
             'latitude' => $history->latitude,
             'longitude' => $history->longitude,
             'plat_nomor' => $device->plat_nomor,
+            'date_time' => $history->date_time,
             'photo' => asset('storage/' . $device->photo),
         ]);
     }
