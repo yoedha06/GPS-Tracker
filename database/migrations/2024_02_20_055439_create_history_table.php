@@ -14,15 +14,15 @@ return new class extends Migration
         Schema::create('history', function (Blueprint $table) {
             $table->id('id_history');
             $table->foreignId('device_id')->references('id_device')->on('device');
-            $table->decimal('latitude', 10, 7); // Menyimpan nilai latitude dengan presisi 10 digit dan 7 digit di belakang koma
-            $table->decimal('longitude', 10, 7); // Menyimpan nilai longitude dengan presisi 10 digit dan 7 digit di belakang koma
-            $table->string('bounds');
-            $table->float('accuracy');
-            $table->float('altitude');
-            $table->float('altitude_acuracy');
-            $table->float('heading');
-            $table->float('speeds');
-            $table->timestamp('date_time');
+            $table->decimal('latitude', 10, 7)->nullable(); // Menyimpan nilai latitude dengan presisi 10 digit dan 7 digit di belakang koma
+            $table->decimal('longitude', 10, 7)->nullable(); // Menyimpan nilai longitude dengan presisi 10 digit dan 7 digit di belakang koma
+            $table->string('bounds')->nullable();
+            $table->float('accuracy')->nullable();
+            $table->float('altitude')->nullable();
+            $table->float('altitude_acuracy')->nullable();
+            $table->float('heading')->nullable();
+            $table->float('speeds')->nullable();
+            $table->timestamp('date_time')->nullable();
             $table->timestamps();
         });
     }
