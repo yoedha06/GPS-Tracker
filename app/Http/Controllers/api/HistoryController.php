@@ -28,44 +28,44 @@ class HistoryController extends Controller
      */
     public function store(Request $request)
     {
-        // $device = Device::where('serial_number', $request->serial_number)->first();
+        $device = Device::where('serial_number', $request->serial_number)->first();
 
-        // if ($device == null) {
-        //     return response()->json([
-        //         'massage' => 'Serial number tidak ditemukan',
-        //     ], 404);
-        // }
+        if ($device == null) {
+            return response()->json([
+                'massage' => 'Serial number tidak ditemukan',
+            ], 404);
+        }
 
-        // $existingHistory = History::where('device_id', $device->id_device)
-        //     ->where('date_time', $request->date_time)
-        //     ->first();
+        $existingHistory = History::where('device_id', $device->id_device)
+            ->where('date_time', $request->date_time)
+            ->first();
 
-        // if ($existingHistory) {
+        if ($existingHistory) {
 
-        //     if ($existingHistory->device_id == $device->id_device) {
-        //         return response()->json([
-        //             'message' => 'Data dengan tanggal waktu yang sama sudah ada untuk perangkat yang sama',
-        //         ], 403);
-        //     }
-        // }
+            if ($existingHistory->device_id == $device->id_device) {
+                return response()->json([
+                    'message' => 'Data dengan tanggal waktu yang sama sudah ada untuk perangkat yang sama',
+                ], 403);
+            }
+        }
 
-        // $history = History::create([
-        //     'device_id' => $device->id_device,
-        //     'latitude' => $request->latitude,
-        //     'longitude' => $request->longitude,
-        //     'bounds' => $request->bounds,
-        //     'accuracy' => $request->accuracy,
-        //     'altitude' => $request->altitude,
-        //     'altitude_acuracy' => $request->altitude_acuracy,
-        //     'heading' => $request->heading,
-        //     'speeds' => $request->speeds,
-        //     'date_time' => $request->date_time,
-        // ]);
-        History::create(['original' => json_encode($request->all())]);
+        $history = History::create([
+            'device_id' => $device->id_device,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'bounds' => $request->bounds,
+            'accuracy' => $request->accuracy,
+            'altitude' => $request->altitude,
+            'altitude_acuracy' => $request->altitude_acuracy,
+            'heading' => $request->heading,
+            'speeds' => $request->speeds,
+            'date_time' => $request->date_time,
+        ]);
 
 
         return response()->json([
-            'message' => true,
+            'message' => 'Data berhasil disimpan',
+            'data' => $history
         ], 201);
     }
     /**
