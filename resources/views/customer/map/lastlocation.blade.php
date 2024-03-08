@@ -75,9 +75,6 @@
                 <button type="submit" id="refreshButton" class="btn btn-primary" style="margin-top:-20px;"><i class="bi bi-hdd-fill"></i>&nbsp;Lihat Semua Device</button>
                 <button type="submit" id="myLocationButton" class="btn btn-success" style="margin-top:-20px;"><i class="bi bi-compass-fill"></i>&nbsp;Lihat lokasi saya</button>
                 <button type="submit" id="updateLocationButton" class="btn btn-info" style="margin-top:-20px;"><i class="bi bi-arrow-clockwise"></i>&nbsp;Perbarui Posisi</button>
-                <button id="refreshButton" class="btn btn-primary">
-                    <i class="bi bi-compass"></i> See All History
-                </button>
                 <div id="alertMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="display: none; margin-top:7px;">
                     <span id="alertText">Ini adalah pesan alert.</span>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
