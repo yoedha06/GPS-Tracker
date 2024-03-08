@@ -41,7 +41,11 @@
                     </select>
                 </div>
             </form>
-            <button id="refreshButton" class="btn btn-primary">Lihat Semua</button>
+            <button id="refreshButton" class="btn btn-primary">
+                <i class="bi bi-compass"></i> See All History
+            </button>
+            
+            
         </div>
         
         <div id="alertMessage" class="alert alert-success" style="display: none;">
