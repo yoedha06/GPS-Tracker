@@ -30,7 +30,10 @@
                     @endforeach
                 </select>
             </div>
-            <button id="refreshButton" class="btn btn-primary">See All Users</button>
+            <button id="refreshButton" class="btn btn-primary">
+    <i class="bi bi-people"></i> See All Users
+</button>
+
             {{-- @dump($device) --}}
 
             <div id="map"></div>
@@ -91,8 +94,9 @@
                                             .longitude + "<br>" +
                                             "<b>PlatNo:</b> " + history.device.plat_nomor + "<br>" +
                                             "<b>Date Time:</b> " + history.date_time + "<br>" +
-                                            "<img src='{{ asset('storage/' . $device->photo) }}' style='width: 199px; height: 115px;' >";
-                                            console.log('Image Source:', history.device.photo);
+                                            "<img src='{{ asset('storage/') }}/" + history.device
+                                            .photo + "' style='width: 199px; height: 115px;' >";
+                                        console.log('Image Source:', history.device.photo);
 
 
                                         marker.bindPopup(popupContent)
