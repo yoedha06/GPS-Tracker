@@ -12,40 +12,14 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.20.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.19.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-8a4bI/7Nb+C8Fm55o/G3GLJUswGch5o7kP9iHgxy2CjsMP9SDf9u+LydFziF4+irf7kNUewa2oa0bOXkJQHjw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link href="/images/geex.png" rel="icon">
 
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/splashscreen.css') }}">
 </head>
-<style>
-    /* CSS for the splash screen */
-    body {
-        margin: 0;
-        overflow: hidden;
-    }
-
-    #splash-screen {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        background: #ffffff;
-        /* You can customize the background color */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        /* Set a high z-index value to make it appear on top */
-    }
-
-    #splash-screen img {
-        width: 150px;
-        /* Adjust the width as needed */
-        height: 70px;
-        /* Adjust the height as needed */
-    }
-</style>
-
 <body>
     <div id="splash-screen">
         <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
@@ -109,7 +83,7 @@
                     <a href="{{ route('lastlocation') }}" class="sidebar-link">
                         <i class="fas fa-map-marker-alt"></i>
                         <span>Last Location</span>
-                    </a>
+                    </a> 
 
                     <a href="/customer/map" class="sidebar-link">
                         <i class="bi bi-map-fill"></i>

@@ -125,9 +125,9 @@
             </div>
             <div class="sidebar-menu">
                 <ul class="menu">
-                    <li class="sidebar-title">Menu</li>
+                    <li class="sidebar-title active">Menu</li>
                     <hr>
-                    <li class="sidebar-item active ">
+                    <li class="sidebar-item active">
                         <a href="/admin" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
@@ -139,7 +139,7 @@
                             <i class="bi bi-stack"></i>
                             <span>Users</span>
                         </a>
-                        <ul class="submenu">
+                        <ul class="submenu active">
                             <li class="submenu-item">
                                 <a href="{{ route('admin.user') }}">
                                     <i class="fas fa-user"></i> <!-- Ikon user -->
@@ -154,20 +154,20 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="sidebar-item  has-sub">
+                    <li class="sidebar-item has-sub">
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-map-fill"></i>
                             <span>Map</span>
                         </a>
-                        <ul class="submenu">
-                            <li class="submenu-item">
+                        <ul class="submenu active">
+                            <li class="submenu-item ">
                                 <a href="{{ route('admin.map') }}">
                                     <i class="bi bi-clock-fill"></i>
                                     <span class="ml-1">History</span>
                                 </a>
                             </li> 
                             <li class="submenu-item">
-                                <a href="{{ route('admin.lastlocation')}}">
+                                <a href="{{route('admin.lastlocation')}}">
                                     <i class="fas fa-map-marker-alt"></i>
                                     <span class="ml-1">Last Locations</span>
                                 </a>

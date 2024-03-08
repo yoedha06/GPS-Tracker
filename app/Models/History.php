@@ -12,20 +12,24 @@ class History extends Model
 
     protected $primaryKey = "id_history";
     protected $fillable = [
-        'device_id',
-        'latitude',
-        'longitude',
-        'bounds',
-        'accuracy',
-        'altitude',
-        'altitude_acuracy',
-        'heading',
-        'speeds',
-        'date_time',
+        "device_id",
+        "latitude",
+        "longitude",
+        "bounds",
+        "accuracy",
+        "altitude",
+        "altitude_acuracy",
+        "heading",
+        "speeds",
+        "date_time",
     ];
 
     public function device()
     {
         return $this->belongsTo(Device::class, 'device_id', 'id_device');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

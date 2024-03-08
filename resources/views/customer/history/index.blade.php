@@ -19,28 +19,28 @@
             </div>
         </div>
 
-        <div class="container">
+        <div class="container" style="margin-top: -17px;">
             <form class="mt-2 row g-3">
                 <div class="col-md-6 mb-3">
-                    <label for="selectDevice" class="form-label">Select Device</label>
-                    <select id="selectDevice" class="form-select" aria-label="Select Device" style="width: 202%">
+                    <select id="selectDevice" class="form-select" aria-label="Select Device" style="width:100%;" >
                         <option value="" disabled selected>Select Device</option>
                         @foreach ($devices as $device)
                             <option value="{{ $device->id_device }}">{{ $device->name }}</option>
                         @endforeach
                     </select>
                 </div>
+                <div class="col-md-6 mb-2" style="margin-left:-10px;">
+                    <button id="refreshButton" class="btn btn-primary">
+                        <p style="margin: -4px;"><i class="fas fa-eye"></i>&nbsp; Lihat Semua History</p>
+                    </button>
+                </div>
             </form>
         </div>
+        
 
         <section class="section">
             <div class="card">
                 <div class="card-header">
-                    <div class="col-md-6 mb-3">
-                        <button id="refreshButton" class="btn btn-primary">
-                            Lihat Semua History <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
                     <div id="validationMessage" class="alert alert-dismissible" role="alert" style="display: none;"></div>
 
                     <h4 class="card-title">Data History</h4>

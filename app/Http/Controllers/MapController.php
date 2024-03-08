@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Device;
 use App\Models\History;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 class MapController extends Controller
 {
@@ -44,4 +46,22 @@ class MapController extends Controller
             'photo' => asset('storage/' . $device->photo),
         ]);
     }
+    
+    // public function createLastLocation(Request $request)
+    // {
+        
+    //     // Ambil data lokasi terakhir dari permintaan yang dikirim (latitude dan longitude)
+    //     $latitude = $request->input('latitude');
+    //     $longitude = $request->input('longitude');
+    //     dd($request->all());
+    //     // Buat entri baru di tabel History
+    //     $history = new History([
+    //         'latitude' => $latitude,
+    //         'longitude' => $longitude,
+    //         'date_time' => Carbon::now(), // Set waktu saat ini sebagai waktu pembuatan entri
+    //     ]);
+    //     $history->save();
+
+    //     return response()->json(['message' => 'Data lokasi terakhir berhasil disimpan'], 200);
+    // }
 }

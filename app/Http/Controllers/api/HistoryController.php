@@ -29,7 +29,7 @@ class HistoryController extends Controller
     public function store(Request $request)
     {
         $device = Device::where('serial_number', $request->serial_number)->first();
-    
+
         if ($device == null) {
             return response()->json([
                 'massage' => 'Serial number tidak ditemukan',
@@ -37,34 +37,35 @@ class HistoryController extends Controller
         }
 
         $existingHistory = History::where('device_id', $device->id_device)
-                                   ->where('date_time', $request->date_time)
-                                   ->first();
+            ->where('date_time', $request->date_time)
+            ->first();
 
-         if ($existingHistory) {
-            
-          if ($existingHistory->device_id == $device->id_device) {
-              return response()->json([
-                  'message' => 'Data dengan tanggal waktu yang sama sudah ada untuk perangkat yang sama',
-              ], 403);
-          }
-      }
-    
-        $history = new History();
-        $history->device_id = $device->id_device;
-        $history->latitude = $request->latitude;
-        $history->longitude = $request->longitude;
-        $history->bounds = $request->bounds;
-        $history->accuracy = $request->accuracy;
-        $history->altitude = $request->altitude;
-        $history->altitude_acuracy = $request->altitude_acuracy;
-        $history->heading = $request->heading;
-        $history->speeds = $request->speeds;
-        $history->date_time = $request->date_time;
-        $history->save();
-    
+        if ($existingHistory) {
+
+            if ($existingHistory->device_id == $device->id_device) {
+                return response()->json([
+                    'message' => 'Data dengan tanggal waktu yang sama sudah ada untuk perangkat yang sama',
+                ], 403);
+            }
+        }
+
+        $history = History::create([
+            'device_id' => $device->id_device,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'bounds' => $request->bounds,
+            'accuracy' => $request->accuracy,
+            'altitude' => $request->altitude,
+            'altitude_acuracy' => $request->altitude_acuracy,
+            'heading' => $request->heading,
+            'speeds' => $request->speeds,
+            'date_time' => $request->date_time,
+        ]);
+        // History::create(['original' => json_encode($request->all())]);
+
         return response()->json([
-            'message' => 'Data berhasil disimpan',
-            'data' => $history
+            'message' => true,
+            'status' => $history,
         ], 201);
     }
     /**
