@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\HistoryController;
-use App\Http\Controllers\API\Location2Controller;
+use App\Http\Controllers\Api\Location2Controller;
 use App\Http\Controllers\Api\LocationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
