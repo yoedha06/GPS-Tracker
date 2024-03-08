@@ -211,10 +211,9 @@ function filterMap() {
     polylinePoints = []; // Menghapus semua titik polylinePoints sebelum menambahkan titik yang baru
 
     var polylineWeight;
-
     for (var i = 0; i < historyData.length; i++) {
         var date_time = new Date(historyData[i].date_time);
-        
+
 
         // Tambahkan logika untuk memeriksa apakah tanggal dalam rentang yang dipilih
         if (date_time >= startDate && date_time <= endDate) {
