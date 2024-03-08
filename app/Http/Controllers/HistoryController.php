@@ -28,7 +28,9 @@ class HistoryController extends Controller
         $deviceIds = $devices->pluck('id_device')->toArray(); // Convert to array
 
         $history = History::whereIn('device_id', $deviceIds)
-            ->orderBy('date_time', 'desc')
+            ->join('device', 'history.device_id', '=', 'device.id_device')
+            ->orderBy('device.name', 'asc') // Order by device name in ascending order
+            ->orderBy('date_time', 'desc')    // Then order by date_time in descending order
             ->paginate(10);
 
 
@@ -150,7 +152,7 @@ class HistoryController extends Controller
     public function showMap()
     {
         $user = Auth::user();
-        
+
         $devices = $user->devices;
 
         $history = History::whereIn('device_id', $devices->pluck('id'))->get();
