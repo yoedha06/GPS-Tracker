@@ -28,4 +28,8 @@ class History extends Model
     {
         return $this->belongsTo(Device::class, 'device_id', 'id_device');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
