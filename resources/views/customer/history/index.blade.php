@@ -63,6 +63,7 @@
                             </tr>
                         </thead>
                         <tbody>
+
                             @if (count($history) > 0)
                                 @php $iteration = 1 @endphp
                                 @foreach ($history as $h)

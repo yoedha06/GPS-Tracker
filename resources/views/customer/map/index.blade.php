@@ -5,66 +5,55 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 @section('content')
 <div id="main">
     <div class="form-group ml-3">
         <label for="device-select">Select Device:</label>
-        <select id="device-select" class="form-control">
+        <select id="device-select" class="form-control" >
             <option value="" disabled selected>Select Device</option>
             @foreach($devices as $device)
-                <option value="{{ $device->id_device }}">{{ $device->name }}</option>
+                <option value="{{ $device->id_device }}">{{ $device->name }} || {{ $device->serial_number }}</option>
             @endforeach
         </select>
     </div>
 
-    <div class="date-time-input ml-auto">
-        <div class="d-flex flex-row-reverse">
-            <button id="filter-button" class="btn btn-primary ml-2">Filter</button> <!-- Tombol filter -->
-            <div class="date-label mr-2">
-                <label for="end-date">End Date:</label>
-                <div class="input-group">
-                    <input type="date" id="end-date" class="form-control">
-                    <div class="input-group-append"></div>
-                </div>
-            </div>
-            <div class="date-label">
-                <label for="start-date">Start Date:</label>
-                <div class="input-group">
-                    <input type="date" id="start-date" class="form-control">
-                    <div class="input-group-append"></div>
-                </div>
-            </div>
-        </div>
+    <div class="form-group">
+        <label for="start_date">Tanggal dan Waktu Mulai</label>
+        <input type="text" id="start_date" class="form-control" placeholder="Start Date & Time">
     </div>
-    <div id="map" style="height: 50%; width: 100%;"></div>
 
+    <div class="form-group">
+        <label for="end_date">Tanggal dan Waktu Selesai</label>
+        <input type="text" id="end_date" class="form-control" placeholder="End Date & Time">
+    </div>
+
+    <button id="filterButton" class="btn btn-primary">Filter</button>
     <div id="map" style="height: 50%; width: 100%;"></div>
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <!-- Include Select2 JS -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <style>
     .date-time-input {
         display: flex;
-        align-items: center;
+        justify-content: flex-end;
+        margin-top: 10px;
     }
-
     .date-label {
         position: relative;
         display: inline-block;
         margin-right: 10px;
     }
-
     .date-label input[type="date"] {
         padding-right: 30px;
     }
-
     .date-label i.fas.fa-calendar {
         position: absolute;
         top: 50%;
@@ -72,138 +61,261 @@
         transform: translateY(-50%);
         pointer-events: none;
     }
-
-    #filter-button {
-        margin-left: 10px;
-    }
 </style>
 <script>
-    var map = L.map('map').setView([-6.895364793103795, 107.53971757412086], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+map = L.map('map').setView([-6.895364793103795, 107.53971757412086], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
 
-    var historyData = @json($history);
+var historyData = @json($history);
+var deviceName = {!! $devices->pluck('name') !!};
+var serialNumber = {!! $devices->pluck('serial_number') !!};
 
-    var layerGroup = L.layerGroup();
-    var polylinePoints = [];
+var layerGroup = L.layerGroup();
+var polylinePoints = [];
+var startDatePicker, endDatePicker;
+
+function filterMap() {
+    var startDate = startDatePicker.selectedDates[0];
+    var endDate = endDatePicker.selectedDates[0];
+
+    map.removeLayer(layerGroup);
+    layerGroup.clearLayers(); // Gunakan metode clearLayers() untuk menghapus semua layer dari layerGroup
+
+    polylinePoints = []; // Menghapus semua titik polylinePoints sebelum menambahkan titik yang baru
+
+    var polylineWeight;
 
     for (var i = 0; i < historyData.length; i++) {
-        var latlngStr = historyData[i].latlng;
-        var latlngArr = latlngStr.split(", ");
-        var lat = parseFloat(latlngArr[0]);
-        var lng = parseFloat(latlngArr[1]);
-        var speed = parseFloat(historyData[i].speeds);
-        var accuracy = parseFloat(historyData[i].accuracy);
-        var bounds = historyData[i].bounds;
+        var date_time = new Date(historyData[i].date_time);
 
-        // Menentukan warna marker lingkaran berdasarkan kecepatan
-        var markerColor;
-        if (speed < 20) {
-            markerColor = 'green';
-        } else if (speed >= 20 && speed <= 40) {
-            markerColor = 'yellow';
-        } else {
-            markerColor = 'red';
-        }
+        // Tambahkan logika untuk memeriksa apakah tanggal dalam rentang yang dipilih
+        if (date_time >= startDate && date_time <= endDate) {
+            var lat = parseFloat(historyData[i].latitude);
+            var lng = parseFloat(historyData[i].longitude);
+            var speed = parseFloat(historyData[i].speeds);
+            var accuracy = parseFloat(historyData[i].accuracy);
 
-        // Membuat marker lingkaran dengan warna yang ditentukan
-        var circleMarker = L.circleMarker([lat, lng], {
-            radius: 0,
-            color: markerColor,
-            stroke: false,
-        });
-        layerGroup.addLayer(circleMarker);
+            var opacity;
+            if (accuracy <= 10) {
+                opacity = 1.0;
+            } else if (accuracy > 10 && accuracy <= 20) {
+                opacity = 0.75;
+            } else {
+                opacity = 0.5;
+            }
 
-        // Menambahkan titik dan batas ke polylinePoints
-        polylinePoints.push({lat: lat, lng: lng, bounds: bounds});
+            if (speed < 20) {
+                color = 'green';
+                polylineWeight = 10;
+            } else if (speed >= 20 && speed <= 40) {
+                color = 'yellow';
+                polylineWeight = 5;
+            } else {
+                color = 'red';
+                polylineWeight = 2;
+            }
 
-        // Menentukan warna polyline berdasarkan akurasi
-        var polylineColor;
-        if (accuracy >= 10 && accuracy < 20) {
-            polylineColor = 'green';
-        } else if (accuracy >= 20 && accuracy <= 50) {
-            polylineColor = 'yellow';
-        } else {
-            polylineColor = 'red';
-        }
+            var circleMarker = L.circleMarker([lat, lng], {
+                radius: 0,
+                color: color,
+                stroke: false,
+            });
 
-        // Menentukan berat polyline berdasarkan akurasi
-        var polylineWeight;
-        if (accuracy >= 10 && accuracy < 20) {
-            polylineWeight = 10;
-        } else if (accuracy >= 20 && accuracy <= 50) {
-            polylineWeight = 5;
-        } else {
-            polylineWeight = 2;
-        }
+            layerGroup.addLayer(circleMarker);
+            polylinePoints.push([lat, lng]);
 
-        // Membuat polyline dengan warna dan berat yang ditentukan
-        if (polylinePoints.length > 1) {
-            var polyline = L.polyline(polylinePoints.slice(-2), {
-                color: polylineColor,
-                weight: polylineWeight,
-                opacity: 1.0,
-            }).addTo(map);
+            var polylineColor = speed < 20 ? "green" : speed >= 20 && speed <= 40 ? "yellow" : "red";
 
-            // Menambahkan popup dengan data ke polyline
-            var popupContent = "Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m";
-            polyline.bindPopup(popupContent);
-        }
+            if (polylinePoints.length > 1) {
+                var polyline = L.polyline(polylinePoints.slice(-2), {
+                    color: polylineColor,
+                    weight: polylineWeight,
+                    opacity: opacity,
+                }).addTo(map);
 
-        // Menambahkan marker untuk data terbaru dan data terakhir
-        if (i === 0 || i === historyData.length - 1) {
-            var marker = L.marker([lat, lng], {
-                color: i === 0 ? 'blue' : 'red' // Data terbaru berwarna biru, data terakhir berwarna merah
-            }).addTo(map);
+                var popupContent = "Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m";
+                polyline.bindPopup(popupContent);
+            }
 
-            // Menambahkan popup dengan informasi lengkap, termasuk batas
-            var popupContent = "<div style='max-width: 200px; overflow: hidden; text-overflow: ellipsis;'>" +
+            var marker = L.marker([lat, lng]).addTo(map);
+
+            var popupContent =
+                "<div style='max-width: 200px; overflow: hidden; text-overflow: ellipsis;'>" +
                 "<div style='font-size: 12px;'>" +
-                "Latitude: " + lat.toFixed(7) +
-                "<br>Longitude: " + lng.toFixed(7) +
-                "<br>Bounds: " + bounds + // Menampilkan data batas di dalam popup
-
+                "Device Name: " + deviceName +
+                "Serial Number: " + serialNumber +
+                "<br>Latitude: " + lat.toFixed(6) +
+                "<br>Longitude: " + lng.toFixed(6) +
+                "<br>Date & Time: " + date_time.toLocaleString() +
                 "</div>" +
                 "</div>";
 
-            marker.bindPopup(popupContent);
+            var popupOptions = {
+                maxWidth: 200
+            };
+
+            marker.bindPopup(popupContent, popupOptions);
+            polylinePoints.push([lat, lng]);
         }
     }
 
-    // Menambahkan layerGroup ke peta
+    var allLatLngs = polylinePoints.map(function(latlng) {
+        return L.latLng(latlng[0], latlng[1]);
+    });
+
     layerGroup.addTo(map);
+    map.fitBounds(L.latLngBounds(allLatLngs));
+}
+
+
+
+$(document).ready(function () {
+    $('#device-select').select2();
+
+    startDatePicker = flatpickr("#start_date", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        defaultDate: new Date().setHours(0, 0, 0, 0) // Set default date to today at 00:00
+    });
+
+    endDatePicker = flatpickr("#end_date", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        defaultDate: new Date().setHours(23, 0, 0, 0) // Set default date to today at 23:00
+    });
+
+    function getTodayDate() {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var yyyy = today.getFullYear();
+        return yyyy + '-' + mm + '-' + dd;
+    }
+
+    // Assuming you have a dropdown for selecting a device with the ID 'device-select'
+$('#device-select').change(function() {
+    var selectedDevice = $('#device-select').val();
+filterMap(deviceSelect);
+ // Call the modified filterMap function with the selected device
+});
+
+function filterMap() {
+    var startDate = startDatePicker.selectedDates[0];
+    var endDate = endDatePicker.selectedDates[0];
+
+    map.removeLayer(layerGroup);
+    layerGroup.clearLayers(); // Gunakan metode clearLayers() untuk menghapus semua layer dari layerGroup
+
+    polylinePoints = []; // Menghapus semua titik polylinePoints sebelum menambahkan titik yang baru
+
+    var polylineWeight;
+    for (var i = 0; i < historyData.length; i++) {
+        var date_time = new Date(historyData[i].date_time);
+
+
+        // Tambahkan logika untuk memeriksa apakah tanggal dalam rentang yang dipilih
+        if (date_time >= startDate && date_time <= endDate) {
+            var lat = parseFloat(historyData[i].latitude);
+            var lng = parseFloat(historyData[i].longitude);
+            var speed = parseFloat(historyData[i].speeds);
+            var accuracy = parseFloat(historyData[i].accuracy);
+
+            var opacity;
+            if (accuracy <= 10) {
+                opacity = 1.0;
+            } else if (accuracy > 10 && accuracy <= 20) {
+                opacity = 0.75;
+            } else {
+                opacity = 0.5;
+            }
+
+            if (speed < 20) {
+                color = 'green';
+                polylineWeight = 10;
+            } else if (speed >= 20 && speed <= 40) {
+                color = 'yellow';
+                polylineWeight = 5;
+            } else {
+                color = 'red';
+                polylineWeight = 2;
+            }
+
+            var circleMarker = L.circleMarker([lat, lng], {
+                radius: 0,
+                color: color,
+                stroke: false,
+            });
+
+            layerGroup.addLayer(circleMarker);
+            polylinePoints.push([lat, lng]);
+
+            var polylineColor = speed < 20 ? "green" : speed >= 20 && speed <= 40 ? "yellow" : "red";
+
+            if (polylinePoints.length > 1) {
+                var polyline = L.polyline(polylinePoints.slice(-2), {
+                    color: polylineColor,
+                    weight: polylineWeight,
+                    opacity: opacity,
+                }).addTo(map);
+
+                var popupContent = "Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m";
+                polyline.bindPopup(popupContent);
+            }
+
+            var marker = L.marker([lat, lng]).addTo(map);
+
+            var popupContent =
+                "<div style='max-width: 200px; overflow: hidden; text-overflow: ellipsis;'>" +
+                "<div style='font-size: 12px;'>" +
+                "Device Name: " + deviceName +
+                "<br>Serial Number: " + serialNumber +
+                "<br>Latitude: " + lat.toFixed(6) +
+                "<br>Longitude: " + lng.toFixed(6) +
+                "<br>Date & Time: " + date_time.toLocaleString() +
+                "</div>" +
+                "</div>";
+
+            var popupOptions = {
+                maxWidth: 200
+            };
+
+            marker.bindPopup(popupContent, popupOptions);
+            polylinePoints.push([lat, lng]);
+        }
+    }
+
+    var allLatLngs = polylinePoints.map(function(latlng) {
+        return L.latLng(latlng[0], latlng[1]);
+    });
+
+    layerGroup.addTo(map);
+    map.fitBounds(L.latLngBounds(allLatLngs));
+}
+
+
+    function setStartDateEndDateToToday() {
+        // Ambil nilai default jika tidak ada yang dipilih
+        var selectedStartDate = startDatePicker.selectedDates.length > 0 ? startDatePicker.selectedDates[0] : new Date().setHours(0, 0, 0, 0);
+        var selectedEndDate = endDatePicker.selectedDates.length > 0 ? endDatePicker.selectedDates[0] : new Date().setHours(23, 0, 0, 0);
+
+        startDatePicker.setDate(selectedStartDate); // Set start date to today at 00:00 or selected value
+        endDatePicker.setDate(selectedEndDate); // Set end date to today at 23:00 or selected value
+    }
+
+    $('#filterButton').on('click', function () {
+        setStartDateEndDateToToday();
+        filterMap();
+    });
+});
+
 </script>
 
 
 
 
 
-<script>
-        $(document).ready(function() {
-    $('#device-select').on('change', function() {
-        var deviceId = $(this).val();
 
-        $.ajax({
-            url: '/admin/get-related-data/' + deviceId,
-            method: 'GET',
-            success: function(data) {
-                var historyData = data.devices.find(device => device.id == deviceId).history;
-                $('#related-data-select').empty(); // Kosongkan dropdown terlebih dahulu
-                $.each(historyData, function(index, history) {
-                    $('#related-data-select').append('<option value="' + history.id + '">' + history.name + '</option>');
-                });
-                $('#related-data-select').trigger('change');
-            },
-            error: function(error) {
-                console.error('Error fetching related data:', error);
-            }
-        });
-    });
-
-    $('#device-select').select2();
-});
-
-    </script>
 @endsection
 
