@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\History;
 use App\Models\Device;
+use App\Models\User;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -84,17 +86,17 @@ class HistoryController extends Controller
     }
 
 
-    public function map()
-    {
-        // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk
-        $devices = Device::where('user_id', Auth::id())->get();
+   public function map()
+   {
+       // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk
+       $devices = Device::where('user_id', Auth::id())->get();
 
-        // Ambil riwayat dari basis data atau dari sumber lain jika diperlukan
-        $history = DB::table('history')->get();
+       // Ambil riwayat dari basis data atau dari sumber lain jika diperlukan
+       $history = DB::table('history')->get();
 
-        // Melewatkan data ke view menggunakan compact
-        return view('customer.map.index', compact('devices', 'history'));
-    }
+       // Melewatkan data ke view menggunakan compact
+       return view('customer.map.index', compact('devices', 'history'));
+   }
     public function getHistoryByDevice($deviceId)
     {
         logger('Request for device history. Device ID: ' . $deviceId);
@@ -150,19 +152,22 @@ public function fetchData($deviceId)
 
 
 
-    public function showMap()
-    {
-        $user = Auth::user();
+public function showMap()
+{
+    $user = Auth::user();
 
-        $devices = DB::table('device')->get();
-            $history = DB::table('history')->get();
+    // Mendapatkan daftar pengguna
+    $users = User::all(); // Anda perlu mengimpor model User jika belum melakukannya
 
-            return view('admin.map.index', [
-                'devices' => $devices,
-                'history' => $history
-            ]);
+    $devices = DB::table('device')->get();
+    $history = DB::table('history')->get();
 
-    }
+    return view('admin.map.index', [
+        'users' => $users, // Mengirim data pengguna ke tampilan
+        'devices' => $devices,
+        'history' => $history
+    ]);
+}
 
 
     public function getHistoryData(Request $request)
@@ -196,4 +201,19 @@ public function fetchData($deviceId)
         return response()->json($filteredData);
     }
 
-}
+    public function selectUsers(Request $request)
+    {
+        $data = User::where('name', 'LIKE', '%' . $request->q . '%')->paginate(10);
+        return response()->json($data);
+    }
+
+    public function selectDevice($id)
+    {
+        $data = Device::where('user_id', $id)->paginate(10);
+        return response()->json($data);
+    }
+
+
+ }
+
+

@@ -131,7 +131,10 @@ Route::get('/admin/get-related-data/{deviceId}', [HistoryController::class, 'fet
 Route::get('/admin/map', [HistoryController::class, 'showMap'])->name('admin.map');
 Route::get('/get-history-data', [HistoryController::class, 'getHistoryData'])->name('get-history-data');
 
+Route::get('selectUsers', [HistoryController::class, 'selectUsers'])->name('selectUsers');
+Route::get('selectDevice/{id}', [HistoryController::class, 'selectDevice'])->name('selectDevice');
 
+Route::get('/filter-data', [HistoryController::class, 'filterData']);
 
 //filter
 // Route::get('/getHistoryByDevice/{deviceId}', [DeviceController::class, 'filter']);
