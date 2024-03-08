@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\HistoryController;
-use App\Http\Controllers\Api\Location2Controller;
 use App\Http\Controllers\Api\LocationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,7 +28,3 @@ Route::post('/history/store', [HistoryController::class, 'store']);
 
 Route::get('/location', [LocationController::class, 'index']);
 Route::post('/location/store', [LocationController::class, 'store']);
-
-
-Route::get('/location2', [Location2Controller::class, 'index']);
-Route::post('/location2/store', [Location2Controller::class, 'store']);
