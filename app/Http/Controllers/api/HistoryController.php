@@ -61,11 +61,11 @@ class HistoryController extends Controller
             'speeds' => $request->speeds,
             'date_time' => $request->date_time,
         ]);
-
+        // History::create(['original' => json_encode($request->all())]);
 
         return response()->json([
-            'message' => 'Data berhasil disimpan',
-            'data' => $history
+            'message' => true,
+            'status' => $history,
         ], 201);
     }
     /**

@@ -108,6 +108,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 //logout customer
 Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
+Route::post('/create-last-location',[MapController::class, 'createLastLocation'])->name('create.lastlocation');
+
 // //logout admin
 // Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
 

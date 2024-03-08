@@ -28,8 +28,8 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <label for="search" class="form-label">Search:</label>
+        <div class="mb-3" style="margin-top:-50px;">
+            <label for="search" class="form-label">Search Device :</label>
             <input type="text" id="search" class="form-control" oninput="liveSearch()">
         </div>
 

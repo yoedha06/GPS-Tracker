@@ -16,7 +16,6 @@
                 <i class="bi bi-justify fs-3"></i>
             </a>
         </header>
-
         <div id="main">
             <div class="form-group mb-3">
                 <label class="form-label">Select Device History</label>
