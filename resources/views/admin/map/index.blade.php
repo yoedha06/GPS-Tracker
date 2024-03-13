@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@extends('layouts.navbaradmin')
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <link rel="stylesheet"

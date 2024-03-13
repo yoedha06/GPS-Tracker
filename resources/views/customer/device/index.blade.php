@@ -1,4 +1,5 @@
 @extends('layouts.customer')
+@extends('layouts.navbarcustomer')
 
 @section('content')
     <div id="main">
