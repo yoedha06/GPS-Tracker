@@ -8,40 +8,34 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 @section('content')
-    <div id="main">
-        <div class="form-group ml-3">
-            <label for="user-select">Select Users:</label>
-            <select id="user-select" class="form-control">
-                <option value="" disabled selected>Select Users</option>
-                @foreach ($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                @endforeach
-            </select>
-        </div>
-        
-        <div class="form-group ml-3">
-            <label for="device-select">Select Device:</label>
-            <select id="device-select" class="form-control">
-                <option value="" disabled selected>Select Device</option>
-                @foreach ($devices as $device)
-                <option value="{{ $device->id_device }}">{{ $device->name }} || {{ $device->serial_number }}</option>
-                @endforeach
-            </select>
-        </div>
+<div id="main">
+    <div class="form-group mb-3">
+        <label class="form-label">Select Device Users And Device</label>
+        <select id="user_device" class="form-select input">
+            <option value="" disabled selected>Select</option>
+            @foreach ($devices as $device)
+                @if ($device->latestHistory && $device->user)
+                    <option value="{{ $device->id_device }}" data-device-id="{{ $device->id_device }}">
+                        {{ $device->name }} - {{ $device->user->name }}
+                    </option>
+                @endif
+            @endforeach
+        </select>
+    </div>
         <div class="form-group">
             <label for="start_date">Tanggal dan Waktu Mulai</label>
             <input type="text" id="start_date" class="form-control" placeholder="Start Date & Time">
         </div>
-    
+
         <div class="form-group">
             <label for="end_date">Tanggal dan Waktu Selesai</label>
             <input type="text" id="end_date" class="form-control" placeholder="End Date & Time">
         </div>
-    
-        <button id="filterButton" class="btn btn-primary">Filter</button>
+
+
         <div id="map" style="height: 50%; width: 100%;"></div>
     </div>
-    
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -76,91 +70,68 @@
     <!-- Include Select2 JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-   $(document).ready(function() {
-    $("#user-select").select2({
-        placeholder: 'Pilih Users',
-        ajax: {
-            url: "{{ route('selectUsers')}}",
-            processResults: function ({data}) {
-                return {
-                    results: $.map(data, function(item) {
-                        return {
-                            id: item.id,
-                            text: item.name
-                        }
-                    })
-                }
-            } 
-        }
+    
+    <script>
+
+$(document).ready(function () {
+    $('#user_device').select2();
+    
+    var startDatePicker = flatpickr("#start_date", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        defaultDate: new Date().setHours(0, 0, 0, 0) // Set default date to today at 00:00
     });
 
-    $("#device-select").select2({
-        placeholder: 'Pilih Device'
+    var endDatePicker = flatpickr("#end_date", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        defaultDate: new Date().setHours(23, 0, 0, 0) // Set default date to today at 23:00
     });
 
-    $("#user-select").on('change', function() {
-        var id = $(this).val();
-        
-        $("#device-select").empty();
-
-        if (id) {
-            $.ajax({
-                url: "{{ url('selectDevice')}}/"+ id,
-                success: function (data) {
-                    $.each(data, function(index, item) {
-                        $("#device-select").append('<option value="' + item.id + '">' + item.name + '</option>');
-                    });
-                    
-                    // Trigger Select2 to update
-                    $("#device-select").trigger('change');
-                },
-                error: function(xhr, status, error) {
-                    console.log("Error fetching devices:", error);
-                }
-            });
-        }
-    });
-});
-
-    </script>
-   <script>
-    map = L.map('map').setView([-6.895364793103795, 107.53971757412086], 13);
+    var map = L.map('map').setView([-6.895364793103795, 107.53971757412086], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
     var historyData = @json($history);
+    var deviceName = {!! $devices->pluck('name') !!};
+    var serialNumber = {!! $devices->pluck('serial_number') !!};
+
     var layerGroup = L.layerGroup();
     var polylinePoints = [];
-    var startDatePicker, endDatePicker;
-    var selectedUser = null; // Variable to store the selected user ID
+
+    var newestIndex = 0;
+    var lastIndex = historyData.length - 1;
 
     function filterMap() {
         var startDate = startDatePicker.selectedDates[0];
         var endDate = endDatePicker.selectedDates[0];
+        var selectedDevice = $('#user_device').val();
 
         map.removeLayer(layerGroup);
         layerGroup.clearLayers();
-
         polylinePoints = [];
 
         var polylineWeight;
+        var dataFound = false;
 
         for (var i = 0; i < historyData.length; i++) {
             var date_time = new Date(historyData[i].date_time);
+            var hours = date_time.getHours();
+            var minutes = date_time.getMinutes();
+            var seconds = date_time.getSeconds();
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            var timeString = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
 
-            if (date_time >= startDate && date_time <= endDate) {
+            if (date_time >= startDate && date_time <= endDate && (!selectedDevice || historyData[i].device_id == selectedDevice)) {
                 var lat = parseFloat(historyData[i].latitude);
                 var lng = parseFloat(historyData[i].longitude);
                 var speed = parseFloat(historyData[i].speeds);
                 var accuracy = parseFloat(historyData[i].accuracy);
-                var deviceName = historyData[i].deviceName; // Gantilah 'deviceName' dengan nama properti yang sesuai dari objek historyData
-                var userId = historyData[i].user_id; // Get the user ID from history data
-
-                if (selectedUser !== null && userId !== selectedUser) {
-                    continue; // Skip data not related to the selected user
-                }
 
                 var opacity;
                 if (accuracy <= 10) {
@@ -170,7 +141,7 @@
                 } else {
                     opacity = 0.5;
                 }
-                var color;
+
                 if (speed < 20) {
                     color = 'green';
                     polylineWeight = 10;
@@ -182,8 +153,6 @@
                     polylineWeight = 2;
                 }
 
-
-                // Add logic to add marker and polyline
                 var circleMarker = L.circleMarker([lat, lng], {
                     radius: 0,
                     color: color,
@@ -209,14 +178,29 @@
                 var marker = L.marker([lat, lng]).addTo(map);
 
                 var popupContent =
-                    "<div style='max-width: 200px; overflow: hidden; text-overflow: ellipsis;'>" +
-                    "<div style='font-size: 12px;'>" +
-                    "Device Name: " + deviceName +
-                    "<br>Latitude: " + lat.toFixed(6) +
-                    "<br>Longitude: " + lng.toFixed(6) +
-                    "<br>Date & Time: " + date_time.toLocaleString() +
-                    "</div>" +
-                    "</div>";
+    "<div style='max-width: 200px; overflow: hidden; text-overflow: ellipsis;'>" +
+    "<div style='font-size: 12px;'>";
+
+// Menambahkan tanda "star" jika data merupakan data terbaru
+if (i === newestIndex) {
+    popupContent += "<div style='text-align:center; font-size:16px;'><span style='color:blue;'>🛑 End 🛑</span></div>";
+}
+
+// Menambahkan tanda "end" jika data merupakan data terakhir
+if (i === lastIndex) {
+    popupContent += "<div style='text-align:center; font-size:16px;'>< style='color:red;'>★ Star ★</  span></div>";
+}
+
+popupContent +=
+    "Device Name: " + deviceName +
+    "<br>Serial Number: " + serialNumber +
+    "<br>Latitude: " + lat.toFixed(6) +
+    "<br>Longitude: " + lng.toFixed(6) +
+    "<br>Date & Time: " + date_time.toISOString().split('T')[0] + ' ' + timeString +
+    "</div>" +
+    "<div style='font-size: 10px;'>" +
+    "</div>" +
+    "</div>";
 
                 var popupOptions = {
                     maxWidth: 200
@@ -235,32 +219,16 @@
         map.fitBounds(L.latLngBounds(allLatLngs));
     }
 
-    $(document).ready(function () {
-        $('#user-select').select2();
+    endDatePicker.config.onChange.push(filterMap);
 
-        // Event listener for when a user is selected from the list
-        $('#user-select').on('change', function () {
-            selectedUser = $(this).val(); // Store the selected user ID
-            filterMap(); // Call the filterMap() function to update the map view
-        });
-
-        startDatePicker = flatpickr("#start_date", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            defaultDate: new Date().setHours(0, 0, 0, 0)
-        });
-
-        endDatePicker = flatpickr("#end_date", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            defaultDate: new Date().setHours(23, 0, 0, 0)
-        });
-
-        $('#filterButton').on('click', function () {
-            filterMap();
-        });
+    $('#user_device').change(function() {
+        filterMap();
     });
+
+    filterMap();
+});
+
 </script>
 
-    
+
 @endsection
