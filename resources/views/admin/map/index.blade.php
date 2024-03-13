@@ -188,7 +188,7 @@ if (i === newestIndex) {
 
 // Menambahkan tanda "end" jika data merupakan data terakhir
 if (i === lastIndex) {
-    popupContent += "<div style='text-align:center; font-size:16px;'>< style='color:red;'>★ Star ★</  span></div>";
+    popupContent += "<div style='text-align:center; font-size:16px;'><span style='color:red;'>★ Star ★</span></div>";
 }
 
 popupContent +=

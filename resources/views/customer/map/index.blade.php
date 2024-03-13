@@ -14,7 +14,7 @@
                 <select id="device-select" class="form-control" >
                     <option value="" disabled selected>Select Device</option>
                     @foreach($devices as $device)
-                        <option value="{{ $device->id_device }}">{{ $device->name }} || {{ $device->serial_number }}</option>
+                    <option value="{{ $device->id_device }}">{{ $device->user->name }} || {{ $device->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -63,73 +63,61 @@
             }
         </style>
         <script>
-  $(document).ready(function () {
+$(document).ready(function () {
+    // Inisialisasi select2 untuk elemen "device-select"
     $('#device-select').select2();
 
+    // Inisialisasi flatpickr untuk elemen "start_date" dengan konfigurasi default
     var startDatePicker = flatpickr("#start_date", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
         defaultDate: new Date().setHours(0, 0, 0, 0) // Set default date to today at 00:00
     });
 
+    // Inisialisasi flatpickr untuk elemen "end_date" dengan konfigurasi default
     var endDatePicker = flatpickr("#end_date", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
         defaultDate: new Date().setHours(23, 0, 0, 0) // Set default date to today at 23:00
     });
 
+    // Inisialisasi peta Leaflet
     var map = L.map('map').setView([-6.895364793103795, 107.53971757412086], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
+    // Mendapatkan data riwayat, nama perangkat, dan nomor seri
     var historyData = @json($history);
     var deviceName = {!! $devices->pluck('name') !!};
     var serialNumber = {!! $devices->pluck('serial_number') !!};
 
+    // Membuat layer group untuk menampung marker dan polyline
     var layerGroup = L.layerGroup();
     var polylinePoints = [];
 
+    // Fungsi untuk memfilter dan menampilkan data pada peta
     function filterMap() {
         var startDate = startDatePicker.selectedDates[0];
         var endDate = endDatePicker.selectedDates[0];
-        var selectedDevice = $('#device-select').val(); // Ambil nilai perangkat yang dipilih
+        var selectedDevice = $('#device-select').val();
 
         map.removeLayer(layerGroup);
         layerGroup.clearLayers();
         polylinePoints = [];
 
         var polylineWeight;
-        var dataFound = false;
         for (var i = 0; i < historyData.length; i++) {
             var date_time = new Date(historyData[i].date_time);
-            var hours = date_time.getHours();
-            var minutes = date_time.getMinutes();
-            var seconds = date_time.getSeconds();
-            var ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            seconds = seconds < 10 ? '0' + seconds : seconds;
-            var timeString = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
 
-            // Tambahkan logika untuk memeriksa apakah tanggal dalam rentang yang dipilih
-            // dan perangkat sesuai dengan yang dipilih (jika dipilih)
             if (date_time >= startDate && date_time <= endDate && (!selectedDevice || historyData[i].device_id == selectedDevice)) {
                 var lat = parseFloat(historyData[i].latitude);
                 var lng = parseFloat(historyData[i].longitude);
                 var speed = parseFloat(historyData[i].speeds);
                 var accuracy = parseFloat(historyData[i].accuracy);
 
-                var opacity;
-                if (accuracy <= 10) {
-                    opacity = 1.0;
-                } else if (accuracy > 10 && accuracy <= 20) {
-                    opacity = 0.75;
-                } else {
-                    opacity = 0.5;
-                }
-
+                // Penentuan warna polyline dan beratnya berdasarkan kecepatan
+                var color, opacity;
                 if (speed < 20) {
                     color = 'green';
                     polylineWeight = 10;
@@ -141,30 +129,37 @@
                     polylineWeight = 2;
                 }
 
+                // Penentuan opasitas berdasarkan akurasi
+                if (accuracy <= 10) {
+                    opacity = 1.0;
+                } else if (accuracy > 10 && accuracy <= 20) {
+                    opacity = 0.75;
+                } else {
+                    opacity = 0.5;
+                }
+
+                // Menambahkan circle marker
                 var circleMarker = L.circleMarker([lat, lng], {
                     radius: 0,
                     color: color,
                     stroke: false,
                 });
-
                 layerGroup.addLayer(circleMarker);
                 polylinePoints.push([lat, lng]);
 
-                var polylineColor = speed < 20 ? "green" : speed >= 20 && speed <= 40 ? "yellow" : "red";
-
+                // Menambahkan polyline jika telah ada lebih dari satu titik
                 if (polylinePoints.length > 1) {
                     var polyline = L.polyline(polylinePoints.slice(-2), {
-                        color: polylineColor,
+                        color: color,
                         weight: polylineWeight,
                         opacity: opacity,
                     }).addTo(map);
-
                     var popupContent = "Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m";
                     polyline.bindPopup(popupContent);
                 }
 
+                // Menambahkan marker dengan informasi detail
                 var marker = L.marker([lat, lng]).addTo(map);
-
                 var popupContent =
                     "<div style='max-width: 200px; overflow: hidden; text-overflow: ellipsis;'>" +
                     "<div style='font-size: 12px;'>" +
@@ -172,49 +167,51 @@
                     "<br>Serial Number: " + serialNumber +
                     "<br>Latitude: " + lat.toFixed(6) +
                     "<br>Longitude: " + lng.toFixed(6) +
-                    "<br>Date & Time: " + date_time.toISOString().split('T')[0] + ' ' + timeString;
+                    "<br>Date & Time: " + date_time.toISOString().split('T')[0] + ' ' + date_time.toLocaleTimeString();
                     "</div>" +
                     "</div>";
-
                 var popupOptions = {
                     maxWidth: 200
                 };
-
                 marker.bindPopup(popupContent, popupOptions);
                 polylinePoints.push([lat, lng]);
             }
         }
 
+        // Menyesuaikan tampilan peta dengan semua titik
         var allLatLngs = polylinePoints.map(function(latlng) {
             return L.latLng(latlng[0], latlng[1]);
         });
-
         layerGroup.addTo(map);
         map.fitBounds(L.latLngBounds(allLatLngs));
     }
 
-    // Trigger filterMap function when start or end date changes
-    // startDatePicker.config.onChange.push(filterMap);
+    // Menambahkan event listener untuk pemanggilan filterMap() saat ada perubahan pada tanggal akhir
     endDatePicker.config.onChange.push(filterMap);
 
-    // Trigger filterMap function when device selection changes
+    // Menambahkan event listener untuk pemanggilan filterMap() saat ada perubahan pada pemilihan perangkat
     $('#device-select').change(function() {
-        filterMap(); // Panggil filterMap() saat perangkat dipilih
+        filterMap();
     });
 
-    // Initial filtering
+    // Set timeout untuk mengatur fokus ke elemen "start_date" setelah render flatpickr
+    setTimeout(function() {
+        $('#device-select').focus();
+    }, 100);
+
+    setTimeout(function() {
+        $('#start_date').focus();
+    }, 100);
+
+    // Set timeout untuk mengatur fokus ke elemen "end_date" setelah render flatpickr
+    setTimeout(function() {
+        $('#end_date').focus();
+    }, 100);
+
+    // Filtering awal saat halaman dimuat
     filterMap();
 });
 
-
-
-
         </script>
-
-
-
-
-
-
         @endsection
 
