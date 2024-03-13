@@ -88,10 +88,13 @@ class HistoryController extends Controller
     }
 
 
-    public function map()
-    {
-        // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk
-        $devices = Device::where('user_id', Auth::id())->get();
+
+   public function map()
+   {
+    $user = Auth::user();
+
+       // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk
+       $devices = Device::where('user_id', Auth::id())->get();
 
         // Ambil riwayat dari basis data atau dari sumber lain jika diperlukan
         $history = DB::table('history')->get();
@@ -157,17 +160,20 @@ class HistoryController extends Controller
     public function showMap()
     {
         $user = Auth::user();
-
-        // Mendapatkan daftar pengguna
-        $users = User::all(); // Anda perlu mengimpor model User jika belum melakukannya
-
-        $devices = DB::table('device')->get();
-        $history = DB::table('history')->get();
-
+    
+        // Mengambil daftar pengguna
+        $users = User::all();
+    
+        // Mengambil daftar perangkat
+        $devices = Device::with('latestHistory', 'user')->get();
+    
+        // Mengambil daftar riwayat
+        $history = History::all();
+    
         return view('admin.map.index', [
             'users' => $users, // Mengirim data pengguna ke tampilan
-            'devices' => $devices,
-            'history' => $history
+            'devices' => $devices, // Mengirim data perangkat ke tampilan
+            'history' => $history // Mengirim data riwayat ke tampilan
         ]);
     }
 
@@ -202,16 +208,31 @@ class HistoryController extends Controller
 
         return response()->json($filteredData);
     }
-
-    public function selectUsers(Request $request)
+    public function getDeviceHistory(Request $request, $deviceId)
     {
-        $data = User::where('name', 'LIKE', '%' . $request->q . '%')->paginate(10);
-        return response()->json($data);
-    }
+        // Ambil riwayat perangkat dari database
+        $startDate = $request->input('startDate', null);
+        $endDate = $request->input('endDate', null);
 
-    public function selectDevice($id)
-    {
-        $data = Device::where('user_id', $id)->paginate(10);
-        return response()->json($data);
+        $deviceHistory = History::where('device_id', $deviceId);
+
+        if ($startDate && $endDate) {
+            $deviceHistory->whereBetween('date_time', [$startDate, $endDate]);
+        }
+
+        $deviceHistory = $deviceHistory->with(['device', 'device.user'])->get();
+
+        // Ubah data riwayat perangkat ke format yang sesuai
+        $formattedData = $deviceHistory->map(function ($history) {
+            return [
+                'latitude' => $history->latitude,
+                'longitude' => $history->longitude,
+                'deviceName' => $history->device->name, // Mengambil nama perangkat dari relasi device
+                'userName' => $history->device->user->name, // Mengambil nama pengguna dari relasi user
+                'dateTime' => $history->date_time->format('Y-m-d H:i:s') // Format tanggal sesuai kebutuhan Anda
+            ];
+        });
+
+        return response()->json($formattedData);
     }
 }

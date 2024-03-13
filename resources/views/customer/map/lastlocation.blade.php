@@ -1,4 +1,5 @@
 @extends('layouts.customer')
+@extends('layouts.navbarcustomer')
 
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -59,10 +60,16 @@
         </a>
     </header>
     <div id="main" style="padding-top:5px;">
+        <nav aria-label="breadcrumb" class="breadcrumb-header float-end float-lg-end">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-location-arrow"></i> LastLocation</li>
+            </ol>
+        </nav>
         <div class="container">
             <form class="mt-2 row g-3">
                 <div class="col-md-6 mb-3">
-                    <select id="selectDevice" class="form-select" aria-label="Select Device" style="width: 202%">
+                    <select id="selectDevice" class="form-select" aria-label="Select Device" style="width: 246%">
                         <option value="" disabled selected>Select Device</option>
                         @foreach ($userDevices as $device)
                             <option value="{{ $device->id_device }}">{{ $device->name }}</option>
@@ -81,7 +88,9 @@
             </div>
         {{-- @dump($userDevices) --}}
         <div id="map" style="margin-top: 10px;"></div>
-
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+        
         <script>
             $(document).ready(function() {
                 $('#selectDevice').change(function() {

@@ -22,9 +22,11 @@ class DeviceController extends Controller
         $user = Auth::user();
         // dd($user);  // Check if user data is as expected
 
+        $users = User::all();
+
         $userDevices = $user->devices ?? collect();
 
-        return view('customer.device.index', ['device' => $userDevices]);
+        return view('customer.device.index', ['device' => $userDevices , 'Users' => $users]);
     }
 
 

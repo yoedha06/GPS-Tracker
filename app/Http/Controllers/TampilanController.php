@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Device;
 use App\Models\User;
 
@@ -10,18 +11,22 @@ class TampilanController extends Controller
 {
     public function index()
     {
-        //tampilan Customer
-        $deviceCount = Device::count();
+        // Dapatkan pengguna yang saat ini masuk
         $user = auth()->user();
+
+        // Hitung jumlah perangkat yang dimiliki oleh pengguna tersebut
+        $deviceCount = $user->devices()->count();
+
         return view('customer.index', compact('user', 'deviceCount'));
     }
+
     public function admin()
     {
         //tampilan Admin
         $usersCount = User::count();
         $deviceCount = Device::count();
         $user = auth()->user();
-        return view('admin.index',compact('user', 'usersCount', 'deviceCount'));
+        return view('admin.index', compact('user', 'usersCount', 'deviceCount'));
     }
 
     public function homepage()

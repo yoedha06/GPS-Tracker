@@ -133,8 +133,7 @@ Route::get('/admin/get-related-data/{deviceId}', [HistoryController::class, 'fet
 Route::get('/admin/map', [HistoryController::class, 'showMap'])->name('admin.map');
 Route::get('/get-history-data', [HistoryController::class, 'getHistoryData'])->name('get-history-data');
 
-Route::get('selectUsers', [HistoryController::class, 'selectUsers'])->name('selectUsers');
-Route::get('selectDevice/{id}', [HistoryController::class, 'selectDevice'])->name('selectDevice');
+Route::get('/get-device-history/{deviceId}', [HistoryController::class, 'getDeviceHistory']);
 
 Route::get('/filter-data', [HistoryController::class, 'filterData']);
 
@@ -144,7 +143,7 @@ Route::get('/gethistorybydevice/{deviceId}', [HistoryController::class, 'getHist
 Route::get('/history-filter', [HistoryController::class, 'filterByDate']);
 Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
 Route::get('/deviceuser/{id_device}', [MapController::class, 'deviceuser']);
-Route::get('/autoselect/{userId}', [LocationController::class, 'autoselect']);
+Route::get('/autoselec\t/{userId}', [LocationController::class, 'autoselect']);
 Route::get('/get-device-history/{deviceId}', [LocationController::class, 'getDeviceHistory']);
 
 
