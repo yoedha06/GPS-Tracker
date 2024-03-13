@@ -17,7 +17,15 @@
                 <i class="bi bi-justify fs-3"></i>
             </a>
         </header>
+
+        
         <div id="main">
+            <nav aria-label="breadcrumb" class="breadcrumb-header float-end float-lg-end">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-location-arrow"></i> LastLocation</li>
+                </ol>
+            </nav>
             <div class="form-group mb-3">
                 <label class="form-label">Select Device History</label>
                 <select id="user_device" class="form-select input">
