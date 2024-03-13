@@ -11,19 +11,12 @@
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Device</li>
+                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
+                                        Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-hdd-stack-fill"></i> Data
+                                    Device</li>
                             </ol>
                         </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="page-heading">
-            <div class="page-title">
-                <div class="row">
-                    <div class="col-12 col-md-6 order-md-1 order-last">
                     </div>
                 </div>
             </div>
@@ -44,7 +37,6 @@
                 <i class="fas fa-eye"></i> See All Device
             </button>
         </div>
-
 
         <section class="section">
             <div class="card">
@@ -90,7 +82,6 @@
                     <div class="card-body">
                         {{ $device->links('vendor.pagination.bootstrap-5') }}
                     </div>
-                    
                 </div>
             </div>
         </section>
@@ -150,15 +141,15 @@
                 $.each(data, function(index, item) {
                     console.log('Processing item:', item);
                     var row = `<tr>
-            <td>${index + 1}</td>
-            <td>${item.user ? item.user.name : ''}</td>
-            <td>${item.name}</td>
-            <td>${item.serial_number}</td>
-            <td>${item.plat_nomor}</td>
-            <td>
-                ${item.photo ? `<img src="/storage/${item.photo}" alt="Device Photo" style="max-width: 100px; max-height: 100px;">` : 'No Image'}
-            </td>
-        </tr>`;
+                    <td>${index + 1}</td>
+                    <td>${item.user ? item.user.name : ''}</td>
+                    <td>${item.name}</td>
+                    <td>${item.serial_number}</td>
+                    <td>${item.plat_nomor}</td>
+                    <td>
+                        ${item.photo ? `<img src="/storage/${item.photo}" alt="Device Photo" style="max-width: 100px; max-height: 100px;">` : 'No Image'}
+                    </td>
+                    </tr>`;
                     tableBody.append(row);
                 });
             }
@@ -200,7 +191,7 @@
                     }
                 });
             }
-            $("#showAllDataBtn").on('click', function () {
+            $("#showAllDataBtn").on('click', function() {
                 // Reload the current page
                 location.reload();
             });
