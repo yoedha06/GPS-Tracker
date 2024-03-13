@@ -101,57 +101,66 @@
 
                 function loadDeviceOnMap(id_device) {
                     console.log('loadDeviceOnMap called with ID:', id_device);
-                    // Hapus semua marker sebelum memuat marker baru
+                    
                     for (var i = 0; i < markers.length; i++) {
                         map.removeLayer(markers[i]);
                     }
-                    markers = []; // Reset array markers
+                    markers = []; 
 
-                    // Periksa apakah pengguna memilih perangkat
                     if (id_device) {
-                        console.log('Making AJAX request for device information...');
+                        console.log('Making AJAX request for device locations...');
 
-                        // Lakukan permintaan AJAX untuk mendapatkan informasi perangkat
                         $.ajax({
-                            url: '/deviceuser/' + id_device,
+                            url: '/deviceuser/locations/' + id_device,
                             method: 'GET',
                             success: function(data) {
                                 console.log('AJAX Success - Data:', data);
 
-                                // Tambahkan marker untuk perangkat yang dipilih
-                                var marker = L.marker([data.latitude, data.longitude]).addTo(map);
-                                marker.bindPopup(
-                                    `<center><b>Device: ${data.name}</b></center><br>` +
-                                    `<b>Latlng:</b> ${data.latitude},${data.longitude}<br>` +
-                                    `<b>Plat Nomor:</b> ${data.plat_nomor}<br>` +
-                                    `<b>Date Time:</b> ${data.date_time}<br>` +
-                                    `<img src="${data.photo}" style="width: 199px; height: 115px;">`
-                                );
+                                if (data && data.first_location && data.latest_location && data.device) {
+                                    var firstLatLng = [data.first_location.latitude, data.first_location.longitude];
+                                    var firstMarker = L.marker(firstLatLng).addTo(map);
+                                    // firstmarker
+                                    firstMarker.bindPopup(
+                                        `<center><b>First Location</b></center><br>` +
+                                        `<b>Device: ${data.device.name}</b><br>` +
+                                        `<b>Plat Nomor:</b> ${data.device.plat_nomor}<br>` +
+                                        `<b>Latlng:</b> ${data.first_location.latitude},${data.first_location.longitude}<br>` +
+                                        `<b>Date Time:</b> ${data.first_location.date_time}<br>` +
+                                        `<img src="{{ asset('storage/' . $device->photo) }}" style="width: 199px; height: 115px;">`
+                                    );
+                                    markers.push(firstMarker);
 
-                                markers.push(marker); // Tambahkan marker ke dalam array markers
+                                    var latestLatLng = [data.latest_location.latitude, data.latest_location.longitude];
+                                    var latestMarker = L.marker(latestLatLng).addTo(map);
+                                    //latestmarker
+                                    latestMarker.bindPopup(
+                                        `<center><b>Last Location</b></center><br>` +
+                                        `<b>Device: ${data.device.name}</b><br>` +
+                                        `<b>Plat Nomor:</b> ${data.device.plat_nomor}<br>` +
+                                        `<b>Latlng:</b> ${data.latest_location.latitude},${data.latest_location.longitude}<br>` +
+                                        `<b>Date Time:</b> ${data.latest_location.date_time}<br>` +
+                                        `<img src="{{ asset('storage/' . $device->photo) }}" style="width: 199px; height: 115px;">`
+                                    );
+                                    markers.push(latestMarker);
 
-                                // Perbarui tampilan peta untuk memusatkan pada marker baru
-                                map.setView([data.latitude, data.longitude], 15);
-                                var alertMessage = $('#alertMessage');
-                                alertMessage.html('Data berhasil ditemukan!');
-                                alertMessage.removeClass('alert-danger').addClass('alert-success');
-                                alertMessage.show();
+                                    var latlngs = [firstLatLng]; // Inisialisasi dengan titik pertama
+                                    var polylineCoords = data.locations.map(function(location) {
+                                        return [location.latitude, location.longitude];
+                                    });
+                                    latlngs = latlngs.concat(polylineCoords); // Gabungkan dengan koordinat dari data
 
-                                map.flyTo([data.latitude, data.longitude], 18, {
-                                    animate: true,
-                                    duration: 2 // Adjust the duration of the animation (in seconds)
-                                });
+                                    console.log('Polyline Coords:', polylineCoords);
+
+                                    var polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+                                    map.fitBounds(polyline.getBounds());
+                                }
+                                else {
+                                    console.log('No locations found for the device');
+                                }
                             },
                             error: function(error) {
-                                console.error('Error fetching device information:', error);
-
-                                // Tampilkan pesan alert untuk kesalahan
-                                var alertMessage = $('#alertMessage');
-                                alertMessage.html('Perangkat Tidak Ditemukan.');
-                                alertMessage.removeClass('alert-success').addClass('alert-danger');
-                                alertMessage.show();
+                                console.error('Error fetching device locations:', error);
                             }
-
                         });
                     }
                 }
@@ -194,6 +203,17 @@
                             // Dapatkan koordinat latitude dan longitude
                             var latitude = position.coords.latitude;
                             var longitude = position.coords.longitude;
+                            var accuracy = position.coords.accuracy;
+                            var altitude = position.coords.altitude;
+                            var altitudeAccuracy = position.coords.altitudeAccuracy; 
+
+                            // Tampilkan data geolokasi dalam konsol browser
+                            console.log('Latitude:', latitude);
+                            console.log('Longitude:', longitude);
+                            console.log('accuracy:', accuracy);
+                            console.log('altitude:', altitude);
+                            console.log('altitudeAccuracy:', altitudeAccuracy);
+
 
                             // Tambahkan marker untuk lokasi pengguna
                             var userMarker = L.marker([latitude, longitude]).addTo(map);
