@@ -33,10 +33,10 @@
                                     style="width: 180px; height: 180px; overflow: hidden; border-radius: 50%;">
                                     @if (Auth::user()->photo)
                                         <img src="/photos/{{ Auth::user()->photo }}"
-                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                            style="width: 100%; user-drag: none; -webkit-user-drag: none; height: 100%; object-fit: cover;">
                                     @else
                                         <img src="{{ asset('images/default.jpg') }}"
-                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                            style="width: 100%;  user-drag: none; -webkit-user-drag: none;  height: 100%; object-fit: cover;">
                                     @endif
                                 </div>
 
