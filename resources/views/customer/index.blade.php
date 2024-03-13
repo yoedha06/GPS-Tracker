@@ -30,7 +30,7 @@
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                     <h6 class="text-muted font-semibold">Device Users</h6>
                                                     <h6 class="font-extrabold mb-0">{{ $deviceCount }}</h6>
-                                                </div>                                                
+                                                </div>                                              
                                             </div>
                                         </div>
                                     </div>
@@ -65,7 +65,7 @@
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                     <h6 class="text-muted font-semibold">Last Location</h6>
-                                                    <h6 class="font-extrabold mb-0"><a href="/customer/lastlocation">Look Maps</a></h6>
+                                                    <h6 class="font-extrabold mb-0"><a href="/lastlocation">Look Maps</a></h6>
                                                 </div>
                                             </div>
                                         </div>

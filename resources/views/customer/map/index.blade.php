@@ -1,4 +1,5 @@
-        @extends('layouts.customer')
+@extends('layouts.customer')
+@extends('layouts.navbarcustomer')
 
 
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -30,12 +31,14 @@
             </div>
             {{-- <button id="filter_button">Filter</button> --}}
             <div id="map" style="height: 50%; width: 100%;"></div>
+
+        <div class="form-group">
+            <label for="start_date">Tanggal dan Waktu Mulai</label>
+            <input type="text" id="start_date" class="form-control" placeholder="Start Date & Time">
         </div>
 
-        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <!-- Include Select2 JS -->
 
+        
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -214,4 +217,5 @@ $(document).ready(function () {
 
         </script>
         @endsection
+
 
