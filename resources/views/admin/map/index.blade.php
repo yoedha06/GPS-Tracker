@@ -13,7 +13,7 @@
         <!-- Memindahkan breadcrumb di luar dari struktur grid -->
         <nav aria-label="breadcrumb" class="breadcrumb-header float-end float-lg-end">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="/admin"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-map"></i> History</li>
             </ol>
         </nav>

@@ -226,7 +226,7 @@
                                                 style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
                                                 @if (Auth::user()->photo)
                                                     <img src="/photos/{{ Auth::user()->photo }}"
-                                                        style="width: 100%; height: auto;">
+                                                        style="width: 100%; height: auto; object-fit: cover;">
                                                 @else
                                                     <img src="{{ asset('images/default.jpg') }}"
                                                         style="width: 100%; height: auto;">
