@@ -6,16 +6,17 @@ body {
 
 #splash-screen {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 100%;
-    background: #ffffff;
-    /* You can customize the background color */
+    height: 100vh; /* Menggunakan tinggi viewport untuk menutupi seluruh tinggi layar */
+    background: #ffffff; /* Warna latar belakang dapat disesuaikan */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
-    /* Set a high z-index value to make it appear on top */
+    z-index: 9999; /* Menetapkan nilai z-index tinggi agar elemen muncul di atas elemen lain */
 }
+
 
 #splash-screen img {
     width: 150px;

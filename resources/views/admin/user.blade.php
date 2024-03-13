@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@extends('layouts.navbaradmin')
 @section('content')
     <div id="main">
         <div class="page-heading">
@@ -110,6 +111,6 @@
             } else {
                 tableBody.innerHTML = '<tr><td colspan="6" class="text-center">No users found</td></tr>';
             }
-        }
+        }   
     </script>
 @endsection

@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@extends('layouts.navbaradmin')
 
 @section('content')
     <div id="main">
