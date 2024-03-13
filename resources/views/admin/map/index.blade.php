@@ -32,7 +32,7 @@
             <input type="text" id="end_date" class="form-control" placeholder="End Date & Time">
         </div>
 
-        <button id="filter_button">Filter</button>
+        {{-- <button id="filter_button">Filter</button> --}}
 
         <div id="map" style="height: 50%; width: 100%;"></div>
     </div>
