@@ -189,7 +189,7 @@ $(document).ready(function () {
         map.fitBounds(L.latLngBounds(allLatLngs));
     }
 
-    // Menambahkan event listener untuk pemanggilan filterMap() saat ada perubahan pada tanggal akhir
+    // Menambahkan event listener untuk pemangilan filterMap() saat ada perubahan pada tanggal akhir
     endDatePicker.config.onChange.push(filterMap);
 
     // Menambahkan event listener untuk pemanggilan filterMap() saat ada perubahan pada pemilihan perangkat
