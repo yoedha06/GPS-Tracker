@@ -230,6 +230,4 @@ popupContent +=
 });
 
 </script>
-
-
 @endsection
