@@ -28,20 +28,28 @@ class HistoryController extends Controller
      */
     public function store(Request $request)
     {
+        // Validasi input
+        $request->validate([
+            'serial_number' => 'required',
+            'date_time' => 'required|date',
+            // Tambahkan validasi untuk field lainnya jika diperlukan
+        ]);
+
+        // Setelah validasi, Anda bisa melanjutkan dengan logika asli Anda
         $device = Device::where('serial_number', $request->serial_number)->first();
 
         if ($device == null) {
             return response()->json([
-                'massage' => 'Serial number tidak ditemukan',
+                'message' => 'Serial number tidak ditemukan',
             ], 404);
         }
+
 
         $existingHistory = History::where('device_id', $device->id_device)
             ->where('date_time', $request->date_time)
             ->first();
 
         if ($existingHistory) {
-
             if ($existingHistory->device_id == $device->id_device) {
                 return response()->json([
                     'message' => 'Data dengan tanggal waktu yang sama sudah ada untuk perangkat yang sama',
@@ -61,7 +69,6 @@ class HistoryController extends Controller
             'speeds' => $request->speeds,
             'date_time' => $request->date_time,
         ]);
-        // History::create(['original' => json_encode($request->all())]);
 
         return response()->json([
             'message' => true,

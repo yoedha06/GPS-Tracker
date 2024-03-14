@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\HistoryController;
+use App\Http\Controllers\api\HistoryController;
 use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\MapController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +25,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/history', [HistoryController::class, 'index']);
 Route::post('/history/store', [HistoryController::class, 'store']);
 
-
-
 Route::get('/location', [LocationController::class, 'index']);
 Route::post('/location/store', [LocationController::class, 'store']);
+
