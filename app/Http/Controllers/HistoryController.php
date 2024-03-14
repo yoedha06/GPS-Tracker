@@ -92,26 +92,26 @@ class HistoryController extends Controller
     public function map()
     {
         $user = Auth::user();
-    
+
         // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
         $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
             ->whereHas('history')
             ->whereNotIn('name', ['truck', 'r']) // Memastikan nama perangkat bukan 'truck' atau 'r'
             ->take(10) // Mengambil 10 perangkat
             ->get();
-    
+
         // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
         $history = DB::table('history')->limit(100)->get();
-    
+
         // Ambil semua perangkat tanpa filter apapun
         $devices = Device::where('user_id', Auth::id())->get();
-    
+
         // Melewatkan data ke view menggunakan compact
         return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices'));
     }
-    
-    
-        
+
+
+
     public function getHistoryByDevice($deviceId)
     {
         logger('Request for device history. Device ID: ' . $deviceId);
@@ -170,39 +170,28 @@ class HistoryController extends Controller
     public function showMap()
     {
         $user = Auth::user();
-    
-        // Mengambil daftar pengguna dengan batasan 10 pengguna
-        $users = User::limit(10)->get();
-    
-        // Mengambil daftar nama perangkat dari tabel Device
-        $deviceNames = Device::pluck('name');
-    
-        $devices = collect();
-    
-        foreach ($deviceNames as $deviceName) {
-            // Mengambil satu perangkat berdasarkan nama dengan batasan 1 perangkat
-            $device = Device::where('name', $deviceName)->with(['latestHistory', 'user'])->first();
-            if ($device) {
-                $devices->push($device);
-            }
-        }
-    
-        // Mengambil daftar riwayat dengan batasan 100 riwayat
-        $history = History::limit(100)->get();
-    
+
+        // Mengambil daftar pengguna
+        $users = User::all();
+
+        // Mengambil daftar perangkat beserta relasi riwayat terakhir dan pengguna
+        $devices = Device::with('latestHistory', 'user')->get();
+
+        // Mengambil daftar riwayat
+        $history = History::all();
+
+        // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
+        $serialNumbers = $devices->pluck('serial_number', 'id_device');
+
         return view('admin.map.index', [
             'users' => $users, // Mengirim data pengguna ke tampilan
             'devices' => $devices, // Mengirim data perangkat ke tampilan
-            'history' => $history // Mengirim data riwayat ke tampilan
+            'history' => $history, // Mengirim data riwayat ke tampilan
+            'serialNumbers' => $serialNumbers // Mengirim data serial number ke tampilan
         ]);
     }
-    
-    
 
-    
 
-    
-    
 
     public function getHistoryData(Request $request)
     {
