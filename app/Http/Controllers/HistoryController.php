@@ -160,24 +160,20 @@ class HistoryController extends Controller
     public function showMap()
     {
         $user = Auth::user();
-
-    // Mendapatkan daftar pengguna
-    $users = DB::table('users')->get(); //Anda perlu mengimpor model User jika belum melakukannya
-
-    $devices = Device::all();
-    $history = DB::table('history')->get();
-
-        // Mendapatkan daftar pengguna
-        $users = User::all(); // Anda perlu mengimpor model User jika belum melakukannya
-
-        $devices = DB::table('device')->get();
-        $history = DB::table('history')->get();
-
-
+    
+        // Mengambil daftar pengguna
+        $users = User::all();
+    
+        // Mengambil daftar perangkat
+        $devices = Device::with('latestHistory', 'user')->get();
+    
+        // Mengambil daftar riwayat
+        $history = History::all();
+    
         return view('admin.map.index', [
             'users' => $users, // Mengirim data pengguna ke tampilan
-            'devices' => $devices,
-            'history' => $history
+            'devices' => $devices, // Mengirim data perangkat ke tampilan
+            'history' => $history // Mengirim data riwayat ke tampilan
         ]);
     }
 

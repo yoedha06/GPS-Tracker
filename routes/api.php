@@ -27,3 +27,4 @@ Route::post('/history/store', [HistoryController::class, 'store']);
 
 Route::get('/location', [LocationController::class, 'index']);
 Route::post('/location/store', [LocationController::class, 'store']);
+

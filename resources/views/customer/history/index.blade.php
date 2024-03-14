@@ -1,4 +1,5 @@
 @extends('layouts.customer')
+@extends('layouts.navbarcustomer')
 
 @section('content')
     <div id="main">
@@ -10,8 +11,9 @@
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/customer">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">History</li>
+                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
+                                        Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-history"></i>History</li>
                             </ol>
                         </nav>
                     </div>
@@ -22,7 +24,7 @@
         <div class="container" style="margin-top: -17px;">
             <form class="mt-2 row g-3">
                 <div class="col-md-6 mb-3">
-                    <select id="selectDevice" class="form-select" aria-label="Select Device" style="width:100%;" >
+                    <select id="selectDevice" class="form-select" aria-label="Select Device" style="width:100%;">
                         <option value="" disabled selected>Select Device</option>
                         @foreach ($devices as $device)
                             <option value="{{ $device->id_device }}">{{ $device->name }}</option>
@@ -36,7 +38,7 @@
                 </div>
             </form>
         </div>
-        
+
 
         <section class="section">
             <div class="card">
