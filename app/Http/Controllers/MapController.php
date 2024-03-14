@@ -54,6 +54,7 @@ class MapController extends Controller
         ]);
     }
 
+
     // public function createLastLocation(Request $request)
     // {
 
@@ -69,6 +70,4 @@ class MapController extends Controller
     //     ]);
     //     $history->save();
 
-    //     return response()->json(['message' => 'Data lokasi terakhir berhasil disimpan'], 200);
-    // }
 }

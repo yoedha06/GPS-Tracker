@@ -33,6 +33,7 @@ class LocationController extends Controller
 
         return response()->json([
             'message' => true,
+            'data' => $location
         ], 201);
     }
 }
