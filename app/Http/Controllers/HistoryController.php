@@ -169,7 +169,6 @@ class HistoryController extends Controller
 
     public function showMap()
     {
-        $user = Auth::user();
     
         // Mengambil daftar pengguna dengan batasan 10 pengguna
         $users = User::limit(10)->get();
