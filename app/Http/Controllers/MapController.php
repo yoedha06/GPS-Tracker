@@ -47,33 +47,4 @@ class MapController extends Controller
         ]);
     }
 
-    public function getDeviceLocations($id_device)
-    {
-        $first_location = History::where('device_id', $id_device)
-                                ->orderBy('date_time', 'asc')
-                                ->first();
-
-        $latest_location = History::where('device_id', $id_device)
-                                ->orderBy('date_time', 'desc')
-                                ->first();
-
-        if ($first_location && $latest_location) {
-            $locations = History::where('device_id', $id_device)
-                                ->orderBy('date_time', 'asc')
-                                ->orWhere('date_time', $latest_location->date_time)
-                                ->get();
-    
-        $device = Device::find($id_device);
-
-        return response()->json([
-                'first_location' => $first_location,
-                'latest_location' => $latest_location,
-                'device' => $device,
-                'locations' => $locations
-        ]);
-        } else {
-            return response()->json(['error' => 'No locations found for the device'], 404);
-        }
-    }
-
 }

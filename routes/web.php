@@ -146,6 +146,6 @@ Route::get('/deviceuser/{id_device}', [MapController::class, 'deviceuser']);
 Route::get('/autoselect/{userId}', [LocationController::class, 'autoselect']);
 Route::get('/get-device-history/{deviceId}', [LocationController::class, 'getDeviceHistory']);
 
-Route::get('/deviceuser/locations/{id_device}', [MapController::class, 'getDeviceLocations']);
+
 
 
