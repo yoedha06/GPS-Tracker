@@ -223,15 +223,15 @@
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-xl"
-                                                style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
-                                                @if (Auth::user()->photo)
-                                                    <img src="/photos/{{ Auth::user()->photo }}"
-                                                        style="width: 100%; height: auto;">
-                                                @else
-                                                    <img src="{{ asset('images/default.jpg') }}"
-                                                        style="width: 100%; height: auto;">
-                                                @endif
-                                            </div>
+                                            style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
+                                            @if (Auth::user()->photo)
+                                                <img src="/photos/{{ Auth::user()->photo }}"
+                                                    style="width: 100%; height: auto; object-fit: cover; user-drag: none; -webkit-user-drag: none;">
+                                            @else
+                                                <img src="{{ asset('images/default.jpg') }}"
+                                                    style="width: 100%; height: auto; user-drag: none; -webkit-user-drag: none;">
+                                            @endif
+                                        </div>
                                             @if ($user)
                                                 <div class="ms-3 name">
                                                     <h5 class="font-bold text-truncate" style="max-width: 150px;">

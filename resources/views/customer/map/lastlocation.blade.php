@@ -60,10 +60,16 @@
         </a>
     </header>
     <div id="main" style="padding-top:5px;">
+        <nav aria-label="breadcrumb" class="breadcrumb-header float-end float-lg-end">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-location-arrow"></i> LastLocation</li>
+            </ol>
+        </nav>
         <div class="container">
             <form class="mt-2 row g-3">
                 <div class="col-md-6 mb-3">
-                    <select id="selectDevice" class="form-select" aria-label="Select Device" style="width: 202%">
+                    <select id="selectDevice" class="form-select" aria-label="Select Device" style="width: 246%">
                         <option value="" disabled selected>Select Device</option>
                         @foreach ($userDevices as $device)
                             <option value="{{ $device->id_device }}">{{ $device->name }}</option>
@@ -82,15 +88,38 @@
             </div>
         {{-- @dump($userDevices) --}}
         <div id="map" style="margin-top: 10px;"></div>
-
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+        
         <script>
             $(document).ready(function() {
                 $('#selectDevice').change(function() {
-                    console.log('Select Device Changed');
-                    var selectedDeviceId = $(this).val();
-                    console.log('Selected Device ID:', selectedDeviceId);
-                    loadDeviceOnMap(selectedDeviceId);
-                });
+                console.log('Select Device Changed');
+                var selectedDeviceId = $(this).val();
+                console.log('Selected Device ID:', selectedDeviceId);
+
+                // Tampilkan tombol Perbarui Posisi ketika device dipilih
+                if(selectedDeviceId) {
+                    $('#updateLocationButton').show(); // Tampilkan tombol
+
+                    // Opsional: Tambahkan event handler untuk tombol Perbarui Posisi jika belum ada
+                    $('#updateLocationButton').off('click').on('click', function() {
+                        // Fungsi untuk memperbarui lokasi device
+                        // Misalnya, memuat ulang informasi device atau memanggil fungsi lain
+                        loadDeviceOnMap(selectedDeviceId);
+                        console.log('Memperbarui lokasi untuk device ID:', selectedDeviceId);
+
+                        var alertText = 'Lokasi Anda berhasil diupdate.';
+                                    $('#alertText').text(alertText);
+                                    var alertMessage = $('#alertMessage');
+                                    alertMessage.removeClass('alert-danger alert-warning').addClass('alert-danger');
+                                    alertMessage.show();
+                    });
+                } else {
+                    $('#updateLocationButton').hide(); // Sembunyikan tombol jika tidak ada device yang dipilih
+                }
+                loadDeviceOnMap(selectedDeviceId);
+            });
 
                 var map = L.map('map').setView([0, 0], 2);
                 var polyline = L.polyline([], { color: 'blue' }).addTo(map);
@@ -156,7 +185,9 @@
                         });
                     }
                 }
-
+                $('#refreshButton').click(function() {
+                    location.reload(); // Reload the current page
+                });
                 //marker untuk history yang ada
                 @if ($latestHistories && count($latestHistories) > 0)
                     @foreach ($latestHistories as $history)
@@ -183,108 +214,67 @@
                     ]);
                     map.fitBounds(bounds);
                 @endif
-                $('#refreshButton').click(function() {
-                    location.reload(); // Reload the current page
-                });
-                // Event listener untuk tombol "Lihat lokasi saya"
                 $('#myLocationButton').click(function() {
-                    // Periksa apakah browser mendukung Geolocation API
-                    if (navigator.geolocation) {
-                        // Dapatkan lokasi terkini pengguna
-                        navigator.geolocation.getCurrentPosition(function(position) {
-                            // Dapatkan koordinat latitude dan longitude
-                            var latitude = position.coords.latitude;
-                            var longitude = position.coords.longitude;
+                            // Periksa apakah browser mendukung Geolocation API
+                            if (navigator.geolocation) {
+                                // Dapatkan lokasi terkini pengguna
+                                navigator.geolocation.getCurrentPosition(function(position) {
+                                    // Dapatkan koordinat latitude dan longitude
+                                    var latitude = position.coords.latitude;
+                                    var longitude = position.coords.longitude;
+                                    var accuracy = position.coords.accuracy;
+                                    var altitude = position.coords.altitude;
+                                    var altitudeAccuracy = position.coords.altitudeAccuracy; 
 
-                            // Tambahkan marker untuk lokasi pengguna
-                            var userMarker = L.marker([latitude, longitude]).addTo(map);
-                            userMarker.bindPopup('Lokasi Anda');
-                            
-                            // Perbarui tampilan peta untuk memusatkan pada lokasi pengguna
-                            map.setView([latitude, longitude], 17);
+                                    // Tampilkan data geolokasi dalam konsol browser
+                                    console.log('Latitude:', latitude);
+                                    console.log('Longitude:', longitude);
+                                    console.log('accuracy:', accuracy);
+                                    console.log('altitude:', altitude);
+                                    console.log('altitudeAccuracy:', altitudeAccuracy);
 
-                            $('#updateLocationButton').show();
+                                    var customIcon = L.icon({
+                                        iconUrl: '/images/mapgreen.png', 
+                                        iconSize: [42, 46], 
+                                        iconAnchor: [20, 44], // Diubah untuk memastikan akurasi
+                                        popupAnchor: [1, -41]
+                                    });
 
-                            var alertText = 'Lokasi Anda berhasil ditampilkan pada peta.';
-                            $('#alertText').text(alertText);
-                            var alertMessage = $('#alertMessage');
-                            alertMessage.removeClass('alert-danger alert-primary').addClass('alert-success');
-                            alertMessage.show();
-                        }, function(error) {
-                            // Tangani kesalahan jika pengguna tidak memberikan izin atau terjadi kesalahan lain
-                            console.error('Error getting user location:', error);
+                                    // Tambahkan marker dengan ikon kustom
+                                    var userMarker = L.marker([latitude, longitude], {icon: customIcon}).addTo(map);
+                                    userMarker.bindPopup('Lokasi Anda');
+                                    
+                                    // Perbarui tampilan peta untuk memusatkan pada lokasi pengguna
+                                    map.setView([latitude, longitude], 17);
 
-                            // Tampilkan pesan alert untuk kesalahan
-                            var alertMessage = $('#alertMessage');
-                            alertMessage.html('Tidak dapat menampilkan lokasi Anda pada peta.');
-                            alertMessage.removeClass('alert-success').addClass('alert-danger');
-                            alertMessage.show();
+                                    var alertText = 'Lokasi Anda berhasil ditampilkan pada peta.';
+                                    $('#alertText').text(alertText);
+                                    var alertMessage = $('#alertMessage');
+                                    alertMessage.removeClass('alert-danger alert-primary').addClass('alert-success');
+                                    alertMessage.show();
+                                }, function(error) {
+                                    // Tangani kesalahan jika pengguna tidak memberikan izin atau terjadi kesalahan lain
+                                    console.error('Error getting user location:', error);
+
+                                    // Tampilkan pesan alert untuk kesalahan
+                                    var alertMessage = $('#alertMessage');
+                                    alertMessage.html('Tidak dapat menampilkan lokasi Anda pada peta.');
+                                    alertMessage.removeClass('alert-success').addClass('alert-danger');
+                                    alertMessage.show();
+                                });
+                            } else {
+                                // Tangani jika Geolocation API tidak didukung
+                                console.error('Geolocation is not supported by this browser.');
+
+                                // Tampilkan pesan alert
+                                var alertMessage = $('#alertMessage');
+                                alertMessage.html('Geolocation tidak didukung oleh browser ini.');
+                                alertMessage.removeClass('alert-success').addClass('alert-danger');
+                                alertMessage.show();
+                            }
                         });
-                    } else {
-                        // Tangani jika Geolocation API tidak didukung
-                        console.error('Geolocation is not supported by this browser.');
-
-                        // Tampilkan pesan alert
-                        var alertMessage = $('#alertMessage');
-                        alertMessage.html('Geolocation tidak didukung oleh browser ini.');
-                        alertMessage.removeClass('alert-success').addClass('alert-danger');
-                        alertMessage.show();
-                    }
-                });
-                $('#updateLocationButton').click(function() {
-                    // Periksa apakah browser mendukung Geolocation API
-                    if (navigator.geolocation) {
-                        // Dapatkan lokasi terkini pengguna
-                        navigator.geolocation.getCurrentPosition(function(position) {
-                            // Dapatkan koordinat latitude dan longitude
-                            var latitude = position.coords.latitude;
-                            var longitude = position.coords.longitude;
-
-                            // Hapus marker pengguna yang sudah ada dari peta
-                            map.eachLayer(function(layer) {
-                                if (layer instanceof L.Marker && layer.getPopup().getContent() === 'Lokasi Anda') {
-                                    map.removeLayer(layer);
-                                }
-                            });
-
-                            // Tambahkan marker baru untuk lokasi pengguna
-                            var userMarker = L.marker([latitude, longitude]).addTo(map);
-                            userMarker.bindPopup('Lokasi Anda');
-
-                            // Perbarui tampilan peta untuk memusatkan pada lokasi pengguna
-                            map.setView([latitude, longitude], 17);
-
-                            // Tambahkan posisi terbaru ke polyline
-                            var latlng = [latitude, longitude];
-                            polyline.addLatLng(latlng);
-
-                            var alertText = 'Posisi Anda berhasil diperbarui pada peta.';
-                            $('#alertText').text(alertText);
-                            var alertMessage = $('#alertMessage');
-                            alertMessage.removeClass('alert-danger alert-success').addClass('alert-primary');
-                            alertMessage.show();
-                        }, function(error) {
-                            // Tangani kesalahan jika pengguna tidak memberikan izin atau terjadi kesalahan lain
-                            console.error('Error getting user location:', error);
-
-                            // Tampilkan pesan alert untuk kesalahan
-                            var alertMessage = $('#alertMessage');
-                            alertMessage.html('Tidak dapat memperbarui posisi Anda pada peta.');
-                            alertMessage.removeClass('alert-success').addClass('alert-danger');
-                            alertMessage.show();
-                        });
-                    } else {
-                        // Tangani jika Geolocation API tidak didukung
-                        console.error('Geolocation is not supported by this browser.');
-
-                        // Tampilkan pesan alert
-                        var alertMessage = $('#alertMessage');
-                        alertMessage.html('Geolocation tidak didukung oleh browser ini.');
-                        alertMessage.removeClass('alert-success').addClass('alert-danger');
-                        alertMessage.show();
-                    }
-                });
-            });
+                    });
         </script>
     </div>
 @endsection
+
