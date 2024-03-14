@@ -30,8 +30,8 @@
         </div>
 
         <div class="mb-3" style="margin-top:-50px;">
-            <label for="search" class="form-label">Search Device :</label>
-            <input type="text" id="search" class="form-control" oninput="liveSearch()">
+            <label for="search" class="form-label"></label>
+            <input type="text" id="search" placeholder="Search Device ..." class="form-control" oninput="liveSearch()">
         </div>
 
         <div id="searchResults" class="mt-3"></div>
