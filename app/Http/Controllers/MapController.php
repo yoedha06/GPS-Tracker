@@ -15,14 +15,20 @@ class MapController extends Controller
         $user = Auth::user();
         $userDevices = $user->devices ?? collect();
         $latestHistories = collect();
-
+    
         foreach ($userDevices as $device) {
+            // Mengambil history perangkat dengan urutan terbalik
             $latestHistory = $device->history()->latest('date_time')->first();
             $latestHistories->push($latestHistory);
         }
-
+    
+        $latestHistories = $latestHistories->filter(function ($history) {
+            return $history !== null;
+        });
+    
         return view('customer.map.lastlocation', compact('latestHistories', 'userDevices', 'user'));
     }
+    
 
     public function deviceuser($id_device)
     {
@@ -46,22 +52,43 @@ class MapController extends Controller
             'photo' => asset('storage/' . $device->photo),
         ]);
     }
-    
-    // public function createLastLocation(Request $request)
-    // {
-        
-    //     // Ambil data lokasi terakhir dari permintaan yang dikirim (latitude dan longitude)
-    //     $latitude = $request->input('latitude');
-    //     $longitude = $request->input('longitude');
-    //     dd($request->all());
-    //     // Buat entri baru di tabel History
-    //     $history = new History([
-    //         'latitude' => $latitude,
-    //         'longitude' => $longitude,
-    //         'date_time' => Carbon::now(), // Set waktu saat ini sebagai waktu pembuatan entri
-    //     ]);
-    //     $history->save();
 
-    //     return response()->json(['message' => 'Data lokasi terakhir berhasil disimpan'], 200);
-    // }
+    public function getLastLocation($deviceId)
+    {
+    
+        $location = History::where('device_id', $deviceId)
+                ->orderBy('date_time', 'desc')
+                ->first();
+
+        if ($location) {
+            $device = Device::find($location->device_id);
+
+            if ($device) {
+                $location->name = $device->name;
+                $location->plate_number = $device->plat_nomor;
+                $location->photo = $device->photo;
+            }
+
+            return response()->json($location);
+
+        } 
+        else {
+            return response()->json(['error' => 'Location not found'], 404);
+        }
+    }
+
+    public function getLatestLocation($deviceId)
+    {
+        
+        $location = History::where('device_id', $deviceId)
+            ->orderBy('date_time', 'desc')
+            ->first();
+
+        if ($location) {
+            return response()->json($location);
+        } else {
+            return response()->json(['error' => 'Location not found'], 404);
+        }
+    }
+
 }
