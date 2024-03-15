@@ -89,14 +89,14 @@
     $('#reset-btn').on('click', function () {
         // Mereset atau menghapus semua opsi yang dipilih pada select device
         $('#user_device').val(null).trigger('change');
-        
+
         // Mengatur ulang picker tanggal mulai (start date) dan tanggal selesai (end date)
         var defaultStartDate = new Date();
         defaultStartDate.setHours(0, 0, 0, 0);
-        
+
         var defaultEndDate = new Date();
         defaultEndDate.setHours(23, 0, 0, 0);
-        
+
         startDatePicker.setDate(defaultStartDate);
         endDatePicker.setDate(defaultEndDate);
 
@@ -207,7 +207,7 @@ function filterMap() {
                         </div>`
                 })
             }).addTo(map);
-            
+
             var deviceIndex = parseInt(historyItem.device_id) - 1; // Adjust index to match array index
                     var deviceName = deviceNames[deviceIndex]; // Get device name using device index
                     var serialNumber = serialNumbers[historyItem.device_id]; // Get serial number using device index
@@ -217,8 +217,7 @@ function filterMap() {
                 `<div>
                     <img src="/images/${markerIcon}" alt="Marker Icon" style="width: 50px; height: 50px;">
                     <br>
-                    "Device Name: " + deviceName +
-                        "<br>Serial Number: " + serialNumber +
+                    Device: ${deviceName}<br>
                     Latitude: ${lat.toFixed(6)}<br>
                     Longitude: ${lng.toFixed(6)}<br>
                     Date & Time: ${historyItem.date_time}
