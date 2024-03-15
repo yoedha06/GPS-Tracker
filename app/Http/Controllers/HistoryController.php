@@ -96,19 +96,30 @@ class HistoryController extends Controller
         // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
         $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
             ->whereHas('history')
-            ->whereNotIn('name', ['truck', 'r']) // Memastikan nama perangkat bukan 'truck' atau 'r'
+            ->whereNotIn('name', ['truck', 'r']) // Mengecualikan perangkat dengan nama 'truck' atau 'r'
             ->take(10) // Mengambil 10 perangkat
             ->get();
 
         // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
-        $history = DB::table('history')->limit(100)->get();
+        $history = History::limit(100)->get();
 
-        // Ambil semua perangkat tanpa filter apapun
-        $devices = Device::where('user_id', Auth::id())->get();
+        // Ambil semua perangkat dengan batasan jumlah
+        $devices = Device::where('user_id', Auth::id())
+            ->limit(10) // Batasan jumlah perangkat
+            ->get();
+
+        // Menyiapkan array kosong untuk nama perangkat
+        $deviceNames = [];
+
+        // Mengambil nama perangkat dari data perangkat
+        foreach ($devices as $device) {
+            $deviceNames[] = $device->name;
+        }
 
         // Melewatkan data ke view menggunakan compact
-        return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices'));
+        return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames'));
     }
+
 
 
 
@@ -169,7 +180,6 @@ class HistoryController extends Controller
 
     public function showMap()
     {
-        $user = Auth::user();
 
         // Mengambil daftar pengguna
         $users = User::all();
