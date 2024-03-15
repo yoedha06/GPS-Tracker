@@ -9,7 +9,6 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Pagination\Paginator;
 
 class HistoryController extends Controller
 {
@@ -91,37 +90,33 @@ class HistoryController extends Controller
 
 
     public function map()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
-        $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
-            ->whereHas('history')
-            ->whereNotIn('name', ['truck', 'r']) // Mengecualikan perangkat dengan nama 'truck' atau 'r'
-            ->take(10) // Mengambil 10 perangkat
-            ->get();
+    // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
+    $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
+        ->whereHas('history')
+        ->whereNotIn('name', ['', '']) // Memastikan nama perangkat bukan 'truck' atau 'r'
+        ->take(10) // Mengambil 10 perangkat
+        ->get();
 
-        // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
-        $history = History::limit(100)->get();
+    // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
+    $history = DB::table('history')->limit(100)->get();
 
-        // Ambil semua perangkat dengan batasan jumlah
-        $devices = Device::where('user_id', Auth::id())
-            ->limit(10) // Batasan jumlah perangkat
-            ->get();
+    // Ambil semua perangkat dengan batasan jumlah
+    $devices = Device::where('user_id', Auth::id())
+        ->limit(10) // Batasan jumlah perangkat
+        ->get();
 
-        // Menyiapkan array kosong untuk nama perangkat
-        $deviceNames = [];
+    // Buat array untuk menyimpan nama perangkat berdasarkan ID perangkat
+    $deviceNames = $devices->pluck('name', 'id_device')->toArray();
 
-        // Mengambil nama perangkat dari data perangkat
-        foreach ($devices as $device) {
-            $deviceNames[] = $device->name;
-        }
+    // Melewatkan data ke view menggunakan compact
+    return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames'));
+}
 
-        // Melewatkan data ke view menggunakan compact
-        return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames'));
-    }
 
-    public function getHistoryByDevice($deviceId, Request $request)
+    public function getHistoryByDevice($deviceId)
     {
         logger('Request for device history. Device ID: ' . $deviceId);
 
@@ -133,26 +128,15 @@ class HistoryController extends Controller
             return response()->json(['error' => 'Invalid device ID'], 404);
         }
 
-        // Fetch history records for the specified device with pagination
-        Paginator::currentPageResolver(function () use ($request) {
-            return $request->page;
-        });
-        $history = History::where('device_id', $deviceId)->paginate(10); // Ubah angka 10 sesuai dengan jumlah data per halaman yang diinginkan
+        // Fetch history records for the specified device
+        $history = History::where('device_id', $deviceId)->get();
 
         logger('History data retrieved:', $history->toArray()); // Convert collection to array
 
         // Include device information in the JSON response
         $response = [
             'device_name' => $device->name,
-            'history' => $history->items(), // Get items only instead of entire pagination object
-            'pagination' => [
-                'total' => $history->total(),
-                'per_page' => $history->perPage(),
-                'current_page' => $history->currentPage(),
-                'last_page' => $history->lastPage(),
-                'from' => $history->firstItem(),
-                'to' => $history->lastItem()
-            ]
+            'history' => $history,
         ];
 
         // Log device name directly or convert it to an array
@@ -160,6 +144,7 @@ class HistoryController extends Controller
 
         return response()->json($response);
     }
+
 
     public function getRelatedData($userId)
 
@@ -200,12 +185,14 @@ class HistoryController extends Controller
 
         // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
         $serialNumbers = $devices->pluck('serial_number', 'id_device');
+        // $deviceNames = $devices->pluck('name', 'id_device');
 
         return view('admin.map.index', [
             'users' => $users, // Mengirim data pengguna ke tampilan
             'devices' => $devices, // Mengirim data perangkat ke tampilan
             'history' => $history, // Mengirim data riwayat ke tampilan
-            'serialNumbers' => $serialNumbers // Mengirim data serial number ke tampilan
+            'serialNumbers' => $serialNumbers, // Mengirim data serial number ke tampilan
+            // 'deviceNames' => $deviceNames // Mengirim data nama perangkat ke tampilan
         ]);
     }
 
