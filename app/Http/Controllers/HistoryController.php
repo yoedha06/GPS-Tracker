@@ -90,37 +90,30 @@ class HistoryController extends Controller
 
 
     public function map()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
-        $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
-            ->whereHas('history')
-            ->whereNotIn('name', ['truck', 'r']) // Mengecualikan perangkat dengan nama 'truck' atau 'r'
-            ->take(10) // Mengambil 10 perangkat
-            ->get();
+    // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
+    $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
+        ->whereHas('history')
+        ->whereNotIn('name', ['', '']) // Memastikan nama perangkat bukan 'truck' atau 'r'
+        ->take(10) // Mengambil 10 perangkat
+        ->get();
 
-        // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
-        $history = History::limit(100)->get();
+    // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
+    $history = DB::table('history')->limit(100)->get();
 
-        // Ambil semua perangkat dengan batasan jumlah
-        $devices = Device::where('user_id', Auth::id())
-            ->limit(10) // Batasan jumlah perangkat
-            ->get();
+    // Ambil semua perangkat dengan batasan jumlah
+    $devices = Device::where('user_id', Auth::id())
+        ->limit(10) // Batasan jumlah perangkat
+        ->get();
 
-        // Menyiapkan array kosong untuk nama perangkat
-        $deviceNames = [];
+    // Buat array untuk menyimpan nama perangkat berdasarkan ID perangkat
+    $deviceNames = $devices->pluck('name', 'id_device')->toArray();
 
-        // Mengambil nama perangkat dari data perangkat
-        foreach ($devices as $device) {
-            $deviceNames[] = $device->name;
-        }
-
-        // Melewatkan data ke view menggunakan compact
-        return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames'));
-    }
-
-
+    // Melewatkan data ke view menggunakan compact
+    return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames'));
+}
 
 
     public function getHistoryByDevice($deviceId)
@@ -192,12 +185,14 @@ class HistoryController extends Controller
 
         // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
         $serialNumbers = $devices->pluck('serial_number', 'id_device');
+        // $deviceNames = $devices->pluck('name', 'id_device');
 
         return view('admin.map.index', [
             'users' => $users, // Mengirim data pengguna ke tampilan
             'devices' => $devices, // Mengirim data perangkat ke tampilan
             'history' => $history, // Mengirim data riwayat ke tampilan
-            'serialNumbers' => $serialNumbers // Mengirim data serial number ke tampilan
+            'serialNumbers' => $serialNumbers, // Mengirim data serial number ke tampilan
+            // 'deviceNames' => $deviceNames // Mengirim data nama perangkat ke tampilan
         ]);
     }
 
