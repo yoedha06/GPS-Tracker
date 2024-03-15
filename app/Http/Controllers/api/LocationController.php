@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Location;
+use App\Models\location;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
@@ -14,7 +14,7 @@ class LocationController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'success',
-            'data' => Location::all(),
+            'data' => location::all(),
         ]);
     }
 
@@ -25,7 +25,7 @@ class LocationController extends Controller
             'lon' => 'required',
         ]);
 
-        $location = Location::create([
+        $location = location::create([
             'lat' => $request->lat,
             'lon' => $request->lon,
             'original' => json_encode($request->all())
