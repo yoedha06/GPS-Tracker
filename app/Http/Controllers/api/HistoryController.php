@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\History;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HistoryController extends Controller
@@ -57,6 +58,9 @@ class HistoryController extends Controller
             }
         }
 
+        $date_time = Carbon::parse($request->date_time)->format('Y-m-d H:i:s');
+
+
         $history = History::create([
             'device_id' => $device->id_device,
             'latitude' => $request->latitude,
@@ -67,8 +71,10 @@ class HistoryController extends Controller
             'altitude_acuracy' => $request->altitude_acuracy,
             'heading' => $request->heading,
             'speeds' => $request->speeds,
-            'date_time' => $request->date_time,
+            'date_time' => $date_time,
+            'original' => json_encode($request->all())
         ]);
+
 
         return response()->json([
             'message' => true,
