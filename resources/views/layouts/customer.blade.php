@@ -26,7 +26,7 @@
 <body>
     <div id="splash-screen">
         <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
-            alt="Logo" style="width: 300px; height: 300px;">
+            alt="Logo" style="width: 350px; height: 310px;">
     </div>
     @yield('content')
     <div id="sidebar" class="active">
