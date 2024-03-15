@@ -22,6 +22,7 @@ class History extends Model
         "heading",
         "speeds",
         "date_time",
+        "original",
     ];
 
     public function device()
