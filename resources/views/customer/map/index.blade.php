@@ -13,18 +13,18 @@
             <div class="form-group ml-3">
                 <label for="device-select">Select Device:</label>
                 <div class="d-flex">
-                    <select id="device-select" class="form-control mr-2">
+                    <select id="device-select" class="form-select input">
                         <option value="" disabled selected>Select Device</option>
                         @foreach($devices as $device)
                         <option value="{{ $device->id_device }}">{{ $device->user->name }} || {{ $device->name }}</option>
                         @endforeach
                     </select>
-    
-                    <button id="reset-btn" class="btn btn-danger btn-sm">Reset</button>            
+
+                    <button id="reset-btn" class="btn btn-danger btn-sm">Reset</button>
                 </div>
             </div>
-            
-            
+
+
 
             <div class="form-group">
                 <label for="start_date">Tanggal dan Waktu Mulai</label>
@@ -69,7 +69,7 @@
                 pointer-events: none;
             }
         </style>
-   <script> 
+   <script>
 $(document).ready(function () {
     // Inisialisasi Select2
     $('#device-select').select2();
@@ -85,14 +85,14 @@ $(document).ready(function () {
     $('#reset-btn').on('click', function () {
         // Mereset atau menghapus semua opsi yang dipilih pada select device
         $('#device-select').val(null).trigger('change');
-        
+
         // Mengatur ulang picker tanggal mulai (start date) dan tanggal selesai (end date)
         var defaultStartDate = new Date();
         defaultStartDate.setHours(0, 0, 0, 0);
-        
+
         var defaultEndDate = new Date();
         defaultEndDate.setHours(23, 0, 0, 0);
-        
+
         startDatePicker.setDate(defaultStartDate);
         endDatePicker.setDate(defaultEndDate);
 
@@ -105,7 +105,7 @@ $(document).ready(function () {
     // Fungsi filterMap() dan kode lainnya...
 });
 
-
+var deviceName = {!! json_encode($devices->pluck('name')) !!};
 var historyData = @json($history);
 var defaultStartDate = new Date();
 defaultStartDate.setHours(0, 0, 0, 0);
@@ -203,23 +203,32 @@ function filterMap() {
             }).addTo(map);
 
             var popupContent =
-                `<div>
-                    <img src="/images/${markerIcon}" alt="Marker Icon" style="width: 50px; height: 50px;">
-                    <br>
-                    Latitude: ${lat.toFixed(6)}<br>
-                    Longitude: ${lng.toFixed(6)}<br>
-                    Date & Time: ${historyItem.date_time}
-                </div>`;
+    `<div>
+        <img src="/images/${markerIcon}" alt="Marker Icon" style="width: 50px; height: 50px;">
+        <br>
+        Device: ${deviceName}<br>
+        Latitude: ${lat.toFixed(6)}<br>
+        Longitude: ${lng.toFixed(6)}<br>
+        Date & Time: ${historyItem.date_time}
+    </div>`;
 
-            if (i === startIndex) {
-                popupContent += "<b>Start</b>";
-            }
+if (i === startIndex) {
+    popupContent = "<b>Start</b><br>" + popupContent;
+}
 
-            if (i === endIndex) {
-                popupContent += "<b>End</b>";
-            }
+if (i === endIndex) {
+    popupContent = "<b>End</b><br>" + popupContent;
+}
 
-            marker.bindPopup(popupContent);
+marker.bindPopup(popupContent, {
+    autoPan: true,
+    autoPanPadding: [50, 50] // Atur padding agar popup tetap berada di tengah
+});
+
+if (i === startIndex || i === endIndex) {
+    marker.openPopup(); // Buka popup untuk "Start" dan "End"
+}
+
 
             polylinePoints.push([lat, lng]);
 

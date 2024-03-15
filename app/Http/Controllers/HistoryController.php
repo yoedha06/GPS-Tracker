@@ -90,26 +90,27 @@ class HistoryController extends Controller
 
 
     public function map()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
-        $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
-            ->whereHas('history')
-            ->whereNotIn('name', ['truck', 'r']) // Memastikan nama perangkat bukan 'truck' atau 'r'
-            ->take(10) // Mengambil 10 perangkat
-            ->get();
+    // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
+    $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
+        ->whereHas('history')
+        ->whereNotIn('name', ['truck', 'r']) // Memastikan nama perangkat bukan 'truck' atau 'r'
+        ->take(10) // Mengambil 10 perangkat
+        ->get();
 
-        // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
-        $history = DB::table('history')->limit(100)->get();
+    // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
+    $history = DB::table('history')->limit(100)->get();
 
-        // Ambil semua perangkat tanpa filter apapun
-        $devices = Device::where('user_id', Auth::id())->get();
+    // Ambil semua perangkat dengan batasan jumlah
+    $devices = Device::where('user_id', Auth::id())
+        ->limit(10) // Batasan jumlah perangkat
+        ->get();
 
-        // Melewatkan data ke view menggunakan compact
-        return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices'));
-    }
-
+    // Melewatkan data ke view menggunakan compact
+    return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices'));
+}
 
 
     public function getHistoryByDevice($deviceId)
@@ -169,8 +170,6 @@ class HistoryController extends Controller
 
     public function showMap()
     {
-
-        $user = Auth::user();
 
         // Mengambil daftar pengguna
         $users = User::all();
