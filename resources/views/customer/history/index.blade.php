@@ -13,7 +13,8 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
                                         Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-history"></i>History</li>
+                                <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-history"></i>History
+                                </li>
                             </ol>
                         </nav>
                     </div>
@@ -93,14 +94,12 @@
                             @endif
                         </tbody>
                     </table>
-                </div>
-
-                <div class="mt-3">
-                    {{ $history->links() }}
+                    <div id="paginationContainer" class="text-center">
+                        <ul class="pagination"></ul>
+                    </div>
                 </div>
             </div>
         </section>
-
         <footer>
             <div class="footer clearfix mb-0 text-muted">
                 <div class="float-start">
@@ -123,77 +122,117 @@
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-
+    <!-- Your custom script -->
     <script>
         $(document).ready(function() {
             // Inisialisasi Select2
             $('#selectDevice').select2();
 
-            // Tambahkeun event listener kanggo ngabogaan perubahan nilai dina Select2
+            // Tambahkan event listener untuk perubahan nilai pada Select2
             $('#selectDevice').on('select2:select', function(e) {
                 var selectedDeviceId = e.params.data.id;
 
-                // Periksa eta perangkat dipilih
+                // Periksa apakah perangkat telah dipilih
                 if (selectedDeviceId) {
-                    // Jalukeun AJAX request kanggo ngagaduhan data history nu cocog jeung device nu dipilih
-                    $.ajax({
-                        url: '/gethistorybydevice/' + selectedDeviceId,
-                        method: 'GET',
-                        success: function(data) {
-                            // Hapus data lama tina tabel
-                            $('#table1 tbody').empty();
-
-                            if (data.history.length > 0) {
-                                // Mengurutkan data berdasarkan date_time secara descending
-                                data.history.sort(function(a, b) {
-                                    return new Date(b.date_time) - new Date(a
-                                        .date_time);
-                                });
-
-                                // Tambahkeun data anyar kana tabel
-                                $.each(data.history, function(index, history) {
-                                    $('#table1 tbody').append(`
-                                        <tr>
-                                            <td>${index + 1}</td>
-                                            <td>${data.device_name}</td>
-                                            <td>${history.latitude}</td>
-                                            <td>${history.longitude}</td>
-                                            <td>${history.bounds}</td>
-                                            <td>${history.accuracy}</td>
-                                            <td>${history.altitude}</td>
-                                            <td>${history.altitude_acuracy}</td>
-                                            <td>${history.heading}</td>
-                                            <td>${history.speeds}</td>
-                                            <td>${history.date_time}</td>
-                                        </tr>
-                                    `);
-                                });
-                                showValidationMessage('Device selected successfully!');
-                            } else {
-                                $('#table1 tbody').append(`
-                                    <tr>
-                                        <td colspan="10" class="text-center">
-                                            <span style="font-size: 3rem;">&#x1F5FF;</span>
-                                            <p class="mt-2">Data not available, sorry.</p>
-                                        </td>
-                                    </tr>
-                                `);
-                                showValidationMessage(
-                                    'No history data found for the selected device.');
-                            }
-                        },
-
-                        error: function(error) {
-                            console.error('Error fetching history data:', error);
-                            showValidationMessage(
-                                'Error fetching history data. Please try again.');
-                        }
-                    });
+                    getDataByDevice(selectedDeviceId,
+                        1); // Mulai dari halaman pertama saat perangkat dipilih
                 } else {
-                    // Mun henteu aya perangkat nu dipilih, hapus data tina tabel
+                    // Jika tidak ada perangkat yang dipilih, hapus data dari tabel
                     $('#table1 tbody').empty();
                 }
             });
+
+            // Event listener untuk tombol refresh
+            $('#refreshButton').on('click', function() {
+                location.reload(); // Muat ulang halaman saat tombol ditekan
+            });
+
+            // Event listener untuk tautan pagination
+            $(document).on('click', '.pagination-link', function(e) {
+                e.preventDefault();
+                var page = $(this).data('page');
+                var selectedDeviceId = $('#selectDevice').val();
+                getDataByDevice(selectedDeviceId,
+                    page); // Ambil data berdasarkan perangkat dan nomor halaman yang dipilih
+            });
+
+            function getDataByDevice(deviceId, page) {
+                // Jalankan AJAX request untuk mendapatkan data histori yang sesuai dengan perangkat yang dipilih
+                $.ajax({
+                    url: '/gethistorybydevice/' + deviceId,
+                    method: 'GET',
+                    data: {
+                        page: page
+                    }, // Menggunakan nomor halaman yang dipilih
+                    success: function(data) {
+                        $('#table1 tbody').empty();
+
+                        if (data.history.length > 0) {
+                            // Tambahkan data baru ke tabel
+                            $.each(data.history, function(index, history) {
+                                $('#table1 tbody').append(`
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${data.device_name}</td>
+                                        <td>${history.latitude}</td>
+                                        <td>${history.longitude}</td>
+                                        <td>${history.bounds}</td>
+                                        <td>${history.accuracy}</td>
+                                        <td>${history.altitude}</td>
+                                        <td>${history.altitude_acuracy}</td>
+                                        <td>${history.heading}</td>
+                                        <td>${history.speeds}</td>
+                                        <td>${history.date_time}</td>
+                                    </tr>
+                                `);
+                            });
+
+                            // Tambahkan tautan pagination
+                            // Tambahkan tautan pagination
+                            var paginationHtml = '';
+                            paginationHtml += '<li class="page-item ' + (data.pagination.current_page ==
+                                1 ? 'disabled' : '') + '">';
+                            paginationHtml +=
+                                '<a class="page-link pagination-link" href="#" data-page="' + (data
+                                    .pagination.current_page - 1) + '">Previous</a>';
+                            paginationHtml += '</li>';
+                            for (var i = 1; i <= data.pagination.last_page; i++) {
+                                paginationHtml += '<li class="page-item ' + (data.pagination
+                                    .current_page == i ? 'active' : '') + '">';
+                                paginationHtml +=
+                                    '<a class="page-link pagination-link" href="#" data-page="' + i +
+                                    '">' + i + '</a>';
+                                paginationHtml += '</li>';
+                            }
+                            paginationHtml += '<li class="page-item ' + (data.pagination.current_page ==
+                                data.pagination.last_page ? 'disabled' : '') + '">';
+                            paginationHtml +=
+                                '<a class="page-link pagination-link" href="#" data-page="' + (data
+                                    .pagination.current_page + 1) + '">Next</a>';
+                            paginationHtml += '</li>';
+                            $('#paginationContainer .pagination').html(paginationHtml);
+
+
+                            showValidationMessage('Device selected successfully!');
+                        } else {
+                            // Tampilkan pesan jika tidak ada data yang tersedia
+                            $('#table1 tbody').append(`
+                    <tr>
+                        <td colspan="11" class="text-center">
+                            <span style="font-size: 3rem;">&#x1F5FF;</span>
+                            <p class="mt-2">Data not available, sorry.</p>
+                        </td>
+                    </tr>
+                `);
+                            showValidationMessage('No history data found for the selected device.');
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error fetching history data:', error);
+                        showValidationMessage('Error fetching history data. Please try again.');
+                    }
+                });
+            }
 
             function showValidationMessage(message, isError = false) {
                 var validationMessage = $("#validationMessage");
@@ -207,21 +246,11 @@
                 validationMessage.text(message);
                 validationMessage.show();
 
-                // Hide the alert after 3 seconds
+                // Sembunyikan pesan validasi setelah beberapa detik
                 setTimeout(function() {
                     validationMessage.hide();
                 }, 1500);
             }
-
-            // Pastikeun data history tampil nalika kaca dimuat pikeun kaliwang
-            var initialDeviceId = $('#selectDevice').val();
-            if (initialDeviceId) {
-                $('#selectDevice').trigger('change');
-            }
-            $('#refreshButton').on('click', function() {
-                // Reload the current page
-                location.reload();
-            });
         });
     </script>
 @endsection

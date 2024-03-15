@@ -9,6 +9,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\Paginator;
 
 class HistoryController extends Controller
 {
@@ -120,10 +121,7 @@ class HistoryController extends Controller
         return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames'));
     }
 
-
-
-
-    public function getHistoryByDevice($deviceId)
+    public function getHistoryByDevice($deviceId, Request $request)
     {
         logger('Request for device history. Device ID: ' . $deviceId);
 
@@ -135,15 +133,26 @@ class HistoryController extends Controller
             return response()->json(['error' => 'Invalid device ID'], 404);
         }
 
-        // Fetch history records for the specified device
-        $history = History::where('device_id', $deviceId)->get();
+        // Fetch history records for the specified device with pagination
+        Paginator::currentPageResolver(function () use ($request) {
+            return $request->page;
+        });
+        $history = History::where('device_id', $deviceId)->paginate(10); // Ubah angka 10 sesuai dengan jumlah data per halaman yang diinginkan
 
         logger('History data retrieved:', $history->toArray()); // Convert collection to array
 
         // Include device information in the JSON response
         $response = [
             'device_name' => $device->name,
-            'history' => $history,
+            'history' => $history->items(), // Get items only instead of entire pagination object
+            'pagination' => [
+                'total' => $history->total(),
+                'per_page' => $history->perPage(),
+                'current_page' => $history->currentPage(),
+                'last_page' => $history->lastPage(),
+                'from' => $history->firstItem(),
+                'to' => $history->lastItem()
+            ]
         ];
 
         // Log device name directly or convert it to an array
@@ -151,7 +160,6 @@ class HistoryController extends Controller
 
         return response()->json($response);
     }
-
 
     public function getRelatedData($userId)
 
