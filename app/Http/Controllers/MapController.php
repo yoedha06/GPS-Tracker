@@ -30,7 +30,6 @@ class MapController extends Controller
     }
     
 
-
     public function deviceuser($id_device)
     {
         $device = Device::find($id_device);
