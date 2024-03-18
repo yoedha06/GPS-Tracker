@@ -33,7 +33,6 @@ class HistoryController extends Controller
         $request->validate([
             'serial_number' => 'required',
             'date_time' => 'required|date',
-            // Tambahkan validasi untuk field lainnya jika diperlukan
         ]);
 
         // Setelah validasi, Anda bisa melanjutkan dengan logika asli Anda
