@@ -68,6 +68,7 @@
                             refreshPage();
                         });
                         var map = L.map('map').setView([0, 0], 2);
+                        var userMarker;
 
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -143,7 +144,7 @@
                                     var latitude = position.coords.latitude;
                                     var longitude = position.coords.longitude;
 
-                                    console.log('Current Location:', latitude, longitude);
+                                    console.log('Location:', latitude, longitude);
 
                                     var customIcon = L.icon({
                                         iconUrl: '/images/mapgreen.png',
@@ -152,10 +153,17 @@
                                         popupAnchor: [1, -41]
                                     });
 
-                                    var popupContent =  `<center><b>Lokasi Anda</b></center><br>` +
-                                                        `<b>Latlng:</b> ${latitude}, ${longitude}`;
+                                    var popupContent = `<center><b>Lokasi Anda</b></center><br>` +
+                                                       `${latitude},${longitude}`;
 
-                                    var userMarker = L.marker([latitude, longitude], {icon: customIcon}).addTo(map);
+                                    // Menghapus marker sebelumnya jika ada
+                                    if (userMarker) {
+                                        map.removeLayer(userMarker);
+                                    }
+
+                                    userMarker = L.marker([latitude, longitude], {
+                                        icon: customIcon
+                                    }).addTo(map);
                                     userMarker.bindPopup(popupContent).openPopup();
                                     map.setView([latitude, longitude], 17);
 
