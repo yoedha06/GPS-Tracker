@@ -90,6 +90,7 @@
                         var markers = [];
                         var lastLocation = null; // Informasi last location yang telah dilihat pengguna
                         var pathLocations = [];
+                        var userMarker;
 
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -253,27 +254,31 @@
                         @endif
                         $('#myLocationButton').click(function() {
                             if (navigator.geolocation) {
-                               
                                 navigator.geolocation.getCurrentPosition(function(position) {
-                                    
                                     var latitude = position.coords.latitude;
                                     var longitude = position.coords.longitude;
 
-                                    // console.log('Latitude:', latitude);
-                                    // console.log('Longitude:', longitude);
+                                    console.log('Current Location:', latitude, longitude);
 
                                     var customIcon = L.icon({
-                                        iconUrl: '/images/mapgreen.png', 
-                                        iconSize: [42, 42], 
-                                        iconAnchor: [20, 44], // akurasi
+                                        iconUrl: '/images/mapgreen.png',
+                                        iconSize: [42, 42],
+                                        iconAnchor: [20, 44],
                                         popupAnchor: [1, -41]
                                     });
 
-                                    // Tambahkan marker dengan ikon kustom
-                                    var userMarker = L.marker([latitude, longitude], {icon: customIcon}).addTo(map);
-                                    userMarker.bindPopup('Lokasi Anda').openPopup();
-                                    
-                                    // Perbarui tampilan peta untuk memusatkan pada lokasi pengguna
+                                    var popupContent = `<center><b>Lokasi Anda</b></center><br>` +
+                                                       `${latitude},${longitude}`;
+
+                                    // Menghapus marker sebelumnya jika ada
+                                    if (userMarker) {
+                                        map.removeLayer(userMarker);
+                                    }
+
+                                    userMarker = L.marker([latitude, longitude], {
+                                        icon: customIcon
+                                    }).addTo(map);
+                                    userMarker.bindPopup(popupContent).openPopup();
                                     map.setView([latitude, longitude], 17);
 
                                     var alertText = 'Lokasi Anda berhasil ditampilkan pada peta.';
@@ -282,20 +287,14 @@
                                     alertMessage.removeClass('alert-danger alert-primary').addClass('alert-success');
                                     alertMessage.show();
                                 }, function(error) {
-                                    // Tangani kesalahan jika pengguna tidak memberikan izin atau terjadi kesalahan lain
                                     console.error('Error getting user location:', error);
-
-                                    // Tampilkan pesan alert untuk kesalahan
                                     var alertMessage = $('#alertMessage');
                                     alertMessage.html('Tidak dapat menampilkan lokasi Anda pada peta.');
                                     alertMessage.removeClass('alert-success').addClass('alert-danger');
                                     alertMessage.show();
                                 });
                             } else {
-                                // Tangani jika Geolocation API tidak didukung
                                 console.error('Geolocation is not supported by this browser.');
-
-                                // Tampilkan pesan alert
                                 var alertMessage = $('#alertMessage');
                                 alertMessage.html('Geolocation tidak didukung oleh browser ini.');
                                 alertMessage.removeClass('alert-success').addClass('alert-danger');
