@@ -13,30 +13,27 @@
             <div class="form-group ml-3">
                 <label for="device-select">Select Device:</label>
                 <div class="d-flex">
-                    <select id="device-select" class="form-control mr-2">
+                    <select id="device-select" class="form-select input">
                         <option value="" disabled selected>Select Device</option>
                         @foreach($devices as $device)
-                        <option value="{{ $device->id_device }}">{{ $device->user->name }} || {{ $device->name }}</option>
+                        <option value="{{ $device->id_device }}">{{ $device->user->name }} - {{ $device->name }}</option>
                         @endforeach
                     </select>
-                    <button id="see-all-history-btn">See All History</button>
-                    <button id="reset-btn">Reset</button>
-                    
-                                       
+
+                    <button id="reset-btn" class="btn btn-danger btn-sm">Reset</button>
                 </div>
             </div>
-            
-            
 
-            <div class="form-group">
-                <label for="start_date">Tanggal dan Waktu Mulai</label>
-                <input type="date" id="start_date" class="form-control" placeholder="Start Date & Time">
+            <!-- Add the following div below your form group -->
+            <div id="device-names" data-device-names="{{ json_encode($deviceNames) }}" style="display: none;"></div>
+            <div class="form-group date-time-input">
+                <label for="date_range">Date range:</label>
+                <div class="date-label" style="position: relative; left: 0;">
+                    <input type="text" id="date_range" class="form-control" placeholder="Start Date & Time - End Date & Time" style="text-align: left;">
+                    <i class="fas fa-calendar"></i>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="end_date">Tanggal dan Waktu Selesai</label>
-                <input type="date" id="end_date" class="form-control" placeholder="End Date & Time">
-            </div>
             {{-- <button id="filter_button">Filter</button> --}}
             <div id="map" style="height: 50%; width: 100%;"></div>
         </div>
@@ -71,8 +68,8 @@
                 pointer-events: none;
             }
         </style>
-   <script>
- $(document).ready(function () {
+  <script>
+  $(document).ready(function () {
     // Inisialisasi Select2
     $('#device-select').select2();
 
@@ -87,16 +84,12 @@
     $('#reset-btn').on('click', function () {
         // Mereset atau menghapus semua opsi yang dipilih pada select device
         $('#device-select').val(null).trigger('change');
+
+        filterMap(); // Memanggil fungsi filterMap() setelah mereset
     });
 
-    // Variable untuk data history, defaultStartDate, defaultEndDate, dsb...
-    // ...
-
-    // Fungsi filterMap() dan kode lainnya...
-});
-
-
-    var historyData = @json($history);
+    var deviceNames = {!! json_encode($deviceNames) !!};
+    var historyData = {!! $history->toJson() !!};
     var defaultStartDate = new Date();
     defaultStartDate.setHours(0, 0, 0, 0);
 
@@ -104,21 +97,16 @@
     var defaultEndDate = new Date();
     defaultEndDate.setHours(23, 0, 0, 0);
 
-    var startDatePicker = flatpickr("#start_date", {
+    var dateRangePicker = flatpickr("#date_range", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
-        defaultDate: defaultStartDate
+        defaultDate: [defaultStartDate, defaultEndDate],
+        mode: "range" // Tambahkan mode range untuk menentukan rentang tanggal
     });
 
-    var endDatePicker = flatpickr("#end_date", {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-        defaultDate: defaultEndDate
-    });
-
-    // Menangani perubahan pada picker tanggal akhir
-    endDatePicker.config.onChange.push(function(selectedDates, dateStr, instance) {
-        filterMap(); // Memanggil fungsi filterMap() setelah perubahan pada tanggal akhir
+    // Menangani perubahan pada date range picker
+    dateRangePicker.config.onChange.push(function(selectedDates, dateStr, instance) {
+        filterMap(); // Memanggil fungsi filterMap() setelah perubahan pada rentang tanggal
     });
 
     var map = L.map('map').setView([-6.895364793103795, 107.53971757412086], 13);
@@ -126,98 +114,126 @@
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    var deviceNames = {!! json_encode($devices->pluck('name')) !!};
     var layerGroup = L.layerGroup();
     var polylinePoints = [];
 
     function filterMap() {
-    var startDate = startDatePicker.selectedDates[0];
-    var endDate = endDatePicker.selectedDates[0];
-    var selectedDevice = $('#device-select').val();
+        var startDate = dateRangePicker.selectedDates[0];
+        var endDate = dateRangePicker.selectedDates[1];
+        var selectedDevice = $('#device-select').val();
 
-    map.eachLayer(function (layer) {
-        if (layer instanceof L.Marker || layer instanceof L.Polyline) {
-            map.removeLayer(layer);
+        map.eachLayer(function (layer) {
+            if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+                map.removeLayer(layer);
+            }
+        });
+
+        var newestIndex = -1;
+        var oldestIndex = -1;
+
+        // Hapus semua titik pada polylinePoints sebelum memproses data baru
+        polylinePoints = [];
+
+        // Cari indeks titik awal (Start) dan titik akhir (End)
+        for (var i = 0; i < historyData.length; i++) {
+            var historyItem = historyData[i];
+            if ((!selectedDevice || selectedDevice.includes(historyItem.device_id)) &&
+                (!startDate || new Date(historyItem.date_time.replace(" ", "T")) >= startDate) &&
+                (!endDate || new Date(historyItem.date_time.replace(" ", "T")) <= endDate)) {
+                if (newestIndex === -1 || new Date(historyItem.date_time.replace(" ", "T")) > new Date(historyData[newestIndex].date_time.replace(" ", "T"))) {
+                    newestIndex = i;
+                }
+                if (oldestIndex === -1 || new Date(historyItem.date_time.replace(" ", "T")) < new Date(historyData[oldestIndex].date_time.replace(" ", "T"))) {
+                    oldestIndex = i;
+                }
+            }
         }
-    });
 
-    var newestIndex = -1;
-    var oldestIndex = -1;
+        // Tentukan indeks titik awal (Start) dan titik akhir (End)
+        var startIndex = newestIndex; // Data terbaru sebagai Start
+        var endIndex = oldestIndex; // Data terakhir sebagai End
 
-    for (var i = 0; i < historyData.length; i++) {
-        var historyItem = historyData[i];
-        if ((!selectedDevice || historyItem.device_id == selectedDevice) &&
-            (!startDate || new Date(historyItem.date_time.replace(" ", "T")) >= startDate) &&
-            (!endDate || new Date(historyItem.date_time.replace(" ", "T")) <= endDate)) {
-            if (newestIndex === -1 || new Date(historyItem.date_time.replace(" ", "T")) > new Date(historyData[newestIndex].date_time.replace(" ", "T"))) {
-                newestIndex = i;
-            }
-            if (oldestIndex === -1 || new Date(historyItem.date_time.replace(" ", "T")) < new Date(historyData[oldestIndex].date_time.replace(" ", "T"))) {
-                oldestIndex = i;
-            }
-        }
-    }
+        for (var i = 0; i < historyData.length; i++) {
+            var historyItem = historyData[i];
+            if ((!selectedDevice || selectedDevice.includes(historyItem.device_id)) &&
+                (!startDate || new Date(historyItem.date_time.replace(" ", "T")) >= startDate) &&
+                (!endDate || new Date(historyItem.date_time.replace(" ", "T")) <= endDate)) {
 
-    for (var i = 0; i < historyData.length; i++) {
-        var historyItem = historyData[i];
-        if ((!selectedDevice || historyItem.device_id == selectedDevice) &&
-            (!startDate || new Date(historyItem.date_time.replace(" ", "T")) >= startDate) &&
-            (!endDate || new Date(historyItem.date_time.replace(" ", "T")) <= endDate)) {
+                var lat = parseFloat(historyItem.latitude);
+                var lng = parseFloat(historyItem.longitude);
+                var speed = parseFloat(historyItem.speeds);
+                var accuracy = parseFloat(historyItem.accuracy);
 
-            var lat = parseFloat(historyItem.latitude);
-            var lng = parseFloat(historyItem.longitude);
-            var speed = parseFloat(historyItem.speeds);
-            var accuracy = parseFloat(historyItem.accuracy);
+                var markerColor = i === startIndex ? 'green' : i === endIndex ? 'red' : '';
+                var markerIcon = i === startIndex ? 'mapgreen.png' : i === endIndex ? 'red.jpeg' : '';
 
-            var markerColor = i === newestIndex ? 'green' : i === oldestIndex ? 'red' : 'blue';
+                var isStartOrEndMarker = i === startIndex || i === endIndex;
 
-            var marker = L.marker([lat, lng], {
-                icon: L.divIcon({
-                    className: 'custom-marker',
-                    iconSize: [30, 30],
-                    iconAnchor: [15, 30],
-                    html: '<div style="background-color: ' + markerColor + '; width: 20px; height: 20px; border-radius: 50%;"></div>'
-                })
-            }).addTo(map);
+                if (!isStartOrEndMarker) {
+                    continue; // Skip marker if it's not a start or end marker
+                }
 
-            var popupContent =
-                "Latitude: " + lat.toFixed(6) +
-                "<br>Longitude: " + lng.toFixed(6) +
-                "<br>Date & Time: " + historyItem.date_time;
-
-            if (i === newestIndex) {
-                popupContent += "<br><b>Star</b>";
-            }
-
-            if (i === oldestIndex) {
-                popupContent += "<br><b>End</b>";
-            }
-
-            marker.bindPopup(popupContent);
-
-            polylinePoints.push([lat, lng]);
-
-            if (polylinePoints.length > 1) {
-                var polyline = L.polyline(polylinePoints.slice(-2), {
-                    color: speed < 20 ? "green" : speed >= 20 && speed <= 40 ? "yellow" : "red",
-                    weight: speed < 20 ? 10 : speed >= 20 && speed <= 40 ? 5 : 2,
-                    opacity: accuracy <= 10 ? 1.0 : accuracy > 10 && accuracy <= 20 ? 0.75 : 0.5
+                var marker = L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        className: 'custom-marker',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 30],
+                        html: `<div style="background-color: ${markerColor}; width: 20px; height: 20px; border-radius: 50%;">
+                                <img src="/images/${markerIcon}" alt="Marker Icon" style="width: 100%; height: 100%;">
+                            </div>`
+                    }),
+                    device_id: historyItem.device_id // Simpan ID perangkat sebagai atribut marker
                 }).addTo(map);
 
-                polyline.bindPopup("Speed: " + speed + " km/h<br>Accuracy: " + accuracy + " m");
-            }
+                var popupContent =
+                `<div>
+                    <img src="/images/${markerIcon}" alt="Marker Icon" style="width: 50px; height: 50px;">
+                    <br>
+                    Device: ${deviceNames[historyItem.device_id]}<br> <!-- Menggunakan nama perangkat berdasarkan ID perangkat -->
+                    Latitude: ${lat.toFixed(6)}<br>
+                    Longitude: ${lng.toFixed(6)}<br>
+                    Date & Time: ${historyItem.date_time}
+                </div>`;
 
-            map.panTo([lat, lng]);
+                if (i === startIndex) {
+                    popupContent = "<b>Start</b><br>" + popupContent;
+                }
+
+                if (i === endIndex) {
+                    popupContent = "<b>End</b><br>" + popupContent;
+                }
+
+                marker.bindPopup(popupContent, {
+                    autoPan: true,
+                    autoPanPadding: [50, 50] // Atur padding agar popup tetap berada di tengah
+                });
+
+                if (i === startIndex || i === endIndex) {
+                    marker.openPopup(); // Buka popup untuk "Start" dan "End"
+                }
+
+                polylinePoints.push([lat, lng]);
+
+                if (polylinePoints.length > 1) {
+                    var polyline = L.polyline(polylinePoints.slice(-2), {
+                        color: speed < 20 ? "green" : speed >= 20 && speed <= 40 ? "yellow" : "red",
+                        weight: speed < 20 ? 10 : speed >= 20 && speed <= 40 ? 5 : 2,
+                        opacity: accuracy <= 10 ? 1.0 : accuracy > 10 && accuracy <= 20 ? 0.75 : 0.5
+                    }).addTo(map);
+
+                    polyline.device_id = historyItem.device_id; // Simpan ID perangkat sebagai atribut polyline
+                    polyline.bindPopup(`Speed: ${speed} km/h<br>Accuracy: ${accuracy} m`);
+                }
+
+                map.panTo([lat, lng]);
+            }
         }
-    }
-}
+    };
 
     $('#device-select').change(function() {
         filterMap();
     });
-
-</script>
-
-
+});
+    </script>
         @endsection
 

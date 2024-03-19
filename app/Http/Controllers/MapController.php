@@ -30,6 +30,7 @@ class MapController extends Controller
     }
     
 
+
     public function deviceuser($id_device)
     {
         $device = Device::find($id_device);
@@ -84,11 +85,21 @@ class MapController extends Controller
             ->orderBy('date_time', 'desc')
             ->first();
 
-        if ($location) {
-            return response()->json($location);
-        } else {
-            return response()->json(['error' => 'Location not found'], 404);
-        }
+            if ($location) {
+                $device = Device::find($location->device_id);
+    
+                if ($device) {
+                    $location->name = $device->name;
+                    $location->plate_number = $device->plat_nomor;
+                    $location->photo = $device->photo;
+                }
+    
+                return response()->json($location);
+    
+            } 
+            else {
+                return response()->json(['error' => 'Location not found'], 404);
+            }
     }
 
 }

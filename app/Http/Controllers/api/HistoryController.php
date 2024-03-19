@@ -36,7 +36,6 @@ class HistoryController extends Controller
             'longitude' => 'required',
             'speeds' => 'required',
             'date_time' => 'required|date',
-            // Tambahkan validasi untuk field lainnya jika diperlukan
         ]);
 
         // Setelah validasi, Anda bisa melanjutkan dengan logika asli Anda
@@ -66,14 +65,14 @@ class HistoryController extends Controller
 
         $history = History::create([
             'device_id' => $device->id_device,
-            // 'latitude' => $request->latitude,
-            // 'longitude' => $request->longitude,
-            // 'bounds' => $request->bounds,
-            // 'accuracy' => $request->accuracy,
-            // 'altitude' => $request->altitude,
-            // 'altitude_acuracy' => $request->altitude_acuracy,
-            // 'heading' => $request->heading,
-            // 'speeds' => $request->speeds,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'bounds' => $request->bounds,
+            'accuracy' => $request->accuracy,
+            'altitude' => $request->altitude,
+            'altitude_acuracy' => $request->altitude_acuracy,
+            'heading' => $request->heading,
+            'speeds' => $request->speeds,
             'date_time' => $date_time,
             'original' => json_encode($request->all())
         ]);
