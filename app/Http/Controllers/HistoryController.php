@@ -116,6 +116,7 @@ class HistoryController extends Controller
 }
 
 
+
     public function getHistoryByDevice($deviceId)
     {
         logger('Request for device history. Device ID: ' . $deviceId);
@@ -173,7 +174,6 @@ class HistoryController extends Controller
 
     public function showMap()
     {
-
         // Mengambil daftar pengguna
         $users = User::all();
 
@@ -185,16 +185,23 @@ class HistoryController extends Controller
 
         // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
         $serialNumbers = $devices->pluck('serial_number', 'id_device');
-        // $deviceNames = $devices->pluck('name', 'id_device');
+
+        // Membuat array nama perangkat yang berisi id perangkat sebagai kunci dan nama perangkat sebagai nilai
+        $deviceNames = $devices->pluck('name', 'id_device')->toArray();
+
+        // Membuat array nama pengguna yang berisi id pengguna sebagai kunci dan nama pengguna sebagai nilai
+        $userNames = $users->pluck('name', 'id')->toArray();
 
         return view('admin.map.index', [
             'users' => $users, // Mengirim data pengguna ke tampilan
             'devices' => $devices, // Mengirim data perangkat ke tampilan
             'history' => $history, // Mengirim data riwayat ke tampilan
             'serialNumbers' => $serialNumbers, // Mengirim data serial number ke tampilan
-            // 'deviceNames' => $deviceNames // Mengirim data nama perangkat ke tampilan
+            'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
+            'userNames' => $userNames // Mengirim data nama pengguna ke tampilan
         ]);
     }
+
 
 
 
