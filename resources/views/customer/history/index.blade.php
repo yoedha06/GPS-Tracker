@@ -1,6 +1,8 @@
 @extends('layouts.customer')
 @extends('layouts.navbarcustomer')
 
+<title>GEEX - History</title>
+
 @section('content')
     <div id="main">
         <div class="page-heading">

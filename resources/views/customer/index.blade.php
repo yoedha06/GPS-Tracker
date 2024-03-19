@@ -1,5 +1,7 @@
 @extends('layouts.customer')
 
+<title>Dashboard</title>
+
 @section('content')
 
     <body>

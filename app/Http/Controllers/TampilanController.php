@@ -25,7 +25,7 @@ class TampilanController extends Controller
         // Ambil data jumlah history dari setiap device beserta nama perangkat
         $historyData = History::join('device', 'history.device_id', '=', 'device.id_device')
             ->select('device.name', DB::raw('count(*) as count'))
-            ->groupBy('history.device_id')
+            ->groupBy('history.device_id', 'device.name')
             ->get();
 
         // Ambil daftar perangkat yang dimiliki oleh pengguna
