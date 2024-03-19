@@ -1,4 +1,5 @@
 @extends('layouts.customer')
+<title>GEEX - LastLocation</title>
 
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -91,6 +92,7 @@
                         var lastLocation = null; // Informasi last location yang telah dilihat pengguna
                         var pathLocations = [];
                         var userMarker;
+                        var previousSelectedDeviceId = null;
 
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -147,9 +149,27 @@
                                     map.setView([data.latitude, data.longitude], 15);
                                 },
                                 error: function(error) {
-                                    console.error('Error fetching last location:', error);
+                                    // Menampilkan pesan alert dengan gaya yang diinginkan jika terjadi kesalahan saat mengambil data lokasi terakhir
+                                    var alertText = 'Device yang dipilih tidak memiliki history';
+                                    $('#alertText').text(alertText);
+                                    var alertMessage = $('#alertMessage');
+                                    alertMessage.removeClass('alert-danger alert-success').addClass('alert-danger');
+                                    alertMessage.show();
                                 }
                             });
+                        }
+
+                        // Fungsi untuk menganimasikan peta ke titik last location dari perangkat yang dipilih
+                        function animateMapToLastLocation(latitude, longitude) {
+                            map.flyTo([latitude, longitude], 15, {
+                                animate: true,
+                                duration: 1 // Sesuaikan durasi animasi sesuai kebutuhan
+                            });
+                        }
+
+                        // Fungsi untuk memindahkan peta ke titik last location dari perangkat yang dipilih
+                        function moveMapToLastLocation(latitude, longitude) {
+                            map.setView([latitude, longitude], 15); // Sesuaikan level zoom sesuai kebutuhan
                         }
 
                         $('#selectDevice').change(function() {
@@ -169,7 +189,21 @@
 
                                 loadLastLocation(selectedDeviceId);
 
+                                $('#alertMessage').hide();
+
                                 $('#updateLocationButton').show();
+
+                                // Memeriksa apakah perangkat yang dipilih saat ini sama dengan perangkat yang dipilih sebelumnya
+                                if (selectedDeviceId === previousSelectedDeviceId) {
+                                    // Panggil fungsi untuk menganimasikan peta ke titik last location setiap kali perangkat dipilih
+                                    animateMapToLastLocation(lastLocation.latitude, lastLocation.longitude);
+                                } else {
+                                    // Panggil fungsi untuk memindahkan peta ke titik last location setiap kali perangkat dipilih ulang
+                                    moveMapToLastLocation(lastLocation.latitude, lastLocation.longitude);
+                                }
+
+                                // Menyimpan ID perangkat yang dipilih saat ini sebagai perangkat yang dipilih sebelumnya untuk perbandingan selanjutnya
+                                previousSelectedDeviceId = selectedDeviceId;
                             } else {
                                 $('#updateLocationButton').hide();
                             }
@@ -187,7 +221,7 @@
                                     success: function(data) {
                                         console.log('lokasi baru:', data);
 
-                                        if (data.latitude !== lastLocation.latitude || data.longitude !== lastLocation.longitude) {
+                                        if (data.date_time !== lastLocation.date_time) {
 
                                             pathLocations.push([data.latitude, data.longitude]);
 
@@ -214,7 +248,7 @@
                                             latestLocationMarker.bindPopup(popupContent).openPopup();
                                             markers.push(latestLocationMarker);
                                             updatePolyline();
-                                            map.setView([data.latitude, data.longitude], 20);
+                                            map.setView([data.latitude, data.longitude], 25, { maxZoom: 18 });
                                         } else {
                                             var alertText = 'Tidak ada data terbaru.';
                                             $('#alertText').text(alertText);
