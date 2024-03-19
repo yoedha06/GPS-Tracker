@@ -1,6 +1,8 @@
 @extends('layouts.customer')
 @extends('layouts.navbarcustomer')
 
+<title>GEEX - Device</title>
+
 @section('content')
     <div id="main">
         <div class="page-heading">
@@ -82,7 +84,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($device as $item)
+                            @forelse ($userDevices as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->name }}</td>
@@ -165,7 +167,7 @@
         </div>
 
         <!-- Edit Device Modal -->
-        @foreach ($device as $item)
+        @foreach ($userDevices as $item)
             <div class="modal fade" id="editDeviceModal{{ $item->id_device }}" tabindex="-1"
                 aria-labelledby="editDeviceModalLabel{{ $item->id_device }}" aria-hidden="true">
                 <div class="modal-dialog">
@@ -228,7 +230,7 @@
         @endforeach
 
         <!-- Delete Device Modals -->
-        @foreach ($device as $item)
+        @foreach ($userDevices as $item)
             <div class="modal fade" id="deleteDeviceModal{{ $item->id_device }}" tabindex="-1"
                 aria-labelledby="deleteDeviceModalLabel{{ $item->id_device }}" aria-hidden="true">
                 <div class="modal-dialog">
@@ -255,7 +257,7 @@
         @endforeach
 
         <!-- Modals Photo device -->
-        @foreach ($device as $item)
+        @foreach ($userDevices as $item)
             <div class="modal fade" id="viewPhotoModal{{ $item->id_device }}" tabindex="-1"
                 aria-labelledby="viewPhotoModalLabel{{ $item->id_device }}" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -300,7 +302,7 @@
             const searchInput = document.getElementById('search');
             const searchTerm = searchInput.value.toLowerCase();
             const tableBody = document.getElementById('table1').getElementsByTagName('tbody')[0];
-            const deviceData = {!! json_encode($device) !!};
+            const deviceData = {!! $userDevices->toJson() !!};
 
             // Filter devices based on the search term
             const filteredResults = deviceData.filter(device =>
