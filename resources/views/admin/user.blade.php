@@ -11,7 +11,8 @@
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/admin"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/admin"><i class="fas fa-tachometer-alt"></i>
+                                        Dashboard</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">
                                     <i class="fas fa-users"></i> DataUser
                                 </li>
@@ -44,22 +45,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($users as $user)
+                            @if (count($users) > 0)
+                                @php $iteration = 1 @endphp
+                                @foreach ($users as $user)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->username }}</td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>{{ $user->role }}</td>
+                                        <td>
+                                            @if ($user->email_verified_at)
+                                                <span style="color: green;">Verified</span>
+                                            @else
+                                                <span style="color: red;">Not Verified</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->username }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ $user->role }}</td>
-                                    <td>
-                                        @if ($user->email_verified_at)
-                                            <span style="color: green;">Verified</span>
-                                        @else
-                                            <span style="color: red;">Not Verified</span>
-                                        @endif
+                                    <td colspan="11" class="text-center">
+                                        <span style="font-size: 3rem;">&#x1F5FF;</span>
+                                        <p class="mt-2">Data not available, sorry.</p>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -84,33 +95,19 @@
             const searchInput = document.getElementById('searchUser');
             const searchTerm = searchInput.value.toLowerCase();
             const tableBody = document.getElementById('table1').getElementsByTagName('tbody')[0];
-            const userData = {!! json_encode($users) !!}; // Convert PHP array to JavaScript
+            const tableRows = tableBody.getElementsByTagName('tr');
 
-            // Filter users based on the search term
-            const filteredResults = userData.filter(user => user.name.toLowerCase().includes(searchTerm) || user.username
-                .toLowerCase().includes(searchTerm) || user.email.toLowerCase().includes(searchTerm));
+            for (let i = 0; i < tableRows.length; i++) {
+                const user = tableRows[i];
+                const name = user.getElementsByTagName('td')[1].innerText.toLowerCase();
+                const username = user.getElementsByTagName('td')[2].innerText.toLowerCase();
+                const email = user.getElementsByTagName('td')[3].innerText.toLowerCase();
 
-            // Display search results
-            if (filteredResults.length > 0) {
-                tableBody.innerHTML = ''; // Clear existing table body
-
-                filteredResults.forEach((user, index) => {
-                    const resultItem = document.createElement('tr');
-                    resultItem.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${user.name}</td>
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
-                    <td>${user.role}</td>
-                    <td>
-                        ${user.email_verified_at ? '<span style="color: green;">Verified</span>' : '<span style="color: red;">Not Verified</span>'}
-                    </td>
-                `;
-                    tableBody.appendChild(resultItem);
-                });
-
-            } else {
-                tableBody.innerHTML = '<tr><td colspan="6" class="text-center">No users found</td></tr>';
+                if (name.includes(searchTerm) || username.includes(searchTerm) || email.includes(searchTerm)) {
+                    tableRows[i].style.display = '';
+                } else {
+                    tableRows[i].style.display = 'none';
+                }
             }
         }
     </script>

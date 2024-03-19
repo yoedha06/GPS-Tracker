@@ -86,7 +86,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="11" class="text-center">
+                                    <td colspan="6" class="text-center">
                                         <span style="font-size: 3rem;">&#x1F5FF;</span>
                                         <p class="mt-2">Data not available, sorry.</p>
                                     </td>
@@ -94,8 +94,11 @@
                             @endif
                         </tbody>
                     </table>
-                    <div id="paginationContainer" class="text-center">
+                    <div id="paginationContainer" class="text-center" style="display: none;">
                         <ul class="pagination"></ul>
+                    </div>
+                    <div id="historyTable">
+                        {{ $history->links('vendor.pagination.bootstrap-5') }}
                     </div>
                 </div>
             </div>
@@ -122,7 +125,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <!-- Your custom script -->
     <script>
         $(document).ready(function() {
             // Inisialisasi Select2
@@ -188,7 +190,6 @@
                             });
 
                             // Tambahkan tautan pagination
-                            // Tambahkan tautan pagination
                             var paginationHtml = '';
                             paginationHtml += '<li class="page-item ' + (data.pagination.current_page ==
                                 1 ? 'disabled' : '') + '">';
@@ -212,6 +213,8 @@
                             paginationHtml += '</li>';
                             $('#paginationContainer .pagination').html(paginationHtml);
 
+                            $('#paginationContainer').show(); // Tampilkan pagination container
+                            $('#historyTable').hide(); // Sembunyikan pagination yang disediakan oleh Blade
 
                             showValidationMessage('Device selected successfully!');
                         } else {

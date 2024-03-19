@@ -35,7 +35,6 @@ class TampilanController extends Controller
     }
 
 
-
     public function admin()
     {
         // Get total counts
@@ -59,7 +58,6 @@ class TampilanController extends Controller
     }
 
 
-
     public function homepage()
     {
         //tampilan homepage
@@ -81,16 +79,30 @@ class TampilanController extends Controller
         }
 
         // Ambil data history sesuai dengan tanggal dan perangkat yang dipilih
-        $historyData = $query->get();
+        $historyData = $query->select('device_id', DB::raw('COUNT(*) as count'))->groupBy('device_id')->get();
 
-        // Format data untuk dikirim sebagai respons JSON
-        $formattedData = $historyData->map(function ($item) {
+        // Ambil nama perangkat berdasarkan ID perangkat
+        $deviceNames = Device::whereIn('id_device', $historyData->pluck('device_id')->toArray())
+            ->pluck('name', 'id_device')
+            ->toArray();
+
+        // Ubah data history untuk mencakup nama perangkat
+        $historyDataWithDeviceName = $historyData->map(function ($item) use ($deviceNames) {
             return [
-                'date_time' => $item->date_time,
-                'device_name' => $item->device->name, // Menggunakan 'name' sebagai nama perangkat
-                'count' => 1 // Jumlah data sesuai dengan tanggal yang dipilih
+                'device_name' => $deviceNames[$item->device_id],
+                'count' => $item->count
             ];
         });
+
+        // Jika perangkat dipilih, filter data sesuai dengan perangkat yang dipilih
+        if ($selectedDevice) {
+            $historyDataWithDeviceName = $historyDataWithDeviceName->filter(function ($item) use ($selectedDevice) {
+                return $item['device_name'] === $selectedDevice;
+            });
+        }
+
+        // Ambil jumlah device
+        $deviceCount = count($deviceNames);
 
         // Ambil daftar perangkat yang tersedia untuk tanggal yang dipilih
         $deviceOptions = Device::whereExists(function ($query) use ($selectedDate) {
@@ -104,12 +116,10 @@ class TampilanController extends Controller
             ->values() // Re-indeks array
             ->toArray();
 
-        $chartData = $query->pluck('date_time')->toArray();
-
         return response()->json([
-            'data' => $formattedData,
+            'data' => $historyDataWithDeviceName,
             'deviceOptions' => $deviceOptions,
-            'chartData' => $chartData
+            'deviceCount' => $deviceCount
         ]);
     }
 }
