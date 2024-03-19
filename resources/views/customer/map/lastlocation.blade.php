@@ -79,6 +79,7 @@
                     <span id="alertText">Ini adalah pesan alert.</span>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+        </div>
         {{-- @dump($userDevices) --}}
         <div id="map" style="margin-top: 10px;"></div>
 
@@ -89,6 +90,7 @@
                         var markers = [];
                         var lastLocation = null; // Informasi last location yang telah dilihat pengguna
                         var pathLocations = [];
+                        var userMarker;
 
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -189,24 +191,32 @@
                                     success: function(data) {
                                         console.log('lokasi baru:', data);
 
-                                        // Tambahkan lokasi terbaru ke array pathLocations
                                         pathLocations.push([data.latitude, data.longitude]);
 
-                                        // Simpan informasi last location
                                         latestLocation = data;
 
-                                        // Tambahkan marker untuk last location
-                                        addMarker(data.latitude, data.longitude);
-                                        var popupContent =  `<center><b>Device: ${data.name}</b></center><br>` +
-                                                            `<b>Latlng:</b> ${data.latitude},${data.longitude}<br>` +
-                                                            `<b>Date Time:</b> ${data.date_time}`
+                                        var customIcon = L.icon({
+                                            iconUrl: '/images/mapyellow.png', 
+                                            iconSize: [44, 49], 
+                                            iconAnchor: [21, 44], // akurasi yang pass coy
+                                            popupAnchor: [1, -39]
+                                        });
 
-                                        var latestLocationMarker = L.marker([data.latitude, data.longitude]).addTo(map);
-                                        latestLocationMarker.bindPopup(popupContent).openPopup(); // Tambahkan popup dengan konten yang dibuat
+                                        var latestLocationMarker = L.marker(
+                                            [data.latitude, data.longitude],{icon: customIcon}
+                                        ).addTo(map);
+
+                                        var popupContent =  `<center><b style="color: yellow; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" >Latest location</b></center><br>` +
+                                                            `<b>Device: ${data.name}</b><br>` +
+                                                            `<b>Plat Nomor:</b> ${data.plate_number}<br>` +
+                                                            `<b>Latlng:</b> ${data.latitude}, ${data.longitude}<br>` +
+                                                            `<b>Date Time:</b> ${data.date_time}<br>`+
+                                                            `<img src="{{asset('storage')}}/${data.photo}" style="width: 199px; height: 127px;">`;
+
+                                        latestLocationMarker.bindPopup(popupContent).openPopup();
                                         markers.push(latestLocationMarker);
-
-                                        // Perbarui polylane
                                         updatePolyline();
+                                        map.setView([data.latitude, data.longitude], 20);
                                     },
                                     error: function(error) {
                                         console.error('Error fetching latest location:', error);
@@ -244,27 +254,31 @@
                         @endif
                         $('#myLocationButton').click(function() {
                             if (navigator.geolocation) {
-                               
                                 navigator.geolocation.getCurrentPosition(function(position) {
-                                    
                                     var latitude = position.coords.latitude;
                                     var longitude = position.coords.longitude;
 
-                                    // console.log('Latitude:', latitude);
-                                    // console.log('Longitude:', longitude);
+                                    console.log('Current Location:', latitude, longitude);
 
                                     var customIcon = L.icon({
-                                        iconUrl: '/images/mapgreen.png', 
-                                        iconSize: [42, 42], 
-                                        iconAnchor: [20, 44], // akurasi
+                                        iconUrl: '/images/mapgreen.png',
+                                        iconSize: [42, 42],
+                                        iconAnchor: [20, 44],
                                         popupAnchor: [1, -41]
                                     });
 
-                                    // Tambahkan marker dengan ikon kustom
-                                    var userMarker = L.marker([latitude, longitude], {icon: customIcon}).addTo(map);
-                                    userMarker.bindPopup('Lokasi Anda').openPopup();
-                                    
-                                    // Perbarui tampilan peta untuk memusatkan pada lokasi pengguna
+                                    var popupContent = `<center><b>Lokasi Anda</b></center><br>` +
+                                                       `${latitude},${longitude}`;
+
+                                    // Menghapus marker sebelumnya jika ada
+                                    if (userMarker) {
+                                        map.removeLayer(userMarker);
+                                    }
+
+                                    userMarker = L.marker([latitude, longitude], {
+                                        icon: customIcon
+                                    }).addTo(map);
+                                    userMarker.bindPopup(popupContent).openPopup();
                                     map.setView([latitude, longitude], 17);
 
                                     var alertText = 'Lokasi Anda berhasil ditampilkan pada peta.';
@@ -273,20 +287,14 @@
                                     alertMessage.removeClass('alert-danger alert-primary').addClass('alert-success');
                                     alertMessage.show();
                                 }, function(error) {
-                                    // Tangani kesalahan jika pengguna tidak memberikan izin atau terjadi kesalahan lain
                                     console.error('Error getting user location:', error);
-
-                                    // Tampilkan pesan alert untuk kesalahan
                                     var alertMessage = $('#alertMessage');
                                     alertMessage.html('Tidak dapat menampilkan lokasi Anda pada peta.');
                                     alertMessage.removeClass('alert-success').addClass('alert-danger');
                                     alertMessage.show();
                                 });
                             } else {
-                                // Tangani jika Geolocation API tidak didukung
                                 console.error('Geolocation is not supported by this browser.');
-
-                                // Tampilkan pesan alert
                                 var alertMessage = $('#alertMessage');
                                 alertMessage.html('Geolocation tidak didukung oleh browser ini.');
                                 alertMessage.removeClass('alert-success').addClass('alert-danger');
@@ -297,14 +305,3 @@
     </script>
     </div>
 @endsection
-
-
-
-
-
-
-
-
-
-                
-
