@@ -105,7 +105,7 @@
                                                 "<b>PlatNo:</b> " + history.device.plat_nomor + "<br>" +
                                                 "<b>Date Time:</b> " + history.date_time + "<br>" +
                                                 "<img src='{{ asset('storage/') }}/" + history.device
-                                                .photo + "' style='width: 199px; height: 115px;' >";
+                                                .photo + "' style='width: 199px; height: 127px;' >";
                                             console.log('Image Source:', history.device.photo);
 
 
@@ -204,7 +204,7 @@
                                     "<b>Latlng:</b> {{ $device->latestHistory->latitude . ',' . $device->latestHistory->longitude }}<br>" +
                                     "<b>PlatNo:</b> {{ $device->plat_nomor }}<br>" +
                                     "<b>Date Time:</b> {{ $device->latestHistory->date_time }}<br>" +
-                                    "<img src='{{ asset('storage/' . $device->photo) }}' style='width: 199px; height: 115px;' >";
+                                    "<img src='{{ asset('storage/' . $device->photo) }}' style='width: 199px; height: 127px;' >";
 
                                 marker.bindPopup(popupContent);
                             @endif

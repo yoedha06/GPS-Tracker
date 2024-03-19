@@ -83,7 +83,7 @@
         {{-- @dump($userDevices) --}}
         <div id="map" style="margin-top: 10px;"></div>
 
-        <script>
+    <script>
             $(document).ready(function() {
                         var map = L.map('map').setView([0, 0], 2);
                         var polyline = null; // Inisialisasi polylane
@@ -155,7 +155,6 @@
                         $('#selectDevice').change(function() {
                             var selectedDeviceId = $(this).val();
                             if (selectedDeviceId) {
-                                // Bersihkan marker dan polylane
                                 markers.forEach(function(marker) {
                                     map.removeLayer(marker);
                                 });
@@ -166,18 +165,15 @@
                                     polyline = null;
                                 }
 
-                                // Memuat last location
+                                pathLocations = [];
+
                                 loadLastLocation(selectedDeviceId);
-                                
-                                // Menampilkan tombol "Update"
+
                                 $('#updateLocationButton').show();
                             } else {
-                                // Sembunyikan tombol "Update" jika tidak ada perangkat yang dipilih
                                 $('#updateLocationButton').hide();
                             }
                         });
-
-                        //last location saat halaman dimuat
                         var selectedDeviceId = $('#selectDevice').val();
                         if (selectedDeviceId) {
                             loadLastLocation(selectedDeviceId);
@@ -191,32 +187,41 @@
                                     success: function(data) {
                                         console.log('lokasi baru:', data);
 
-                                        pathLocations.push([data.latitude, data.longitude]);
+                                        if (data.latitude !== lastLocation.latitude || data.longitude !== lastLocation.longitude) {
 
-                                        latestLocation = data;
+                                            pathLocations.push([data.latitude, data.longitude]);
 
-                                        var customIcon = L.icon({
-                                            iconUrl: '/images/mapyellow.png', 
-                                            iconSize: [44, 49], 
-                                            iconAnchor: [21, 44], // akurasi yang pass coy
-                                            popupAnchor: [1, -39]
-                                        });
+                                            latestLocation = data;
 
-                                        var latestLocationMarker = L.marker(
-                                            [data.latitude, data.longitude],{icon: customIcon}
-                                        ).addTo(map);
+                                            var customIcon = L.icon({
+                                                iconUrl: '/images/mapyellow.png', 
+                                                iconSize: [44, 49], 
+                                                iconAnchor: [21, 44], 
+                                                popupAnchor: [1, -39]
+                                            });
 
-                                        var popupContent =  `<center><b style="color: yellow; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" >Latest location</b></center><br>` +
-                                                            `<b>Device: ${data.name}</b><br>` +
-                                                            `<b>Plat Nomor:</b> ${data.plate_number}<br>` +
-                                                            `<b>Latlng:</b> ${data.latitude}, ${data.longitude}<br>` +
-                                                            `<b>Date Time:</b> ${data.date_time}<br>`+
-                                                            `<img src="{{asset('storage')}}/${data.photo}" style="width: 199px; height: 127px;">`;
+                                            var latestLocationMarker = L.marker(
+                                                [data.latitude, data.longitude],{icon: customIcon}
+                                            ).addTo(map);
 
-                                        latestLocationMarker.bindPopup(popupContent).openPopup();
-                                        markers.push(latestLocationMarker);
-                                        updatePolyline();
-                                        map.setView([data.latitude, data.longitude], 20);
+                                            var popupContent =  `<center><b style="color: yellow; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" >Latest location</b></center><br>` +
+                                                                `<b>Device: ${data.name}</b><br>` +
+                                                                `<b>Plat Nomor:</b> ${data.plate_number}<br>` +
+                                                                `<b>Latlng:</b> ${data.latitude}, ${data.longitude}<br>` +
+                                                                `<b>Date Time:</b> ${data.date_time}<br>`+
+                                                                `<img src="{{asset('storage')}}/${data.photo}" style="width: 199px; height: 127px;">`;
+
+                                            latestLocationMarker.bindPopup(popupContent).openPopup();
+                                            markers.push(latestLocationMarker);
+                                            updatePolyline();
+                                            map.setView([data.latitude, data.longitude], 20);
+                                        } else {
+                                            var alertText = 'Tidak ada data terbaru.';
+                                            $('#alertText').text(alertText);
+                                            var alertMessage = $('#alertMessage');
+                                            alertMessage.removeClass('alert-danger alert-success').addClass('alert-danger');
+                                            alertMessage.show();
+                                        }
                                     },
                                     error: function(error) {
                                         console.error('Error fetching latest location:', error);
@@ -267,7 +272,7 @@
                                         popupAnchor: [1, -41]
                                     });
 
-                                    var popupContent = `<center><b>Lokasi Anda</b></center><br>` +
+                                    var popupContent = `<center><b> Lokasi Anda </b></center><br>` +
                                                        `${latitude},${longitude}`;
 
                                     // Menghapus marker sebelumnya jika ada
