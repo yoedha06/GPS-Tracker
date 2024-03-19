@@ -31,8 +31,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                                    <h6 class="text-muted font-semibold">Device Users</h6>
-                                                    <h6 class="font-extrabold mb-0">{{ $deviceCount }}</h6>
+                                                    <h6 class="text-muted font-semibold">
+                                                        <h6 class="font-extrabold mb-0">
+                                                            <a href="/customer/device">Data Device</a>
+                                                            <h6 class="font-extrabold mb-0">{{ $deviceCount }}</h6>
+                                                        </h6>
+                                                    </h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -309,7 +313,7 @@
                         </div>
                         <div class="float-end">
                             <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                    href="https://saugi.me">BARUDAK CIGS</a></p>
+                                    href="#">BARUDAK CIGS</a></p>
                         </div>
                     </div>
                 </footer>
@@ -361,10 +365,27 @@
                     },
                     plotOptions: {
                         bar: {
-                            borderRadius: 10
+                            borderRadius: 10,
+                            dataLabels: {
+                                position: 'top', // Menempatkan label di atas bar
+                                offsetY: -20, // Mengatur offset vertical label
+                                formatter: function(val) {
+                                    return val; // Menampilkan nilai di atas bar
+                                }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        y: {
+                            formatter: function(value) {
+                                return 'Jumlah History: ' +
+                                    value; // Menampilkan jumlah history saat mouse di atas bar
+                            }
                         }
                     }
                 };
+
 
                 // Initialize chart
                 var chart = new ApexCharts(document.querySelector("#chart"), options);
@@ -382,34 +403,41 @@
                         return; // Stop further execution if date is not selected
                     }
 
-                    // Check if the device value is null, undefined, or an empty string
-                    if (!selectedDevice && selectedDevice !== null && selectedDevice !== undefined && selectedDevice !==
-                        '') {
-                        alert('Silahkan pilih perangkat terlebih dahulu.');
-                        return;
-                        selectedDevice = null; // Set device value to null if none selected
-                    }
-
                     $.ajax({
                         method: 'GET',
                         url: '/customer-chart',
                         data: {
-                            selected_date: selectedDate,
+                            selected_date: selectedDate, // Kirim data selectedDate ke server
                             selected_device: selectedDevice
                         },
                         success: function(response) {
                             console.log("Response Data:", response);
 
-                            var dateTimes = response.date_time || [];
-                            var deviceOptions = response.deviceOptions || [];
-                            var chartData = response.chartData ||
-                        []; // Data yang akan digunakan untuk grafik
+                            var chartData = response.data || [];
+
+                            // Prepare series data for selected device
+                            var seriesData = [];
+                            var deviceName = "";
+
+                            // Iterate through each data point
+                            chartData.forEach(function(item) {
+                                // Add data only for the selected device
+                                if (item.device_name === selectedDevice) {
+                                    seriesData.push({
+                                        name: item.device_name,
+                                        data: [item.count]
+                                    });
+                                    deviceName = item.device_name;
+                                }
+                            });
 
                             // Update chart with new data
-                            chart.updateSeries([{
-                                data: chartData
-                            }]);
-
+                            chart.updateOptions({
+                                xaxis: {
+                                    categories: [deviceName] // Use device name as category
+                                }
+                            });
+                            chart.updateSeries(seriesData);
 
                             if (selectedDate || selectedDevice) {
                                 $('#device_select_row').show();
@@ -421,16 +449,19 @@
                             var deviceDropdown = $('#selected_device');
                             deviceDropdown.empty(); // Clear previous options
 
-                            if (deviceOptions.length > 0) {
+                            if (response.deviceOptions.length > 0) {
                                 deviceDropdown.append($('<option>', {
                                     value: '', // Empty value
-                                    text: 'Pilih Perangkat'
+                                    text: 'Select Device'
                                 }));
 
-                                deviceOptions.forEach(function(device) {
+                                // Add device count next to device name in the dropdown
+                                response.deviceOptions.forEach(function(device) {
+                                    var optionText = device + ' (' + response.deviceCount[device] +
+                                        ')';
                                     deviceDropdown.append($('<option>', {
                                         value: device,
-                                        text: device
+                                        text: optionText // Include device count in option text
                                     }));
                                 });
                             } else {
@@ -440,13 +471,18 @@
                                     text: 'Tidak Ada Perangkat Tersedia'
                                 }));
                             }
+
+                            // Set selected device option
+                            if (selectedDevice) {
+                                deviceDropdown.val(
+                                selectedDevice); // Set the selected device as the selected option
+                            }
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
                         }
                     });
                 }
-
                 // Add event listener for date input change
                 $('#selected_date').change(function() {
                     updateChart();
