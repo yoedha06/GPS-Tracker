@@ -29,8 +29,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                                    <h6 class="text-muted font-semibold">Data Users</h6>
-                                                    <h6 class="font-extrabold mb-0">{{ $usersCount }}</h6>
+                                                    <h6 class="text-muted font-semibold">
+                                                        <h6 class="font-extrabold mb-0">
+                                                            <a href="/admin/user">Data Users</a>
+                                                            <h6 class="font-extrabold mb-0">{{ $usersCount }}</h6>
+                                                        </h6>
+                                                    </h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -47,8 +51,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                                    <h6 class="text-muted font-semibold">Data Device</h6>
-                                                    <h6 class="font-extrabold mb-0">{{ $deviceCount }}</h6>
+                                                    <h6 class="text-muted font-semibold">
+                                                        <h6 class="font-extrabold mb-0">
+                                                            <a href="/admin/device">Data Device</a>
+                                                            <h6 class="font-extrabold mb-0">{{ $deviceCount }}</h6>
+                                                        </h6>
+                                                    </h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -65,8 +73,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                                    <h6 class="text-muted font-semibold">Maps History</h6>
-                                                    <h6 class="font-extrabold mb-0"><a href="/admin/map">Look Maps</a></h6>
+                                                    <h6 class="text-muted font-semibold">
+                                                        <h6 class="font-extrabold mb-0">
+                                                            <a href="/admin/map">Maps History</a>
+                                                            <h6 class="font-extrabold mb-0">{{ $history }}</h6>
+                                                        </h6>
+                                                    </h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -83,9 +95,11 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                                    <h6 class="text-muted font-semibold">Last Location</h6>
-                                                    <h6 class="font-extrabold mb-0"><a href="/admin/lastlocation">Look
-                                                            Maps</a></h6>
+                                                    <h6 class="text-muted font-semibold">
+                                                        <h6 class="font-extrabold mb-0">
+                                                            <a href="/admin/lastlocation">Last Location</a>
+                                                        </h6>
+                                                    </h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -96,10 +110,10 @@
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>Map</h4>
+                                            <h4>History Grafik</h4>
                                         </div>
                                         <div class="card-body">
-                                            <div id="chart-profile-visit"></div>
+                                            <div id="chart"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -284,5 +298,47 @@
                 </footer>
             </div>
         </div>
+        <!-- Include ApexCharts library -->
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+        <!-- JavaScript code for ApexCharts -->
+        <script>
+            // Data grafik
+            var historyData = {!! json_encode($historyData) !!};
+
+            // Ubah data menjadi format yang sesuai untuk grafik
+            var labels = historyData.map(function(item) {
+                return item.user_name + ' - ' + item.device_name; // Gabungkan nama pengguna dan nama perangkat
+            });
+            var data = historyData.map(function(item) {
+                return item.count; // Ambil jumlah riwayat per perangkat
+            });
+
+            // Konfigurasi grafik
+            var options = {
+                chart: {
+                    type: 'bar' // Jenis grafik: bar chart
+                },
+                series: [{
+                    name: 'Jumlah History',
+                    data: data // Data jumlah history per perangkat
+                }],
+                xaxis: {
+                    categories: labels // Nama pengguna dan perangkat untuk sumbu x
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 10 // Radius border untuk setiap batang
+                    }
+                }
+            };
+
+            // Inisialisasi grafik
+            var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+            // Render grafik
+            chart.render();
+        </script>
+
     </body>
 @endsection

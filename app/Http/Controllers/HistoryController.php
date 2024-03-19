@@ -7,6 +7,7 @@ use App\Models\Device;
 use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -116,34 +117,34 @@ class HistoryController extends Controller
 }
 
 
-    public function getHistoryByDevice($deviceId)
-    {
-        logger('Request for device history. Device ID: ' . $deviceId);
+public function getHistoryByDevice($deviceId)
+{
+    logger('Request for device history. Device ID: ' . $deviceId);
 
-        // Ensure $deviceId is valid and exists in the devices associated with the authenticated user
-        $user = Auth::user();
-        $device = $user->devices()->where('id_device', $deviceId)->first();
+    // Ensure $deviceId is valid and exists in the devices associated with the authenticated user
+    $user = Auth::user();
+    $device = $user->devices()->where('id_device', $deviceId)->first();
 
-        if (!$device) {
-            return response()->json(['error' => 'Invalid device ID'], 404);
-        }
-
-        // Fetch history records for the specified device
-        $history = History::where('device_id', $deviceId)->get();
-
-        logger('History data retrieved:', $history->toArray()); // Convert collection to array
-
-        // Include device information in the JSON response
-        $response = [
-            'device_name' => $device->name,
-            'history' => $history,
-        ];
-
-        // Log device name directly or convert it to an array
-        logger('Device name:', $device->toArray()); // or logger('Device name: ' . $device->name);
-
-        return response()->json($response);
+    if (!$device) {
+        return response()->json(['error' => 'Invalid device ID'], 404);
     }
+
+    // Fetch history records for the specified device
+    $history = History::where('device_id', $deviceId)->get();
+
+    logger('History data retrieved:', $history->toArray()); // Convert collection to array
+
+    // Include device information in the JSON response
+    $response = [
+        'device_name' => $device->name,
+        'history' => $history,
+    ];
+
+    // Log device name directly or convert it to an array
+    logger('Device name:', $device->toArray()); // or logger('Device name: ' . $device->name);
+
+    return response()->json($response);
+}
 
 
     public function getRelatedData($userId)

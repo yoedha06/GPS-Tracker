@@ -24,7 +24,8 @@
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
                                             <div class="row">
-                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                                <div
+                                                    class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
                                                     <div class="stats-icon purple mb-2">
                                                         <i class="fas fa-car"></i>
                                                     </div>
@@ -32,7 +33,7 @@
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                     <h6 class="text-muted font-semibold">Device Users</h6>
                                                     <h6 class="font-extrabold mb-0">{{ $deviceCount }}</h6>
-                                                </div>                                              
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -41,20 +42,25 @@
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
                                             <div class="row">
-                                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                                <div
+                                                    class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
                                                     <div class="stats-icon blue mb-2">
                                                         <i class="fas fa-map-marked-alt"></i>
                                                     </div>
-                                                                                                                                                           
+
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                                    <h6 class="text-muted font-semibold">Map Users</h6>
-                                                    <h6 class="font-extrabold mb-0"><a href="/customer/map">Look Maps</a></h6>
+                                                    <h6 class="text-muted font-semibold">
+                                                        <h6 class="font-extrabold mb-0">
+                                                            <a href="/customer/map">Maps Users</a>
+                                                            <h6 class="font-extrabold mb-0">{{ $history }}</h6>
+                                                        </h6>
+                                                    </h6>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>                                
+                                </div>
                                 <div class="col-6 col-lg-3 col-md-6">
                                     <div class="card">
                                         <div class="card-body px-4 py-4-5">
@@ -66,8 +72,11 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                                    <h6 class="text-muted font-semibold">Last Location</h6>
-                                                    <h6 class="font-extrabold mb-0"><a href="/lastlocation">Look Maps</a></h6>
+                                                    <h6 class="text-muted font-semibold">
+                                                        <h6 class="font-extrabold mb-0">
+                                                            <a href="/customer/lastlocation">Last Location</a>
+                                                        </h6>
+                                                    </h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -81,11 +90,15 @@
                                                     class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
                                                     <div class="stats-icon red mb-2">
                                                         <i class="fas fa-history"></i>
-                                                    </div>                                                    
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                                    <h6 class="text-muted font-semibold">History Users</h6>
-                                                    <h6 class="font-extrabold mb-0"><a href="/history/customer">History</a></h6>
+                                                    <h6 class="text-muted font-semibold">
+                                                        <h6 class="font-extrabold mb-0">
+                                                            <a href="/history/customer">History</a>
+                                                            <h6 class="font-extrabold mb-0">{{ $history }}</h6>
+                                                        </h6>
+                                                    </h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -93,13 +106,32 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="selected_date" class="form-label">Selected Date:</label>
+                                        <input type="date" class="form-control" id="selected_date">
+                                    </div>
+                                </div>
+                                <div id="validation-message" class="text-danger" style="display: none;"></div>
+
+                                <div class="row mb-3" id="device_select_row" style="display: none;">
+                                    <div class="col-md-6">
+                                        <label for="selected_device" class="form-label">Select Device:</label>
+                                        <select class="form-select" id="selected_device">
+                                            <option value="" selected disabled>Select Device</option>
+                                            @foreach ($devices as $device)
+                                                <option value="{{ $device->id }}">{{ $device->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>Map</h4>
+                                            <h4>History Grafik</h4>
                                         </div>
                                         <div class="card-body">
-                                            <div id="chart-profile-visit"></div>
+                                            <div id="chart"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -225,15 +257,15 @@
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-xl"
-                                            style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
-                                            @if (Auth::user()->photo)
-                                                <img src="/photos/{{ Auth::user()->photo }}"
-                                                    style="width: 100%; height: auto; object-fit: cover; user-drag: none; -webkit-user-drag: none;">
-                                            @else
-                                                <img src="{{ asset('images/default.jpg') }}"
-                                                    style="width: 100%; height: auto; user-drag: none; -webkit-user-drag: none;">
-                                            @endif
-                                        </div>
+                                                style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
+                                                @if (Auth::user()->photo)
+                                                    <img src="/photos/{{ Auth::user()->photo }}"
+                                                        style="width: 100%; height: auto; object-fit: cover; user-drag: none; -webkit-user-drag: none;">
+                                                @else
+                                                    <img src="{{ asset('images/default.jpg') }}"
+                                                        style="width: 100%; height: auto; user-drag: none; -webkit-user-drag: none;">
+                                                @endif
+                                            </div>
                                             @if ($user)
                                                 <div class="ms-3 name">
                                                     <h5 class="font-bold text-truncate" style="max-width: 150px;">
@@ -283,12 +315,151 @@
                 </footer>
             </div>
         </div>
-        <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
-        <script src="{{ asset('template/assets/js/app.js') }}"></script>
+        <!-- Pastikan untuk memuat jQuery sebelum memuat skrip lain yang menggunakan jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-        <!-- Need: Apexcharts -->
+        <!-- Memuat skrip Bootstrap DatePicker dan stylesheet -->
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+        <!-- Memuat skrip Bootstrap -->
+        <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
+
+        <!-- Memuat skrip ApexCharts -->
         <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
+
+        <!-- Memuat skrip aplikasi Anda -->
+        <script src="{{ asset('template/assets/js/app.js') }}"></script>
         <script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script>
 
-    </body>
-@endsection
+        <!-- Memuat ApexCharts dari CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+        <script>
+            $(document).ready(function() {
+                // Initial chart data from blade template
+                var historyData = {!! json_encode($historyData) !!};
+                var categories = historyData.map(function(item) {
+                    return item.name;
+                });
+                var data = historyData.map(function(item) {
+                    return item.count;
+                });
+
+                // Chart configuration
+                var options = {
+                    chart: {
+                        type: 'bar'
+                    },
+                    series: [{
+                        name: 'Jumlah History',
+                        data: data
+                    }],
+                    xaxis: {
+                        categories: categories
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 10
+                        }
+                    }
+                };
+
+                // Initialize chart
+                var chart = new ApexCharts(document.querySelector("#chart"), options);
+                chart.render();
+
+                // Function to update chart data
+                function updateChart(selectedDevice) {
+                    var selectedDate = $('#selected_date').val();
+
+                    console.log("Selected Date:", selectedDate);
+                    console.log("Selected Device:", selectedDevice);
+
+                    if (!selectedDate) {
+                        alert('Silahkan pilih tanggal terlebih dahulu.');
+                        return; // Stop further execution if date is not selected
+                    }
+
+                    // Check if the device value is null, undefined, or an empty string
+                    if (!selectedDevice && selectedDevice !== null && selectedDevice !== undefined && selectedDevice !==
+                        '') {
+                        alert('Silahkan pilih perangkat terlebih dahulu.');
+                        return;
+                        selectedDevice = null; // Set device value to null if none selected
+                    }
+
+                    $.ajax({
+                        method: 'GET',
+                        url: '/customer-chart',
+                        data: {
+                            selected_date: selectedDate,
+                            selected_device: selectedDevice
+                        },
+                        success: function(response) {
+                            console.log("Response Data:", response);
+
+                            var dateTimes = response.date_time || [];
+                            var deviceOptions = response.deviceOptions || [];
+                            var chartData = response.chartData ||
+                        []; // Data yang akan digunakan untuk grafik
+
+                            // Update chart with new data
+                            chart.updateSeries([{
+                                data: chartData
+                            }]);
+
+
+                            if (selectedDate || selectedDevice) {
+                                $('#device_select_row').show();
+                            } else {
+                                $('#device_select_row').hide();
+                            }
+
+                            // Update device selection dropdown
+                            var deviceDropdown = $('#selected_device');
+                            deviceDropdown.empty(); // Clear previous options
+
+                            if (deviceOptions.length > 0) {
+                                deviceDropdown.append($('<option>', {
+                                    value: '', // Empty value
+                                    text: 'Pilih Perangkat'
+                                }));
+
+                                deviceOptions.forEach(function(device) {
+                                    deviceDropdown.append($('<option>', {
+                                        value: device,
+                                        text: device
+                                    }));
+                                });
+                            } else {
+                                // If no device options available, show default option
+                                deviceDropdown.append($('<option>', {
+                                    value: '', // Empty value
+                                    text: 'Tidak Ada Perangkat Tersedia'
+                                }));
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                }
+
+                // Add event listener for date input change
+                $('#selected_date').change(function() {
+                    updateChart();
+                });
+
+                // Add event listener for device select change
+                $('#selected_device').change(function() {
+                    var selectedDevice = $(this).val();
+                    console.log("Selected Device:", selectedDevice);
+                    updateChart(selectedDevice);
+
+                });
+
+            });
+        </script>
+    @endsection

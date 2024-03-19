@@ -26,5 +26,9 @@ class Device extends Model
     {
         return $this->hasOne(History::class, 'device_id', 'id_device')->latest();
     }
+    public function histories()
+    {
+        return $this->hasMany(History::class);
+    }
 
 }
