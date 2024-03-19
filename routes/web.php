@@ -149,4 +149,7 @@ Route::get('/get-device-history/{deviceId}', [LocationController::class, 'getDev
 Route::get('/lastlocation/{deviceId}', [MapController::class, 'getLastLocation']);
 Route::get('/latestlocation/{deviceId}', [MapController::class, 'getLatestLocation']);
 
+//filter chart
+Route::get('/customer-chart', [TampilanController::class, 'customer']);
+
 
