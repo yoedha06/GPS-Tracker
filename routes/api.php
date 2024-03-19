@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\api\HistoryController;
+use App\Http\Controllers\api\HistoryController; //paka a kecil
 use App\Http\Controllers\api\LocationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;

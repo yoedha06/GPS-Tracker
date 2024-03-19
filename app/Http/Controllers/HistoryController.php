@@ -7,6 +7,7 @@ use App\Models\Device;
 use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,7 +34,7 @@ class HistoryController extends Controller
             ->join('device', 'history.device_id', '=', 'device.id_device')
             ->orderBy('device.name', 'asc') // Order by device name in ascending order
             ->orderBy('date_time', 'desc')    // Then order by date_time in descending order
-            ->paginate(10);
+            ->paginate(20);
 
 
         return view('customer.history.index', ['history' => $history, 'devices' => $devices]);
@@ -90,34 +91,38 @@ class HistoryController extends Controller
 
 
     public function map()
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
-    $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
-        ->whereHas('history')
-        ->whereNotIn('name', ['', '']) // Memastikan nama perangkat bukan 'truck' atau 'r'
-        ->take(10) // Mengambil 10 perangkat
-        ->get();
+        // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
+        $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
+            ->whereHas('history')
+            ->whereNotIn('name', ['', '']) // Memastikan nama perangkat bukan 'truck' atau 'r'
+            ->take(10) // Mengambil 10 perangkat
+            ->get();
 
-    // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
-    $history = DB::table('history')->limit(100)->get();
+        // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
+        $history = DB::table('history')->limit(100)->get();
 
-    // Ambil semua perangkat dengan batasan jumlah
-    $devices = Device::where('user_id', Auth::id())
-        ->limit(10) // Batasan jumlah perangkat
-        ->get();
+        // Ambil semua perangkat dengan batasan jumlah
+        $devices = Device::where('user_id', Auth::id())
+            ->limit(10) // Batasan jumlah perangkat
+            ->get();
 
-    // Buat array untuk menyimpan nama perangkat berdasarkan ID perangkat
-    $deviceNames = $devices->pluck('name', 'id_device')->toArray();
+        // Buat array untuk menyimpan nama perangkat berdasarkan ID perangkat
+        $deviceNames = $devices->pluck('name', 'id_device')->toArray();
 
-    // Melewatkan data ke view menggunakan compact
-    return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames'));
-}
+        // Melewatkan data ke view menggunakan compact
+        return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames'));
+    }
 
 
 
-    public function getHistoryByDevice($deviceId)
+
+   
+
+    public function getHistoryByDevice(Request $request, $deviceId)
+
     {
         logger('Request for device history. Device ID: ' . $deviceId);
 
@@ -129,15 +134,24 @@ class HistoryController extends Controller
             return response()->json(['error' => 'Invalid device ID'], 404);
         }
 
-        // Fetch history records for the specified device
-        $history = History::where('device_id', $deviceId)->get();
+        // Fetch history records for the specified device with pagination
+        $perPage = $request->query('perPage', 20); // Jumlah data per halaman
+        $history = History::where('device_id', $deviceId)->paginate($perPage);
 
         logger('History data retrieved:', $history->toArray()); // Convert collection to array
 
         // Include device information in the JSON response
         $response = [
             'device_name' => $device->name,
-            'history' => $history,
+            'history' => $history->items(), // Ambil item-item yang ada di halaman tersebut
+            'pagination' => [
+                'total' => $history->total(),
+                'per_page' => $history->perPage(),
+                'current_page' => $history->currentPage(),
+                'last_page' => $history->lastPage(),
+                'from' => $history->firstItem(),
+                'to' => $history->lastItem(),
+            ],
         ];
 
         // Log device name directly or convert it to an array
@@ -145,7 +159,6 @@ class HistoryController extends Controller
 
         return response()->json($response);
     }
-
 
     public function getRelatedData($userId)
 

@@ -1,0 +1,5 @@
+{
+:global serialnumber "sa111"
+:put ("{\"latitude\":\"8686868\",\"longitude\":\"-57676\",\"serial_number\":\"" .$serialnumber . "\",\"bounds\":\"123\",\"accuracy\":\"2\",\"altitude\":\"444444\",\"altitude_acuracy\":\"1\",\"heading\":\"head\",\"speeds\":\"40\",\"date_time\":\"20-24-01-19 12:09:09\"}")
+tool fetch mode=http url="https://geex.kakara.my.id/api/history/store" port=443 http-method=post http-data=("{\"latitude\":\"8686868\",\"longitude\":\"-57676\",\"serial_number\":\"" .$serialnumber . "\",\"bounds\":\"123\",\"accuracy\":\"2\",\"altitude\":\"444444\",\"altitude_acuracy\":\"1\",\"heading\":\"head\",\"speeds\":\"40\",\"date_time\":\"20-24-01-19 12:09:09\"}") http-header-field="Content-Type: application/json"
+}

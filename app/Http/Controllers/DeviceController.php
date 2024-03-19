@@ -17,16 +17,12 @@ class DeviceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        // dd($user);  // Check if user data is as expected
+        $userDevices = $user->devices()->orderBy('name')->get(); // Mengambil perangkat yang dimiliki oleh pengguna dan diurutkan berdasarkan nama
 
-        $users = User::all();
-
-        $userDevices = $user->devices ?? collect();
-
-        return view('customer.device.index', ['device' => $userDevices , 'Users' => $users]);
+        return view('customer.device.index', compact('userDevices'));
     }
 
 
@@ -34,15 +30,15 @@ class DeviceController extends Controller
     {
         $query = $request->get('q');
         $devices = Device::where('name', 'LIKE', "%{$query}%")->paginate(10);
-
+        $items = $devices->items();
+        $morePages = $devices->hasMorePages();
         $data = [
-            'items' => $devices->items(),
+            'items' => $items,
             'pagination' => [
-                'more' => $devices->hasMorePages()
+                'more' => $morePages
             ]
         ];
-
-        return response()->json($data);
+        return response()->json($data); 
     }
 
     /**
