@@ -15,9 +15,10 @@ class MapController extends Controller
         $user = Auth::user();
         $userDevices = $user->devices ?? collect();
         $latestHistories = collect();
+
+        $userDevices = $userDevices->sortBy('name');
     
         foreach ($userDevices as $device) {
-            // Mengambil history perangkat dengan urutan terbalik
             $latestHistory = $device->history()->latest('date_time')->first();
             $latestHistories->push($latestHistory);
         }
