@@ -32,6 +32,9 @@ class HistoryController extends Controller
         // Validasi input
         $request->validate([
             'serial_number' => 'required',
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'speeds' => 'required',
             'date_time' => 'required|date',
             // Tambahkan validasi untuk field lainnya jika diperlukan
         ]);
