@@ -137,7 +137,7 @@ class HistoryController extends Controller
         Paginator::currentPageResolver(function () use ($request) {
             return $request->page;
         });
-        $history = History::where('device_id', $deviceId)->paginate(10); // Ubah angka 10 sesuai dengan jumlah data per halaman yang diinginkan
+        $history = History::where('device_id', $deviceId)->paginate(5); // Ubah angka 10 sesuai dengan jumlah data per halaman yang diinginkan
 
         logger('History data retrieved:', $history->toArray()); // Convert collection to array
 
