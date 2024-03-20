@@ -12,33 +12,34 @@
 
 @section('content')
 <div id="main">
-    <div class="form-group ml-3">
+    <div class="form-group ml-3" style="display: flex; flex-direction: column; width: 100%;">
         <label for="device-select">Select Device:</label>
         <div class="d-flex">
-            <select id="device-select" class="form-select input">
+            <select id="device-select" class="form-select input" style="width: 100%;">
                 <option value="" disabled selected>Select Device</option>
                 @foreach($devices as $device)
                 <option value="{{ $device->id_device }}">{{ $device->user->name }} - {{ $device->name }}</option>
                 @endforeach
-
             </select>
+            <button id="reset-btn" class="btn btn-danger btn-sm" style="margin-left: auto;">Reset</button>
+        </div>
+    </div>
 
-            <button id="reset-btn" class="btn btn-danger btn-sm">Reset</button>
+    <div class="form-group ml-3 date-time-input" style="display: flex; flex-direction: column; width: 100%;">
+        <label for="date_range" style="margin-bottom: 5px;">Date range:</label>
+        <div class="date-label" style="position: relative; left: 0;">
+            <input type="text" id="date_range" class="form-control" placeholder="Start Date & Time - End Date & Time" style="width: 100%; padding-right: 30px;">
+            <i class="fas fa-calendar" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%);"></i>
         </div>
     </div>
 
     <div>
-    <div id="device-names" data-device-names="{{ json_encode($deviceNames) }}" style="display: none;">
+        <div id="device-names" data-device-names="{{ json_encode($deviceNames) }}" style="display: none;"></div>
     </div>
-    <div class="form-group date-time-input">
-        <label for="date_range">Date range:</label>
+</div>
 
-        <div class="date-label" style="position: relative; left: 0;">
-            <input type="text" id="date_range" class="form-control" placeholder="Start Date & Time - End Date & Time" style="text-align: left;">
-            <i class="fas fa-calendar"></i>
-        </div>
-    </div>
-   </div>
+
+
 
     <div id="map" style="height: 50%; width: 100%;"></div>
 </div>
@@ -73,6 +74,40 @@
         transform: translateY(-50%);
         pointer-events: none;
     }
+    #date_range {
+    width: 350px; /* Sesuaikan lebarnya sesuai kebutuhan Anda */
+    text-align: left;
+}
+#map {
+    z-index: 0; /* Atur nilai z-index yang sesuai */
+    width: 100%;
+        height: 300px; /* Tinggi peta pada layar non-mobile */
+}
+
+@media (max-width: 768px) { /* Atur gaya untuk layar dengan lebar maksimum 768px (ukuran ponsel) */
+        #map {
+            height: 400px; /* Tinggi peta pada layar mobile */
+        }
+    }
+
+/* Atur lebar kontainer form */
+#main {
+    width: 50%; /* Sesuaikan dengan lebar yang diinginkan */
+}
+
+/* Atur lebar kontainer peta */
+#map {
+    width: 100%; /* Sesuaikan dengan lebar yang diinginkan */
+}
+.custom-div-icon {
+    width: 32px;
+    height: 32px;
+}
+
+.custom-div-icon i {
+    color: green; /* Mengatur warna ikon menjadi merah */
+}
+
 </style>
 <script>
   $(document).ready(function() {
@@ -173,16 +208,23 @@ $('#reset-btn').on('click', function () {
         }
         var averageSpeed = historyData.length > 0 ? totalSpeed / historyData.length : 0;
 
-  // Mendefinisikan ikon kustom untuk "Start" dan "End"
-var startIcon = L.icon({
-    iconUrl: '/images/mapgreen.png',
-    iconSize: [32, 32], // Sesuaikan ukuran ikon sesuai kebutuhan
-    iconAnchor: [16, 32], // Sesuaikan jika diperlukan
-    popupAnchor: [0, -16] // Sesuaikan jika diperlukan
+  // Mendefinisikan ikon kustom untuk "Start" dan "Endvar startIcon = L.divIcon({
+var startIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: "<i class='fas fa-map-marker-alt' style='font-size: 24px; color: green;'></i>", // Menggunakan ikon dari FontAwesome dengan ukuran dan warna yang disesuaikan
+    iconSize: [32, 32], // Sesuaikan ukuran ikon sesuai kebutuhan (lebar, tinggi)
+    iconAnchor: [16, 32], // Titik di mana ikon akan diatur ke titik tertentu pada peta (misalnya, bagian bawah tengah)
+    popupAnchor: [0, -24] // Sesuaikan jika diperlukan untuk menyesuaikan marker ke posisi yang tepat
 });
 
-var endIcon = L.icon({
-    iconUrl: '/images/redmap.png',
+// Atur marker menggunakan ikon yang telah didefinisikan
+
+
+
+
+var endIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: "<i class='fas fa-map-marker-alt' style='color: red; font-size: 24px;'></i>", // Menggunakan ikon dari FontAwesome dengan warna merah dan ukuran yang disesuaikan
     iconSize: [30, 30], // Mengatur ukuran marker menjadi 30x30 piksel
     iconAnchor: [15, 30], // Mengatur titik pusat marker agar berada di tengah-tengah
     popupAnchor: [1, -28] // Mengatur posisi popup
@@ -314,8 +356,8 @@ map.fitBounds(bounds);
         if (data && data.speeds !== null && data.speeds !== undefined) {
             var speed = parseFloat(data.speeds);
             accuracy = parseFloat(data.accuracy); // Set nilai accuracy di sini
-            console.log('Speed:', speed);
-            console.log('Accuracy:', accuracy);
+            // console.log('Speed:', speed);
+            // console.log('Accuracy:', accuracy);
 
             if (speed <= 20) {
                 color = 'green';  // If speed is less than or equal to 20 km/h, color is green
