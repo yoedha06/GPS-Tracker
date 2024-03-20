@@ -23,8 +23,6 @@
             left: 50%;
             position: fixed;
             transform: translate(-50%);
-            top: auto;
-            /* Mengubah posisi ke bagian bawah */
             bottom: 0;
             box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
         }
@@ -46,10 +44,10 @@
             margin-bottom: 5px;
         }
 
-        .logo {
+        .logo img {
             border-radius: 50%;
-            padding: 10px;
-            margin-bottom: 10px;
+            width: 50px;
+            height: 50px;
         }
     </style>
 
@@ -375,34 +373,74 @@
 
         <div class="navbar">
             <div class="nav-item">
+                <a href="#">
+                    <i class="bi bi-house-door"></i>
+                    <span>Beranda</span>
                 </a>
-                <span>Beranda</span>
             </div>
 
             <div class="nav-item">
-                <img src="{{ asset('img/landing-page/tickets-1.png') }}" alt="Pesanan">
+                <a href="#">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <span>Grafik</span>
                 </a>
-                <span>Grafik</span>
             </div>
 
             <div class="nav-item logo">
-                <img src="/images/g.png" alt="Logo" style="border-radius: 20%; height: 50px; width: 50px;">
+                <img src="/images/g.png" alt="Logo">
             </div>
 
             <div class="nav-item">
-                <img src="{{ asset('img/landing-page/mail-1.png') }}" alt="Inbox">
+                <a href="#">
+                    <i class="bi bi-telephone-fill"></i>
+                    <span>Contact</span>
                 </a>
-                <span>Inbox</span>
             </div>
 
-            <div class="nav-item">
-                <img src="{{ asset('img/landing-page/user-3.png') }}" alt="Akun Saya">
+            <div class="nav-item dropdown">
+                <a class="nav-link" href="#" id="profileDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <div class="avatar">
+                        <!-- Gambar Profil -->
+                        @if (Auth::user()->photo)
+                            <img src="/photos/{{ Auth::user()->photo }}" alt="User Photo">
+                        @else
+                            <img src="{{ asset('images/default.jpg') }}" alt="Default User Photo">
+                        @endif
+                    </div>
+                    <div class="name">
+                        <!-- Nama Pengguna -->
+                        <h6>{{ Auth::user()->name }}</h6>
+                    </div>
                 </a>
-                <span>Akun Saya</span>
+                <!-- Dropdown Menu -->
+                <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                    <li>
+                        <!-- Link ke Profil Pengguna -->
+                        <a class="dropdown-item" href="{{ route('customer.profile') }}"><i class="fas fa-user"></i>
+                            Profile</a>
+                    </li>
+                    <li>
+                        <!-- Form untuk Logout -->
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                        <!-- Link Logout -->
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="bi bi-box-arrow-left"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
+
         <!-- Pastikan untuk memuat jQuery sebelum memuat skrip lain yang menggunakan jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
         <!-- Memuat skrip Bootstrap DatePicker dan stylesheet -->
         <link rel="stylesheet"
