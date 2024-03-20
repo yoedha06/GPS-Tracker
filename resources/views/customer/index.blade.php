@@ -1,8 +1,57 @@
 @extends('layouts.customer')
+{{-- @extends('layouts.navigationcustomer') --}}
 
 <title>Dashboard</title>
 
 @section('content')
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            height: 70px;
+            width: 375px;
+            left: 50%;
+            position: fixed;
+            transform: translate(-50%);
+            top: auto;
+            /* Mengubah posisi ke bagian bawah */
+            bottom: 0;
+            box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: #000000;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .nav-item img {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            margin-bottom: 5px;
+        }
+
+        .logo {
+            border-radius: 50%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
 
     <body>
         <div id="app">
@@ -306,7 +355,7 @@
                     </section>
                 </div>
 
-                <footer>
+                {{-- <footer>
                     <div class="footer clearfix mb-0 text-muted">
                         <div class="float-start">
                             <p>2021 &copy; GEEX</p>
@@ -316,7 +365,40 @@
                                     href="#">BARUDAK CIGS</a></p>
                         </div>
                     </div>
-                </footer>
+                </footer> --}}
+
+            </div>
+        </div>
+        <div class="content">
+            <!-- Your page content here -->
+        </div>
+
+        <div class="navbar">
+            <div class="nav-item">
+                </a>
+                <span>Beranda</span>
+            </div>
+
+            <div class="nav-item">
+                <img src="{{ asset('img/landing-page/tickets-1.png') }}" alt="Pesanan">
+                </a>
+                <span>Grafik</span>
+            </div>
+
+            <div class="nav-item logo">
+                <img src="/images/g.png" alt="Logo" style="border-radius: 20%; height: 50px; width: 50px;">
+            </div>
+
+            <div class="nav-item">
+                <img src="{{ asset('img/landing-page/mail-1.png') }}" alt="Inbox">
+                </a>
+                <span>Inbox</span>
+            </div>
+
+            <div class="nav-item">
+                <img src="{{ asset('img/landing-page/user-3.png') }}" alt="Akun Saya">
+                </a>
+                <span>Akun Saya</span>
             </div>
         </div>
         <!-- Pastikan untuk memuat jQuery sebelum memuat skrip lain yang menggunakan jQuery -->
@@ -339,6 +421,7 @@
 
         <!-- Memuat ApexCharts dari CDN -->
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
 
         <script>
             $(document).ready(function() {
@@ -421,8 +504,9 @@
 
                             // Iterate through each data point
                             chartData.forEach(function(item) {
-                                // Add data only for the selected device
-                                if (item.device_name === selectedDevice) {
+                                // Add data only for the selected device if selectedDevice is not empty
+                                // Otherwise, add all data
+                                if (!selectedDevice || item.device_name === selectedDevice) {
                                     seriesData.push({
                                         name: item.device_name,
                                         data: [item.count]
@@ -475,7 +559,7 @@
                             // Set selected device option
                             if (selectedDevice) {
                                 deviceDropdown.val(
-                                selectedDevice); // Set the selected device as the selected option
+                                    selectedDevice); // Set the selected device as the selected option
                             }
                         },
                         error: function(xhr, status, error) {
@@ -483,6 +567,7 @@
                         }
                     });
                 }
+
                 // Add event listener for date input change
                 $('#selected_date').change(function() {
                     updateChart();
