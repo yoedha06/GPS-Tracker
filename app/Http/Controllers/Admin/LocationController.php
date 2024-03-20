@@ -16,8 +16,10 @@ class LocationController extends Controller
         $devices = Device::with('latestHistory', 'user')->get();
         $users = User::with('devices')->where('role', 'customer')->get();
         $history = History::all();
+        
+        $users = $users->sortBy('name');
 
-        return view('admin.map.lastlocation', compact('devices', 'users','history'));
+        return view('admin.map.lastlocation', compact('devices', 'users', 'history'));
     }
 
     public function getDeviceHistory($deviceId)
