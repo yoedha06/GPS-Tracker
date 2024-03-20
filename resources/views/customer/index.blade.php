@@ -300,7 +300,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-lg-3">
+                        {{-- <div class="col-12 col-lg-3">
                             <div class="card">
                                 <div class="card-body py-4 px-4">
                                     <!-- Wrap the entire column content in an anchor tag -->
@@ -351,7 +351,7 @@
                             </div>
                         </div>
                     </section>
-                </div>
+                </div> --}}
 
                 {{-- <footer>
                     <div class="footer clearfix mb-0 text-muted">
@@ -398,8 +398,7 @@
             </div>
 
             <div class="nav-item dropdown">
-                <a class="nav-link" href="#" id="profileDropdown" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link" href=/customer/profile>
                     <div class="avatar">
                         <!-- Gambar Profil -->
                         @if (Auth::user()->photo)
@@ -413,7 +412,7 @@
                         <h6>{{ Auth::user()->name }}</h6>
                     </div>
                 </a>
-                <!-- Dropdown Menu -->
+                {{-- <!-- Dropdown Menu -->
                 <ul class="dropdown-menu" aria-labelledby="profileDropdown">
                     <li>
                         <!-- Link ke Profil Pengguna -->
@@ -432,7 +431,7 @@
                             <span>Logout</span>
                         </a>
                     </li>
-                </ul>
+                </ul> --}}
             </div>
         </div>
 
