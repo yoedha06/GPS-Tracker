@@ -32,9 +32,10 @@ class HistoryController extends Controller
         // Validasi input
         $request->validate([
             'serial_number' => 'required',
-            // 'latitude' => 'required',
-            // 'longitude' => 'required',
-            // 'speeds' => 'required',
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'altitude' => 'required',
+            'speeds' => 'required',
             'date_time' => 'required|date',
         ]);
 
@@ -67,10 +68,10 @@ class HistoryController extends Controller
             'device_id' => $device->id_device,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
-            'bounds' => $request->bounds,
-            'accuracy' => $request->accuracy,
+            // 'bounds' => $request->bounds,
+            // 'accuracy' => $request->accuracy,
             'altitude' => $request->altitude,
-            'altitude_acuracy' => $request->altitude_acuracy,
+            // 'altitude_acuracy' => $request->altitude_acuracy,
             'heading' => $request->heading,
             'speeds' => $request->speeds,
             'date_time' => $date_time,

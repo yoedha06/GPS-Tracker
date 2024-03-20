@@ -13,8 +13,10 @@
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-hdd-stack-fill"></i> Data Device</li>                                
+                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
+                                        Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-hdd-stack-fill"></i>
+                                    Data Device</li>
                             </ol>
                         </nav>
                     </div>
@@ -33,7 +35,8 @@
 
         <div class="mb-3" style="margin-top:-50px;">
             <label for="search" class="form-label"></label>
-            <input type="text" id="search" placeholder="Search Device ..." class="form-control" oninput="liveSearch()">
+            <input type="text" id="search" placeholder="Search Device ..." class="form-control"
+                oninput="liveSearch()">
         </div>
 
         <div id="searchResults" class="mt-3"></div>
@@ -72,57 +75,39 @@
                             {{ $errors->first('serial_number') }}
                         </div>
                     @endif
-                    <table class="table table-striped" id="table1">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Name</th>
-                                <th>Serial Number</th>
-                                <th>Plat Nomor</th>
-                                <th>Photo</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($userDevices as $item)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->name }}</td>
-                                    <td>{{ $item->serial_number }}</td>
-                                    <td>{{ $item->plat_nomor }}</td>
-                                    <td>
+                    <div id="cardContainer" class="row row-cols-1 row-cols-md-2 g-4">
+                        @forelse ($userDevices as $item)
+                            <div class="col">
+                                <div class="card" data-bs-toggle="modal"
+                                    data-bs-target="#editDeviceModal{{ $item->id_device }}">
+                                    <div class="card-body">
                                         @if ($item->photo)
-                                            <button type="button" class="btn btn-link" data-bs-toggle="modal"
+                                            <img src="{{ asset('storage/' . $item->photo) }}"
+                                                class="card-img-top view-photo" alt="Device Photo" data-bs-toggle="modal"
                                                 data-bs-target="#viewPhotoModal{{ $item->id_device }}">
-                                                <img src="{{ asset('storage/' . $item->photo) }}" alt="View Photo"
-                                                    style="max-width: 100px; border-radius: 5px">
-                                            </button>
                                         @else
-                                            No Image
+                                            <div class="text-center">
+                                                <p>No Image</p>
+                                                <p style="font-size: 100px;">&#x1F5FF;</p>
+                                            </div>
                                         @endif
-                                    </td>
+                                        <h5 class="card-title">{{ $item->name }}</h5>
+                                        <p class="card-text">Serial Number: {{ $item->serial_number }}</p>
+                                        <p class="card-text">Plat Nomor: {{ $item->plat_nomor }}</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                                    <td>
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#editDeviceModal{{ $item->id_device }}">
-                                            <i class="bi bi-pencil"></i> Edit
-                                        </button>
-                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                            data-bs-target="#deleteDeviceModal{{ $item->id_device }}">
-                                            <i class="bi bi-trash"></i> Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="text-center">
-                                        <span style="font-size: 3rem;">&#x1F5FF;</span>
-                                        <p class="mt-2">Data not available, sorry.</p>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                        @empty
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">No Data Available</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </section>
@@ -141,11 +126,13 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    value="{{ old('name') }}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="serial_number" class="form-label">Serial Number</label>
-                                <input type="text" class="form-control" id="serial_number" name="serial_number" value="{{ old('serial_number') }}"required>
+                                <input type="text" class="form-control" id="serial_number" name="serial_number"
+                                    value="{{ old('serial_number') }}"required>
                             </div>
                             <!-- Add Photo and Plat Nomor fields -->
                             <div class="mb-3">
@@ -153,11 +140,12 @@
                                 <input type="file" class="form-control" id="photo" name="photo"
                                     accept="image/*" onchange="previewPhoto(event)">
                                 <img id="photoPreview" src="#" alt="Photo Preview"
-                                style="max-width: 100%; margin-top: 10px; {{ old('photo') ? '' : 'display: none;' }}">
+                                    style="max-width: 100%; margin-top: 10px; {{ old('photo') ? '' : 'display: none;' }}">
                             </div>
                             <div class="mb-3">
                                 <label for="plat_nomor" class="form-label">Plat Nomor</label>
-                                <input type="text" class="form-control" id="plat_nomor" name="plat_nomor"  value="{{ old('plat_nomor') }}"required>
+                                <input type="text" class="form-control" id="plat_nomor" name="plat_nomor"
+                                    value="{{ old('plat_nomor') }}"required>
                             </div>
                             <button type="submit" class="btn btn-primary">Add Device</button>
                         </form>
@@ -221,6 +209,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#deleteDeviceModal{{ $item->id_device }}">Delete</button>
                                 <button type="submit" class="btn btn-primary">Update Device</button>
                             </div>
                         </form>
@@ -301,53 +291,53 @@
         function liveSearch() {
             const searchInput = document.getElementById('search');
             const searchTerm = searchInput.value.toLowerCase();
-            const tableBody = document.getElementById('table1').getElementsByTagName('tbody')[0];
+            const cardContainer = document.getElementById('cardContainer');
             const deviceData = {!! $userDevices->toJson() !!};
 
             // Filter devices based on the search term
             const filteredResults = deviceData.filter(device =>
                 device.name.toLowerCase().includes(searchTerm) ||
                 device.serial_number.toLowerCase().includes(searchTerm) ||
-                device.plat_nomor.toLowerCase().includes(searchTerm) // Added condition for Plat Nomor
+                device.plat_nomor.toLowerCase().includes(searchTerm)
             );
 
             // Display search results
             if (filteredResults.length > 0) {
-                tableBody.innerHTML = ''; // Clear existing table body
+                cardContainer.innerHTML = ''; // Clear existing card container
 
-                filteredResults.forEach((device, index) => {
-                    const resultItem = document.createElement('tr');
-                    resultItem.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${device.name}</td>
-                    <td>${device.serial_number}</td>
-                    <td>${device.plat_nomor}</td>
-                    <td>
-                        ${device.photo
-                            ? `<button type="button" class="btn btn-link view-photo-btn" data-bs-toggle="modal" data-bs-target="#viewPhotoModal${device.id_device}">
-                                                                                                        <img src="{{ asset('storage/') }}/${device.photo}" alt="Device Photo" style="max-width: 100px;">
-                                                                                                    </button>`
-                            : 'No photo available'}
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editDeviceModal${device.id_device}">
-                            <i class="bi bi-pencil"></i> Edit
-                        </button>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDeviceModal${device.id_device}">
-                            <i class="bi bi-trash"></i> Delete
-                        </button>
-                        <!-- Add this block to attach the event handler for View Photo button -->
-                        <button type="button" class="btn btn-link view-photo-btn" data-bs-toggle="modal" data-bs-target="#viewPhotoModal${device.id_device}">
-                        </button>
-                    </td>
-                `;
-
-                    tableBody.appendChild(resultItem);
+                filteredResults.forEach(device => {
+                    const cardItem = document.createElement('div');
+                    cardItem.classList.add('col');
+                    cardItem.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">${device.name}</h5>
+                        <p class="card-text">Serial Number: ${device.serial_number}</p>
+                        <p class="card-text">Plat Nomor: ${device.plat_nomor}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editDeviceModal${device.id_device}">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDeviceModal${device.id_device}">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            ${device.photo ? `<img src="{{ asset('storage/') }}/${device.photo}" class="card-img-top view-photo" alt="Device Photo" data-bs-toggle="modal" data-bs-target="#viewPhotoModal${device.id_device}">` : '<p>No Image</p><p style="font-size: 100px;">&#x1F5FF;</p>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+                    cardContainer.appendChild(cardItem);
                 });
             } else {
-                tableBody.innerHTML = '<tr><td colspan="6" class="text-center">No devices found</td></tr>';
+                cardContainer.innerHTML =
+                    '<div class="col"><div class="card"><div class="card-body"><h5 class="card-title">No devices found</h5></div></div></div>';
             }
         }
+
 
         function previewPhoto(event) {
             var input = event.target;

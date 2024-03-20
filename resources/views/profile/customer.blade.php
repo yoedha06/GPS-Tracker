@@ -93,6 +93,11 @@
                                     Changes</button>
                                 <a href="/customer" class="btn btn-primary">Kembali</a>
                             </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">
+                                <a href="/logout" class="btn btn-primary">Logout</a></button>
+                            </div>
                         </form>
                     </div>
                 </div>

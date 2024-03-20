@@ -152,5 +152,6 @@ Route::get('/latestlocation/{deviceId}', [MapController::class, 'getLatestLocati
 
 //filter chart
 Route::get('/customer-chart', [TampilanController::class, 'customer']);
+Route::get('/admin-chart', [TampilanController::class, 'grafikadmin']);
 
 
