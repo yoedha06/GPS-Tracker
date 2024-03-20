@@ -70,10 +70,10 @@ class HistoryController extends Controller
             'longitude' => $request->longitude,
             // 'bounds' => $request->bounds,
             // 'accuracy' => $request->accuracy,
-            'altitude' => $request->altitude,
+            'altitude' => intval($request->altitude),
             // 'altitude_acuracy' => $request->altitude_acuracy,
-            // 'heading' => $request->heading,
-            'speeds' => $request->speeds,
+            'heading' => intval($request->heading),
+            'speeds' => intval($request->speeds),
             'date_time' => $date_time,
             'original' => json_encode($request->all())
         ]);
