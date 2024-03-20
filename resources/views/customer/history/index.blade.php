@@ -1,5 +1,5 @@
 @extends('layouts.customer')
-@extends('layouts.navbarcustomer')
+
 
 <title>GEEX - History</title>
 
@@ -226,4 +226,5 @@
 });
 
     </script>
+    @extends('layouts.navbarcustomer')
 @endsection
