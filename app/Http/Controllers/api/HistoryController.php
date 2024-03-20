@@ -29,7 +29,6 @@ class HistoryController extends Controller
      */
     public function store(Request $request)
     {
-        logger($request->all());
         // Validasi input
         $request->validate([
             'serial_number' => 'required',
