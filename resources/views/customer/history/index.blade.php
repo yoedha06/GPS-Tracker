@@ -13,6 +13,13 @@
             padding-left: 15px;
         }
     }
+     .card {
+        margin-bottom: 0;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
 </style>
 <div id="main">
     <div class="page-heading">
@@ -67,17 +74,20 @@
                     <div class="col">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">{{ optional($h->device)->name }}</h5>
-                                <p class="card-text">Latitude: {{ $h->latitude }}</p>
-                                <p class="card-text">Longitude: {{ $h->longitude }}</p>
-                                <p class="card-text">Bounds: {{ $h->bounds }}</p>
-                                <p class="card-text">Accuracy: {{ $h->accuracy }}</p>
-                                <p class="card-text">Altitude: {{ $h->altitude }}</p>
-                                <p class="card-text">Altitude Accuracy: {{ $h->altitude_acuracy }}</p>
-                                <p class="card-text">Heading: {{ $h->heading }}</p>
-                                <p class="card-text">Speeds: {{ $h->speeds }}</p>
-                                <p class="card-text">Time: {{ $h->date_time }}</p>
-                            </div>
+    <h5 class="card-title">{{ optional($h->device)->name }}</h5>
+    <p class="card-text">
+        Latitude: {{ $h->latitude }}<br>
+        Longitude: {{ $h->longitude }}<br>
+        Bounds: {{ $h->bounds }}<br>
+        Accuracy: {{ $h->accuracy }}<br>
+        Altitude: {{ $h->altitude }}<br>
+        Altitude Accuracy: {{ $h->altitude_acuracy }}<br>
+        Heading: {{ $h->heading }}<br>
+        Speeds: {{ $h->speeds }}<br>
+        Time: {{ $h->date_time }}
+    </p>
+</div>
+
                         </div>
                     </div>
                     @endforeach
@@ -111,99 +121,89 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
-   $(document).ready(function() {
+  $(document).ready(function() {
+    var currentPage = 1; // Halaman saat ini
+
     // Inisialisasi Select2
     $('#selectDevice').select2();
 
     // Tambahkan event listener untuk perubahan nilai pada Select2
-    $('#selectDevice').on('select2:select', function(e) {
-        var selectedDeviceId = e.params.data.id;
+    $('#selectDevice').on('change', function() {
+        var selectedDeviceId = $(this).val();
 
-        // Periksa apakah perangkat telah dipilih
+        // Reset halaman ke 1 saat perangkat dipilih ulang
+        currentPage = 1;
+
+        // Pastikan selectedDeviceId tidak kosong atau null sebelum memanggil getDataByDevice
         if (selectedDeviceId) {
-            getDataByDevice(selectedDeviceId, 1); // Mulai dari halaman pertama saat perangkat dipilih
+            getDataByDevice(selectedDeviceId, currentPage);
         } else {
             // Jika tidak ada perangkat yang dipilih, kosongkan konten
             $('.row-cols-1').empty();
         }
     });
 
-    // Event listener untuk tombol refresh
-    $('#refreshButton').on('click', function() {
-        location.reload(); // Muat ulang halaman saat tombol ditekan
-    });
-
-    // Event listener untuk tautan pagination
-    $(document).on('click', '.pagination-link', function(e) {
-        e.preventDefault();
-        var page = $(this).data('page');
+    // Tambahkan event listener untuk tombol Next
+    $('#nextPage').on('click', function() {
+        currentPage++;
         var selectedDeviceId = $('#selectDevice').val();
-        getDataByDevice(selectedDeviceId, page); // Ambil data berdasarkan perangkat dan nomor halaman yang dipilih
+        getDataByDevice(selectedDeviceId, currentPage);
     });
 
+    // Tambahkan event listener untuk tombol Previous
+    $('#prevPage').on('click', function() {
+        if (currentPage > 1) {
+            currentPage--;
+            var selectedDeviceId = $('#selectDevice').val();
+            getDataByDevice(selectedDeviceId, currentPage);
+        }
+    });
+
+    // Fungsi getDataByDevice diperbarui untuk memperhitungkan halaman yang dipilih
     function getDataByDevice(deviceId, page) {
-        // Jalankan AJAX request untuk mendapatkan data histori yang sesuai dengan perangkat yang dipilih
-        $.ajax({
-            url: '/gethistorybydevice/' + deviceId,
-            method: 'GET',
-            data: {
-                page: page
-            },
-            success: function(data) {
-                $('.row-cols-1').empty();
+    $.ajax({
+    url: '/gethistorybydevice/' + deviceId,
+    method: 'GET',
+    data: {
+        page: page
+    },
+    success: function(response) {
+        $('.row-cols-1').empty();
 
-                if (data.history.length > 0) {
-                    $.each(data.history, function(index, history) {
-                        var cardHtml = `
-                            <div class="col">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${optional(history.device).name}</h5>
-                                        <p class="card-text">Latitude: ${history.latitude}</p>
-                                        <p class="card-text">Longitude: ${history.longitude}</p>
-                                        <p class="card-text">Bounds: ${history.bounds}</p>
-                                        <p class="card-text">Accuracy: ${history.accuracy}</p>
-                                        <p class="card-text">Altitude: ${history.altitude}</p>
-                                        <p class="card-text">Altitude Accuracy: ${history.altitude_acuracy}</p>
-                                        <p class="card-text">Heading: ${history.heading}</p>
-                                        <p class="card-text">Speeds: ${history.speeds}</p>
-                                        <p class="card-text">Time: ${history.date_time}</p>
-                                    </div>
-                                </div>
+        if (response.history.length > 0) {
+            $.each(response.history, function(index, history) {
+                var cardHtml = `
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">${response.device_name}</h5>
+                                <p class="card-text">Latitude: ${history.latitude}<br>
+                                Longitude: ${history.longitude}<br>
+                                Bounds: ${history.bounds}<br>
+                                Accuracy: ${history.accuracy}<br>
+                                Altitude: ${history.altitude}<br>
+                                Altitude Accuracy: ${history.altitude_accuracy}<br>
+                                Heading: ${history.heading}<br>
+                                Speeds: ${history.speeds}<br>
+                                Time: ${history.date_time}</p>
                             </div>
-                        `;
-                        $('.row-cols-1').append(cardHtml);
-                    });
+                        </div>
+                    </div>
+                `;
 
-                    // Tampilkan pagination
-                    var paginationHtml = '';
-                    paginationHtml += '<nav aria-label="Page navigation example">';
-                    paginationHtml += '<ul class="pagination justify-content-center">';
-                    paginationHtml += '<li class="page-item ' + (data.pagination.current_page == 1 ? 'disabled' : '') + '">';
-                    paginationHtml += '<a class="page-link pagination-link" href="#" data-page="' + (data.pagination.current_page - 1) + '">Previous</a>';
-                    paginationHtml += '</li>';
-                    for (var i = 1; i <= data.pagination.last_page; i++) {
-                        paginationHtml += '<li class="page-item ' + (data.pagination.current_page == i ? 'active' : '') + '">';
-                        paginationHtml += '<a class="page-link pagination-link" href="#" data-page="' + i + '">' + i + '</a>';
-                        paginationHtml += '</li>';
-                    }
-                    paginationHtml += '<li class="page-item ' + (data.pagination.current_page == data.pagination.last_page ? 'disabled' : '') + '">';
-                    paginationHtml += '<a class="page-link pagination-link" href="#" data-page="' + (data.pagination.current_page + 1) + '">Next</a>';
-                    paginationHtml += '</li>';
-                    paginationHtml += '</ul>';
-                    paginationHtml += '</nav>';
-                    $('.pagination-container').html(paginationHtml);
+                $('.row-cols-1').append(cardHtml);
+            });
 
-                    showValidationMessage('Device selected successfully!');
-                } else {
-                    showValidationMessage('No history data found for the selected device.');
-                }
-            },
-            error: function(error) {
-                console.error('Error fetching history data:', error);
-                showValidationMessage('Error fetching history data. Please try again.', true);
-            }
-        });
+            showValidationMessage('Device selected successfully!');
+        } else {
+            showValidationMessage('No history data found for the selected device.');
+        }
+    },
+    error: function(error) {
+        console.error('Error fetching history data:', error);
+        showValidationMessage('Error fetching history data. Please try again.', true);
+    }
+});
     }
 
     function showValidationMessage(message, isError = false) {
