@@ -66,7 +66,7 @@ class HistoryController extends Controller
 
         $history = History::create([
             'device_id' => $device->id_device,
-            // 'latitude' => $request->latitude,
+            'latitude' => $request->latitude,
             // 'longitude' => $request->longitude,
             // 'bounds' => $request->bounds,
             // 'accuracy' => $request->accuracy,
