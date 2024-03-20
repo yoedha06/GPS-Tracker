@@ -1,5 +1,5 @@
 @extends('layouts.customer')
-@extends('layouts.navbarcustomer')
+
 
 <title>GEEX - History</title>
 
@@ -88,7 +88,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="6" class="text-center">
+                                    <td colspan="12" class="text-center">
                                         <span style="font-size: 3rem;">&#x1F5FF;</span>
                                         <p class="mt-2">Data not available, sorry.</p>
                                     </td>
@@ -258,4 +258,5 @@
             }
         });
     </script>
+    @extends('layouts.navbarcustomer')
 @endsection
