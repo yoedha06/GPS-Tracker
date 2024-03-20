@@ -11,16 +11,17 @@
 <div id="main">
     <div class="form-group mb-3" style="width: 50%">
         <label class="form-label">Select Device Users And Device</label>
-        <select id="user_device" class="form-select input">
-            <option value="" disabled selected>Select</option>
-            @foreach ($devices as $device)
-            @if ($device->latestHistory && $device->user)
+        <select id="user_device" class="form-select input" style="width: 100%;">
+    <option value="" disabled selected>Select</option>
+    @foreach ($devices->sortBy('name') as $device)
+        @if ($device->latestHistory && $device->user)
             <option value="{{ $device->id_device }}" data-device-id="{{ $device->id_device }}">
                 {{ $device->name }} - {{ $device->user->name }}
             </option>
-            @endif
-            @endforeach
-        </select>
+        @endif
+    @endforeach
+</select>
+
         <button id="reset-btn" class="btn btn-danger btn-sm">Reset</button>
     </div>
     <div id="device-names" data-device-names="{{ json_encode($deviceNames) }}" style="display: none;"></div>
@@ -102,14 +103,7 @@
                 }
             });
 
-            // Add change event listener
-            $('#user_device').on('change', function() {
-                var selectedValue = $(this).val();
-                if (!selectedValue) {
-                    alert('Device not selected!');
-                }
-            });
-
+         
     // Menangani klik pada tombol "Reset"
 $('#reset-btn').on('click', function () {
     // Mereset nilai Select2 ke null dan memicu perubahan

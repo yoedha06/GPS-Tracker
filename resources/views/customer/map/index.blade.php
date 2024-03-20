@@ -52,6 +52,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://unpkg.com/leaflet.animatedmarker/src/AnimatedMarker.js"></script>
+<script src="https://unpkg.com/leaflet.animatedmarker/src/AnimatedMarker.js"></script>
 <style>
     .date-time-input {
         display: flex;
@@ -84,21 +85,17 @@
         height: 300px; /* Tinggi peta pada layar non-mobile */
 }
 
-@media (max-width: 768px) { /* Atur gaya untuk layar dengan lebar maksimum 768px (ukuran ponsel) */
-        #map {
-            height: 400px; /* Tinggi peta pada layar mobile */
-        }
-    }
 
 /* Atur lebar kontainer form */
-#main {
-    width: 50%; /* Sesuaikan dengan lebar yang diinginkan */
+@media (max-width: 768px) {
+    #map {
+        height: 400px; /* Sesuaikan tinggi peta untuk layar mobile */
+    }
+    #main {
+        width: 100%; /* Lebar kontainer form menjadi 100% */
+    }
 }
 
-/* Atur lebar kontainer peta */
-#map {
-    width: 100%; /* Sesuaikan dengan lebar yang diinginkan */
-}
 .custom-div-icon {
     width: 32px;
     height: 32px;
@@ -121,12 +118,12 @@
             });
 
             // Add change event listener
-            $('#device-select').on('change', function() {
-                var selectedValue = $(this).val();
-                if (!selectedValue) {
-                    alert('Device not selected!');
-                }
-            });
+            // $('#device-select').on('change', function() {
+            //     var selectedValue = $(this).val();
+            //     if (!selectedValue) {
+            //         alert('Device not selected!');
+            //     }
+            // });
 
     // Menangani klik pada tombol "Reset"
 $('#reset-btn').on('click', function () {
@@ -207,6 +204,7 @@ $('#reset-btn').on('click', function () {
             totalSpeed += parseFloat(historyData[i].speeds);
         }
         var averageSpeed = historyData.length > 0 ? totalSpeed / historyData.length : 0;
+        
 
   // Mendefinisikan ikon kustom untuk "Start" dan "Endvar startIcon = L.divIcon({
 var startIcon = L.divIcon({
@@ -242,71 +240,71 @@ function clearMarkers() {
 clearMarkers();
 
 // Setelah itu, tambahkan kembali marker sesuai dengan data yang ada
-for (var i = 0; i < historyData.length; i++) {
-    var historyItem = historyData[i];
-    var lat = parseFloat(historyItem.latitude);
-    var lng = parseFloat(historyItem.longitude);
-    var speed = parseFloat(historyItem.speeds);
-    var accuracy = parseFloat(historyItem.accuracy);
-    var deviceId = historyItem.device_id;
+    for (var i = 0; i < historyData.length; i++) {
+        var historyItem = historyData[i];
+        var lat = parseFloat(historyItem.latitude);
+        var lng = parseFloat(historyItem.longitude);
+        var speed = parseFloat(historyItem.speeds);
+        var accuracy = parseFloat(historyItem.accuracy);
+        var deviceId = historyItem.device_id;
 
-    var isDeviceSelected = !selectedDevice || selectedDevice.includes(deviceId);
+        var isDeviceSelected = !selectedDevice || selectedDevice.includes(deviceId);
 
-    if (isDeviceSelected &&
-        (!startDate || new Date(historyItem.date_time) >= startDate) &&
-        (!endDate || new Date(historyItem.date_time) <= endDate)) {
+        if (isDeviceSelected &&
+            (!startDate || new Date(historyItem.date_time) >= startDate) &&
+            (!endDate || new Date(historyItem.date_time) <= endDate)) {
 
-        // Check if it's start or end marker
-        var isStart = !startMarkers[deviceId];
-        var markerIcon = isStart ? startIcon : endIcon;
+            // Check if it's start or end marker
+            var isStart = !startMarkers[deviceId];
+            var markerIcon = isStart ? startIcon : endIcon;
 
-        var marker = L.marker([lat, lng], { icon: markerIcon });
-        markers.push(marker);
+            var marker = L.marker([lat, lng], { icon: markerIcon });
+            markers.push(marker);
 
-        var popupContent =
-            `<div>
-                Device: ${deviceNames[deviceId]}<br>
-                Latitude: ${lat.toFixed(6)}<br>
-                Longitude: ${lng.toFixed(6)}<br>
-                Date & Time: ${historyItem.date_time}<br>
-            </div>`;
+            var popupContent =
+                `<div>
+                    Device: ${deviceNames[deviceId]}<br>
+                    Latitude: ${lat.toFixed(6)}<br>
+                    Longitude: ${lng.toFixed(6)}<br>
+                    Date & Time: ${historyItem.date_time}<br>
+                </div>`;
 
-        if (isStart) {
-            popupContent += "<b>Start</b>";
-            startMarkers[deviceId] = marker;
-        } else {
-            popupContent += "<b>End</b>";
-            endMarkers[deviceId] = marker;
-            marker.setIcon(endIcon); // Set icon to endIcon for end markers
-        }
+            if (isStart) {
+                popupContent += "<b>Start</b>";
+                startMarkers[deviceId] = marker;
+            } else {
+                popupContent += "<b>End</b>";
+                endMarkers[deviceId] = marker;
+                marker.setIcon(endIcon); // Set icon to endIcon for end markers
+            }
 
-        marker.bindPopup(popupContent);
+            marker.bindPopup(popupContent);
 
-        if (!devicePolylines[deviceId]) {
-            devicePolylines[deviceId] = L.polyline([], {}).addTo(map);
-        }
+            if (!devicePolylines[deviceId]) {
+                devicePolylines[deviceId] = L.polyline([], {}).addTo(map);
+            }
 
-        devicePolylines[deviceId].addLatLng([lat, lng]);
+            devicePolylines[deviceId].addLatLng([lat, lng]);
 
-        // Add marker to map only if it's start or end marker
-        if (isStart || !isDeviceSelected[deviceId]) {
-            marker.addTo(map);
+            // Add marker to map only if it's start or end marker
+            if (isStart || !isDeviceSelected[deviceId]) {
+                marker.addTo(map);
+            }
         }
     }
-}
 
-// Update popup content for start and end markers
-Object.keys(startMarkers).forEach(deviceId => {
-    var startMarker = startMarkers[deviceId];
-    var startPopupContent = startMarker.getPopup().getContent();
-    startMarker.getPopup().setContent(startPopupContent + " (Start)");
-});
+    // Update popup content for start and end markers
+    Object.keys(startMarkers).forEach(deviceId => {
+        var startMarker = startMarkers[deviceId];
+        var startPopupContent = startMarker.getPopup().getContent();
+        startMarker.getPopup().setContent(startPopupContent + " (Start)");
+    });
 
-Object.keys(endMarkers).forEach(deviceId => {
-    var endMarker = endMarkers[deviceId];
-    var endPopupContent = endMarker.getPopup().getContent();
-    endMarker.getPopup().setContent(endPopupContent + " (End)");
-});
+    Object.keys(endMarkers).forEach(deviceId => {
+        var endMarker = endMarkers[deviceId];
+        var endPopupContent = endMarker.getPopup().getContent();
+        endMarker.getPopup().setContent(endPopupContent + " (End)");
+    });
 
 // Update polyline styles
 Object.values(devicePolylines).forEach(polyline => {
@@ -331,9 +329,15 @@ Object.values(devicePolylines).forEach(polyline => {
 });
 
 // Fit bounds to markers
-var allMarkers = markers;
-var bounds = L.featureGroup(allMarkers).getBounds();
-map.fitBounds(bounds);
+           var allMarkers = markers;
+            var bounds = L.featureGroup(allMarkers).getBounds();
+            map.fitBounds(bounds);
+              // Fly to the new bounds with animation
+            map.flyToBounds(bounds, {
+                animate: true,
+                duration: 1.5, // durasi animasi dalam detik
+                easeLinearity: 0.5 // pengaturan animasi
+            });
 
 
 
