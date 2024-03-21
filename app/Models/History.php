@@ -25,6 +25,10 @@ class History extends Model
         "original",
     ];
 
+    protected $casts = [
+        'accuracy' => 'float',
+    ];
+
     public function device()
     {
         return $this->belongsTo(Device::class, 'device_id', 'id_device');
