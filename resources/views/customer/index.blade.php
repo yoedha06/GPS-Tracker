@@ -105,8 +105,8 @@
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                         <h6 class="text-muted font-semibold">
                                                             <h6 class="font-extrabold mb-0">
-                                                                Maps Users
-                                                                <h6 class="font-extrabold mb-0">{{ $history }}</h6>
+                                                                Maps History Users
+                                                                {{-- <h6 class="font-extrabold mb-0">{{ $history }}</h6> --}}
                                                             </h6>
                                                         </h6>
                                                     </div>
@@ -152,8 +152,8 @@
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                         <h6 class="text-muted font-semibold">
                                                             <h6 class="font-extrabold mb-0">
-                                                                History
-                                                                <h6 class="font-extrabold mb-0">{{ $history }}</h6>
+                                                                History Device
+                                                                {{-- <h6 class="font-extrabold mb-0">{{ $history }}</h6> --}}
                                                             </h6>
                                                         </h6>
                                                     </div>
@@ -176,25 +176,28 @@
                                             <label for="selected_device" class="form-label">Select Device:</label>
                                             <select class="form-select" id="selected_device">
                                                 <option value="" selected disabled>Select Device</option>
-                                                @foreach ($devices as $device)
+                                                @foreach ($user->devices as $device)
                                                     <option value="{{ $device->id }}">{{ $device->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-12">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h4>History Grafik</h4>
-                                            </div>
-                                            <div class="card-body">
-                                                <div id="chart"></div>
-                                            </div>
+
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4>History Grafik</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chart"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            {{-- <div class="col-12 col-lg-3">
+                        </div>
+                        {{-- <div class="col-12 col-lg-3">
                             <div class="card">
                                 <div class="card-body py-4 px-4">
                                     <!-- Wrap the entire column content in an anchor tag -->
@@ -247,7 +250,7 @@
                     </section>
                 </div> --}}
 
-                            {{-- <footer>
+                        {{-- <footer>
                     <div class="footer clearfix mb-0 text-muted">
                         <div class="float-start">
                             <p>2021 &copy; GEEX</p>
@@ -259,54 +262,54 @@
                     </div>
                 </footer> --}}
 
+                </div>
+            </div>
+            <div class="content">
+                <!-- Your page content here -->
+            </div>
+
+            <div class="navbar">
+                <div class="nav-item">
+                    <a href="#">
+                        <i class="bi bi-house-door"></i>
+                        <span>Beranda</span>
+                    </a>
+                </div>
+
+                <div class="nav-item">
+                    <a href="#">
+                        <i class="bi bi-bar-chart-line"></i>
+                        <span>Grafik</span>
+                    </a>
+                </div>
+
+                <div class="nav-item logo">
+                    <img src="/images/g.png" alt="Logo">
+                </div>
+
+                <div class="nav-item">
+                    <a href="#">
+                        <i class="bi bi-telephone-fill"></i>
+                        <span>Contact</span>
+                    </a>
+                </div>
+
+                <div class="nav-item dropdown">
+                    <a class="nav-link" href=/customer/profile>
+                        <div class="avatar">
+                            <!-- Gambar Profil -->
+                            @if (Auth::user()->photo)
+                                <img src="/photos/{{ Auth::user()->photo }}" alt="User Photo">
+                            @else
+                                <img src="{{ asset('images/default.jpg') }}" alt="Default User Photo">
+                            @endif
                         </div>
-                </div>
-                <div class="content">
-                    <!-- Your page content here -->
-                </div>
-
-                <div class="navbar">
-                    <div class="nav-item">
-                        <a href="#">
-                            <i class="bi bi-house-door"></i>
-                            <span>Beranda</span>
-                        </a>
-                    </div>
-
-                    <div class="nav-item">
-                        <a href="#">
-                            <i class="bi bi-bar-chart-line"></i>
-                            <span>Grafik</span>
-                        </a>
-                    </div>
-
-                    <div class="nav-item logo">
-                        <img src="/images/g.png" alt="Logo">
-                    </div>
-
-                    <div class="nav-item">
-                        <a href="#">
-                            <i class="bi bi-telephone-fill"></i>
-                            <span>Contact</span>
-                        </a>
-                    </div>
-
-                    <div class="nav-item dropdown">
-                        <a class="nav-link" href=/customer/profile>
-                            <div class="avatar">
-                                <!-- Gambar Profil -->
-                                @if (Auth::user()->photo)
-                                    <img src="/photos/{{ Auth::user()->photo }}" alt="User Photo">
-                                @else
-                                    <img src="{{ asset('images/default.jpg') }}" alt="Default User Photo">
-                                @endif
-                            </div>
-                            <div class="name">
-                                <!-- Nama Pengguna -->
-                                <h6>{{ Auth::user()->name }}</h6>
-                            </div>
-                        </a>
-                        {{-- <!-- Dropdown Menu -->
+                        <div class="name">
+                            <!-- Nama Pengguna -->
+                            <h6>{{ Auth::user()->name }}</h6>
+                        </div>
+                    </a>
+                    {{-- <!-- Dropdown Menu -->
                 <ul class="dropdown-menu" aria-labelledby="profileDropdown">
                     <li>
                         <!-- Link ke Profil Pengguna -->
@@ -326,191 +329,191 @@
                         </a>
                     </li>
                 </ul> --}}
-                    </div>
                 </div>
+            </div>
 
-                <!-- Pastikan untuk memuat jQuery sebelum memuat skrip lain yang menggunakan jQuery -->
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <!-- Pastikan untuk memuat jQuery sebelum memuat skrip lain yang menggunakan jQuery -->
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-                <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
-                <!-- Memuat skrip Bootstrap DatePicker dan stylesheet -->
-                <link rel="stylesheet"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+            <!-- Memuat skrip Bootstrap DatePicker dan stylesheet -->
+            <link rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
-                <!-- Memuat skrip Bootstrap -->
-                <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
+            <!-- Memuat skrip Bootstrap -->
+            <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
 
-                <!-- Memuat skrip ApexCharts -->
-                <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
+            <!-- Memuat skrip ApexCharts -->
+            <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
 
-                <!-- Memuat skrip aplikasi Anda -->
-                <script src="{{ asset('template/assets/js/app.js') }}"></script>
-                <script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script>
+            <!-- Memuat skrip aplikasi Anda -->
+            <script src="{{ asset('template/assets/js/app.js') }}"></script>
+            <script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script>
 
-                <!-- Memuat ApexCharts dari CDN -->
-                <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+            <!-- Memuat ApexCharts dari CDN -->
+            <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 
-                <script>
-                    $(document).ready(function() {
-                        // Initial chart data from blade template
-                        var historyData = {!! json_encode($historyData) !!};
-                        var categories = historyData.map(function(item) {
-                            return item.name;
-                        });
-                        var data = historyData.map(function(item) {
-                            return item.count;
-                        });
+            <script>
+                $(document).ready(function() {
+                    // Initial chart data from blade template
+                    var historyData = {!! json_encode($historyData) !!};
+                    var categories = historyData.map(function(item) {
+                        return item.name;
+                    });
+                    var data = historyData.map(function(item) {
+                        return item.count;
+                    });
 
-                        // Chart configuration
-                        var options = {
-                            chart: {
-                                type: 'bar'
-                            },
-                            series: [{
-                                name: 'Jumlah History',
-                                data: data
-                            }],
-                            xaxis: {
-                                categories: categories
-                            },
-                            plotOptions: {
-                                bar: {
-                                    borderRadius: 10,
-                                    dataLabels: {
-                                        position: 'top', // Menempatkan label di atas bar
-                                        offsetY: -20, // Mengatur offset vertical label
-                                        formatter: function(val) {
-                                            return val; // Menampilkan nilai di atas bar
-                                        }
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                enabled: true,
-                                y: {
-                                    formatter: function(value) {
-                                        return 'Jumlah History: ' +
-                                            value; // Menampilkan jumlah history saat mouse di atas bar
+                    // Chart configuration
+                    var options = {
+                        chart: {
+                            type: 'bar'
+                        },
+                        series: [{
+                            name: 'Jumlah History',
+                            data: data
+                        }],
+                        xaxis: {
+                            categories: categories
+                        },
+                        plotOptions: {
+                            bar: {
+                                borderRadius: 10,
+                                dataLabels: {
+                                    position: 'top', // Menempatkan label di atas bar
+                                    offsetY: -20, // Mengatur offset vertical label
+                                    formatter: function(val) {
+                                        return val; // Menampilkan nilai di atas bar
                                     }
                                 }
                             }
-                        };
-
-                        // Initialize chart
-                        var chart = new ApexCharts(document.querySelector("#chart"), options);
-                        chart.render();
-
-                        // Function to update chart data
-                        function updateChart(selectedDevice) {
-                            var selectedDate = $('#selected_date').val();
-
-                            console.log("Selected Date:", selectedDate);
-                            console.log("Selected Device:", selectedDevice);
-
-                            if (!selectedDate) {
-                                alert('Silahkan pilih tanggal terlebih dahulu.');
-                                return; // Stop further execution if date is not selected
-                            }
-
-                            $.ajax({
-                                method: 'GET',
-                                url: '/customer-chart',
-                                data: {
-                                    selected_date: selectedDate, // Kirim data selectedDate ke server
-                                    selected_device: selectedDevice
-                                },
-                                success: function(response) {
-                                    console.log("Response Data:", response);
-
-                                    var chartData = response.data || [];
-
-                                    // Prepare series data for selected device
-                                    var seriesData = [];
-                                    var deviceName = "";
-
-                                    // Iterate through each data point
-                                    chartData.forEach(function(item) {
-                                        // Add data only for the selected device if selectedDevice is not empty
-                                        // Otherwise, add all data
-                                        if (!selectedDevice || item.device_name === selectedDevice) {
-                                            seriesData.push({
-                                                name: item.device_name,
-                                                data: [item.count]
-                                            });
-                                            deviceName = item.device_name;
-                                        }
-                                    });
-
-                                    // Update chart with new data
-                                    chart.updateOptions({
-                                        xaxis: {
-                                            categories: [deviceName] // Use device name as category
-                                        }
-                                    });
-                                    chart.updateSeries(seriesData);
-
-                                    if (selectedDate || selectedDevice) {
-                                        $('#device_select_row').show();
-                                    } else {
-                                        $('#device_select_row').hide();
-                                    }
-
-                                    // Update device selection dropdown
-                                    var deviceDropdown = $('#selected_device');
-                                    deviceDropdown.empty(); // Clear previous options
-
-                                    if (response.deviceOptions.length > 0) {
-                                        deviceDropdown.append($('<option>', {
-                                            value: '', // Empty value
-                                            text: 'Select Device'
-                                        }));
-
-                                        // Add device count next to device name in the dropdown
-                                        response.deviceOptions.forEach(function(device) {
-                                            var optionText = device + ' (' + response.deviceCount[device] +
-                                                ')';
-                                            deviceDropdown.append($('<option>', {
-                                                value: device,
-                                                text: optionText // Include device count in option text
-                                            }));
-                                        });
-                                    } else {
-                                        // If no device options available, show default option
-                                        deviceDropdown.append($('<option>', {
-                                            value: '', // Empty value
-                                            text: 'Tidak Ada Perangkat Tersedia'
-                                        }));
-                                    }
-
-                                    // Set selected device option
-                                    if (selectedDevice) {
-                                        deviceDropdown.val(
-                                            selectedDevice); // Set the selected device as the selected option
-                                    }
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error(error);
+                        },
+                        tooltip: {
+                            enabled: true,
+                            y: {
+                                formatter: function(value) {
+                                    return 'Jumlah History: ' +
+                                        value; // Menampilkan jumlah history saat mouse di atas bar
                                 }
-                            });
+                            }
+                        }
+                    };
+
+                    // Initialize chart
+                    var chart = new ApexCharts(document.querySelector("#chart"), options);
+                    chart.render();
+
+                    // Function to update chart data
+                    function updateChart(selectedDevice) {
+                        var selectedDate = $('#selected_date').val();
+
+                        console.log("Selected Date:", selectedDate);
+                        console.log("Selected Device:", selectedDevice);
+
+                        if (!selectedDate) {
+                            alert('Silahkan pilih tanggal terlebih dahulu.');
+                            return; // Stop further execution if date is not selected
                         }
 
-                        // Add event listener for date input change
-                        $('#selected_date').change(function() {
-                            updateChart();
-                        });
+                        $.ajax({
+                            method: 'GET',
+                            url: '/customer-chart',
+                            data: {
+                                selected_date: selectedDate, // Kirim data selectedDate ke server
+                                selected_device: selectedDevice
+                            },
+                            success: function(response) {
+                                console.log("Response Data:", response);
 
-                        // Add event listener for device select change
-                        $('#selected_device').change(function() {
-                            var selectedDevice = $(this).val();
-                            console.log("Selected Device:", selectedDevice);
-                            updateChart(selectedDevice);
+                                var chartData = response.data || [];
 
+                                // Prepare series data for selected device
+                                var seriesData = [];
+                                var deviceName = "";
+
+                                // Iterate through each data point
+                                chartData.forEach(function(item) {
+                                    // Add data only for the selected device if selectedDevice is not empty
+                                    // Otherwise, add all data
+                                    if (!selectedDevice || item.device_name === selectedDevice) {
+                                        seriesData.push({
+                                            name: item.device_name,
+                                            data: [item.count]
+                                        });
+                                        deviceName = item.device_name;
+                                    }
+                                });
+
+                                // Update chart with new data
+                                chart.updateOptions({
+                                    xaxis: {
+                                        categories: [deviceName] // Use device name as category
+                                    }
+                                });
+                                chart.updateSeries(seriesData);
+
+                                if (selectedDate || selectedDevice) {
+                                    $('#device_select_row').show();
+                                } else {
+                                    $('#device_select_row').hide();
+                                }
+
+                                // Update device selection dropdown
+                                var deviceDropdown = $('#selected_device');
+                                deviceDropdown.empty(); // Clear previous options
+
+                                if (response.deviceOptions.length > 0) {
+                                    deviceDropdown.append($('<option>', {
+                                        value: '', // Empty value
+                                        text: 'Select Device'
+                                    }));
+
+                                    // Add device count next to device name in the dropdown
+                                    response.deviceOptions.forEach(function(device) {
+                                        var optionText = device + ' (' + response.deviceCount[device] +
+                                            ')';
+                                        deviceDropdown.append($('<option>', {
+                                            value: device,
+                                            text: optionText // Include device count in option text
+                                        }));
+                                    });
+                                } else {
+                                    // If no device options available, show default option
+                                    deviceDropdown.append($('<option>', {
+                                        value: '', // Empty value
+                                        text: 'Tidak Ada Perangkat Tersedia'
+                                    }));
+                                }
+
+                                // Set selected device option
+                                if (selectedDevice) {
+                                    deviceDropdown.val(
+                                        selectedDevice); // Set the selected device as the selected option
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(error);
+                            }
                         });
+                    }
+
+                    // Add event listener for date input change
+                    $('#selected_date').change(function() {
+                        updateChart();
+                    });
+
+                    // Add event listener for device select change
+                    $('#selected_device').change(function() {
+                        var selectedDevice = $(this).val();
+                        console.log("Selected Device:", selectedDevice);
+                        updateChart(selectedDevice);
 
                     });
-                </script>
-            @endsection
+
+                });
+            </script>
+        @endsection
