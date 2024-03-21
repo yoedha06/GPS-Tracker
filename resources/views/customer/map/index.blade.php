@@ -16,7 +16,7 @@
         <label for="device-select">Select Device:</label>
         <div class="d-flex">
             <select id="device-select" class="form-select input" style="width: 100%;">
-                <option value="" disabled selected>Select Devicee</option>
+                <option value="" disabled selected>Select Device</option>
                 @foreach($devices as $device)
                 <option value="{{ $device->id_device }}">{{ $device->user->name }} - {{ $device->name }}</option>
                 @endforeach
