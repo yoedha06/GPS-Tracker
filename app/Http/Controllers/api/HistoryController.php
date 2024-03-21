@@ -71,7 +71,7 @@ class HistoryController extends Controller
             // 'bounds' => $request->bounds,
             'accuracy' => $request->accuracy,
             'altitude' => floatval($request->altitude),
-            // 'altitude_acuracy' => $request->altitude_acuracy,
+            'altitude_acuracy' => $request->altitude_acuracy,
             'heading' => floatval($request->heading),
             'speeds' => floatval($request->speeds),
             'date_time' => $date_time,
