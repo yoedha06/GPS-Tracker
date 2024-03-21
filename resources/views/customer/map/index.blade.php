@@ -125,13 +125,11 @@
             //     }
             // });
 
-    // Menangani klik pada tombol "Reset"
-$('#reset-btn').on('click', function () {
+   $('#reset-btn').on('click', function () {
     // Mereset nilai Select2 ke null dan memicu perubahan
     $('#device-select').val(null).trigger('change');
 
-    // Mereset tanggal menggunakan flatpickr jika Anda menggunakan flatpickr
-    flatpickr("#date-range-input").clear();
+
 
     // Hapus semua marker dari peta
     map.eachLayer(function (layer) {
@@ -147,8 +145,7 @@ $('#reset-btn').on('click', function () {
         }
     });
 
-    // Memanggil fungsi filterMap() untuk memperbarui peta
-    filterMap();
+
 });
 
     var deviceNames = {!! json_encode($deviceNames) !!};
@@ -195,6 +192,7 @@ $('#reset-btn').on('click', function () {
             map.removeLayer(polyline);
         });
 
+
         markers = [];
         devicePolylines = {};
 
@@ -204,28 +202,23 @@ $('#reset-btn').on('click', function () {
             totalSpeed += parseFloat(historyData[i].speeds);
         }
         var averageSpeed = historyData.length > 0 ? totalSpeed / historyData.length : 0;
-        
 
-  // Mendefinisikan ikon kustom untuk "Start" dan "Endvar startIcon = L.divIcon({
-var startIcon = L.divIcon({
+
+ var startIcon = L.divIcon({
     className: 'custom-div-icon',
-    html: "<i class='fas fa-map-marker-alt' style='font-size: 24px; color: green;'></i>", // Menggunakan ikon dari FontAwesome dengan ukuran dan warna yang disesuaikan
-    iconSize: [32, 32], // Sesuaikan ukuran ikon sesuai kebutuhan (lebar, tinggi)
-    iconAnchor: [16, 32], // Titik di mana ikon akan diatur ke titik tertentu pada peta (misalnya, bagian bawah tengah)
-    popupAnchor: [0, -24] // Sesuaikan jika diperlukan untuk menyesuaikan marker ke posisi yang tepat
+    html: "<i class='fas fa-map-marker-alt' style='color:green; font-size: 40px;'></i>",
+                                            iconSize: [42, 49],
+                                            iconAnchor: [20, 44],
+                                            popupAnchor: [-5, -41]
+
 });
-
-// Atur marker menggunakan ikon yang telah didefinisikan
-
-
-
 
 var endIcon = L.divIcon({
     className: 'custom-div-icon',
-    html: "<i class='fas fa-map-marker-alt' style='color: red; font-size: 24px;'></i>", // Menggunakan ikon dari FontAwesome dengan warna merah dan ukuran yang disesuaikan
-    iconSize: [30, 30], // Mengatur ukuran marker menjadi 30x30 piksel
-    iconAnchor: [15, 30], // Mengatur titik pusat marker agar berada di tengah-tengah
-    popupAnchor: [1, -28] // Mengatur posisi popup
+    html: "<i class='fas fa-map-marker-alt' style='color: red; font-size: 40px;'></i>",
+     iconSize: [42, 49],
+                                            iconAnchor: [20, 44],
+                                            popupAnchor: [-5, -41]
 });
 
 // Fungsi untuk menghapus semua marker dari peta
@@ -239,71 +232,82 @@ function clearMarkers() {
 // Memanggil fungsi untuk menghapus semua marker sebelum menambahkan yang baru
 clearMarkers();
 
-// Setelah itu, tambahkan kembali marker sesuai dengan data yang ada
-    for (var i = 0; i < historyData.length; i++) {
-        var historyItem = historyData[i];
-        var lat = parseFloat(historyItem.latitude);
-        var lng = parseFloat(historyItem.longitude);
-        var speed = parseFloat(historyItem.speeds);
-        var accuracy = parseFloat(historyItem.accuracy);
-        var deviceId = historyItem.device_id;
+// Loop melalui data histori
+for (var i = 0; i < historyData.length; i++) {
+    var historyItem = historyData[i];
+    var lat = parseFloat(historyItem.latitude);
+    var lng = parseFloat(historyItem.longitude);
+    var deviceId = historyItem.device_id;
+    var currentDate = new Date(historyItem.date_time);
 
-        var isDeviceSelected = !selectedDevice || selectedDevice.includes(deviceId);
+    var isDeviceSelected = !selectedDevice || selectedDevice.includes(deviceId);
+    var isWithinDateRange = (!startDate || currentDate >= startDate) && (!endDate || currentDate <= endDate);
 
-        if (isDeviceSelected &&
-            (!startDate || new Date(historyItem.date_time) >= startDate) &&
-            (!endDate || new Date(historyItem.date_time) <= endDate)) {
+    if (isDeviceSelected && isWithinDateRange) {
+        // Check if it's start or end marker
+        var isEnd = !endMarkers[deviceId]; // Reversed logic to check for end marker
+        var isStart = !isEnd; // Determine if it's a start marker
 
-            // Check if it's start or end marker
-            var isStart = !startMarkers[deviceId];
-            var markerIcon = isStart ? startIcon : endIcon;
+     if (isStart) {
+    if (startMarkers[deviceId]) {
+        map.removeLayer(startMarkers[deviceId]);
+    }
+    var markerIcon = startIcon;
+    var popupContent = `<div style="display: flex; flex-direction: column;">
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                <b style="margin: 0;">Start</b>
+                            </div>
+                            <div>
+                                Device: ${deviceNames[deviceId]}<br>
+                                Latitude: ${lat.toFixed(6)}<br>
+                                Longitude: ${lng.toFixed(6)}<br>
+                                Date & Time: ${historyItem.date_time}<br>
+                            </div>
+                        </div>`;
+    startMarkers[deviceId] = L.marker([lat, lng], { icon: markerIcon }).bindPopup(popupContent, { offset: [0, -32] }).addTo(map);
+} else if (isEnd) {
+    if (endMarkers[deviceId]) {
+        map.removeLayer(endMarkers[deviceId]);
+    }
+    var markerIcon = endIcon;
+    var popupContent = `<div style="display: flex; flex-direction: column;">
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                <b style="margin: 0;">End</b>
+                            </div>
+                            <div>
+                                Device: ${deviceNames[deviceId]}<br>
+                                Latitude: ${lat.toFixed(6)}<br>
+                                Longitude: ${lng.toFixed(6)}<br>
+                                Date & Time: ${historyItem.date_time}<br>
+                            </div>
+                        </div>`;
+    endMarkers[deviceId] = L.marker([lat, lng], { icon: markerIcon }).bindPopup(popupContent, { offset: [0, -32] }).addTo(map);
+}
 
-            var marker = L.marker([lat, lng], { icon: markerIcon });
-            markers.push(marker);
+        var marker = L.marker([lat, lng]); // Create a marker (not using icons for other markers)
+        markers.push(marker);
 
-            var popupContent =
-                `<div>
-                    Device: ${deviceNames[deviceId]}<br>
-                    Latitude: ${lat.toFixed(6)}<br>
-                    Longitude: ${lng.toFixed(6)}<br>
-                    Date & Time: ${historyItem.date_time}<br>
-                </div>`;
-
-            if (isStart) {
-                popupContent += "<b>Start</b>";
-                startMarkers[deviceId] = marker;
-            } else {
-                popupContent += "<b>End</b>";
-                endMarkers[deviceId] = marker;
-                marker.setIcon(endIcon); // Set icon to endIcon for end markers
-            }
-
-            marker.bindPopup(popupContent);
-
-            if (!devicePolylines[deviceId]) {
-                devicePolylines[deviceId] = L.polyline([], {}).addTo(map);
-            }
-
-            devicePolylines[deviceId].addLatLng([lat, lng]);
-
-            // Add marker to map only if it's start or end marker
-            if (isStart || !isDeviceSelected[deviceId]) {
-                marker.addTo(map);
-            }
+        if (!devicePolylines[deviceId]) {
+            devicePolylines[deviceId] = L.polyline([], {}).addTo(map);
         }
+
+        devicePolylines[deviceId].addLatLng([lat, lng]);
+    }
+
+
     }
 
     // Update popup content for start and end markers
     Object.keys(startMarkers).forEach(deviceId => {
         var startMarker = startMarkers[deviceId];
         var startPopupContent = startMarker.getPopup().getContent();
-        startMarker.getPopup().setContent(startPopupContent + " (Start)");
+        startMarker.getPopup().setContent(startPopupContent + "");
     });
 
     Object.keys(endMarkers).forEach(deviceId => {
         var endMarker = endMarkers[deviceId];
         var endPopupContent = endMarker.getPopup().getContent();
-        endMarker.getPopup().setContent(endPopupContent + " (End)");
+        endMarker.getPopup().setContent(endPopupContent + "");
     });
 
 // Update polyline styles
@@ -416,9 +420,27 @@ Object.values(devicePolylines).forEach(polyline => {
         map.fitBounds(bounds);
     }
 
-    $('#device-select').change(function () {
-        filterMap();
+   $('#device-select').change(function () {
+    // Dapatkan ID perangkat yang dipilih
+    var selectedDevice = $(this).val();
+
+    // Hapus semua marker dari peta
+    map.eachLayer(function (layer) {
+        if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+        }
     });
+
+    // Hapus semua garis dari peta
+    map.eachLayer(function (layer) {
+        if (layer instanceof L.Polyline) {
+            map.removeLayer(layer);
+        }
+    });
+
+    // Memfilter peta berdasarkan perangkat yang dipilih
+    filterMap(selectedDevice);
+});
 
     dateRangePicker.config.onChange.push(function (selectedDates, dateStr, instance) {
         filterMap();
