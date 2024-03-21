@@ -29,6 +29,7 @@ class HistoryController extends Controller
      */
     public function store(Request $request)
     {
+        logger($request->all());
         // Validasi input
         $request->validate([
             'serial_number' => 'required',
@@ -70,10 +71,10 @@ class HistoryController extends Controller
             'longitude' => $request->longitude,
             // 'bounds' => $request->bounds,
             'accuracy' => $request->accuracy,
-            'altitude' => intval($request->altitude),
+            'altitude' => floatval($request->altitude),
             // 'altitude_acuracy' => $request->altitude_acuracy,
-            'heading' => intval($request->heading),
-            'speeds' => intval($request->speeds),
+            'heading' => floatval($request->heading),
+            'speeds' => floatval($request->speeds),
             'date_time' => $date_time,
             'original' => json_encode($request->all())
         ]);
