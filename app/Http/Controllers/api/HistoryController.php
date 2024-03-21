@@ -69,7 +69,7 @@ class HistoryController extends Controller
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
             // 'bounds' => $request->bounds,
-            'accuracy' => $request->accuracy,
+            'accuracy' => floatval($request->accuracy),
             'altitude' => floatval($request->altitude),
             'altitude_acuracy' => $request->altitude_acuracy,
             'heading' => floatval($request->heading),
