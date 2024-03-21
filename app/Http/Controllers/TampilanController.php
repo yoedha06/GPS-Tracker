@@ -17,13 +17,14 @@ class TampilanController extends Controller
         // Dapatkan pengguna yang saat ini masuk
         $user = Auth::user();
 
+        $history = History::count();
+
         // Hitung jumlah perangkat yang dimiliki oleh pengguna tersebut
         $deviceCount = $user->devices()->count();
 
-        $history = History::count();
-
         // Ambil data jumlah history dari setiap device beserta nama perangkat
         $historyData = History::join('device', 'history.device_id', '=', 'device.id_device')
+            ->where('device.user_id', $user->id) // Filter data berdasarkan user
             ->select('device.name', DB::raw('count(*) as count'))
             ->groupBy('history.device_id', 'device.name')
             ->get();
@@ -31,9 +32,8 @@ class TampilanController extends Controller
         // Ambil daftar perangkat yang dimiliki oleh pengguna
         $devices = $user->devices;
 
-        return view('customer.index', compact('user', 'deviceCount', 'historyData', 'history', 'devices'));
+        return view('customer.index', compact('user', 'deviceCount', 'historyData', 'devices', 'history'));
     }
-
 
     public function admin()
     {
@@ -55,7 +55,7 @@ class TampilanController extends Controller
         // Get authenticated user
         $user = auth()->user();
 
-        return view('admin.index', compact('user', 'usersCount', 'deviceCount', 'totalHistory', 'historyData', 'history','devices'));
+        return view('admin.index', compact('user', 'usersCount', 'deviceCount', 'totalHistory', 'historyData', 'history', 'devices'));
     }
 
 
@@ -70,12 +70,20 @@ class TampilanController extends Controller
         $selectedDate = $request->input('selected_date');
         $selectedDevice = $request->input('selected_device');
 
+        // Dapatkan pengguna yang saat ini masuk
+        $user = Auth::user();
+
         $query = History::query()->whereDate('date_time', $selectedDate);
 
         // Jika perangkat dipilih, tambahkan kondisi where untuk perangkat
         if ($selectedDevice) {
             $query->whereHas('device', function ($query) use ($selectedDevice) {
-                $query->where('name', $selectedDevice);
+                $query->where('name', $selectedDevice)->where('user_id', Auth::id()); // tambahkan kondisi where untuk user_id
+            });
+        } else {
+            // Jika tidak ada perangkat yang dipilih, tambahkan kondisi where untuk hanya menampilkan riwayat dari perangkat milik pengguna saat ini
+            $query->whereHas('device', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
             });
         }
 
@@ -112,6 +120,7 @@ class TampilanController extends Controller
                 ->whereColumn('id_device', 'history.device_id')
                 ->whereDate('history.date_time', $selectedDate);
         })
+            ->where('user_id', Auth::id()) // tambahkan kondisi where untuk user_id
             ->pluck('name') // Ambil nama perangkat
             ->unique() // Hapus duplikat
             ->values() // Re-indeks array
@@ -123,6 +132,8 @@ class TampilanController extends Controller
             'deviceCount' => $deviceCount
         ]);
     }
+
+
 
     public function grafikadmin(Request $request)
     {
@@ -139,17 +150,16 @@ class TampilanController extends Controller
         }
 
         // Ambil data history sesuai dengan tanggal dan perangkat yang dipilih
-        $historyData = $query->select('device_id', DB::raw('COUNT(*) as count'))->groupBy('device_id')->get();
+        $historyData = $query->with(['device.user' => function ($query) {
+            $query->select('id', 'name');
+        }])->select('device_id', DB::raw('COUNT(*) as count'))->groupBy('device_id')->get();
 
-        // Ambil nama perangkat berdasarkan ID perangkat
-        $deviceNames = Device::whereIn('id_device', $historyData->pluck('device_id')->toArray())
-            ->pluck('name', 'id_device')
-            ->toArray();
-
-        // Ubah data history untuk mencakup nama perangkat
-        $historyDataWithDeviceName = $historyData->map(function ($item) use ($deviceNames) {
+        // Ubah data history untuk mencakup nama perangkat dan pengguna
+        $historyDataWithDeviceName = $historyData->map(function ($item) {
+            $userName = optional(optional($item->device)->user)->name;
             return [
-                'device_name' => $deviceNames[$item->device_id],
+                'user_name' => $userName,
+                'device_name' => optional($item->device)->name,
                 'count' => $item->count
             ];
         });
@@ -162,7 +172,7 @@ class TampilanController extends Controller
         }
 
         // Ambil jumlah device
-        $deviceCount = count($deviceNames);
+        $deviceCount = $historyData->unique('device_id')->count();
 
         // Ambil daftar perangkat yang tersedia untuk tanggal yang dipilih
         $deviceOptions = Device::whereExists(function ($query) use ($selectedDate) {

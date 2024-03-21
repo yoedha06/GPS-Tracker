@@ -91,13 +91,12 @@
                                                 <p style="font-size: 100px;">&#x1F5FF;</p>
                                             </div>
                                         @endif
-                                        <h5 class="card-title">{{ $item->name }}</h5>
+                                        <h5 class="card-title" style="margin-top: 5%">{{ $item->name }}</h5>
                                         <p class="card-text">Serial Number: {{ $item->serial_number }}</p>
                                         <p class="card-text">Plat Nomor: {{ $item->plat_nomor }}</p>
                                     </div>
                                 </div>
                             </div>
-
                         @empty
                             <div class="col">
                                 <div class="card">
@@ -110,176 +109,172 @@
                     </div>
                 </div>
             </div>
-        </section>
+    </div>
+    </section>
 
-        <!-- ADD Device Modal -->
-        <div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
+    <!-- ADD Device Modal -->
+    <div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDeviceModalLabel">Add Device</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addDeviceForm" action="{{ route('device.store') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                value="{{ old('name') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="serial_number" class="form-label">Serial Number</label>
+                            <input type="text" class="form-control" id="serial_number" name="serial_number"
+                                value="{{ old('serial_number') }}"required>
+                        </div>
+                        <!-- Add Photo and Plat Nomor fields -->
+                        <div class="mb-3">
+                            <label for="photo" class="form-label">Photo</label>
+                            <input type="file" class="form-control" id="photo" name="photo" accept="image/*"
+                                onchange="previewPhoto(event)">
+                            <img id="photoPreview" src="#" alt="Photo Preview"
+                                style="max-width: 100%; margin-top: 10px; {{ old('photo') ? '' : 'display: none;' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="plat_nomor" class="form-label">Plat Nomor</label>
+                            <input type="text" class="form-control" id="plat_nomor" name="plat_nomor"
+                                value="{{ old('plat_nomor') }}"required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Device</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Device Modal -->
+    @foreach ($userDevices as $item)
+        <div class="modal fade" id="editDeviceModal{{ $item->id_device }}" tabindex="-1"
+            aria-labelledby="editDeviceModalLabel{{ $item->id_device }}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addDeviceModalLabel">Add Device</h5>
+                        <h5 class="modal-title" id="editDeviceModalLabel{{ $item->id_device }}">Edit Device</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <form id="addDeviceForm" action="{{ route('device.store') }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
+                    <form action="{{ route('device.update', $item->id_device) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
                             <div class="mb-3">
-                                <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" name="name"
-                                    value="{{ old('name') }}" required>
+                                <label for="edit_name{{ $item->id_device }}" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="edit_name{{ $item->id_device }}"
+                                    name="name" value="{{ $item->name }}" required>
                             </div>
                             <div class="mb-3">
-                                <label for="serial_number" class="form-label">Serial Number</label>
-                                <input type="text" class="form-control" id="serial_number" name="serial_number"
-                                    value="{{ old('serial_number') }}"required>
-                            </div>
-                            <!-- Add Photo and Plat Nomor fields -->
-                            <div class="mb-3">
-                                <label for="photo" class="form-label">Photo</label>
-                                <input type="file" class="form-control" id="photo" name="photo"
-                                    accept="image/*" onchange="previewPhoto(event)">
-                                <img id="photoPreview" src="#" alt="Photo Preview"
-                                    style="max-width: 100%; margin-top: 10px; {{ old('photo') ? '' : 'display: none;' }}">
+                                <label for="edit_serial_number{{ $item->id_device }}" class="form-label">Serial
+                                    Number</label>
+                                <input type="text" class="form-control" id="edit_serial_number{{ $item->id_device }}"
+                                    name="serial_number" value="{{ $item->serial_number }}" required readonly>
                             </div>
                             <div class="mb-3">
-                                <label for="plat_nomor" class="form-label">Plat Nomor</label>
-                                <input type="text" class="form-control" id="plat_nomor" name="plat_nomor"
-                                    value="{{ old('plat_nomor') }}"required>
+                                <input type="file" class="form-control edit-photo-input"
+                                    id="edit_photo{{ $item->id_device }}" name="photo"
+                                    onchange="previewEditPhoto(this, {{ $item->id_device }})">
+                                @if ($item->photo)
+                                    <div class="mt-2">
+                                        <img id="editPhotoPreview{{ $item->id_device }}"
+                                            src="{{ asset('storage/' . $item->photo) }}" alt="Current Device Photo"
+                                            style="max-width: 200px; max-height: 200px;">
+                                    </div>
+                                    <button type="button" class="btn btn-danger mt-2"
+                                        onclick="deletePhoto({{ $item->id_device }})">
+                                        <i class="fas fa-trash"></i> Delete Photo
+                                    </button>
+                                @else
+                                    <p>No photo available.</p>
+                                @endif
                             </div>
-                            <button type="submit" class="btn btn-primary">Add Device</button>
-                        </form>
+                            <div class="mb-3">
+                                <label for="edit_plat_nomor{{ $item->id_device }}" class="form-label">Plat
+                                    Nomor</label>
+                                <input type="text" class="form-control" id="edit_plat_nomor{{ $item->id_device }}"
+                                    name="plat_nomor" value="{{ $item->plat_nomor }}" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteDeviceModal{{ $item->id_device }}">Delete Device</button>
+                            <button type="submit" class="btn btn-primary">Update Device</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
+    <!-- Delete Device Modals -->
+    @foreach ($userDevices as $item)
+        <div class="modal fade" id="deleteDeviceModal{{ $item->id_device }}" tabindex="-1"
+            aria-labelledby="deleteDeviceModalLabel{{ $item->id_device }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteDeviceModalLabel{{ $item->id_device }}">Delete Device</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('device.destroy', $item->id_device) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete this device?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Delete Device</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
+    <!-- Modals Photo device -->
+    @foreach ($userDevices as $item)
+        <div class="modal fade" id="viewPhotoModal{{ $item->id_device }}" tabindex="-1"
+            aria-labelledby="viewPhotoModalLabel{{ $item->id_device }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewPhotoModalLabel{{ $item->id_device }}">Picture -
+                            {{ $item->name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        @if ($item->photo)
+                            <img src="{{ asset('storage/' . $item->photo) }}" alt="Device Photo"
+                                style="max-width: 100%; max-height: 100vh; border-radius: 10px">
+                        @else
+                            No Image
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
+    @endforeach
 
-        <!-- Edit Device Modal -->
-        @foreach ($userDevices as $item)
-            <div class="modal fade" id="editDeviceModal{{ $item->id_device }}" tabindex="-1"
-                aria-labelledby="editDeviceModalLabel{{ $item->id_device }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editDeviceModalLabel{{ $item->id_device }}">Edit Device</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <form action="{{ route('device.update', $item->id_device) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="edit_name{{ $item->id_device }}" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="edit_name{{ $item->id_device }}"
-                                        name="name" value="{{ $item->name }}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="edit_serial_number{{ $item->id_device }}" class="form-label">Serial
-                                        Number</label>
-                                    <input type="text" class="form-control"
-                                        id="edit_serial_number{{ $item->id_device }}" name="serial_number"
-                                        value="{{ $item->serial_number }}" required readonly>
-                                </div>
-                                <div class="mb-3">
-                                    <input type="file" class="form-control edit-photo-input"
-                                        id="edit_photo{{ $item->id_device }}" name="photo"
-                                        onchange="previewEditPhoto(this, {{ $item->id_device }})">
-                                    @if ($item->photo)
-                                        <div class="mt-2">
-                                            <img id="editPhotoPreview{{ $item->id_device }}"
-                                                src="{{ asset('storage/' . $item->photo) }}" alt="Current Device Photo"
-                                                style="max-width: 200px; max-height: 200px;">
-                                        </div>
-                                        <button type="button" class="btn btn-danger mt-2"
-                                            onclick="deletePhoto({{ $item->id_device }})">
-                                            <i class="fas fa-trash"></i> Delete Photo
-                                        </button>
-                                    @else
-                                        <p>No photo available.</p>
-                                    @endif
-                                </div>
-                                <div class="mb-3">
-                                    <label for="edit_plat_nomor{{ $item->id_device }}" class="form-label">Plat
-                                        Nomor</label>
-                                    <input type="text" class="form-control"
-                                        id="edit_plat_nomor{{ $item->id_device }}" name="plat_nomor"
-                                        value="{{ $item->plat_nomor }}" required>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#deleteDeviceModal{{ $item->id_device }}">Delete</button>
-                                <button type="submit" class="btn btn-primary">Update Device</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <footer>
+        <div class="footer clearfix mb-0 text-muted">
+            <div class="float-start">
+                <p>2024 &copy; CIGS</p>
             </div>
-        @endforeach
-
-        <!-- Delete Device Modals -->
-        @foreach ($userDevices as $item)
-            <div class="modal fade" id="deleteDeviceModal{{ $item->id_device }}" tabindex="-1"
-                aria-labelledby="deleteDeviceModalLabel{{ $item->id_device }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteDeviceModalLabel{{ $item->id_device }}">Delete Device</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <form action="{{ route('device.destroy', $item->id_device) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <div class="modal-body">
-                                <p>Are you sure you want to delete this device?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-danger">Delete Device</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+            <div class="float-end">
             </div>
-        @endforeach
-
-        <!-- Modals Photo device -->
-        @foreach ($userDevices as $item)
-            <div class="modal fade" id="viewPhotoModal{{ $item->id_device }}" tabindex="-1"
-                aria-labelledby="viewPhotoModalLabel{{ $item->id_device }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="viewPhotoModalLabel{{ $item->id_device }}">Picture -
-                                {{ $item->name }}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body text-center">
-                            @if ($item->photo)
-                                <img src="{{ asset('storage/' . $item->photo) }}" alt="Device Photo"
-                                    style="max-width: 100%; max-height: 100vh; border-radius: 10px">
-                            @else
-                                No Image
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endforeach
-
-        <footer>
-            <div class="footer clearfix mb-0 text-muted">
-                <div class="float-start">
-                    <p>2024 &copy; CIGS</p>
-                </div>
-                <div class="float-end">
-                </div>
-            </div>
-        </footer>
+        </div>
+    </footer>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
@@ -309,21 +304,11 @@
                     const cardItem = document.createElement('div');
                     cardItem.classList.add('col');
                     cardItem.innerHTML = `
-                <div class="card">
+                <div class="card" data-bs-toggle="modal" data-bs-target="#editDeviceModal${device.id_device}">
                     <div class="card-body">
                         <h5 class="card-title">${device.name}</h5>
                         <p class="card-text">Serial Number: ${device.serial_number}</p>
                         <p class="card-text">Plat Nomor: ${device.plat_nomor}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editDeviceModal${device.id_device}">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </button>
-                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDeviceModal${device.id_device}">
-                                    <i class="bi bi-trash"></i> Delete
-                                </button>
-                            </div>
-                        </div>
                         <div class="text-center mt-3">
                             ${device.photo ? `<img src="{{ asset('storage/') }}/${device.photo}" class="card-img-top view-photo" alt="Device Photo" data-bs-toggle="modal" data-bs-target="#viewPhotoModal${device.id_device}">` : '<p>No Image</p><p style="font-size: 100px;">&#x1F5FF;</p>'}
                         </div>
