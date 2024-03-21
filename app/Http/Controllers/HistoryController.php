@@ -183,36 +183,36 @@ class HistoryController extends Controller
 
 
 
-    public function showMap()
-    {
-        // Mengambil daftar pengguna
-        $users = User::all();
+   public function showMap()
+{
+    // Mengambil daftar pengguna
+    $users = User::all();
 
-        // Mengambil daftar perangkat beserta relasi riwayat terakhir dan pengguna
-        $devices = Device::with('latestHistory', 'user')->get();
+    // Mengambil daftar perangkat beserta relasi riwayat terakhir dan pengguna
+    $devices = Device::with('latestHistory', 'user')->get();
 
-        // Mengambil daftar riwayat
-        $history = History::all();
+    // Mengambil daftar riwayat
+    $history = History::all();
 
-        // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
-        $serialNumbers = $devices->pluck('serial_number', 'id_device');
+    // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
+    $serialNumbers = $devices->pluck('serial_number', 'id_device');
 
-        // Membuat array nama perangkat yang berisi id perangkat sebagai kunci dan nama perangkat sebagai nilai
-        $deviceNames = $devices->pluck('name', 'id_device')->toArray();
+    // Membuat array nama perangkat yang berisi id perangkat sebagai kunci dan nama perangkat sebagai nilai
+    $deviceNames = $devices->pluck('name', 'id_device')->toArray();
 
-        // Membuat array nama pengguna yang berisi id pengguna sebagai kunci dan nama pengguna sebagai nilai
-        $userNames = $users->pluck('name', 'id')->toArray();
+    // Membuat array nama pengguna yang berisi id perangkat sebagai kunci dan nama pengguna sebagai nilai
+    // Menggunakan relasi 'user' untuk mengambil nama pengguna
+    $userNames = $devices->pluck('user.name', 'id_device')->toArray();
 
-        return view('admin.map.index', [
-            'users' => $users, // Mengirim data pengguna ke tampilan
-            'devices' => $devices, // Mengirim data perangkat ke tampilan
-            'history' => $history, // Mengirim data riwayat ke tampilan
-            'serialNumbers' => $serialNumbers, // Mengirim data serial number ke tampilan
-            'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
-            'userNames' => $userNames // Mengirim data nama pengguna ke tampilan
-        ]);
-    }
-
+    return view('admin.map.index', [
+        'users' => $users, // Mengirim data pengguna ke tampilan
+        'devices' => $devices, // Mengirim data perangkat ke tampilan
+        'history' => $history, // Mengirim data riwayat ke tampilan
+        'serialNumbers' => $serialNumbers, // Mengirim data serial number ke tampilan
+        'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
+        'userNames' => $userNames, // Mengirim data nama pengguna ke tampilan
+    ]);
+}
 
 
 
