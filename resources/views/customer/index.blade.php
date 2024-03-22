@@ -40,7 +40,7 @@
             text-align: center;
             color: #000000;
             text-decoration: none;
-            font-size: 16px;
+            font-size: 17px;
             /* Memperbesar ukuran fontsizenya */
             flex: 1;
             /* Menyesuaikan ruang setiap item */
@@ -65,6 +65,20 @@
             height: 50px;
             border-radius: 50%;
             /* Menambahkan border radius */
+        }
+
+        .name {
+            max-width: 100px;
+            /* Sesuaikan dengan lebar maksimum yang Anda inginkan */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .name h6 {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 
@@ -322,7 +336,7 @@
                         </div>
                         <div class="name">
                             <!-- Nama Pengguna -->
-                            <h6>{{ Auth::user()->name }}</h6>
+                            <h6><span>{{ Auth::user()->name }}</span></h6>
                         </div>
                     </a>
                     {{-- <!-- Dropdown Menu -->
