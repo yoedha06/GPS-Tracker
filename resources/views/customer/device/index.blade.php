@@ -2,7 +2,18 @@
 @extends('layouts.navbarcustomer')
 
 <title>GEEX - Device</title>
+<style>
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Ubah warna dan opacity (alpha) sesuai kebutuhan */
+        transition: box-shadow 0.3s ease;
+    }
 
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        /* Efek box shadow saat mouse hover, sesuaikan sesuai kebutuhan */
+    }
+</style>
 @section('content')
     <div id="main">
         <div class="page-heading">
