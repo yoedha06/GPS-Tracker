@@ -11,6 +11,8 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            font-family: Arial, sans-serif;
+            /* Menggunakan font family Arial */
         }
 
         .navbar {
@@ -25,6 +27,10 @@
             transform: translate(-50%);
             bottom: 0;
             box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            /* Menambahkan border radius */
+            padding: 0 20px;
+            /* Memberikan padding pada navbar */
         }
 
         .nav-item {
@@ -34,20 +40,31 @@
             text-align: center;
             color: #000000;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 16px;
+            /* Memperbesar ukuran fontsizenya */
+            flex: 1;
+            /* Menyesuaikan ruang setiap item */
+        }
+
+        .nav-item span {
+            margin-top: 5px;
+            /* Memberikan margin atas pada span */
         }
 
         .nav-item img {
             width: 30px;
             height: 30px;
             object-fit: cover;
+            border-radius: 50%;
+            /* Menambahkan border radius */
             margin-bottom: 5px;
         }
 
         .logo img {
-            border-radius: 50%;
             width: 50px;
             height: 50px;
+            border-radius: 50%;
+            /* Menambahkan border radius */
         }
     </style>
 
@@ -182,7 +199,6 @@
                                             </select>
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <div class="col-12">
