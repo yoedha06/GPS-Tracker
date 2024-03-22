@@ -119,46 +119,44 @@ class HistoryController extends Controller
 
 
 
-   
 
-    public function getHistoryByDevice(Request $request, $deviceId)
 
-    {
-        logger('Request for device history. Device ID: ' . $deviceId);
+   public function getHistoryByDevice(Request $request, $deviceId)
+{
+    logger('Request for device history. Device ID: ' . $deviceId);
 
-        // Ensure $deviceId is valid and exists in the devices associated with the authenticated user
-        $user = Auth::user();
-        $device = $user->devices()->where('id_device', $deviceId)->first();
+    // Ensure $deviceId is valid and exists in the devices associated with the authenticated user
+    $user = Auth::user();
+    $device = $user->devices()->where('id_device', $deviceId)->first();
 
-        if (!$device) {
-            return response()->json(['error' => 'Invalid device ID'], 404);
-        }
-
-        // Fetch history records for the specified device with pagination
-        $perPage = $request->query('perPage', 20); // Jumlah data per halaman
-        $history = History::where('device_id', $deviceId)->paginate($perPage);
-
-        logger('History data retrieved:', $history->toArray()); // Convert collection to array
-
-        // Include device information in the JSON response
-        $response = [
-            'device_name' => $device->name,
-            'history' => $history->items(), // Ambil item-item yang ada di halaman tersebut
-            'pagination' => [
-                'total' => $history->total(),
-                'per_page' => $history->perPage(),
-                'current_page' => $history->currentPage(),
-                'last_page' => $history->lastPage(),
-                'from' => $history->firstItem(),
-                'to' => $history->lastItem(),
-            ],
-        ];
-
-        // Log device name directly or convert it to an array
-        logger('Device name:', $device->toArray()); // or logger('Device name: ' . $device->name);
-
-        return response()->json($response);
+    if (!$device) {
+        return response()->json(['error' => 'Invalid device ID'], 404);
     }
+
+    // Fetch history records for the specified device with pagination
+    $perPage = $request->query('perPage', 20); // Jumlah data per halaman
+    $history = History::where('device_id', $deviceId)->paginate($perPage);
+
+    // Include device information and history data in the response
+    $response = [
+        'device_name' => $device->name,
+        'history' => $history->items(), // Ambil item-item yang ada di halaman tersebut
+        'pagination' => [
+            'total' => $history->total(),
+            'per_page' => $history->perPage(),
+            'current_page' => $history->currentPage(),
+            'last_page' => $history->lastPage(),
+            'from' => $history->firstItem(),
+            'to' => $history->lastItem(),
+        ],
+    ];
+
+    // Log device name directly or convert it to an array
+    logger('Device name:', $device->toArray()); // or logger('Device name: ' . $device->name);
+
+    return response()->json($response);
+}
+
 
     public function getRelatedData($userId)
 
@@ -185,36 +183,36 @@ class HistoryController extends Controller
 
 
 
-    public function showMap()
-    {
-        // Mengambil daftar pengguna
-        $users = User::all();
+   public function showMap()
+{
+    // Mengambil daftar pengguna
+    $users = User::all();
 
-        // Mengambil daftar perangkat beserta relasi riwayat terakhir dan pengguna
-        $devices = Device::with('latestHistory', 'user')->get();
+    // Mengambil daftar perangkat beserta relasi riwayat terakhir dan pengguna
+    $devices = Device::with('latestHistory', 'user')->get();
 
-        // Mengambil daftar riwayat
-        $history = History::all();
+    // Mengambil daftar riwayat
+    $history = History::all();
 
-        // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
-        $serialNumbers = $devices->pluck('serial_number', 'id_device');
+    // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
+    $serialNumbers = $devices->pluck('serial_number', 'id_device');
 
-        // Membuat array nama perangkat yang berisi id perangkat sebagai kunci dan nama perangkat sebagai nilai
-        $deviceNames = $devices->pluck('name', 'id_device')->toArray();
+    // Membuat array nama perangkat yang berisi id perangkat sebagai kunci dan nama perangkat sebagai nilai
+    $deviceNames = $devices->pluck('name', 'id_device')->toArray();
 
-        // Membuat array nama pengguna yang berisi id pengguna sebagai kunci dan nama pengguna sebagai nilai
-        $userNames = $users->pluck('name', 'id')->toArray();
+    // Membuat array nama pengguna yang berisi id perangkat sebagai kunci dan nama pengguna sebagai nilai
+    // Menggunakan relasi 'user' untuk mengambil nama pengguna
+    $userNames = $devices->pluck('user.name', 'id_device')->toArray();
 
-        return view('admin.map.index', [
-            'users' => $users, // Mengirim data pengguna ke tampilan
-            'devices' => $devices, // Mengirim data perangkat ke tampilan
-            'history' => $history, // Mengirim data riwayat ke tampilan
-            'serialNumbers' => $serialNumbers, // Mengirim data serial number ke tampilan
-            'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
-            'userNames' => $userNames // Mengirim data nama pengguna ke tampilan
-        ]);
-    }
-
+    return view('admin.map.index', [
+        'users' => $users, // Mengirim data pengguna ke tampilan
+        'devices' => $devices, // Mengirim data perangkat ke tampilan
+        'history' => $history, // Mengirim data riwayat ke tampilan
+        'serialNumbers' => $serialNumbers, // Mengirim data serial number ke tampilan
+        'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
+        'userNames' => $userNames, // Mengirim data nama pengguna ke tampilan
+    ]);
+}
 
 
 

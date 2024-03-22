@@ -122,12 +122,15 @@
                                         <label for="selected_device" class="form-label">Select Device:</label>
                                         <select class="form-select" id="selected_device">
                                             <option value="" selected disabled>Select Device</option>
+                                            <option value="all">All Users</option> <!-- Opsi untuk semua users -->
                                             @foreach ($devices as $device)
-                                                <option value="{{ $device->id }}">{{ $device->name }}</option>
+                                                <option value="{{ $device->id }}">{{ $device->name }} -
+                                                    {{ $device->user->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
@@ -330,8 +333,8 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
-        <!-- Memuat skrip Bootstrap -->
-        <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
+        {{-- <!-- Memuat skrip Bootstrap -->
+        <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script> --}}
 
         <!-- Memuat skrip ApexCharts -->
         <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
@@ -348,8 +351,10 @@
             $(document).ready(function() {
                 // Initial chart data from blade template
                 var historyData = {!! json_encode($historyData) !!};
+
+                // Extract user and device names from history data
                 var categories = historyData.map(function(item) {
-                    return item.name;
+                    return item.user_name + ' - ' + item.device_name; // Combine user and device names
                 });
                 var data = historyData.map(function(item) {
                     return item.count;
@@ -369,12 +374,13 @@
                     },
                     plotOptions: {
                         bar: {
+                            horizontal: false,
                             borderRadius: 10,
                             dataLabels: {
-                                position: 'top', // Menempatkan label di atas bar
-                                offsetY: -20, // Mengatur offset vertical label
+                                position: 'top',
+                                offsetY: -20,
                                 formatter: function(val) {
-                                    return val; // Menampilkan nilai di atas bar
+                                    return val;
                                 }
                             }
                         }
@@ -383,8 +389,7 @@
                         enabled: true,
                         y: {
                             formatter: function(value) {
-                                return 'Jumlah History: ' +
-                                    value; // Menampilkan jumlah history saat mouse di atas bar
+                                return 'Jumlah History: ' + value;
                             }
                         }
                     }
@@ -408,7 +413,7 @@
 
                     $.ajax({
                         method: 'GET',
-                        url: '/customer-chart',
+                        url: '/admin-chart',
                         data: {
                             selected_date: selectedDate, // Kirim data selectedDate ke server
                             selected_device: selectedDevice
@@ -420,25 +425,27 @@
 
                             // Prepare series data for selected device
                             var seriesData = [];
-                            var deviceName = "";
+                            var categories = [];
 
                             // Iterate through each data point
                             chartData.forEach(function(item) {
                                 // Add data only for the selected device if selectedDevice is not empty
                                 // Otherwise, add all data
+                                var category = item.user_name + ' - ' + item.device_name;
+                                categories.push(category);
+
                                 if (!selectedDevice || item.device_name === selectedDevice) {
                                     seriesData.push({
-                                        name: item.device_name,
+                                        name: category,
                                         data: [item.count]
                                     });
-                                    deviceName = item.device_name;
                                 }
                             });
 
                             // Update chart with new data
                             chart.updateOptions({
                                 xaxis: {
-                                    categories: [deviceName] // Use device name as category
+                                    categories: categories
                                 }
                             });
                             chart.updateSeries(seriesData);
@@ -488,6 +495,7 @@
                     });
                 }
 
+
                 // Add event listener for date input change
                 $('#selected_date').change(function() {
                     updateChart();
@@ -498,10 +506,8 @@
                     var selectedDevice = $(this).val();
                     console.log("Selected Device:", selectedDevice);
                     updateChart(selectedDevice);
-
                 });
-
             });
         </script>
-        </body>
-    @endsection
+    </body>
+@endsection

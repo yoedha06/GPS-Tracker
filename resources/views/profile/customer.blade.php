@@ -43,78 +43,81 @@
                                     @endif
                                 </div>
 
-                            <h3 class="mt-3">{{ $user->name }}</h3>
+                                <h3 class="mt-3">{{ $user->name }}</h3>
 
-                            @if ($user->photo)
-                                <form action="{{ route('delete.photo.customer') }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger mt-2">Hapus Foto</button>
-                                </form>
-                            @endif
+                                @if ($user->photo)
+                                    <form action="{{ route('delete.photo.customer') }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger mt-2">Hapus Foto</button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="{{ route('customer.profile.update', $user->id) }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+                                <div class="form-group">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input type="text" name="name" id="name" class="form-control"
+                                        placeholder="Your Name" value="{{ $user->name }}" fdprocessedid="pczq">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" name="username" class="form-control"
+                                        placeholder="Your Username" value="{{ $user->username }}" fdprocessedid="cgz6v"
+                                        style="background-color: #f8f8f8;" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="text" name="email" id="email" class="form-control"
+                                        placeholder="Your Email" value="{{ $user->email }}" fdprocessedid="cgz6v">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="photo" class="form-label">Profile Picture</label>
+                                    <input type="file" name="photo" id="photo" class="form-control"
+                                        accept="image/*">
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary" fdprocessedid="vp6voe">Save
+                                        Changes</button>
+                                    <a href="/customer" class="btn btn-primary">Kembali</a>
+                                </div>
+
+                                <div class="form-group">
+                                    <a href="/logout" class="btn btn-danger">
+                                        <i class="bi bi-box-arrow-left"></i> <!-- Icon untuk logout -->
+                                        Logout
+                                    </a>
+                                </div>
+                                
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-8">
-                <div class="card">
-                    <div class="card-body">
-                        <form action="{{ route('customer.profile.update', $user->id) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <div class="form-group">
-                                <label for="name" class="form-label">Name</label>
-                                <input type="text" name="name" id="name" class="form-control"
-                                    placeholder="Your Name" value="{{ $user->name }}" fdprocessedid="pczq">
-                            </div>
+        </section>
+    </div>
 
-                            <div class="form-group">
-                                <label class="form-label">Username</label>
-                                <input type="text" name="username" class="form-control" placeholder="Your Username"
-                                    value="{{ $user->username }}" fdprocessedid="cgz6v"
-                                    style="background-color: #f8f8f8;" readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="text" name="email" id="email" class="form-control"
-                                    placeholder="Your Email" value="{{ $user->email }}" fdprocessedid="cgz6v">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="photo" class="form-label">Profile Picture</label>
-                                <input type="file" name="photo" id="photo" class="form-control"
-                                    accept="image/*">
-                            </div>
-
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary" fdprocessedid="vp6voe">Save
-                                    Changes</button>
-                                <a href="/customer" class="btn btn-primary">Kembali</a>
-                            </div>
-
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary">
-                                <a href="/logout" class="btn btn-primary">Logout</a></button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <footer>
+        <div class="footer clearfix mb-0 text-muted">
+            <div class="float-start">
+                <p>2024 © BARUDAK CIGS</p>
             </div>
-    </div>
-    </section>
-</div>
-
-<footer>
-    <div class="footer clearfix mb-0 text-muted">
-        <div class="float-start">
-            <p>2024 © BARUDAK CIGS</p>
+            <div class="float-end">
+                <p>Crafted with <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span>
+                    by BARUDAK CIGS</p>
+            </div>
         </div>
-        <div class="float-end">
-            <p>Crafted with <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span>
-                by BARUDAK CIGS</p>
-        </div>
-    </div>
-</footer>
+    </footer>
 </div>
