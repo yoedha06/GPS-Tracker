@@ -121,10 +121,12 @@ class TampilanController extends Controller
                 ->whereDate('history.date_time', $selectedDate);
         })
             ->where('user_id', Auth::id()) // tambahkan kondisi where untuk user_id
+            ->whereNotNull('name') // pastikan hanya memasukkan perangkat dengan nama yang terdefinisi
             ->pluck('name') // Ambil nama perangkat
             ->unique() // Hapus duplikat
             ->values() // Re-indeks array
             ->toArray();
+
 
         return response()->json([
             'data' => $historyDataWithDeviceName,
@@ -132,7 +134,6 @@ class TampilanController extends Controller
             'deviceCount' => $deviceCount
         ]);
     }
-
 
 
     public function grafikadmin(Request $request)
