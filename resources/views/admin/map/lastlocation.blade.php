@@ -2,18 +2,117 @@
 
 <title>GEEX - Last Location</title>
 
-@extends('layouts.navbaradmin')
-
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
 
 <style>
     #map {
-        height: 67%;
-        margin-top: 10px;
+        width: 100%;
+        height: 70%; 
         border-radius: 7px;
     }
+    @media (max-width: 767px) {
+        #map {
+            height: 60%;
+        }
+    }
+    @keyframes pulse {
+        0% {
+            transform: scale(0.9);
+            opacity: 1;
+        }
+        70% {
+            transform: scale(1);
+            opacity: 0.3;
+        }
+        100% {
+            transform: scale(1.2);
+            opacity: 0;
+        }
+    }
+    .pulse {
+        border-radius: 50%;
+        height: 30px;
+        width: 30px;
+        position: absolute;
+        border: 2px solid #007bff;
+        animation: pulse 1s infinite;
+    }
+    #updateLocationButton {
+        display: none; 
+    }
+    .navbarend {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            height: 67px;
+            width: 375px;
+            left: 50%;
+            height: 72px; 
+            padding-top: 7px; 
+            padding-bottom: 7px;
+            padding-right: 7px;
+            padding-left: 7px;
+            position: fixed;
+            transform: translate(-50%);
+            bottom: 0;
+            box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: #000000;
+            text-decoration: none;
+            font-size: 17px;
+            font-weight: normal;
+            /* Memperbesar ukuran fontsizenya */
+            flex: 1;
+            /* Menyesuaikan ruang setiap item */
+        }
+
+        .nav-item span {
+            margin-top: 5px;
+            font-weight: normal;
+            /* Memberikan margin atas pada span */
+        }
+
+        .nav-item img {
+            width: 40px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 50%;
+            /* Menambahkan border radius */
+            margin-bottom: 5px;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            /* Menambahkan border radius */
+        }
+
+        .name {
+            max-width: 100px;
+            /* Sesuaikan dengan lebar maksimum yang Anda inginkan */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .name h6 {
+            font-weight: normal;
+            /* Menghilangkan efek tebal pada teks */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 </style>
 
 @section('content')
@@ -65,7 +164,6 @@
 
         <script>
             $(document).ready(function() {
-                // Initialize Select2
                 $('#user_device').select2();
 
                 function refreshPage() {
@@ -195,7 +293,6 @@
                         alertMessage.show();
                     }
                 });
-                // Initial map setup
                 @foreach ($devices as $device)
                     @if (
                         $device->latestHistory &&
@@ -217,7 +314,6 @@
                         marker.bindPopup(popupContent);
                     @endif
                 @endforeach
-
                 var bounds = L.latLngBounds([
                     @foreach ($devices as $device)
                         @if ($device->latestHistory)
@@ -230,6 +326,46 @@
                 map.fitBounds(bounds);
             });
         </script>
-
     </div>
+    <div class="navbarend">
+        <div class="nav-item">
+            <a href="{{route('lastlocation')}}">
+                <i class="fas fa-map-marker-alt"></i><br>
+                <span>Lastloc</span>
+            </a>
+        </div>
+
+        <div class="nav-item">
+            <a href="{{route('customer.map.index')}}">
+                <i class="bi bi-map-fill"></i><br>
+                <span>Maps</span>
+            </a>
+        </div>
+
+        <div class="nav-item logo">
+            <a href="{{route('index.customer')}}">
+                <img src="/images/g.png" alt="Logo">
+            </a>
+        </div>
+
+        <div class="nav-item">
+            <a href="{{route('customer.device.index')}}">
+                <i class="fas fa-tablet"></i><br>
+                <span>Device</span>
+            </a>
+        </div>
+
+        <div class="nav-item dropdown">
+            <a class="nav-link" href=/customer/profile>
+                <div class="avatar">
+                    <!-- Gambar Profil -->
+                    @if (Auth::user()->photo)
+                        <img src="/photos/{{ Auth::user()->photo }}" alt="User Photo">
+                    @else
+                        <img src="{{ asset('images/default.jpg') }}" alt="Default User Photo">
+                    @endif
+                </div>
+            </a>
+        </div>
+</div>
 @endsection

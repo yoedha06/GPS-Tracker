@@ -311,7 +311,7 @@
 
                 <div class="nav-item">
                     <a href="#">
-                        <i class="bi bi-bar-chart-line"></i>
+                        <i class="bi bi-bar-chart-line"></i><br>
                         <span>Grafik</span>
                     </a>
                 </div>
