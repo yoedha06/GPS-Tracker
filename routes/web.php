@@ -137,7 +137,7 @@ Route::get('/get-device-history/{deviceId}', [HistoryController::class, 'getDevi
 
 Route::get('/filter-data', [HistoryController::class, 'filterData']);
 
-//filter
+//filter Route::get('/fetch_geospatial_data', [MapController::class, 'fetchGeospatialData']);
 // Route::get('/getHistoryByDevice/{deviceId}', [DeviceController::class, 'filter']);
 Route::get('/gethistorybydevice/{deviceId}', [HistoryController::class, 'getHistoryByDevice'])->name('getHistoryByDevice');
 Route::get('/history-filter', [HistoryController::class, 'filterByDate']);

@@ -121,6 +121,8 @@ class HistoryController extends Controller
 
 
 
+
+
    public function getHistoryByDevice(Request $request, $deviceId)
 {
     logger('Request for device history. Device ID: ' . $deviceId);
@@ -137,6 +139,19 @@ class HistoryController extends Controller
     $perPage = $request->query('perPage', 20); // Jumlah data per halaman
     $history = History::where('device_id', $deviceId)->paginate($perPage);
 
+    // Mengubah 'altitude_acuracy' menjadi 'altitude_accuracy' di dalam objek history
+    $history->transform(function ($item, $key) {
+        $itemArray = $item->toArray(); // Mengonversi objek menjadi array
+        $itemArray['altitude_accuracy'] = $item->altitude_acuracy;
+        return $itemArray;
+    });
+
+    // Kemudian hapus atribut 'altitude_acuracy' dari objek history
+    $history->transform(function ($item, $key) {
+        unset($item['altitude_acuracy']);
+        return $item;
+    });
+
     // Include device information and history data in the response
     $response = [
         'device_name' => $device->name,
@@ -151,8 +166,8 @@ class HistoryController extends Controller
         ],
     ];
 
-    // Log device name directly or convert it to an array
-    logger('Device name:', $device->toArray()); // or logger('Device name: ' . $device->name);
+    // Log device name directly atau ubah menjadi array
+    logger('Device name:', $device->toArray()); // atau logger('Device name: ' . $device->name);
 
     return response()->json($response);
 }

@@ -21,7 +21,7 @@
                 <option value="{{ $device->id_device }}">{{ $device->user->name }} - {{ $device->name }}</option>
                 @endforeach
             </select>
-            <button id="reset-btn" class="btn btn-danger btn-sm" style="margin-left: auto;">Reset</button>
+          <button id="reset-btn" class="btn btn-danger btn-sm" style="margin-left: auto;">Reset</button>
         </div>
     </div>
 
@@ -106,6 +106,7 @@
 }
 
 </style>
+
 <script>
   $(document).ready(function() {
             // Initialize Select2
@@ -125,27 +126,27 @@
             //     }
             // });
 
-   $('#reset-btn').on('click', function () {
-    // Mereset nilai Select2 ke null dan memicu perubahan
-    $('#device-select').val(null).trigger('change');
 
+ $('#reset-btn').on('click', function () {
+    // // Mereset nilai Select2 ke null dan memicu perubahan
+    // $('#device-select').val(null).trigger('change');
 
+    // // Hapus semua marker dari peta
+    // map.eachLayer(function (layer) {
+    //     if (layer instanceof L.Marker) {
+    //         map.removeLayer(layer);
+    //     }
+    // });
 
-    // Hapus semua marker dari peta
-    map.eachLayer(function (layer) {
-        if (layer instanceof L.Marker) {
-            map.removeLayer(layer);
-        }
-    });
+    // // Hapus semua garis dari peta
+    // map.eachLayer(function (layer) {
+    //     if (layer instanceof L.Polyline) {
+    //         map.removeLayer(layer);
+    //     }
+    // });
 
-    // Hapus semua garis dari peta
-    map.eachLayer(function (layer) {
-        if (layer instanceof L.Polyline) {
-            map.removeLayer(layer);
-        }
-    });
-
-
+    // Refresh halaman dengan memuat ulang URL
+    location.href = location.href + '?rand=' + Math.random();
 });
 
     var deviceNames = {!! json_encode($deviceNames) !!};
@@ -409,6 +410,7 @@ Object.values(devicePolylines).forEach(polyline => {
 
 
 
+
     // Ikatan popup ke polyline
     polyline.bindPopup(popupContent);
 });
@@ -418,7 +420,28 @@ Object.values(devicePolylines).forEach(polyline => {
         var allMarkers = markers;
         var bounds = L.featureGroup(allMarkers).getBounds();
         map.fitBounds(bounds);
+          // Fly to the new bounds with animation
+    map.flyToBounds(bounds, {
+        animate: true,
+        duration: 2.0, // durasi animasi dalam detik
+        easeLinearity: 0.5 // pengaturan animasi
+    });
     }
+
+  function refreshMap() {
+    // Reset posisi marker dan polyline yang sudah ada
+    markers.forEach(marker => {
+        map.removeLayer(marker);
+    });
+    Object.values(devicePolylines).forEach(polyline => {
+        map.removeLayer(polyline);
+    });
+
+    // Bersihkan array markers dan object devicePolylines
+    markers = [];
+    devicePolylines = {};
+}
+
 
    $('#device-select').change(function () {
     // Dapatkan ID perangkat yang dipilih
@@ -437,15 +460,46 @@ Object.values(devicePolylines).forEach(polyline => {
             map.removeLayer(layer);
         }
     });
-
+    refreshMap();
     // Memfilter peta berdasarkan perangkat yang dipilih
     filterMap(selectedDevice);
+
 });
 
     dateRangePicker.config.onChange.push(function (selectedDates, dateStr, instance) {
-        filterMap();
+         refreshMap();
+          filterMap();
     });
+
 });
 
-    </script>
+</script>
 @endsection
+{{-- //            function refreshMap() {
+//     // Hapus semua marker dan polyline dari peta
+//     map.eachLayer(function(layer) {
+//         if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+//             map.removeLayer(layer);
+//         }
+//     });
+
+//     // Memperbarui peta dengan memanggil filterMap
+//     filterMap();
+// }
+// $(document).ready(function() {
+//     refreshMap();
+// });
+
+// // Fungsi untuk memperbarui peta secara otomatis setiap interval waktu tertentu
+// function startAutoRefresh() {
+//     // Panggil fungsi refreshMap() untuk pembaruan awal
+//     refreshMap();
+
+//     // Atur interval untuk pembaruan otomatis setiap 5 menit (misalnya)
+//     setInterval(refreshMap, 5000); // 300000 milidetik = 5 menit
+// }
+
+// // Panggil fungsi startAutoRefresh() saat dokumen sudah siap
+// $(document).ready(function() {
+//     startAutoRefresh();
+// }); --}}

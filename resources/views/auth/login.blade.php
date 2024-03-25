@@ -12,7 +12,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
+     <style>
         body {
             background-color: whitesmoke;
             overflow: hidden;
@@ -26,16 +26,14 @@
             overflow: hidden;
             border-radius: 1rem 0 0 1rem;
             height: 100%;
-            max-height: 400px;
-            /* Sesuaikan tinggi maksimum sesuai kebutuhan */
+            max-height: 400px; /* Sesuaikan tinggi maksimum sesuai kebutuhan */
         }
 
         .img-container img {
             width: 100%;
-            height: 100%;
+            height: auto;
             object-fit: cover;
-            object-position: center;
-            /* Menambahkan properti object-position */
+            object-position: center; /* Menambahkan properti object-position */
         }
 
         .logo-container {
@@ -57,7 +55,7 @@
         }
 
         .card-body {
-            padding: 4rem 2rem;
+            padding: 2rem;
         }
 
         .form-outline {
@@ -81,8 +79,28 @@
             color: #6c757d;
         }
 
-        .mb-5 {
-            margin-bottom: 3rem !important;
+        @media (max-width: 768px) {
+            .img-container {
+                border-radius: 0;
+            }
+
+            .logo-container {
+                justify-content: center;
+                margin-bottom: 2rem;
+            }
+
+            .logo-container i {
+                font-size: 3rem;
+                margin-right: 0;
+            }
+
+            .logo-container span {
+                font-size: 1.5rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>

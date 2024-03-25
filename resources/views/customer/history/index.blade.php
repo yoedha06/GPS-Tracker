@@ -14,13 +14,17 @@
         }
     }
      .card {
-        margin-bottom: 0;
-    }
+    margin-bottom: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Tambahkan bayangan ke kartu */
+    border: 1px solid #e0e0e0; /* Tambahkan batasan ke kartu */
+}
 
-    .card-body {
-        padding: 1rem;
-    }
+.card-body {
+    padding: 1rem;
+}
+
 </style>
+
 <div id="main">
     <div class="page-heading">
         <div class="page-title">
