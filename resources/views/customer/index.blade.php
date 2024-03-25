@@ -11,7 +11,6 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            font-family: Arial, sans-serif;
             /* Menggunakan font family Arial */
         }
 
@@ -41,6 +40,7 @@
             color: #000000;
             text-decoration: none;
             font-size: 17px;
+            font-weight: normal;
             /* Memperbesar ukuran fontsizenya */
             flex: 1;
             /* Menyesuaikan ruang setiap item */
@@ -48,6 +48,7 @@
 
         .nav-item span {
             margin-top: 5px;
+            font-weight: normal;
             /* Memberikan margin atas pada span */
         }
 
@@ -76,6 +77,8 @@
         }
 
         .name h6 {
+            font-weight: normal;
+            /* Menghilangkan efek tebal pada teks */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -111,7 +114,7 @@
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                         <h6 class="text-muted font-semibold">
-                                                            <h6 class="font-extrabold mb-0">
+                                                            <h6 class="font-bold mb-0">
                                                                 Data Device
                                                                 <h6 class="font-extrabold mb-0">{{ $deviceCount }}</h6>
                                                             </h6>
@@ -135,7 +138,7 @@
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                         <h6 class="text-muted font-semibold">
-                                                            <h6 class="font-extrabold mb-0">
+                                                            <h6 class="font-bold mb-0">
                                                                 Maps History Users
                                                                 {{-- <h6 class="font-extrabold mb-0">{{ $history }}</h6> --}}
                                                             </h6>
@@ -159,7 +162,7 @@
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                         <h6 class="text-muted font-semibold">
-                                                            <h6 class="font-extrabold mb-0">
+                                                            <h6 class="font-bold mb-0">
                                                                 Last Location
                                                             </h6>
                                                         </h6>
@@ -182,7 +185,7 @@
                                                     </div>
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                         <h6 class="text-muted font-semibold">
-                                                            <h6 class="font-extrabold mb-0">
+                                                            <h6 class="font-bold mb-0">
                                                                 History Device
                                                                 {{-- <h6 class="font-extrabold mb-0">{{ $history }}</h6> --}}
                                                             </h6>
@@ -207,7 +210,7 @@
                                             <label for="selected_device" class="form-label">Select Device:</label>
                                             <select class="form-select" id="selected_device">
                                                 <option value="" selected disabled>Select Device</option>
-                                                @foreach ($user->devices as $device)
+                                                @foreach ($devices as $device)
                                                     <option value="{{ $device->id }}">{{ $device->name }}</option>
                                                 @endforeach
                                             </select>
@@ -399,6 +402,7 @@
                     });
 
                     // Chart configuration
+                    // Chart configuration
                     var options = {
                         chart: {
                             type: 'bar'
@@ -430,7 +434,8 @@
                                         value; // Menampilkan jumlah history saat mouse di atas bar
                                 }
                             }
-                        }
+                        },
+                        colors: ['#1f77b4'] // Ubah atau hapus opsi warna untuk mengembalikan ke warna default
                     };
 
                     // Initialize chart
@@ -463,29 +468,29 @@
 
                                 // Prepare series data for selected device
                                 var seriesData = [];
-                                var deviceName = "";
+                                var categories = [];
 
                                 // Iterate through each data point
                                 chartData.forEach(function(item) {
                                     // Add data only for the selected device if selectedDevice is not empty
                                     // Otherwise, add all data
                                     if (!selectedDevice || item.device_name === selectedDevice) {
-                                        seriesData.push({
-                                            name: item.device_name,
-                                            data: [item.count]
-                                        });
-                                        deviceName = item.device_name;
+                                        seriesData.push(item.count);
+                                        categories.push(item.device_name);
                                     }
                                 });
 
                                 // Update chart with new data
                                 chart.updateOptions({
                                     xaxis: {
-                                        categories: [deviceName] // Use device name as category
+                                        categories: categories // Use device names as categories
                                     }
                                 });
-                                chart.updateSeries(seriesData);
+                                chart.updateSeries([{
+                                    data: seriesData
+                                }]);
 
+                                // Show or hide device selection row based on selected date or device
                                 if (selectedDate || selectedDevice) {
                                     $('#device_select_row').show();
                                 } else {
@@ -502,13 +507,11 @@
                                         text: 'Select Device'
                                     }));
 
-                                    // Add device count next to device name in the dropdown
+                                    // Add device options received from the server response
                                     response.deviceOptions.forEach(function(device) {
-                                        var optionText = device + ' (' + response.deviceCount[device] +
-                                            ')';
                                         deviceDropdown.append($('<option>', {
                                             value: device,
-                                            text: optionText // Include device count in option text
+                                            text: device // Use the device name directly as the option text
                                         }));
                                     });
                                 } else {
@@ -522,8 +525,9 @@
                                 // Set selected device option
                                 if (selectedDevice) {
                                     deviceDropdown.val(
-                                        selectedDevice); // Set the selected device as the selected option
+                                    selectedDevice); // Set the selected device as the selected option
                                 }
+
                             },
                             error: function(xhr, status, error) {
                                 console.error(error);

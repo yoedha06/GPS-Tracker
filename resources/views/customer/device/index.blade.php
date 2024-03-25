@@ -241,7 +241,7 @@
                         @csrf
                         @method('DELETE')
                         <div class="modal-body">
-                            <p>Are you sure you want to delete this device?</p>
+                            <p>Jika Kamu Menghapus Device,History Devicenya Akan Terhapus Juga.</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
