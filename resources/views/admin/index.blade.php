@@ -122,7 +122,7 @@
                                             <option value="" selected disabled>Select Device</option>
                                             <option value="all">All Users</option> <!-- Opsi untuk semua users -->
                                             @foreach ($devices as $device)
-                                                <option value="{{ $device->id }}">{{ $device->name }} -
+                                                <option value="{{ $device->id_device }}">{{ $device->name }} -
                                                     {{ $device->user->name }}</option>
                                             @endforeach
                                         </select>
@@ -371,13 +371,12 @@
                     },
                     plotOptions: {
                         bar: {
-                            horizontal: false,
                             borderRadius: 10,
                             dataLabels: {
-                                position: 'top',
-                                offsetY: -20,
+                                position: 'top', // Menempatkan label di atas bar
+                                offsetY: -20, // Mengatur offset vertical label
                                 formatter: function(val) {
-                                    return val;
+                                    return val; // Menampilkan nilai di atas bar
                                 }
                             }
                         }
@@ -386,10 +385,12 @@
                         enabled: true,
                         y: {
                             formatter: function(value) {
-                                return 'Jumlah History: ' + value;
+                                return 'Jumlah History: ' +
+                                    value; // Menampilkan jumlah history saat mouse di atas bar
                             }
                         }
-                    }
+                    },
+                    colors: ['#1f77b4'] // Ubah atau hapus opsi warna untuk mengembalikan ke warna default
                 };
 
                 // Initialize chart
@@ -429,15 +430,16 @@
                                 // Add data only for the selected device if selectedDevice is not empty
                                 // Otherwise, add all data
                                 if (!selectedDevice || item.device_name === selectedDevice) {
+                                    // Combine user and device names
+                                    categories.push(item.user_name + ' - ' + item.device_name);
                                     seriesData.push(item.count);
-                                    categories.push(item.device_name);
                                 }
                             });
 
                             // Update chart with new data
                             chart.updateOptions({
                                 xaxis: {
-                                    categories: categories // Use device names as categories
+                                    categories: categories // Use combined user and device names as categories
                                 }
                             });
                             chart.updateSeries([{
@@ -479,9 +481,8 @@
                             // Set selected device option
                             if (selectedDevice) {
                                 deviceDropdown.val(
-                                    selectedDevice); // Set the selected device as the selected option
+                                selectedDevice); // Set the selected device as the selected option
                             }
-
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
