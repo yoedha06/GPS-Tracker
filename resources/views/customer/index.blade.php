@@ -292,7 +292,7 @@
                     </section>
                 </div> --}}
 
-                        {{-- <footer>
+                        <footer>
                     <div class="footer clearfix mb-0 text-muted">
                         <div class="float-start">
                             <p>2021 &copy; GEEX</p>
@@ -302,7 +302,7 @@
                                     href="#">BARUDAK CIGS</a></p>
                         </div>
                     </div>
-                </footer> --}}
+                </footer>
 
                 </div>
             </div>
@@ -407,7 +407,6 @@
                         return item.count;
                     });
 
-                    // Chart configuration
                     // Chart configuration
                     var options = {
                         chart: {
