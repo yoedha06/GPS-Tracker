@@ -346,7 +346,6 @@
         <!-- Memuat ApexCharts dari CDN -->
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-
         <script>
             $(document).ready(function() {
                 // Initial chart data from blade template
@@ -431,25 +430,23 @@
                             chartData.forEach(function(item) {
                                 // Add data only for the selected device if selectedDevice is not empty
                                 // Otherwise, add all data
-                                var category = item.user_name + ' - ' + item.device_name;
-                                categories.push(category);
-
                                 if (!selectedDevice || item.device_name === selectedDevice) {
-                                    seriesData.push({
-                                        name: category,
-                                        data: [item.count]
-                                    });
+                                    seriesData.push(item.count);
+                                    categories.push(item.device_name);
                                 }
                             });
 
                             // Update chart with new data
                             chart.updateOptions({
                                 xaxis: {
-                                    categories: categories
+                                    categories: categories // Use device names as categories
                                 }
                             });
-                            chart.updateSeries(seriesData);
+                            chart.updateSeries([{
+                                data: seriesData
+                            }]);
 
+                            // Show or hide device selection row based on selected date or device
                             if (selectedDate || selectedDevice) {
                                 $('#device_select_row').show();
                             } else {
@@ -466,13 +463,11 @@
                                     text: 'Select Device'
                                 }));
 
-                                // Add device count next to device name in the dropdown
+                                // Add device options received from the server response
                                 response.deviceOptions.forEach(function(device) {
-                                    var optionText = device + ' (' + response.deviceCount[device] +
-                                        ')';
                                     deviceDropdown.append($('<option>', {
                                         value: device,
-                                        text: optionText // Include device count in option text
+                                        text: device // Use the device name directly as the option text
                                     }));
                                 });
                             } else {
@@ -488,13 +483,13 @@
                                 deviceDropdown.val(
                                     selectedDevice); // Set the selected device as the selected option
                             }
+
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
                         }
                     });
                 }
-
 
                 // Add event listener for date input change
                 $('#selected_date').change(function() {
