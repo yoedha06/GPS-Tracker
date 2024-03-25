@@ -68,6 +68,15 @@
             /* Menambahkan border radius */
         }
 
+        .avatar img {
+            width: 45px;
+            /* Ubah ukuran sesuai kebutuhan */
+            height: 45px;
+            /* Ubah ukuran sesuai kebutuhan */
+            border-radius: 50%;
+            /* Agar gambar menjadi lingkaran */
+        }
+
         .name {
             max-width: 100px;
             /* Sesuaikan dengan lebar maksimum yang Anda inginkan */
@@ -312,6 +321,7 @@
                 <div class="nav-item">
                     <a href="#">
                         <i class="bi bi-bar-chart-line"></i>
+                        <br>
                         <span>Grafik</span>
                     </a>
                 </div>
@@ -327,8 +337,8 @@
                     </a>
                 </div>
 
-                <div class="nav-item dropdown">
-                    <a class="nav-link" href=/customer/profile>
+                <div class="nav-item">
+                    <a class="nav-link" href="/customer/profile">
                         <div class="avatar">
                             <!-- Gambar Profil -->
                             @if (Auth::user()->photo)
@@ -336,10 +346,6 @@
                             @else
                                 <img src="{{ asset('images/default.jpg') }}" alt="Default User Photo">
                             @endif
-                        </div>
-                        <div class="name">
-                            <!-- Nama Pengguna -->
-                            <h6><span>{{ Auth::user()->name }}</span></h6>
                         </div>
                     </a>
                     {{-- <!-- Dropdown Menu -->
@@ -525,7 +531,7 @@
                                 // Set selected device option
                                 if (selectedDevice) {
                                     deviceDropdown.val(
-                                    selectedDevice); // Set the selected device as the selected option
+                                        selectedDevice); // Set the selected device as the selected option
                                 }
 
                             },
