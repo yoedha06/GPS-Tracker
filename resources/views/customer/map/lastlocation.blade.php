@@ -129,6 +129,26 @@
     </a>
 </header> --}}
     <div id="main" style="padding-top: 4px; padding-right: 10px; padding-left: 10px;">
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end" style="padding-left: 7px;
+                        margin-top: 10px;
+                        margin-bottom: -30;">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
+                                        Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-geo-alt-fill"></i> Last
+                                    Location</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
