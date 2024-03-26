@@ -1,4 +1,7 @@
 @extends('layouts.admin')
+
+<title>GEEX - History Maps</title>
+
 @extends('layouts.navbaradmin')
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />

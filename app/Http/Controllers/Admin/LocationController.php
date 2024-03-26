@@ -16,8 +16,10 @@ class LocationController extends Controller
         $devices = Device::with('latestHistory', 'user')->get();
         $users = User::with('devices')->where('role', 'customer')->get();
         $history = History::all();
+        
+        $users = $users->sortBy('name');
 
-        return view('admin.map.lastlocation', compact('devices', 'users','history'));
+        return view('admin.map.lastlocation', compact('devices', 'users', 'history'));
     }
 
     public function getDeviceHistory($deviceId)
@@ -25,8 +27,7 @@ class LocationController extends Controller
         $deviceHistory = History::where('device_id', $deviceId)
             ->with(['device.user', 'device.latestHistory'])
             ->latest()
-            ->limit(1)
-            ->get();
+            ->first();
 
 
         if ($deviceHistory) {
@@ -34,5 +35,13 @@ class LocationController extends Controller
         } else {
             return response()->json(['error' => 'Error fetching device history'], 500);
         }
+    }
+
+    public function getLatestLocation($deviceId)
+    {
+        // Mengambil data lokasi terbaru dari database berdasarkan deviceId
+        $latestLocation = history::where('device_id', $deviceId)->latest()->first();
+
+        return response()->json($latestLocation);
     }
 }
