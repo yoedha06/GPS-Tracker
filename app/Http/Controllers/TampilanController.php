@@ -161,6 +161,7 @@ class TampilanController extends Controller
             return [
                 'user_name' => $userName,
                 'device_name' => optional($item->device)->name,
+                'user_id' => optional(optional($item->device)->user)->id, // Tambahkan id pengguna
                 'count' => $item->count
             ];
         });

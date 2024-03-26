@@ -360,10 +360,10 @@
                                         var marker = L.marker([{{ $history->latitude }}, {{ $history->longitude }}], {icon: customIcon}).addTo(map);
                                         
                                         marker.bindPopup(
-                                            `<center><b>Device: {{ $history->device->name }}</b></center><br>` +
+                                            `<center><b>{{ $history->device->name }}</b></center><br>` +
                                             `<b>Latlng:</b> {{ $history->latitude . ',' . $history->longitude }}<br>` +
-                                            `<b>Plat Nomor:</b> {{ $history->device->plat_nomor }}<br>` +
-                                            `<b>Date Time:</b> {{ $history->date_time }}<br>` +
+                                            `<b>Nopol:</b> {{ $history->device->plat_nomor }}<br>` +
+                                            `<b>LastTime:</b> {{ $history->date_time }}<br>` +
                                             `<img src="{{ asset('storage/' . $history->device->photo) }}" style="width: 199px; height: 127px;">`
                                         );
                                         markers.push(marker); // Tambahkan marker ke dalam array markers
