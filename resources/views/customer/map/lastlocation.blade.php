@@ -321,12 +321,12 @@
                                                     latestLocationCoordinates, { icon: yellowIcon }
                                                 ).addTo(map);
 
-                                                var popupContent = `<center><b>Last location</b></center><br>` +
-                                                                `<b>Device: ${data.name}</b><br>` +
-                                                                `<b>Plat Nomor:</b> ${data.plate_number}<br>` +
-                                                                `<b>Latlng:</b> ${data.latitude}, ${data.longitude}<br>` +
-                                                                `<b>Date Time:</b> ${data.date_time}<br>` +
-                                                                `<img src="{{asset('storage')}}/${data.photo}" style="width: 199px; height: 127px;">`;
+                                                var popupContent = `<center><b style="color: yellow; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" >Latest location</b></center><br>` +
+                                                    `<b>Device: ${data.name}</b><br>` +
+                                                    `<b>Plat Nomor:</b> ${data.plate_number}<br>` +
+                                                    `<b>Latlng:</b> ${data.latitude}, ${data.longitude}<br>` +
+                                                    `<b>Date Time:</b> ${data.date_time}<br>` +
+                                                    `<img src="{{asset('storage')}}/${data.photo}" style="width: 199px; height: 127px;">`;
 
                                                 latestLocationMarker.bindPopup(popupContent).openPopup();
 

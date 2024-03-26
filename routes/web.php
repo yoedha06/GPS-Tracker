@@ -89,9 +89,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/device/{id}', [DeviceController::class, 'destroy'])->name('device.destroy');
         Route::delete('/delete-photo/{id}', [DeviceController::class,'deletePhoto'])->name('delete-photo');
 
-        //lastlocation
-        Route::get('/lastlocation/{deviceId}', [MapController::class, 'getLastLocation']);
-        Route::get('/latestlocation/{deviceId}', [MapController::class, 'getLatestLocation']);
     });
 
     Route::middleware(['role:admin'])->group(function () {
@@ -106,11 +103,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         //device Admin
         Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');
         Route::get('/admin/device/search', [DeviceController::class, 'search'])->name('admin.device.search');
-
-        //lastlocation
-        Route::get('/admin/devices/latest-history', [LocationController::class, 'getAllDevicesLatestHistory']);
-        Route::get('/admin/lastlocation/{deviceId}', [LocationController::class, 'getDeviceHistory']);
-        Route::get('latestlocation/{deviceId}', [LocationController::class, 'getLatestLocation']);
+       
     });
 });
 
@@ -154,6 +147,14 @@ Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
 Route::get('/deviceuser/{id_device}', [MapController::class, 'deviceuser']);
 Route::get('/autoselec\t/{userId}', [LocationController::class, 'autoselect']);
 Route::get('/get-device-history/{deviceId}', [LocationController::class, 'getDeviceHistory']);
+
+//lastlocation
+Route::get('/lastlocation/{deviceId}', [MapController::class, 'getLastLocation']);
+Route::get('/latestlocation/{deviceId}', [MapController::class, 'getLatestLocation']);
+
+Route::get('/admin/devices/latest-history', [LocationController::class, 'getAllDevicesLatestHistory']);
+Route::get('/admin/lastlocation/{deviceId}', [LocationController::class, 'getDeviceHistory']);
+Route::get('latestlocation/{deviceId}', [LocationController::class, 'getLatestLocation']);
 
 
 
