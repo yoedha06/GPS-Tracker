@@ -129,7 +129,7 @@
             </div>
             <div class="sidebar-menu">
                 <ul class="menu">
-                    <li class="sidebar-title active">Menu</li>
+                    <li class="sidebar-title">Menu</li>
                     <hr>
                     <li class="sidebar-item active">
                         <a href="/admin" class='sidebar-link'>
@@ -143,7 +143,7 @@
                             <i class="bi bi-stack"></i>
                             <span>Users</span>
                         </a>
-                        <ul class="submenu active">
+                        <ul class="submenu">
                             <li class="submenu-item">
                                 <a href="{{ route('admin.user') }}">
                                     <i class="fas fa-user"></i> <!-- Ikon user -->
@@ -163,7 +163,7 @@
                             <i class="bi bi-map-fill"></i>
                             <span>Map</span>
                         </a>
-                        <ul class="submenu active">
+                        <ul class="submenu">
                             <li class="submenu-item ">
                                 <a href="{{ route('admin.map') }}">
                                     <i class="bi bi-clock-fill"></i>

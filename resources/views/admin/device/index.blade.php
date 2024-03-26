@@ -1,4 +1,7 @@
 @extends('layouts.admin')
+
+<title>GEEX - Data Device</title>
+
 @extends('layouts.navbaradmin')
 
 @section('content')

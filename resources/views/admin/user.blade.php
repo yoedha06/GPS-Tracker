@@ -1,4 +1,7 @@
 @extends('layouts.admin')
+
+<title>GEEX - Data User</title>
+
 @extends('layouts.navbaradmin')
 @section('content')
     <div id="main">

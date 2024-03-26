@@ -82,25 +82,24 @@ class MapController extends Controller
     public function getLatestLocation($deviceId)
     {
         
-        $location = History::where('device_id', $deviceId)
-            ->orderBy('date_time', 'desc')
+        $latestLocation = History::where('device_id', $deviceId)
+            ->latest()
             ->first();
 
-            if ($location) {
-                $device = Device::find($location->device_id);
+        if ($latestLocation) {
+            $device = Device::find($latestLocation->device_id);
     
-                if ($device) {
-                    $location->name = $device->name;
-                    $location->plate_number = $device->plat_nomor;
-                    $location->photo = $device->photo;
-                }
-    
-                return response()->json($location);
-    
-            } 
-            else {
-                return response()->json(['error' => 'Location not found'], 404);
+            if ($device) {
+                $latestLocation->name = $device->name;
+                $latestLocation->plate_number = $device->plat_nomor;
+                $latestLocation->photo = $device->photo;
             }
+            return response()->json($latestLocation);
+        }
+        else {
+            return response()->json(['error' => 'Location not found'], 404);
+        }
+        
     }
 
 }
