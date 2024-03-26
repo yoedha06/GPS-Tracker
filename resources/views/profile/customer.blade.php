@@ -68,6 +68,11 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group">
+                                    <label for="name" class="form-label">Role</label>
+                                    <input type="text" name="name" id="name" class="form-control"
+                                        placeholder="Your Name" value="{{ $user->role }}" fdprocessedid="pczq" readonly>
+                                </div>
+                                <div class="form-group">
                                     <label for="name" class="form-label">Name</label>
                                     <input type="text" name="name" id="name" class="form-control"
                                         placeholder="Your Name" value="{{ $user->name }}" fdprocessedid="pczq">

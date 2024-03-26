@@ -17,7 +17,8 @@ class TampilanController extends Controller
         // Dapatkan pengguna yang saat ini masuk
         $user = Auth::user();
 
-        $history = History::count();
+        // Hitung jumlah history keseluruhan
+        $historyTotal = History::count();
 
         // Hitung jumlah perangkat yang dimiliki oleh pengguna tersebut
         $deviceCount = $user->devices()->count();
@@ -29,11 +30,15 @@ class TampilanController extends Controller
             ->groupBy('history.device_id', 'device.name')
             ->get();
 
+        // Jumlahkan total history perangkat pengguna
+        $totalHistoryPerDevice = $historyData->sum('count');
+
         // Ambil daftar perangkat yang dimiliki oleh pengguna
         $devices = $user->devices;
 
-        return view('customer.index', compact('user', 'deviceCount', 'historyData', 'devices', 'history'));
+        return view('customer.index', compact('user', 'deviceCount', 'historyData', 'devices', 'historyTotal', 'totalHistoryPerDevice'));
     }
+
 
     public function admin()
     {
