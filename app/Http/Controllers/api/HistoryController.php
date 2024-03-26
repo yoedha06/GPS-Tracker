@@ -70,13 +70,19 @@ class HistoryController extends Controller
 
         $date_time = Carbon::parse($request->date_time)->format('Y-m-d H:i:s');
 
+        $accuracy = floatval($request->accuracy);
+        if ($accuracy >= 100) {
+            $accuracy  /= 100;
+        } elseif ($accuracy <= 99) {
+            $accuracy /= 10;
+        }
 
         $history = History::create([
             'device_id' => $device->id_device,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
             // 'bounds' => $request->bounds,
-            'accuracy' => floatval($request->accuracy),
+            'accuracy' => $accuracy,
             'altitude' => floatval($request->altitude),
             'altitude_acuracy' => $request->altitude_acuracy,
             'heading' => floatval($request->heading),
