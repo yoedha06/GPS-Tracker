@@ -71,11 +71,11 @@ class HistoryController extends Controller
         $date_time = Carbon::parse($request->date_time)->format('Y-m-d H:i:s');
 
         $accuracy = floatval($request->accuracy);
-        if ($accuracy >= 100) {
+        if ($accuracy <= 999) {
             $accuracy  /= 100;
-        } elseif ($accuracy <= 99) {
-            $accuracy /= 10;
         }
+
+        $accuracy = number_format($accuracy, 2, '.', '');
 
         $history = History::create([
             'device_id' => $device->id_device,
