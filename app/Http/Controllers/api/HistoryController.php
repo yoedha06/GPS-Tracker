@@ -29,9 +29,7 @@ class HistoryController extends Controller
     public function store(Request $request)
     {
         $requestData = $request->all();
-
         // Validasi tambahan untuk memeriksa nilai "none"
-
         if ($requestData['latitude'] == 'none' || $requestData['longitude'] == 'none' || $requestData['altitude'] == 'none' || $requestData['speeds'] == 'none') {
             return response()->json(['error' => 'Nilai latitude, longitude, dan altitude tidak boleh bernilai none'], 401);
         } elseif ($requestData['latitude'] == null || $requestData['longitude'] == null || $requestData['altitude'] == null || $requestData['speeds'] == null) {
