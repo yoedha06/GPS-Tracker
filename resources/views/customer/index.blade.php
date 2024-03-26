@@ -195,8 +195,9 @@
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                         <h6 class="text-muted font-semibold">
                                                             <h6 class="font-bold mb-0">
-                                                                History 
-                                                                <h6 class="font-extrabold mb-0">{{ $totalHistoryPerDevice }}</h6>
+                                                                History
+                                                                <h6 class="font-extrabold mb-0">{{ $totalHistoryPerDevice }}
+                                                                </h6>
                                                             </h6>
                                                         </h6>
                                                     </div>
@@ -293,16 +294,16 @@
                 </div> --}}
 
                         <footer>
-                    <div class="footer clearfix mb-0 text-muted">
-                        <div class="float-start">
-                            <p>2021 &copy; GEEX</p>
-                        </div>
-                        <div class="float-end">
-                            <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                    href="#">BARUDAK CIGS</a></p>
-                        </div>
-                    </div>
-                </footer>
+                            <div class="footer clearfix mb-0 text-muted">
+                                <div class="float-start">
+                                    <p>2021 &copy; GEEX</p>
+                                </div>
+                                <div class="float-end">
+                                    <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
+                                            href="#">BARUDAK CIGS</a></p>
+                                </div>
+                            </div>
+                        </footer>
 
                 </div>
             </div>
@@ -312,28 +313,30 @@
 
             <div class="navbar">
                 <div class="nav-item">
-                    <a href="#">
-                        <i class="bi bi-house-door"></i>
-                        <span>Beranda</span>
+                    <a href="customer/lastlocation">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>LastLoc</span>
                     </a>
                 </div>
 
                 <div class="nav-item">
-                    <a href="#">
-                        <i class="bi bi-bar-chart-line"></i>
+                    <a href="customer/map">
+                        <i class="bi bi-map-fill"></i>
                         <br>
-                        <span>Grafik</span>
+                        <span>Maps</span>
                     </a>
                 </div>
 
                 <div class="nav-item logo">
-                    <img src="/images/g.png" alt="Logo">
+                    <a href="#">
+                        <img src="/images/g.png" alt="Logo">
+                    </a>
                 </div>
 
                 <div class="nav-item">
-                    <a href="#">
-                        <i class="bi bi-telephone-fill"></i>
-                        <span>Contact</span>
+                    <a href="customer/device">
+                        <i class="bi bi-ev-front-fill"></i>
+                        <span>Device</span>
                     </a>
                 </div>
 
@@ -470,7 +473,7 @@
                                 console.log("Response Data:", response);
 
                                 var chartData = response.data || [];
-
+                                
                                 // Prepare series data for selected device
                                 var seriesData = [];
                                 var categories = [];
@@ -495,6 +498,27 @@
                                     data: seriesData
                                 }]);
 
+                                // Update plot options based on the number of data points
+                                if (chartData.length === 1) {
+                                    // If there is only one data point, reduce the bar width
+                                    chart.updateOptions({
+                                        plotOptions: {
+                                            bar: {
+                                                columnWidth: '30%' // Adjust columnWidth as needed
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    // If there are multiple data points, reset the plot options to default
+                                    chart.updateOptions({
+                                        plotOptions: {
+                                            bar: {
+                                                columnWidth: '80%' // Set the default columnWidth
+                                            }
+                                        }
+                                    });
+                                }
+
                                 // Show or hide device selection row based on selected date or device
                                 if (selectedDate || selectedDevice) {
                                     $('#device_select_row').show();
@@ -509,7 +533,7 @@
                                 if (response.deviceOptions.length > 0) {
                                     deviceDropdown.append($('<option>', {
                                         value: '', // Empty value
-                                        text: 'Select Device'
+                                        text: 'All History Device'
                                     }));
 
                                     // Add device options received from the server response
@@ -530,7 +554,7 @@
                                 // Set selected device option
                                 if (selectedDevice) {
                                     deviceDropdown.val(
-                                        selectedDevice); // Set the selected device as the selected option
+                                    selectedDevice); // Set the selected device as the selected option
                                 }
 
                             },
