@@ -24,7 +24,7 @@
 @section('content')
 <div id="main">
     <div class="form-group ml-3" style="display: flex; flex-direction: column; width: 100%;">
-        <label for="device-select">Select Device:</label>
+        <label for="device-select">Select Devicee:</label>
         <div class="d-flex">
             <select id="device-select" class="form-select input" style="width: 100%;">
                 <option value="" disabled selected>Select Device</option>
@@ -131,13 +131,6 @@
                 }
             });
 
-            // Add change event listener
-            // $('#device-select').on('change', function() {
-            //     var selectedValue = $(this).val();
-            //     if (!selectedValue) {
-            //         alert('Device not selected!');
-            //     }
-            // });
 
 
  $('#reset-btn').on('click', function () {
@@ -441,19 +434,7 @@ Object.values(devicePolylines).forEach(polyline => {
     });
     }
 
-  function refreshMap() {
-    // Reset posisi marker dan polyline yang sudah ada
-    markers.forEach(marker => {
-        map.removeLayer(marker);
-    });
-    Object.values(devicePolylines).forEach(polyline => {
-        map.removeLayer(polyline);
-    });
 
-    // Bersihkan array markers dan object devicePolylines
-    markers = [];
-    devicePolylines = {};
-}
 
 
    $('#device-select').change(function () {
@@ -473,14 +454,15 @@ Object.values(devicePolylines).forEach(polyline => {
             map.removeLayer(layer);
         }
     });
-    refreshMap();
+
     // Memfilter peta berdasarkan perangkat yang dipilih
     filterMap(selectedDevice);
 
 });
 
+
     dateRangePicker.config.onChange.push(function (selectedDates, dateStr, instance) {
-         refreshMap();
+
           filterMap();
     });
 });

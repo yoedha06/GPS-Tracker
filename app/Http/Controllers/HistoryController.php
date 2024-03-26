@@ -34,7 +34,7 @@ class HistoryController extends Controller
             ->join('device', 'history.device_id', '=', 'device.id_device')
             ->orderBy('device.name', 'asc') // Order by device name in ascending order
             ->orderBy('date_time', 'desc')    // Then order by date_time in descending order
-            ->paginate(10);
+            ->paginate(6);
 
 
         return view('customer.history.index', ['history' => $history, 'devices' => $devices]);

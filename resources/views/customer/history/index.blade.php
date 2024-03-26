@@ -1,5 +1,6 @@
 @extends('layouts.customer')
 
+
 <title>GEEX - History</title>
 
 @section('content')
@@ -12,28 +13,15 @@
             padding-left: 15px;
         }
     }
-    .card {
-        margin-bottom: 0;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Tambahkan bayangan ke kartu */
-        border: 1px solid #e0e0e0; /* Tambahkan batasan ke kartu */
-    }
+     .card {
+    margin-bottom: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Tambahkan bayangan ke kartu */
+    border: 1px solid #e0e0e0; /* Tambahkan batasan ke kartu */
+}
 
-    .card-body {
-        padding: 1rem;
-    }
-
-    /* Atur tombol float */
-    .float-right {
-        float: right;
-    }
-    .float-left {
-        float: left;
-    }
-    /* Padding untuk tombol */
-    .btn-padding {
-        padding-right: 10px;
-        padding-left: 10px;
-    }
+.card-body {
+    padding: 1rem;
+}
 
 </style>
 
@@ -46,7 +34,8 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
+                            <li class="breadcrumb-item"><a href="/customer"><i
+                                        class="fas fa-tachometer-alt"></i>
                                     Dashboard</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-history"></i>History
                             </li>
@@ -67,8 +56,8 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-6 mb-2">
-                <button id="refreshButton" class="btn btn-primary float-left btn-padding">
+            <div class="col-md-6 mb-2" style="margin-left:-10px;">
+                <button id="refreshButton" class="btn btn-primary">
                     <p style="margin: -4px;"><i class="fas fa-eye"></i>&nbsp; Lihat Semua History</p>
                 </button>
             </div>
@@ -89,31 +78,34 @@
                     <div class="col">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">{{ optional($h->device)->name }}</h5>
-                                <p class="card-text">
-                                    Latitude: {{ $h->latitude }}<br>
-                                    Longitude: {{ $h->longitude }}<br>
-                                    Bounds: {{ $h->bounds }}<br>
-                                    Accuracy: {{ $h->accuracy }}<br>
-                                    Altitude: {{ $h->altitude }}<br>
-                                    Altitude Accuracy: {{ $h->altitude_acuracy }}<br>
-                                    Heading: {{ $h->heading }}<br>
-                                    Speeds: {{ $h->speeds }}<br>
-                                    Time: {{ $h->date_time }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                @else
-                <p>Data not available, sorry.</p>
-                @endif
-            </div>
+    <h5 class="card-title">{{ optional($h->device)->name }}</h5>
+    <p class="card-text">
+        Latitude: {{ $h->latitude }}<br>
+        Longitude: {{ $h->longitude }}<br>
+        Bounds: {{ $h->bounds }}<br>
+        Accuracy: {{ $h->accuracy }}<br>
+        Altitude: {{ $h->altitude }}<br>
+        Altitude Accuracy: {{ $h->altitude_acuracy }}<br>
+        Heading: {{ $h->heading }}<br>
+        Speeds: {{ $h->speeds }}<br>
+        Time: {{ $h->date_time }}
+    </p>
+    </div>
+
+    </div>
+    </div>
+    @endforeach
+    </div>
+    @else
+    <p>Data not available, sorryy.</p>
+
+    @endif
+    </div>
+    {{ $history->links('vendor.pagination.bootstrap-5') }}
         </div>
+
+            </div>
     </section>
-    <!-- Letakkan link pagination di sini -->
-    {{ $history->links() }}
     <footer>
         <div class="footer clearfix mb-0 text-muted">
             <div class="float-start">
@@ -138,7 +130,7 @@
 
 <script>
   $(document).ready(function() {
-    var currentPage = 1; // Halaman saat ini
+
 
     // Inisialisasi Select2
     $('#selectDevice').select2();
@@ -158,26 +150,6 @@
             $('.row-cols-1').empty();
         }
     });
-
-    // Tambahkan event listener untuk tombol Next
-    $('#nextPage').on('click', function() {
-        currentPage++;
-        var selectedDeviceId = $('#selectDevice').val();
-        getDataByDevice(selectedDeviceId, currentPage);
-    });
-
-    // Tambahkan event listener untuk tombol Previous
-    $('#prevPage').on('click', function() {
-        if (currentPage > 1) {
-            currentPage--;
-            var selectedDeviceId = $('#selectDevice').val();
-            getDataByDevice(selectedDeviceId, currentPage);
-        }
-    });
-
-    // Fungsi getDataByDevice diperbarui untuk memperhitungkan halaman yang dipilih
-    function getDataByDevice(deviceId, page) {
-    var perPage = 10; // Mengatur jumlah data per halaman
 
     $.ajax({
         url: '/gethistorybydevice/' + deviceId,
@@ -227,6 +199,21 @@
         }
     });
 }
+
+function updatePaginationButtons(pagination) {
+    if (pagination.current_page == 1) {
+        $('#prevPage').prop('disabled', true);
+    } else {
+        $('#prevPage').prop('disabled', false);
+    }
+
+    if (pagination.current_page == pagination.last_page) {
+        $('#nextPage').prop('disabled', true);
+    } else {
+        $('#nextPage').prop('disabled', false);
+    }
+}
+
 
     function showValidationMessage(message, isError = false) {
         var validationMessage = $("#validationMessage");
