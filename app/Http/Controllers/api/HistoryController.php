@@ -15,11 +15,10 @@ class HistoryController extends Controller
      */
     public function index()
     {
-        $history = History::all();
         return response()->json([
             'status' => true,
             'message' => 'success',
-            'data' => $history
+            'data' => History::all()
         ]);
     }
 
@@ -29,7 +28,17 @@ class HistoryController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi input
+        $requestData = $request->all();
+
+        // Validasi tambahan untuk memeriksa nilai "none"
+
+        if ($requestData['latitude'] == 'none' || $requestData['longitude'] == 'none' || $requestData['altitude'] == 'none' || $requestData['speeds'] == 'none') {
+            return response()->json(['error' => 'Nilai latitude, longitude, dan altitude tidak boleh bernilai none'], 401);
+        } elseif ($requestData['latitude'] == null || $requestData['longitude'] == null || $requestData['altitude'] == null || $requestData['speeds'] == null) {
+            return response()->json(['error' => 'Nilai latitude, longitude, dan altitude tidak boleh bernilai null'], 402);
+        }
+
+        // Validasi input}
         $request->validate([
             'serial_number' => 'required',
             'latitude' => 'required',
@@ -69,7 +78,7 @@ class HistoryController extends Controller
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
             // 'bounds' => $request->bounds,
-            'accuracy' => $request->accuracy,
+            'accuracy' => floatval($request->accuracy),
             'altitude' => floatval($request->altitude),
             'altitude_acuracy' => $request->altitude_acuracy,
             'heading' => floatval($request->heading),
