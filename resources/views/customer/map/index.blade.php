@@ -2,18 +2,29 @@
 @extends('layouts.navbarcustomer')
 
         <title>GEEX - Maps</title>
-
-
+<!-- Load Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<!-- Load Bootstrap Datepicker CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+<!-- Load Select2 CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+
+<!-- Load Select2 CSS (version 4.1.0-rc.0) -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Load Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Load Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 
 @section('content')
 <div id="main">
     <div class="form-group ml-3" style="display: flex; flex-direction: column; width: 100%;">
-        <label for="device-select">Select Device:</label>
+        <label for="device-select">Select Devicee:</label>
         <div class="d-flex">
             <select id="device-select" class="form-select input" style="width: 100%;">
                 <option value="" disabled selected>Select Device</option>
@@ -21,7 +32,7 @@
                 <option value="{{ $device->id_device }}">{{ $device->user->name }} - {{ $device->name }}</option>
                 @endforeach
             </select>
-            <button id="reset-btn" class="btn btn-danger btn-sm" style="margin-left: auto;">Reset</button>
+          <button id="reset-btn" class="btn btn-danger btn-sm" style="margin-left: auto;">Reset</button>
         </div>
     </div>
 
@@ -44,15 +55,17 @@
     <div id="map" style="height: 50%; width: 100%;"></div>
 </div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Load jQuery first -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<!-- Include Select2 JS -->
 
+<!-- Then load Bootstrap's JavaScript files -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.animatedmarker/src/AnimatedMarker.js"></script>
-<script src="https://unpkg.com/leaflet.animatedmarker/src/AnimatedMarker.js"></script>
+
+
 <style>
     .date-time-input {
         display: flex;
@@ -106,6 +119,7 @@
 }
 
 </style>
+
 <script>
   $(document).ready(function() {
             // Initialize Select2
@@ -117,35 +131,28 @@
                 }
             });
 
-            // Add change event listener
-            // $('#device-select').on('change', function() {
-            //     var selectedValue = $(this).val();
-            //     if (!selectedValue) {
-            //         alert('Device not selected!');
-            //     }
-            // });
-
-   $('#reset-btn').on('click', function () {
-    // Mereset nilai Select2 ke null dan memicu perubahan
-    $('#device-select').val(null).trigger('change');
 
 
+ $('#reset-btn').on('click', function () {
+    // // Mereset nilai Select2 ke null dan memicu perubahan
+    // $('#device-select').val(null).trigger('change');
 
-    // Hapus semua marker dari peta
-    map.eachLayer(function (layer) {
-        if (layer instanceof L.Marker) {
-            map.removeLayer(layer);
-        }
-    });
+    // // Hapus semua marker dari peta
+    // map.eachLayer(function (layer) {
+    //     if (layer instanceof L.Marker) {
+    //         map.removeLayer(layer);
+    //     }
+    // });
 
-    // Hapus semua garis dari peta
-    map.eachLayer(function (layer) {
-        if (layer instanceof L.Polyline) {
-            map.removeLayer(layer);
-        }
-    });
+    // // Hapus semua garis dari peta
+    // map.eachLayer(function (layer) {
+    //     if (layer instanceof L.Polyline) {
+    //         map.removeLayer(layer);
+    //     }
+    // });
 
-
+    // Refresh halaman dengan memuat ulang URL
+    location.href = location.href + '?rand=' + Math.random();
 });
 
     var deviceNames = {!! json_encode($deviceNames) !!};
@@ -401,11 +408,12 @@ Object.values(devicePolylines).forEach(polyline => {
         opacity = 0.3;   // Set opasitas ke 0.1 jika akurasi di atas 20 (sangat transparan)
     }
 
-    polyline.setStyle({
-        color: color,       // Set color
-        weight: weight, // Set thickness based on accuracy
-        opacity: opacity    // Set opacity based on accuracy
-    });
+ polyline.setStyle({
+    color: color,       // Set warna
+    weight: weight,     // Set ketebalan garis
+    opacity: opacity    // Set kejernihan garis
+});
+
 
 
 
@@ -418,7 +426,16 @@ Object.values(devicePolylines).forEach(polyline => {
         var allMarkers = markers;
         var bounds = L.featureGroup(allMarkers).getBounds();
         map.fitBounds(bounds);
+          // Fly to the new bounds with animation
+    map.flyToBounds(bounds, {
+        animate: true,
+        duration: 2.0, // durasi animasi dalam detik
+        easeLinearity: 0.5 // pengaturan animasi
+    });
     }
+
+
+
 
    $('#device-select').change(function () {
     // Dapatkan ID perangkat yang dipilih
@@ -440,12 +457,15 @@ Object.values(devicePolylines).forEach(polyline => {
 
     // Memfilter peta berdasarkan perangkat yang dipilih
     filterMap(selectedDevice);
+
 });
 
+
     dateRangePicker.config.onChange.push(function (selectedDates, dateStr, instance) {
-        filterMap();
+
+          filterMap();
     });
 });
 
-    </script>
+</script>
 @endsection

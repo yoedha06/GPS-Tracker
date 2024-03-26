@@ -34,7 +34,7 @@ class HistoryController extends Controller
             ->join('device', 'history.device_id', '=', 'device.id_device')
             ->orderBy('device.name', 'asc') // Order by device name in ascending order
             ->orderBy('date_time', 'desc')    // Then order by date_time in descending order
-            ->paginate(20);
+            ->paginate(6);
 
 
         return view('customer.history.index', ['history' => $history, 'devices' => $devices]);
@@ -121,6 +121,8 @@ class HistoryController extends Controller
 
 
 
+
+
    public function getHistoryByDevice(Request $request, $deviceId)
 {
     logger('Request for device history. Device ID: ' . $deviceId);
@@ -137,6 +139,19 @@ class HistoryController extends Controller
     $perPage = $request->query('perPage', 20); // Jumlah data per halaman
     $history = History::where('device_id', $deviceId)->paginate($perPage);
 
+    // Mengubah 'altitude_acuracy' menjadi 'altitude_accuracy' di dalam objek history
+    $history->transform(function ($item, $key) {
+        $itemArray = $item->toArray(); // Mengonversi objek menjadi array
+        $itemArray['altitude_accuracy'] = $item->altitude_acuracy;
+        return $itemArray;
+    });
+
+    // Kemudian hapus atribut 'altitude_acuracy' dari objek history
+    $history->transform(function ($item, $key) {
+        unset($item['altitude_acuracy']);
+        return $item;
+    });
+
     // Include device information and history data in the response
     $response = [
         'device_name' => $device->name,
@@ -151,8 +166,8 @@ class HistoryController extends Controller
         ],
     ];
 
-    // Log device name directly or convert it to an array
-    logger('Device name:', $device->toArray()); // or logger('Device name: ' . $device->name);
+    // Log device name directly atau ubah menjadi array
+    logger('Device name:', $device->toArray()); // atau logger('Device name: ' . $device->name);
 
     return response()->json($response);
 }
@@ -273,4 +288,18 @@ class HistoryController extends Controller
 
         return response()->json($formattedData);
     }
+
+    public function fetchLatestData()
+   {
+    try {
+        // Ambil data terbaru dari tabel history
+        $latestData = History::latest()->get(); // Misalnya, mengambil semua data terbaru
+
+        // Kembalikan data sebagai respons JSON
+        return response()->json(['data' => $latestData]);
+    } catch (\Exception $e) {
+        // Tangani jika terjadi kesalahan saat mengambil data dari tabel history
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
 }

@@ -14,13 +14,17 @@
         }
     }
      .card {
-        margin-bottom: 0;
-    }
+    margin-bottom: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Tambahkan bayangan ke kartu */
+    border: 1px solid #e0e0e0; /* Tambahkan batasan ke kartu */
+}
 
-    .card-body {
-        padding: 1rem;
-    }
+.card-body {
+    padding: 1rem;
+}
+
 </style>
+
 <div id="main">
     <div class="page-heading">
         <div class="page-title">
@@ -86,17 +90,21 @@
         Speeds: {{ $h->speeds }}<br>
         Time: {{ $h->date_time }}
     </p>
-</div>
+    </div>
 
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                @else
-                <p>Data not available, sorry.</p>
-                @endif
-            </div>
+    </div>
+    </div>
+    @endforeach
+    </div>
+    @else
+    <p>Data not available, sorryy.</p>
+
+    @endif
+    </div>
+    {{ $history->links('vendor.pagination.bootstrap-5') }}
         </div>
+
+            </div>
     </section>
     <footer>
         <div class="footer clearfix mb-0 text-muted">
@@ -122,7 +130,7 @@
 
 <script>
   $(document).ready(function() {
-    var currentPage = 1; // Halaman saat ini
+
 
     // Inisialisasi Select2
     $('#selectDevice').select2();
@@ -143,68 +151,69 @@
         }
     });
 
-    // Tambahkan event listener untuk tombol Next
-    $('#nextPage').on('click', function() {
-        currentPage++;
-        var selectedDeviceId = $('#selectDevice').val();
-        getDataByDevice(selectedDeviceId, currentPage);
-    });
-
-    // Tambahkan event listener untuk tombol Previous
-    $('#prevPage').on('click', function() {
-        if (currentPage > 1) {
-            currentPage--;
-            var selectedDeviceId = $('#selectDevice').val();
-            getDataByDevice(selectedDeviceId, currentPage);
-        }
-    });
-
-    // Fungsi getDataByDevice diperbarui untuk memperhitungkan halaman yang dipilih
-    function getDataByDevice(deviceId, page) {
     $.ajax({
-    url: '/gethistorybydevice/' + deviceId,
-    method: 'GET',
-    data: {
-        page: page
-    },
-    success: function(response) {
-        $('.row-cols-1').empty();
+        url: '/gethistorybydevice/' + deviceId,
+        method: 'GET',
+        data: {
+            page: page,
+            perPage: perPage // Mengirimkan jumlah data per halaman ke server
+        },
+        success: function(response) {
+            $('.row-cols-1').empty();
 
-        if (response.history.length > 0) {
-            $.each(response.history, function(index, history) {
-                var cardHtml = `
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">${response.device_name}</h5>
-                                <p class="card-text">Latitude: ${history.latitude}<br>
-                                Longitude: ${history.longitude}<br>
-                                Bounds: ${history.bounds}<br>
-                                Accuracy: ${history.accuracy}<br>
-                                Altitude: ${history.altitude}<br>
-                                Altitude Accuracy: ${history.altitude_accuracy}<br>
-                                Heading: ${history.heading}<br>
-                                Speeds: ${history.speeds}<br>
-                                Time: ${history.date_time}</p>
+            if (response.history.length > 0) {
+                $.each(response.history, function(index, history) {
+                    var cardHtml = `
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">${response.device_name}</h5>
+                                    <p class="card-text">Latitude: ${history.latitude}<br>
+                                    Longitude: ${history.longitude}<br>
+                                    Bounds: ${history.bounds}<br>
+                                    Accuracy: ${history.accuracy}<br>
+                                    Altitude: ${history.altitude}<br>
+                                    Altitude Accuracy: ${history.altitude_accuracy}<br>
+                                    Heading: ${history.heading}<br>
+                                    Speeds: ${history.speeds}<br>
+                                    Time: ${history.date_time}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
 
-                $('.row-cols-1').append(cardHtml);
-            });
+                    $('.row-cols-1').append(cardHtml);
+                });
 
-            showValidationMessage('Device selected successfully!');
-        } else {
-            showValidationMessage('No history data found for the selected device.');
+                showValidationMessage('Device selected successfully!');
+            } else {
+                showValidationMessage('No history data found for the selected device.');
+            }
+
+            // Update pagination buttons
+            updatePaginationButtons(response.pagination);
+        },
+        error: function(error) {
+            console.error('Error fetching history data:', error);
+            showValidationMessage('Error fetching history data. Please try again.', true);
         }
-    },
-    error: function(error) {
-        console.error('Error fetching history data:', error);
-        showValidationMessage('Error fetching history data. Please try again.', true);
+    });
+}
+
+function updatePaginationButtons(pagination) {
+    if (pagination.current_page == 1) {
+        $('#prevPage').prop('disabled', true);
+    } else {
+        $('#prevPage').prop('disabled', false);
     }
-});
+
+    if (pagination.current_page == pagination.last_page) {
+        $('#nextPage').prop('disabled', true);
+    } else {
+        $('#nextPage').prop('disabled', false);
     }
+}
+
 
     function showValidationMessage(message, isError = false) {
         var validationMessage = $("#validationMessage");
