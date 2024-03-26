@@ -82,13 +82,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
         //device Customer
-
         Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
         Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
         Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
         Route::put('/device/{id_device}', [DeviceController::class, 'update'])->name('device.update');
         Route::delete('/device/{id}', [DeviceController::class, 'destroy'])->name('device.destroy');
         Route::delete('/delete-photo/{id}', [DeviceController::class,'deletePhoto'])->name('delete-photo');
+
     });
 
     Route::middleware(['role:admin'])->group(function () {
@@ -103,6 +103,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         //device Admin
         Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');
         Route::get('/admin/device/search', [DeviceController::class, 'search'])->name('admin.device.search');
+       
     });
 });
 
@@ -147,11 +148,16 @@ Route::get('/deviceuser/{id_device}', [MapController::class, 'deviceuser']);
 Route::get('/autoselec\t/{userId}', [LocationController::class, 'autoselect']);
 Route::get('/get-device-history/{deviceId}', [LocationController::class, 'getDeviceHistory']);
 
+//lastlocation
 Route::get('/lastlocation/{deviceId}', [MapController::class, 'getLastLocation']);
 Route::get('/latestlocation/{deviceId}', [MapController::class, 'getLatestLocation']);
+
 Route::get('/admin/devices/latest-history', [LocationController::class, 'getAllDevicesLatestHistory']);
 Route::get('/admin/lastlocation/{deviceId}', [LocationController::class, 'getDeviceHistory']);
 Route::get('latestlocation/{deviceId}', [LocationController::class, 'getLatestLocation']);
+
+
+
 
 //filter chart
 Route::get('/customer-chart', [TampilanController::class, 'customer']);
