@@ -1,6 +1,5 @@
 @extends('layouts.customer')
 
-
 <title>GEEX - History</title>
 
 @section('content')
@@ -13,15 +12,28 @@
             padding-left: 15px;
         }
     }
-     .card {
-    margin-bottom: 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Tambahkan bayangan ke kartu */
-    border: 1px solid #e0e0e0; /* Tambahkan batasan ke kartu */
-}
+    .card {
+        margin-bottom: 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Tambahkan bayangan ke kartu */
+        border: 1px solid #e0e0e0; /* Tambahkan batasan ke kartu */
+    }
 
-.card-body {
-    padding: 1rem;
-}
+    .card-body {
+        padding: 1rem;
+    }
+
+    /* Atur tombol float */
+    .float-right {
+        float: right;
+    }
+    .float-left {
+        float: left;
+    }
+    /* Padding untuk tombol */
+    .btn-padding {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
 
 </style>
 
@@ -34,8 +46,7 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/customer"><i
-                                        class="fas fa-tachometer-alt"></i>
+                            <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
                                     Dashboard</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-history"></i>History
                             </li>
@@ -56,8 +67,8 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-6 mb-2" style="margin-left:-10px;">
-                <button id="refreshButton" class="btn btn-primary">
+            <div class="col-md-6 mb-2">
+                <button id="refreshButton" class="btn btn-primary float-left btn-padding">
                     <p style="margin: -4px;"><i class="fas fa-eye"></i>&nbsp; Lihat Semua History</p>
                 </button>
             </div>
@@ -78,20 +89,19 @@
                     <div class="col">
                         <div class="card">
                             <div class="card-body">
-    <h5 class="card-title">{{ optional($h->device)->name }}</h5>
-    <p class="card-text">
-        Latitude: {{ $h->latitude }}<br>
-        Longitude: {{ $h->longitude }}<br>
-        Bounds: {{ $h->bounds }}<br>
-        Accuracy: {{ $h->accuracy }}<br>
-        Altitude: {{ $h->altitude }}<br>
-        Altitude Accuracy: {{ $h->altitude_acuracy }}<br>
-        Heading: {{ $h->heading }}<br>
-        Speeds: {{ $h->speeds }}<br>
-        Time: {{ $h->date_time }}
-    </p>
-</div>
-
+                                <h5 class="card-title">{{ optional($h->device)->name }}</h5>
+                                <p class="card-text">
+                                    Latitude: {{ $h->latitude }}<br>
+                                    Longitude: {{ $h->longitude }}<br>
+                                    Bounds: {{ $h->bounds }}<br>
+                                    Accuracy: {{ $h->accuracy }}<br>
+                                    Altitude: {{ $h->altitude }}<br>
+                                    Altitude Accuracy: {{ $h->altitude_acuracy }}<br>
+                                    Heading: {{ $h->heading }}<br>
+                                    Speeds: {{ $h->speeds }}<br>
+                                    Time: {{ $h->date_time }}
+                                </p>
+                            </div>
                         </div>
                     </div>
                     @endforeach
@@ -102,6 +112,8 @@
             </div>
         </div>
     </section>
+    <!-- Letakkan link pagination di sini -->
+    {{ $history->links() }}
     <footer>
         <div class="footer clearfix mb-0 text-muted">
             <div class="float-start">
@@ -165,50 +177,56 @@
 
     // Fungsi getDataByDevice diperbarui untuk memperhitungkan halaman yang dipilih
     function getDataByDevice(deviceId, page) {
-    $.ajax({
-    url: '/gethistorybydevice/' + deviceId,
-    method: 'GET',
-    data: {
-        page: page
-    },
-    success: function(response) {
-        $('.row-cols-1').empty();
+    var perPage = 10; // Mengatur jumlah data per halaman
 
-        if (response.history.length > 0) {
-            $.each(response.history, function(index, history) {
-                var cardHtml = `
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">${response.device_name}</h5>
-                                <p class="card-text">Latitude: ${history.latitude}<br>
-                                Longitude: ${history.longitude}<br>
-                                Bounds: ${history.bounds}<br>
-                                Accuracy: ${history.accuracy}<br>
-                                Altitude: ${history.altitude}<br>
-                                Altitude Accuracy: ${history.altitude_accuracy}<br>
-                                Heading: ${history.heading}<br>
-                                Speeds: ${history.speeds}<br>
-                                Time: ${history.date_time}</p>
+    $.ajax({
+        url: '/gethistorybydevice/' + deviceId,
+        method: 'GET',
+        data: {
+            page: page,
+            perPage: perPage // Mengirimkan jumlah data per halaman ke server
+        },
+        success: function(response) {
+            $('.row-cols-1').empty();
+
+            if (response.history.length > 0) {
+                $.each(response.history, function(index, history) {
+                    var cardHtml = `
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">${response.device_name}</h5>
+                                    <p class="card-text">Latitude: ${history.latitude}<br>
+                                    Longitude: ${history.longitude}<br>
+                                    Bounds: ${history.bounds}<br>
+                                    Accuracy: ${history.accuracy}<br>
+                                    Altitude: ${history.altitude}<br>
+                                    Altitude Accuracy: ${history.altitude_accuracy}<br>
+                                    Heading: ${history.heading}<br>
+                                    Speeds: ${history.speeds}<br>
+                                    Time: ${history.date_time}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
 
-                $('.row-cols-1').append(cardHtml);
-            });
+                    $('.row-cols-1').append(cardHtml);
+                });
 
-            showValidationMessage('Device selected successfully!');
-        } else {
-            showValidationMessage('No history data found for the selected device.');
+                showValidationMessage('Device selected successfully!');
+            } else {
+                showValidationMessage('No history data found for the selected device.');
+            }
+
+            // Update pagination buttons
+            updatePaginationButtons(response.pagination);
+        },
+        error: function(error) {
+            console.error('Error fetching history data:', error);
+            showValidationMessage('Error fetching history data. Please try again.', true);
         }
-    },
-    error: function(error) {
-        console.error('Error fetching history data:', error);
-        showValidationMessage('Error fetching history data. Please try again.', true);
-    }
-});
-    }
+    });
+}
 
     function showValidationMessage(message, isError = false) {
         var validationMessage = $("#validationMessage");

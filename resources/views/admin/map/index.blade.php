@@ -130,29 +130,27 @@
                 //     }
                 // });
 
-   $('#reset-btn').on('click', function () {
-    // Mereset nilai Select2 ke null dan memicu perubahan
-    $('#user_device').val(null).trigger('change');
+    $('#reset-btn').on('click', function () {
+    // // Mereset nilai Select2 ke null dan memicu perubahan
+    // $('#device-select').val(null).trigger('change');
 
+    // // Hapus semua marker dari peta
+    // map.eachLayer(function (layer) {
+    //     if (layer instanceof L.Marker) {
+    //         map.removeLayer(layer);
+    //     }
+    // });
 
+    // // Hapus semua garis dari peta
+    // map.eachLayer(function (layer) {
+    //     if (layer instanceof L.Polyline) {
+    //         map.removeLayer(layer);
+    //     }
+    // });
 
-    // Hapus semua marker dari peta
-    map.eachLayer(function (layer) {
-        if (layer instanceof L.Marker) {
-            map.removeLayer(layer);
-        }
-    });
-
-    // Hapus semua garis dari peta
-    map.eachLayer(function (layer) {
-        if (layer instanceof L.Polyline) {
-            map.removeLayer(layer);
-        }
-    });
-
-
+    // Refresh halaman dengan memuat ulang URL
+    location.href = location.href + '?rand=' + Math.random();
 });
-
 
 
 

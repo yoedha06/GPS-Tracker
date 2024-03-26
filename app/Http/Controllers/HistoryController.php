@@ -34,7 +34,7 @@ class HistoryController extends Controller
             ->join('device', 'history.device_id', '=', 'device.id_device')
             ->orderBy('device.name', 'asc') // Order by device name in ascending order
             ->orderBy('date_time', 'desc')    // Then order by date_time in descending order
-            ->paginate(20);
+            ->paginate(10);
 
 
         return view('customer.history.index', ['history' => $history, 'devices' => $devices]);
@@ -288,4 +288,18 @@ class HistoryController extends Controller
 
         return response()->json($formattedData);
     }
+
+    public function fetchLatestData()
+   {
+    try {
+        // Ambil data terbaru dari tabel history
+        $latestData = History::latest()->get(); // Misalnya, mengambil semua data terbaru
+
+        // Kembalikan data sebagai respons JSON
+        return response()->json(['data' => $latestData]);
+    } catch (\Exception $e) {
+        // Tangani jika terjadi kesalahan saat mengambil data dari tabel history
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
 }

@@ -2,13 +2,24 @@
 @extends('layouts.navbarcustomer')
 
         <title>GEEX - Maps</title>
-
-
+<!-- Load Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<!-- Load Bootstrap Datepicker CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+<!-- Load Select2 CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+
+<!-- Load Select2 CSS (version 4.1.0-rc.0) -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Load Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Load Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 
 @section('content')
 <div id="main">
@@ -44,15 +55,17 @@
     <div id="map" style="height: 50%; width: 100%;"></div>
 </div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Load jQuery first -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<!-- Include Select2 JS -->
 
+<!-- Then load Bootstrap's JavaScript files -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.animatedmarker/src/AnimatedMarker.js"></script>
-<script src="https://unpkg.com/leaflet.animatedmarker/src/AnimatedMarker.js"></script>
+
+
 <style>
     .date-time-input {
         display: flex;
@@ -402,11 +415,11 @@ Object.values(devicePolylines).forEach(polyline => {
         opacity = 0.3;   // Set opasitas ke 0.1 jika akurasi di atas 20 (sangat transparan)
     }
 
-    polyline.setStyle({
-        color: color,       // Set color
-        weight: weight, // Set thickness based on accuracy
-        opacity: opacity    // Set opacity based on accuracy
-    });
+ polyline.setStyle({
+    color: color,       // Set warna
+    weight: weight,     // Set ketebalan garis
+    opacity: opacity    // Set kejernihan garis
+});
 
 
 
@@ -470,36 +483,7 @@ Object.values(devicePolylines).forEach(polyline => {
          refreshMap();
           filterMap();
     });
-
 });
 
 </script>
 @endsection
-{{-- //            function refreshMap() {
-//     // Hapus semua marker dan polyline dari peta
-//     map.eachLayer(function(layer) {
-//         if (layer instanceof L.Marker || layer instanceof L.Polyline) {
-//             map.removeLayer(layer);
-//         }
-//     });
-
-//     // Memperbarui peta dengan memanggil filterMap
-//     filterMap();
-// }
-// $(document).ready(function() {
-//     refreshMap();
-// });
-
-// // Fungsi untuk memperbarui peta secara otomatis setiap interval waktu tertentu
-// function startAutoRefresh() {
-//     // Panggil fungsi refreshMap() untuk pembaruan awal
-//     refreshMap();
-
-//     // Atur interval untuk pembaruan otomatis setiap 5 menit (misalnya)
-//     setInterval(refreshMap, 5000); // 300000 milidetik = 5 menit
-// }
-
-// // Panggil fungsi startAutoRefresh() saat dokumen sudah siap
-// $(document).ready(function() {
-//     startAutoRefresh();
-// }); --}}
