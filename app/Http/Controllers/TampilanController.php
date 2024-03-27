@@ -23,6 +23,13 @@ class TampilanController extends Controller
         // Hitung jumlah perangkat yang dimiliki oleh pengguna tersebut
         $deviceCount = $user->devices()->count();
 
+        // Ambil daftar perangkat dari data history
+        $historyDevices = History::join('device', 'history.device_id', '=', 'device.id_device')
+            ->where('device.user_id', $user->id) // Filter data berdasarkan user
+            ->distinct()
+            ->select('device.id_device', 'device.name')
+            ->get();
+
         // Ambil data jumlah history dari setiap device beserta nama perangkat
         $historyData = History::join('device', 'history.device_id', '=', 'device.id_device')
             ->where('device.user_id', $user->id) // Filter data berdasarkan user
@@ -36,7 +43,7 @@ class TampilanController extends Controller
         // Ambil daftar perangkat yang dimiliki oleh pengguna
         $devices = $user->devices;
 
-        return view('customer.index', compact('user', 'deviceCount', 'historyData', 'devices', 'historyTotal', 'totalHistoryPerDevice'));
+        return view('customer.index', compact('user', 'deviceCount', 'historyData', 'devices', 'historyTotal', 'totalHistoryPerDevice', 'historyDevices'));
     }
 
 
@@ -92,31 +99,40 @@ class TampilanController extends Controller
             });
         }
 
-        // Ambil data history sesuai dengan tanggal dan perangkat yang dipilih
-        $historyData = $query->select('device_id', DB::raw('COUNT(*) as count'))->groupBy('device_id')->get();
+        // Ambil data history sesuai dengan tanggal yang dipilih
+        $historyData = $query->get();
 
-        // Ambil nama perangkat berdasarkan ID perangkat
-        $deviceNames = Device::whereIn('id_device', $historyData->pluck('device_id')->toArray())
-            ->pluck('name', 'id_device')
-            ->toArray();
-
-        // Ubah data history untuk mencakup nama perangkat
-        $historyDataWithDeviceName = $historyData->map(function ($item) use ($deviceNames) {
-            return [
-                'device_name' => $deviceNames[$item->device_id],
-                'count' => $item->count
-            ];
-        });
-
-        // Jika perangkat dipilih, filter data sesuai dengan perangkat yang dipilih
-        if ($selectedDevice) {
-            $historyDataWithDeviceName = $historyDataWithDeviceName->filter(function ($item) use ($selectedDevice) {
-                return $item['device_name'] === $selectedDevice;
-            });
+        // Jika tidak ada data, kembalikan respons kosong
+        if ($historyData->isEmpty()) {
+            return response()->json([
+                'data' => [],
+                'deviceOptions' => [],
+                'deviceCount' => 0
+            ]);
         }
 
-        // Ambil jumlah device
-        $deviceCount = count($deviceNames);
+        // Persiapkan data untuk ditampilkan di chart berdasarkan pilihan chart yang dipilih
+        $chartData = [];
+
+        foreach ($historyData as $data) {
+            // Pastikan $data->date_time adalah objek datetime
+            $dateTime = is_string($data->date_time) ? new \DateTime($data->date_time) : $data->date_time;
+
+            // Ambil nilai yang sesuai dengan pilihan chart yang dipilih
+            $date = $dateTime->format('Y-m-d H:i:s'); // Format tanggal dan waktu
+            $value = 1; // Set nilai sebagai 1 karena kita ingin menghitung jumlah entri per tanggal dan waktu
+
+            // Jumlahkan nilai berdasarkan tanggal dan waktu
+            if (isset($chartData[$date])) {
+                $chartData[$date]['count'] += $value;
+            } else {
+                $chartData[$date] = [
+                    'date_time' => $date,
+                    'count' => $value
+                ];
+            }
+        }
+
 
         // Ambil daftar perangkat yang tersedia untuk tanggal yang dipilih
         $deviceOptions = Device::whereExists(function ($query) use ($selectedDate) {
@@ -132,13 +148,13 @@ class TampilanController extends Controller
             ->values() // Re-indeks array
             ->toArray();
 
-
         return response()->json([
-            'data' => $historyDataWithDeviceName,
+            'data' => array_values($chartData),
             'deviceOptions' => $deviceOptions,
-            'deviceCount' => $deviceCount
+            'deviceCount' => count($deviceOptions)
         ]);
     }
+
 
 
     public function grafikadmin(Request $request)

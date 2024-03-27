@@ -207,26 +207,42 @@
                                     </a>
                                 </div>
                                 <div class="row">
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="selected_date" class="form-label">Selected Date:</label>
-                                            <input type="date" class="form-control" id="selected_date">
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <label for="selected_date" class="form-label">Selected Date:</label>
+                                                <input type="date" class="form-control" id="selected_date">
+                                            </div>
                                         </div>
+                                        <div id="validation-message" class="text-danger" style="display: none;"></div>
                                     </div>
-                                    <div id="validation-message" class="text-danger" style="display: none;"></div>
-
-                                    <div class="row mb-3" id="device_select_row" style="display: none;">
-                                        <div class="col-md-6">
-                                            <label for="selected_device" class="form-label">Select Device:</label>
-                                            <select class="form-select" id="selected_device">
-                                                <option value="" selected disabled>Select Device</option>
-                                                @foreach ($devices as $device)
-                                                    <option value="{{ $device->id }}">{{ $device->name }}</option>
-                                                @endforeach
-                                            </select>
+                                    <div class="col-md-6">
+                                        <div class="row mb-3" id="device_chart_select_row" style="display: none;">
+                                            <div class="col-md-6">
+                                                <label for="selected_device" class="form-label">Select Device:</label>
+                                                <select class="form-select" id="selected_device">
+                                                    <option value="" selected disabled>Select Device</option>
+                                                    @foreach ($devices as $device)
+                                                        <option value="{{ $device->id }}">{{ $device->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="selected_chart" class="form-label">Select Chart:</label>
+                                                <select class="form-select" id="selected_chart">
+                                                    <option value="" selected disabled>Select Chart</option>
+                                                    <option value="latitude">Latitude</option>
+                                                    <option value="longitude">Longitude</option>
+                                                    <option value="speed">Speed</option>
+                                                    <option value="accuracy">Accuracy</option>
+                                                    <option value="heading">Heading</option>
+                                                    <option value="altitude_accuracy">Altitude Accuracy</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
 
                                 <div class="col-12">
                                     <div class="card">
@@ -413,7 +429,7 @@
                     // Chart configuration
                     var options = {
                         chart: {
-                            type: 'bar'
+                            type: 'line'
                         },
                         series: [{
                             name: 'Jumlah History',
@@ -451,16 +467,21 @@
                     chart.render();
 
                     // Function to update chart data
-                    function updateChart(selectedDevice) {
+                    function updateChart(selectedDevice, selectedChart) {
                         var selectedDate = $('#selected_date').val();
 
                         console.log("Selected Date:", selectedDate);
                         console.log("Selected Device:", selectedDevice);
+                        console.log("Selected Chart:", selectedChart);
 
                         if (!selectedDate) {
                             alert('Silahkan pilih tanggal terlebih dahulu.');
                             return; // Stop further execution if date is not selected
                         }
+
+                        // Show device select row and chart select row
+                        $('#device_select_row').show();
+                        $('#chart_select_row').show();
 
                         $.ajax({
                             method: 'GET',
@@ -471,27 +492,25 @@
                             },
                             success: function(response) {
                                 console.log("Response Data:", response);
+                                console.log("Chart Data:", chartData);
 
                                 var chartData = response.data || [];
-                                
+
                                 // Prepare series data for selected device
                                 var seriesData = [];
                                 var categories = [];
 
                                 // Iterate through each data point
                                 chartData.forEach(function(item) {
-                                    // Add data only for the selected device if selectedDevice is not empty
-                                    // Otherwise, add all data
-                                    if (!selectedDevice || item.device_name === selectedDevice) {
-                                        seriesData.push(item.count);
-                                        categories.push(item.device_name);
-                                    }
+                                    // Add data to series and categories arrays
+                                    seriesData.push(item.count);
+                                    categories.push(item.date_time);
                                 });
 
                                 // Update chart with new data
                                 chart.updateOptions({
                                     xaxis: {
-                                        categories: categories // Use device names as categories
+                                        categories: categories // Use date_time as categories
                                     }
                                 });
                                 chart.updateSeries([{
@@ -517,13 +536,6 @@
                                             }
                                         }
                                     });
-                                }
-
-                                // Show or hide device selection row based on selected date or device
-                                if (selectedDate || selectedDevice) {
-                                    $('#device_select_row').show();
-                                } else {
-                                    $('#device_select_row').hide();
                                 }
 
                                 // Update device selection dropdown
@@ -554,7 +566,7 @@
                                 // Set selected device option
                                 if (selectedDevice) {
                                     deviceDropdown.val(
-                                    selectedDevice); // Set the selected device as the selected option
+                                        selectedDevice); // Set the selected device as the selected option
                                 }
 
                             },
@@ -566,15 +578,33 @@
 
                     // Add event listener for date input change
                     $('#selected_date').change(function() {
+                        var selectedDate = $(this).val(); // Get the selected date
+
+                        // Check if the selected date is not empty
+                        if (selectedDate) {
+                            // Show the device and chart selection row
+                            $('#device_chart_select_row').show();
+                        } else {
+                            // Hide the device and chart selection row if the date is empty
+                            $('#device_chart_select_row').hide();
+                        }
                         updateChart();
                     });
 
                     // Add event listener for device select change
                     $('#selected_device').change(function() {
                         var selectedDevice = $(this).val();
+                        var selectedChart = $('#selected_chart').val(); // Get the selected chart
                         console.log("Selected Device:", selectedDevice);
-                        updateChart(selectedDevice);
+                        console.log("Selected Chart:", selectedChart);
+                        updateChart(selectedDevice, selectedChart);
+                    });
 
+                    $('#selected_chart').change(function() {
+                        var selectedChart = $(this).val();
+                        var selectedDevice = $('#selected_device').val(); // Get the selected device
+                        console.log("Selected Chart:", selectedChart);
+                        updateChart(selectedDevice, selectedChart);
                     });
 
                 });

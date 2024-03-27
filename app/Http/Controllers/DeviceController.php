@@ -59,7 +59,8 @@ class DeviceController extends Controller
             'name' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'max:255'],
             'serial_number' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'string', 'max:50', 'unique:device,serial_number'],
             'plat_nomor' => ['required', 'max:255', 'regex:/^[A-Za-z0-9]+$/'], // Tambahkan aturan regex untuk memastikan plat_nomor tidak mengandung spasi
-            'photo' => ['nullable', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'], // Added 'webp' to supported file formats
+            'photo' => ['nullable', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+            'timezone' => ['required']
         ], [
             'name.regex' => 'Name can only contain letters, numbers, and spaces.',
             'serial_number.regex' => 'Serial Number can only contain letters, numbers, and spaces.',
@@ -102,7 +103,8 @@ class DeviceController extends Controller
         $device = new Device([
             'name' => $request->input('name'),
             'serial_number' => $request->input('serial_number'),
-            'plat_nomor' => $request->input('plat_nomor'), // Add plat_nomor to the Device instance
+            'plat_nomor' => $request->input('plat_nomor'),
+            'timezone' => $request->input('timezone'), // Add plat_nomor to the Device instance
             'photo' => $photoPath,
         ]);
 
@@ -167,6 +169,7 @@ class DeviceController extends Controller
         $device = Device::findOrFail($id);
         $device->name = $request->input('name');
         $device->plat_nomor = $request->input('plat_nomor');
+        $device->timezone = $request->input('timezone');
 
         // Check if a new photo is provided
         if ($request->hasFile('photo')) {
