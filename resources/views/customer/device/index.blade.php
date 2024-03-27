@@ -105,6 +105,11 @@
                                         <h5 class="card-title" style="margin-top: 5%">{{ $item->name }}</h5>
                                         <p class="card-text">Serial Number: {{ $item->serial_number }}</p>
                                         <p class="card-text">Plat Nomor: {{ $item->plat_nomor }}</p>
+                                        @if ($item->timezone)
+                                            <p class="card-text">Time Zone: UTC {{ $item->timezone }}</p>
+                                        @else
+                                            <p class="card-text">Time Zone: -</p>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -158,6 +163,35 @@
                             <input type="text" class="form-control" id="plat_nomor" name="plat_nomor"
                                 value="{{ old('plat_nomor') }}"required>
                         </div>
+                        <div class="mb-3">
+                            <label for="timezone" class="form-label">Timezone</label>
+                            <select class="form-select" id="timezone" name="timezone" required>
+                                <option value="" {{ is_null(old('timezone')) ? 'selected' : '' }} disabled>Select Timezone</option>
+                                <option value="+1">UTC +1</option>
+                                <option value="+2">UTC +2</option>
+                                <option value="+3">UTC +3</option>
+                                <option value="+4">UTC +4</option>
+                                <option value="+5">UTC +5</option>
+                                <option value="+6">UTC +6</option>
+                                <option value="+7">UTC +7</option>
+                                <option value="+8">UTC +8</option>
+                                <option value="+9">UTC +9</option>
+                                <option value="+10">UTC +10</option>
+                                <option value="+11">UTC +11</option>
+                                <option value="+12">UTC +12</option>
+                                <option value="-1">UTC -1</option>
+                                <option value="-2">UTC -2</option>
+                                <option value="-3">UTC -3</option>
+                                <option value="-4">UTC -4</option>
+                                <option value="-5">UTC -5</option>
+                                <option value="-6">UTC -6</option>
+                                <option value="-7">UTC -7</option>
+                                <option value="-8">UTC -8</option>
+                                <option value="-9">UTC -9</option>
+                                <option value="-10">UTC -10</option>
+                                <option value="-11">UTC -11</option>
+                            </select>
+                        </div>
                         <button type="submit" class="btn btn-primary">Add Device</button>
                     </form>
                 </div>
@@ -192,9 +226,9 @@
                                     name="serial_number" value="{{ $item->serial_number }}" required readonly>
                             </div>
                             <div class="mb-3">
-                                <input type="file" class="form-control edit-photo-input"
-                                    id="edit_photo{{ $item->id_device }}" name="photo"
-                                    onchange="previewEditPhoto(this, {{ $item->id_device }})">
+                                <label class="form-label">Photo</label>
+                                <input type="file" class="form-control" id="edit_photo{{ $item->id_device }}"
+                                    name="photo" onchange="previewEditPhoto(this, {{ $item->id_device }})">
                                 @if ($item->photo)
                                     <div class="mt-2">
                                         <img id="editPhotoPreview{{ $item->id_device }}"
@@ -210,10 +244,44 @@
                                 @endif
                             </div>
                             <div class="mb-3">
-                                <label for="edit_plat_nomor{{ $item->id_device }}" class="form-label">Plat
-                                    Nomor</label>
+                                <label for="edit_plat_nomor{{ $item->id_device }}" class="form-label">Plat Nomor</label>
                                 <input type="text" class="form-control" id="edit_plat_nomor{{ $item->id_device }}"
                                     name="plat_nomor" value="{{ $item->plat_nomor }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_timezone{{ $item->id_device }}" class="form-label">Timezone</label>
+                                <select class="form-select" id="edit_timezone{{ $item->id_device }}" name="timezone"
+                                    required>
+                                    <option value="" disabled>Select Timezone</option>
+                                    <option value="+1" {{ $item->timezone == '+1' ? 'selected' : '' }}>UTC +1</option>
+                                    <option value="+2" {{ $item->timezone == '+2' ? 'selected' : '' }}>UTC +2</option>
+                                    <option value="+3" {{ $item->timezone == '+3' ? 'selected' : '' }}>UTC +3</option>
+                                    <option value="+4" {{ $item->timezone == '+4' ? 'selected' : '' }}>UTC +4</option>
+                                    <option value="+5" {{ $item->timezone == '+5' ? 'selected' : '' }}>UTC +5</option>
+                                    <option value="+6" {{ $item->timezone == '+6' ? 'selected' : '' }}>UTC +6</option>
+                                    <option value="+7" {{ $item->timezone == '+7' ? 'selected' : '' }}>UTC +7</option>
+                                    <option value="+8" {{ $item->timezone == '+8' ? 'selected' : '' }}>UTC +8</option>
+                                    <option value="+9" {{ $item->timezone == '+9' ? 'selected' : '' }}>UTC +9</option>
+                                    <option value="+10" {{ $item->timezone == '+10' ? 'selected' : '' }}>UTC +10
+                                    </option>
+                                    <option value="+11" {{ $item->timezone == '+11' ? 'selected' : '' }}>UTC +11
+                                    </option>
+                                    <option value="+12" {{ $item->timezone == '+12' ? 'selected' : '' }}>UTC +12
+                                    </option>
+                                    <option value="-1" {{ $item->timezone == '-1' ? 'selected' : '' }}>UTC -1</option>
+                                    <option value="-2" {{ $item->timezone == '-2' ? 'selected' : '' }}>UTC -2</option>
+                                    <option value="-3" {{ $item->timezone == '-3' ? 'selected' : '' }}>UTC -3</option>
+                                    <option value="-4" {{ $item->timezone == '-4' ? 'selected' : '' }}>UTC -4</option>
+                                    <option value="-5" {{ $item->timezone == '-5' ? 'selected' : '' }}>UTC -5</option>
+                                    <option value="-6" {{ $item->timezone == '-6' ? 'selected' : '' }}>UTC -6</option>
+                                    <option value="-7" {{ $item->timezone == '-7' ? 'selected' : '' }}>UTC -7</option>
+                                    <option value="-8" {{ $item->timezone == '-8' ? 'selected' : '' }}>UTC -8</option>
+                                    <option value="-9" {{ $item->timezone == '-9' ? 'selected' : '' }}>UTC -9</option>
+                                    <option value="-10" {{ $item->timezone == '-10' ? 'selected' : '' }}>UTC -10
+                                    </option>
+                                    <option value="-11" {{ $item->timezone == '-11' ? 'selected' : '' }}>UTC -11
+                                    </option>
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -226,6 +294,7 @@
             </div>
         </div>
     @endforeach
+
 
     <!-- Delete Device Modals -->
     @foreach ($userDevices as $item)

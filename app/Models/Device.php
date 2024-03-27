@@ -11,7 +11,7 @@ class Device extends Model
     protected $table = "device";
 
     protected $primaryKey = "id_device";
-    protected $fillable = ['name', 'serial_number', 'photo', 'plat_nomor'];
+    protected $fillable = ['name', 'serial_number', 'photo', 'plat_nomor','timezone'];
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
