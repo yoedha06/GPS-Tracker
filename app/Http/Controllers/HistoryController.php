@@ -17,28 +17,27 @@ class HistoryController extends Controller
      * Display a listing of the resource.
      */
 
-    public function index()
-    {
+ public function index()
+{
+    $devices = Device::all();
 
-        $devices = Device::all();
+    // Get the authenticated user
+    $user = Auth::user();
 
-        // Get the authenticated user
-        $user = Auth::user();
+    // Fetch all devices associated with the authenticated user
+    $devices = $user->devices ?? collect();
 
-        // Fetch all devices associated with the authenticated user
-        $devices = $user->devices ?? collect();
+    $deviceIds = $devices->pluck('id_device')->toArray(); // Convert to array
 
-        $deviceIds = $devices->pluck('id_device')->toArray(); // Convert to array
+    $history = History::whereIn('device_id', $deviceIds)
+        ->join('device', 'history.device_id', '=', 'device.id_device')
+        ->orderBy('date_time', 'desc')    // Order by date_time in descending order first
+        ->orderBy('device.name', 'asc')   // Then order by device name in ascending order
+        ->paginate(20);
 
-        $history = History::whereIn('device_id', $deviceIds)
-            ->join('device', 'history.device_id', '=', 'device.id_device')
-            ->orderBy('device.name', 'asc') // Order by device name in ascending order
-            ->orderBy('date_time', 'desc')    // Then order by date_time in descending order
-            ->paginate(6);
+    return view('customer.history.index', ['history' => $history, 'devices' => $devices]);
+}
 
-
-        return view('customer.history.index', ['history' => $history, 'devices' => $devices]);
-    }
 
     /**
      * Show the form for creating a new resource.
