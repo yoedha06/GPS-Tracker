@@ -467,7 +467,7 @@
                     chart.render();
 
                     // Function to update chart data
-                    function updateChart(selectedDevice, selectedChart) {
+                    function updateChart(selectedDevice, selectedChart, selectedDate) {
                         var selectedDate = $('#selected_date').val();
 
                         console.log("Selected Date:", selectedDate);
@@ -487,8 +487,9 @@
                             method: 'GET',
                             url: '/customer-chart',
                             data: {
-                                selected_date: selectedDate, // Kirim data selectedDate ke server
-                                selected_device: selectedDevice
+                                selected_date: selectedDate,
+                                selected_device: selectedDevice,
+                                selected_chart: selectedChart // 
                             },
                             success: function(response) {
                                 console.log("Response Data:", response);
@@ -600,13 +601,23 @@
                         updateChart(selectedDevice, selectedChart);
                     });
 
-                    $('#selected_chart').change(function() {
+                    $(document).on('change', '#selected_chart', function() {
                         var selectedChart = $(this).val();
-                        var selectedDevice = $('#selected_device').val(); // Get the selected device
-                        console.log("Selected Chart:", selectedChart);
-                        updateChart(selectedDevice, selectedChart);
-                    });
+                        var selectedDevice = $('#selected_device').val();
+                        var selectedDate = $('#selected_date').val();
 
+                        if (!selectedDate) {
+                            alert('Silahkan pilih tanggal terlebih dahulu.');
+                            return;
+                        }
+
+                        if (!selectedDevice) {
+                            alert('Silahkan pilih perangkat terlebih dahulu.');
+                            return;
+                        }
+
+                        updateChart(selectedDevice, selectedChart, selectedDate);
+                    });
                 });
             </script>
         @endsection

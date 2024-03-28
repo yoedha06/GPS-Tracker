@@ -167,6 +167,18 @@
                             <label for="timezone" class="form-label">Timezone</label>
                             <select class="form-select" id="timezone" name="timezone" required>
                                 <option value="" {{ is_null(old('timezone')) ? 'selected' : '' }} disabled>Select Timezone</option>
+                                <option value="-11">UTC -11</option>
+                                <option value="-10">UTC -10</option>
+                                <option value="-9">UTC -9</option>
+                                <option value="-8">UTC -8</option>
+                                <option value="-7">UTC -7</option>
+                                <option value="-6">UTC -6</option>
+                                <option value="-5">UTC -5</option>
+                                <option value="-4">UTC -4</option>
+                                <option value="-3">UTC -3</option>
+                                <option value="-3">UTC -2</option>
+                                <option value="-2">UTC -1</option>
+                                <option value="0"> UTC 0</option>
                                 <option value="+1">UTC +1</option>
                                 <option value="+2">UTC +2</option>
                                 <option value="+3">UTC +3</option>
@@ -178,18 +190,7 @@
                                 <option value="+9">UTC +9</option>
                                 <option value="+10">UTC +10</option>
                                 <option value="+11">UTC +11</option>
-                                <option value="+12">UTC +12</option>
-                                <option value="-1">UTC -1</option>
-                                <option value="-2">UTC -2</option>
-                                <option value="-3">UTC -3</option>
-                                <option value="-4">UTC -4</option>
-                                <option value="-5">UTC -5</option>
-                                <option value="-6">UTC -6</option>
-                                <option value="-7">UTC -7</option>
-                                <option value="-8">UTC -8</option>
-                                <option value="-9">UTC -9</option>
-                                <option value="-10">UTC -10</option>
-                                <option value="-11">UTC -11</option>
+                                <option value="+11">UTC +12</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Device</button>
@@ -253,6 +254,22 @@
                                 <select class="form-select" id="edit_timezone{{ $item->id_device }}" name="timezone"
                                     required>
                                     <option value="" disabled>Select Timezone</option>
+                                    <option value="-11" {{ $item->timezone == '-11' ? 'selected' : '' }}>UTC -11</option>
+                                    <option value="-10" {{ $item->timezone == '-10' ? 'selected' : '' }}>UTC -10</option>
+                                    <option value="-9" {{ $item->timezone == '-9' ? 'selected' : '' }}>UTC -9</option>
+                                    <option value="-8" {{ $item->timezone == '-8' ? 'selected' : '' }}>UTC -8</option>
+                                    <option value="-7" {{ $item->timezone == '-7' ? 'selected' : '' }}>UTC -7</option>
+                                    <option value="-6" {{ $item->timezone == '-6' ? 'selected' : '' }}>UTC -6</option>
+                                    <option value="-5" {{ $item->timezone == '-5' ? 'selected' : '' }}>UTC -5</option>
+                                    <option value="-4" {{ $item->timezone == '-4' ? 'selected' : '' }}>UTC -4</option>
+                                    <option value="-3" {{ $item->timezone == '-3' ? 'selected' : '' }}>UTC -3
+                                    </option>
+                                    <option value="-2" {{ $item->timezone == '-2' ? 'selected' : '' }}>UTC -2
+                                    </option>
+                                    <option value="-1" {{ $item->timezone == '-1' ? 'selected' : '' }}>UTC -1
+                                    </option>
+                                    <option value="0" {{ $item->timezone == '0' ? 'selected' : '' }}>UTC 0
+                                    </option>
                                     <option value="+1" {{ $item->timezone == '+1' ? 'selected' : '' }}>UTC +1</option>
                                     <option value="+2" {{ $item->timezone == '+2' ? 'selected' : '' }}>UTC +2</option>
                                     <option value="+3" {{ $item->timezone == '+3' ? 'selected' : '' }}>UTC +3</option>
@@ -265,21 +282,7 @@
                                     <option value="+10" {{ $item->timezone == '+10' ? 'selected' : '' }}>UTC +10
                                     </option>
                                     <option value="+11" {{ $item->timezone == '+11' ? 'selected' : '' }}>UTC +11
-                                    </option>
-                                    <option value="+12" {{ $item->timezone == '+12' ? 'selected' : '' }}>UTC +12
-                                    </option>
-                                    <option value="-1" {{ $item->timezone == '-1' ? 'selected' : '' }}>UTC -1</option>
-                                    <option value="-2" {{ $item->timezone == '-2' ? 'selected' : '' }}>UTC -2</option>
-                                    <option value="-3" {{ $item->timezone == '-3' ? 'selected' : '' }}>UTC -3</option>
-                                    <option value="-4" {{ $item->timezone == '-4' ? 'selected' : '' }}>UTC -4</option>
-                                    <option value="-5" {{ $item->timezone == '-5' ? 'selected' : '' }}>UTC -5</option>
-                                    <option value="-6" {{ $item->timezone == '-6' ? 'selected' : '' }}>UTC -6</option>
-                                    <option value="-7" {{ $item->timezone == '-7' ? 'selected' : '' }}>UTC -7</option>
-                                    <option value="-8" {{ $item->timezone == '-8' ? 'selected' : '' }}>UTC -8</option>
-                                    <option value="-9" {{ $item->timezone == '-9' ? 'selected' : '' }}>UTC -9</option>
-                                    <option value="-10" {{ $item->timezone == '-10' ? 'selected' : '' }}>UTC -10
-                                    </option>
-                                    <option value="-11" {{ $item->timezone == '-11' ? 'selected' : '' }}>UTC -11
+                                    <option value="+11" {{ $item->timezone == '+12' ? 'selected' : '' }}>UTC +12
                                     </option>
                                 </select>
                             </div>
