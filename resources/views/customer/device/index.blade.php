@@ -193,6 +193,7 @@
                                 <option value="+11">UTC +12</option>
                             </select>
                         </div>
+
                         <button type="submit" class="btn btn-primary">Add Device</button>
                     </form>
                 </div>
