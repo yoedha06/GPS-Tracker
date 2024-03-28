@@ -38,7 +38,7 @@ class DeviceController extends Controller
                 'more' => $morePages
             ]
         ];
-        return response()->json($data); 
+        return response()->json($data);
     }
 
     /**

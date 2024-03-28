@@ -166,32 +166,20 @@
                         <div class="mb-3">
                             <label for="timezone" class="form-label">Timezone</label>
                             <select class="form-select" id="timezone" name="timezone" required>
-                                <option value="" {{ is_null(old('timezone')) ? 'selected' : '' }} disabled>Select Timezone</option>
-                                <option value="+1">UTC +1</option>
-                                <option value="+2">UTC +2</option>
-                                <option value="+3">UTC +3</option>
-                                <option value="+4">UTC +4</option>
-                                <option value="+5">UTC +5</option>
-                                <option value="+6">UTC +6</option>
-                                <option value="+7">UTC +7</option>
-                                <option value="+8">UTC +8</option>
-                                <option value="+9">UTC +9</option>
-                                <option value="+10">UTC +10</option>
-                                <option value="+11">UTC +11</option>
-                                <option value="+12">UTC +12</option>
-                                <option value="-1">UTC -1</option>
-                                <option value="-2">UTC -2</option>
-                                <option value="-3">UTC -3</option>
-                                <option value="-4">UTC -4</option>
-                                <option value="-5">UTC -5</option>
-                                <option value="-6">UTC -6</option>
-                                <option value="-7">UTC -7</option>
-                                <option value="-8">UTC -8</option>
-                                <option value="-9">UTC -9</option>
-                                <option value="-10">UTC -10</option>
-                                <option value="-11">UTC -11</option>
+                                <option value="" {{ is_null(old('timezone')) ? 'selected' : '' }} disabled>Select
+                                    Timezone</option>
+                                @for ($i = -12; $i <= 12; $i++)
+                                    @php
+                                        $sign = $i >= 0 ? '+' : '-';
+                                        $abs_i = abs($i);
+                                        $offset = sprintf('%02d', $abs_i);
+                                        $timezone_label = "UTC $sign$offset";
+                                    @endphp
+                                    <option value="{{ $sign . $offset }}"> {{ $timezone_label }} </option>
+                                @endfor
                             </select>
                         </div>
+
                         <button type="submit" class="btn btn-primary">Add Device</button>
                     </form>
                 </div>
