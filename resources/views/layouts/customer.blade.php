@@ -23,15 +23,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/splashscreen.css') }}">
 </head>
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        /* Menggunakan font family Arial */
-    }
-
     .navbar {
         display: flex;
         justify-content: space-between;
