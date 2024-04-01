@@ -198,7 +198,7 @@
                                                         className: 'custom-div-icon',
                                                         html: "<i class='fas fa-map-marker-alt' style='color: #25A5E2; font-size: 40px;'></i>",
                                                         iconSize: [42, 49],
-                                                        iconAnchor: [16, 45],
+                                                        iconAnchor: [20, 44],
                                                         popupAnchor: [-5, -41]
                                                     });
 
@@ -332,7 +332,7 @@
                                                     className: 'custom-div-icon',
                                                     html: "<i class='fas fa-map-marker-alt' style='color:yellow; font-size: 40px;'></i>",
                                                     iconSize: [42, 49],
-                                                    iconAnchor: [16, 45],
+                                                    iconAnchor: [20, 44],
                                                     popupAnchor: [-5, -41]
                                                 });
 

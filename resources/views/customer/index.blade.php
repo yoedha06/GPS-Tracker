@@ -4,95 +4,6 @@
 <title>Dashboard</title>
 
 @section('content')
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            /* Menggunakan font family Arial */
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #ffffff;
-            height: 70px;
-            width: 375px;
-            left: 50%;
-            position: fixed;
-            transform: translate(-50%);
-            bottom: 0;
-            box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-            /* Menambahkan border radius */
-            padding: 0 20px;
-            /* Memberikan padding pada navbar */
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            color: #000000;
-            text-decoration: none;
-            font-size: 17px;
-            font-weight: normal;
-            /* Memperbesar ukuran fontsizenya */
-            flex: 1;
-            /* Menyesuaikan ruang setiap item */
-        }
-
-        .nav-item span {
-            margin-top: 5px;
-            font-weight: normal;
-            /* Memberikan margin atas pada span */
-        }
-
-        .nav-item img {
-            width: 30px;
-            height: 30px;
-            object-fit: cover;
-            border-radius: 50%;
-            /* Menambahkan border radius */
-            margin-bottom: 5px;
-        }
-
-        .logo img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            /* Menambahkan border radius */
-        }
-
-        .avatar img {
-            width: 45px;
-            /* Ubah ukuran sesuai kebutuhan */
-            height: 45px;
-            /* Ubah ukuran sesuai kebutuhan */
-            border-radius: 50%;
-            /* Agar gambar menjadi lingkaran */
-        }
-
-        .name {
-            max-width: 100px;
-            /* Sesuaikan dengan lebar maksimum yang Anda inginkan */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .name h6 {
-            font-weight: normal;
-            /* Menghilangkan efek tebal pada teks */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    </style>
 
     <body>
         <div id="app">
@@ -148,7 +59,7 @@
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                         <h6 class="text-muted font-semibold">
                                                             <h6 class="font-bold mb-0">
-                                                                Maps History Users
+                                                                Maps History
                                                                 {{-- <h6 class="font-extrabold mb-0">{{ $history }}</h6> --}}
                                                             </h6>
                                                         </h6>
@@ -236,7 +147,7 @@
                                                     <option value="speed">Speed</option>
                                                     <option value="accuracy">Accuracy</option>
                                                     <option value="heading">Heading</option>
-                                                    <option value="altitude_accuracy">Altitude Accuracy</option>
+                                                    <option value="altitude_acuracy">Altitude Accuracy</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -327,68 +238,7 @@
                 <!-- Your page content here -->
             </div>
 
-            <div class="navbar">
-                <div class="nav-item">
-                    <a href="customer/lastlocation">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        <span>LastLoc</span>
-                    </a>
-                </div>
 
-                <div class="nav-item">
-                    <a href="customer/map">
-                        <i class="bi bi-map-fill"></i>
-                        <br>
-                        <span>Maps</span>
-                    </a>
-                </div>
-
-                <div class="nav-item logo">
-                    <a href="#">
-                        <img src="/images/g.png" alt="Logo">
-                    </a>
-                </div>
-
-                <div class="nav-item">
-                    <a href="customer/device">
-                        <i class="bi bi-ev-front-fill"></i>
-                        <span>Device</span>
-                    </a>
-                </div>
-
-                <div class="nav-item">
-                    <a class="nav-link" href="/customer/profile">
-                        <div class="avatar">
-                            <!-- Gambar Profil -->
-                            @if (Auth::user()->photo)
-                                <img src="/photos/{{ Auth::user()->photo }}" alt="User Photo">
-                            @else
-                                <img src="{{ asset('images/default.jpg') }}" alt="Default User Photo">
-                            @endif
-                        </div>
-                    </a>
-                    {{-- <!-- Dropdown Menu -->
-                <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                    <li>
-                        <!-- Link ke Profil Pengguna -->
-                        <a class="dropdown-item" href="{{ route('customer.profile') }}"><i class="fas fa-user"></i>
-                            Profile</a>
-                    </li>
-                    <li>
-                        <!-- Form untuk Logout -->
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                        <!-- Link Logout -->
-                        <a class="dropdown-item" href="{{ route('logout') }}"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="bi bi-box-arrow-left"></i>
-                            <span>Logout</span>
-                        </a>
-                    </li>
-                </ul> --}}
-                </div>
-            </div>
 
             <!-- Pastikan untuk memuat jQuery sebelum memuat skrip lain yang menggunakan jQuery -->
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -468,114 +318,116 @@
 
                     // Function to update chart data
                     function updateChart(selectedDevice, selectedChart, selectedDate) {
-                        var selectedDate = $('#selected_date').val();
+                    var selectedDate = $('#selected_date').val();
 
-                        console.log("Selected Date:", selectedDate);
-                        console.log("Selected Device:", selectedDevice);
-                        console.log("Selected Chart:", selectedChart);
+                    console.log("Selected Date:", selectedDate);
+                    console.log("Selected Device:", selectedDevice);
+                    console.log("Selected Chart:", selectedChart);
 
-                        if (!selectedDate) {
-                            alert('Silahkan pilih tanggal terlebih dahulu.');
-                            return; // Stop further execution if date is not selected
-                        }
-
-                        // Show device select row and chart select row
-                        $('#device_select_row').show();
-                        $('#chart_select_row').show();
-
-                        $.ajax({
-                            method: 'GET',
-                            url: '/customer-chart',
-                            data: {
-                                selected_date: selectedDate,
-                                selected_device: selectedDevice,
-                                selected_chart: selectedChart // 
-                            },
-                            success: function(response) {
-                                console.log("Response Data:", response);
-                                console.log("Chart Data:", chartData);
-
-                                var chartData = response.data || [];
-
-                                // Prepare series data for selected device
-                                var seriesData = [];
-                                var categories = [];
-
-                                // Iterate through each data point
-                                chartData.forEach(function(item) {
-                                    // Add data to series and categories arrays
-                                    seriesData.push(item.count);
-                                    categories.push(item.date_time);
-                                });
-
-                                // Update chart with new data
-                                chart.updateOptions({
-                                    xaxis: {
-                                        categories: categories // Use date_time as categories
-                                    }
-                                });
-                                chart.updateSeries([{
-                                    data: seriesData
-                                }]);
-
-                                // Update plot options based on the number of data points
-                                if (chartData.length === 1) {
-                                    // If there is only one data point, reduce the bar width
-                                    chart.updateOptions({
-                                        plotOptions: {
-                                            bar: {
-                                                columnWidth: '30%' // Adjust columnWidth as needed
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    // If there are multiple data points, reset the plot options to default
-                                    chart.updateOptions({
-                                        plotOptions: {
-                                            bar: {
-                                                columnWidth: '80%' // Set the default columnWidth
-                                            }
-                                        }
-                                    });
-                                }
-
-                                // Update device selection dropdown
-                                var deviceDropdown = $('#selected_device');
-                                deviceDropdown.empty(); // Clear previous options
-
-                                if (response.deviceOptions.length > 0) {
-                                    deviceDropdown.append($('<option>', {
-                                        value: '', // Empty value
-                                        text: 'All History Device'
-                                    }));
-
-                                    // Add device options received from the server response
-                                    response.deviceOptions.forEach(function(device) {
-                                        deviceDropdown.append($('<option>', {
-                                            value: device,
-                                            text: device // Use the device name directly as the option text
-                                        }));
-                                    });
-                                } else {
-                                    // If no device options available, show default option
-                                    deviceDropdown.append($('<option>', {
-                                        value: '', // Empty value
-                                        text: 'Tidak Ada Perangkat Tersedia'
-                                    }));
-                                }
-
-                                // Set selected device option
-                                if (selectedDevice) {
-                                    deviceDropdown.val(
-                                        selectedDevice); // Set the selected device as the selected option
-                                }
-
-                            },
-                            error: function(xhr, status, error) {
-                                console.error(error);
-                            }
-                        });
+                    if (!selectedDate) {
+                        alert('Silahkan pilih tanggal terlebih dahulu.');
+                        return; // Stop further execution if date is not selected
                     }
+
+                    // Show device select row and chart select row
+                    $('#device_select_row').show();
+                    $('#chart_select_row').show();
+
+                    $.ajax({
+                        method: 'GET',
+                        url: '/admin-chart',
+                        data: {
+                            selected_date: selectedDate,
+                            selected_device: selectedDevice,
+                            selected_chart: selectedChart // Perbarui dengan opsi yang dipilih
+                        },
+                        success: function(response) {
+                            console.log("Response Data:", response);
+
+                            var chartData = response.data || [];
+
+                            // Prepare series data for selected device
+                            var seriesData = [];
+                            var categories = [];
+
+                            // Iterate through each data point
+                            chartData.slice(0, 50).forEach(function(item) {
+                                // Add data to series and categories arrays
+                                seriesData.push(item.count);
+                                categories.push(item.date_time);
+                            });
+
+                            // Update chart with new data based on the selected chart type
+                            var options = {};
+                            if (selectedChart === 'latitude' || selectedChart === 'longitude' ||
+                                selectedChart === 'speed' || selectedChart === 'accuracy' ||
+                                selectedChart === 'heading' || selectedChart === 'altitude_acuracy') {
+                                options = {
+                                    chart: {
+                                        type: 'line'
+                                    },
+                                    plotOptions: {
+                                        bar: {
+                                            columnWidth: '80%'
+                                        }
+                                    }
+                                };
+                            } else {
+                                options = {
+                                    chart: {
+                                        type: 'bar'
+                                    }
+                                };
+                            }
+
+                            // Set x-axis categories and series data
+                            options.xaxis = {
+                                categories: categories
+                            };
+                            options.series = [{
+                                data: seriesData
+                            }];
+
+                            // Update chart with new options
+                            chart.updateOptions(options);
+
+                            // Update device selection dropdown
+                            var deviceDropdown = $('#selected_device');
+                            deviceDropdown.empty(); // Clear previous options
+
+                            if (response.deviceOptions.length > 0) {
+                                deviceDropdown.append($('<option>', {
+                                    value: '', // Empty value
+                                    text: 'All History Device'
+                                }));
+
+                                // Add device options received from the server response
+                                response.deviceOptions.forEach(function(device) {
+                                    deviceDropdown.append($('<option>', {
+                                        value: device,
+                                        text: device // Use the device name directly as the option text
+                                    }));
+                                });
+                            } else {
+                                // If no device options available, show default option
+                                deviceDropdown.append($('<option>', {
+                                    value: '', // Empty value
+                                    text: 'Tidak Ada Perangkat Tersedia'
+                                }));
+                            }
+
+                            // Set selected device option
+                            if (selectedDevice) {
+                                deviceDropdown.val(
+                                selectedDevice); // Set the selected device as the selected option
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                }
+
 
                     // Add event listener for date input change
                     $('#selected_date').change(function() {
