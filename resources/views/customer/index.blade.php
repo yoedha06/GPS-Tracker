@@ -508,21 +508,8 @@
                                     categories.push(item.date_time);
                                 });
 
-                                var chartType;
-                                if (selectedChart === 'speed' || selectedChart === 'altitude_accuracy' ||
-                                    selectedChart === 'latitude' || selectedChart === 'longitude' ||
-                                    selectedChart === 'accuracy' || selectedChart === 'heading' ||
-                                    selectedChart === 'altitude_acuracy') {
-                                    chartType = 'line';
-                                } else {
-                                    chartType = 'bar';
-                                }
-
                                 // Update chart with new data
                                 chart.updateOptions({
-                                    chart: {
-                                        type: chartType // Set chart type
-                                    },
                                     xaxis: {
                                         categories: categories // Use date_time as categories
                                     }
@@ -616,23 +603,6 @@
                     });
 
                     $(document).on('change', '#selected_chart', function() {
-                        var selectedChart = $(this).val();
-                        var selectedDevice = $('#selected_device').val();
-                        var selectedDate = $('#selected_date').val();
-
-                        if (!selectedDate) {
-                            alert('Silahkan pilih tanggal terlebih dahulu.');
-                            return;
-                        }
-
-                        if (!selectedDevice) {
-                            alert('Silahkan pilih perangkat terlebih dahulu.');
-                            return;
-                        }
-
-                        updateChart(selectedDevice, selectedChart, selectedDate);
-                    });
-                    $('#selected_chart').change(function() {
                         var selectedChart = $(this).val();
                         var selectedDevice = $('#selected_device').val();
                         var selectedDate = $('#selected_date').val();
