@@ -101,7 +101,7 @@ class TampilanController extends Controller
         }
 
         // Ambil data history sesuai dengan tanggal yang dipilih
-        $historyData = $query->latest()->take(50)->get();
+        $historyData = $query->latest()->take(10)->get();
 
         // Jika tidak ada data, kembalikan respons kosong
         if ($historyData->isEmpty()) {
