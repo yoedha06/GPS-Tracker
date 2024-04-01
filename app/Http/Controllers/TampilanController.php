@@ -81,6 +81,7 @@ class TampilanController extends Controller
     {
         $selectedDate = $request->input('selected_date');
         $selectedDevice = $request->input('selected_device');
+        $selectedChart = $request->input('selected_chart'); // Tambahkan input selected_chart
 
         // Dapatkan pengguna yang saat ini masuk
         $user = Auth::user();
@@ -114,25 +115,48 @@ class TampilanController extends Controller
         // Persiapkan data untuk ditampilkan di chart berdasarkan pilihan chart yang dipilih
         $chartData = [];
 
-        foreach ($historyData as $data) {
-            // Pastikan $data->date_time adalah objek datetime
-            $dateTime = is_string($data->date_time) ? new \DateTime($data->date_time) : $data->date_time;
+        // Sesuaikan kueri untuk mengambil data berdasarkan jenis chart yang dipilih
+        if ($selectedChart === 'speed') {
+            $historyQuery = History::query()
+                ->select('date_time', 'speeds as count')
+                ->whereDate('date_time', $selectedDate)
+                ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                    $query->whereHas('device', function ($query) use ($selectedDevice) {
+                        $query->where('name', $selectedDevice);
+                    });
+                })
+                ->get();
 
-            // Ambil nilai yang sesuai dengan pilihan chart yang dipilih
-            $date = $dateTime->format('Y-m-d H:i:s'); // Format tanggal dan waktu
-            $value = 1; // Set nilai sebagai 1 karena kita ingin menghitung jumlah entri per tanggal dan waktu
+            $chartData = $historyQuery->toArray();
+        } elseif ($selectedChart === 'accuracy') { // Tambahkan logika untuk opsi "Accuracy"
+            $historyQuery = History::query()
+                ->select('date_time', 'accuracy as count') // Memilih kolom date_time dan accuracy
+                ->whereDate('date_time', $selectedDate)
+                ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                    $query->whereHas('device', function ($query) use ($selectedDevice) {
+                        $query->where('name', $selectedDevice);
+                    });
+                })
+                ->get();
 
-            // Jumlahkan nilai berdasarkan tanggal dan waktu
-            if (isset($chartData[$date])) {
-                $chartData[$date]['count'] += $value;
-            } else {
-                $chartData[$date] = [
-                    'date_time' => $date,
-                    'count' => $value
-                ];
+            $chartData = $historyQuery->toArray();
+        } else {
+            foreach ($historyData as $data) {
+                $dateTime = is_string($data->date_time) ? new \DateTime($data->date_time) : $data->date_time;
+
+                $date = $dateTime->format('Y-m-d H:i:s');
+                $value = 1;
+
+                if (isset($chartData[$date])) {
+                    $chartData[$date]['count'] += $value;
+                } else {
+                    $chartData[$date] = [
+                        'date_time' => $date,
+                        'count' => $value
+                    ];
+                }
             }
         }
-
 
         // Ambil daftar perangkat yang tersedia untuk tanggal yang dipilih
         $deviceOptions = Device::whereExists(function ($query) use ($selectedDate) {

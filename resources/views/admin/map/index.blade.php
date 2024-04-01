@@ -11,6 +11,13 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 @section('content')
+ <div class="notification-container" id="notification-container">
+    <div class="notification" id="notification">
+        <i class="fas fa-exclamation-circle"></i> Tidak ada data yang tersedia untuk perangkat dan rentang tanggal yang dipilih.
+    </div>
+</div>
+
+
 <div id="main">
   <div class="form-group mb-3" style="width: 99%;"> <!-- Anda dapat mengubah nilai width sesuai dengan kebutuhan -->
     <label class="form-label">Select Device Users And Device</label>
@@ -35,6 +42,14 @@
             <input type="text" id="date_range" class="form-control" placeholder="Start Date & Time - End Date & Time" style="width: 100%; padding-right: 30px;">
             <i class="fas fa-calendar" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%);"></i>
         </div>
+<div id="filter-options">
+    <label for="speed-checkbox">
+        <input type="checkbox" id="speed-checkbox" class="filter-checkbox" checked> Speed
+    </label>
+    <label for="accuracy-checkbox">
+        <input type="checkbox" id="accuracy-checkbox" class="filter-checkbox" checked> Accuracy
+    </label>
+</div>
 
     </div>
 </div>
@@ -96,6 +111,38 @@
 
 .custom-div-icon i {
     color: green; /* Mengatur warna ikon menjadi merah */
+}
+
+.notification-container {
+    position: fixed;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.notification {
+    padding: 10px;
+    background-color: #f30e21;
+    color: #ffffff;
+    margin-left: 10px;
+    border-radius: 5px;
+    animation: slideInRight 0.5s forwards;
+}
+
+@keyframes slideInRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 </style>
@@ -191,7 +238,24 @@
             var startDate = dateRangePicker.selectedDates[0];
             var endDate = dateRangePicker.selectedDates[1];
             var selectedDevice = $('#user_device').val();
+ var filteredData = historyData.filter(function(item) {
+            var currentDate = new Date(item.date_time);
+            var isWithinDateRange = (!startDate || currentDate >= startDate) && (!endDate || currentDate <= endDate);
+            return isWithinDateRange && (selectedDevice === null || selectedDevice.includes(item.device_id));
+        });
 
+        if (filteredData.length === 0) {
+            // Tampilkan notifikasi
+            $('#notification-container').css('opacity', '1'); // Menampilkan notifikasi
+
+            // Atur timeout untuk menyembunyikan notifikasi setelah 5 detik (misalnya)
+            setTimeout(function() {
+                $('#notification-container').css('opacity', '0'); // Menyembunyikan notifikasi setelah 5 detik
+            }, 4000); // Waktu dalam milidetik (5000 milidetik = 5 detik)
+        } else {
+            // Sembunyikan notifikasi jika ada data yang cocok
+            $('#notification-container').css('opacity', '0');
+        }
             // Menginisialisasi objek untuk melacak "Start" dan "End" untuk masing-masing perangkat
             var startMarkers = {};
             var endMarkers = {};
