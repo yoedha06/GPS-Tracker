@@ -105,7 +105,7 @@
     height: 100%; /* Set initial height to 100% */
 }
 
-        .date-time-input {
+.date-time-input {
             display: flex;
             justify-content: flex-end;
             margin-top: 10px;
@@ -146,11 +146,11 @@
 
 
         /* Atur lebar kontainer form */
-        @media (max-width: 768px) {
-            #map {
-                height: 400px;
-                /* Sesuaikan tinggi peta untuk layar mobile */
-            }
+        @media screen and (max-width: 768px) {
+             #map {
+            height: 50vh;
+        }
+    
 
             #main {
                 width: 100%;
