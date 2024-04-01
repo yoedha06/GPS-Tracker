@@ -32,26 +32,27 @@
 </div>
 
 <div id="main">
-    <div class="form-group ml-3" style="display: flex; flex-direction: column; width: 100%;">
-        <label for="device-select">Select Devicee:</label>
-        <div class="d-flex">
-            <select id="device-select" class="form-select input" style="width: 100%;">
-                <option value="" disabled selected>Select Device</option>
-                @foreach($devices as $device)
-                <option value="{{ $device->id_device }}">{{ $device->user->name }} - {{ $device->name }}</option>
-                @endforeach
-            </select>
-          <button id="reset-btn" class="btn btn-danger btn-sm" style="margin-left: auto;">Reset</button>
-        </div>
+   <div class="form-group ml-3" style="display: flex; flex-direction: column; width: 100%;">
+    <label for="device-select">Select Device:</label>
+    <div class="d-flex align-items-center">
+        <select id="device-select" class="form-select input" style="flex: 1;">
+            <option value="" disabled selected>Select Device</option>
+            @foreach($devices as $device)
+            <option value="{{ $device->id_device }}">{{ $device->user->name }} - {{ $device->name }}</option>
+            @endforeach
+        </select>
+        <button id="reset-btn" class="btn btn-danger btn-sm ml-2">Reset</button>
     </div>
+</div>
 
-    <div class="form-group ml-3 date-time-input" style="display: flex; flex-direction: column; width: 100%;">
-        <label for="date_range" style="margin-bottom: 5px;">Date range:</label>
-        <div class="date-label" style="position: relative; left: 0;">
-            <input type="text" id="date_range" class="form-control" placeholder="Start Date & Time - End Date & Time" style="width: 100%; padding-right: 30px;">
-            <i class="fas fa-calendar" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%);"></i>
-        </div>
+<div class="form-group ml-3 date-time-input" style="display: flex; flex-direction: column; width: 100%;">
+    <label for="date_range" style="margin-bottom: 5px;">Date range:</label>
+    <div class="date-label" style="position: relative; left: 0;">
+        <input type="text" id="date_range" class="form-control" placeholder="Start Date & Time - End Date & Time" style="width: 100%; padding-right: 30px;">
+        <i class="fas fa-calendar" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%);"></i>
     </div>
+</div>
+
 
 
 <!-- Di dalam bagian content -->
@@ -72,7 +73,10 @@
 
 
 
-    <div id="map" style="height: 50%; width: 100%;"></div>
+  <div id="map-container">
+    <div id="map"></div>
+</div>
+
 </div>
 
 <!-- Load jQuery first -->
@@ -88,7 +92,17 @@
 
 
 <style>
-    .date-time-input {
+#map-container {
+    width: 100%;
+    position: relative;
+}
+
+#map {
+    width: 100%;
+    height: 100%; /* Set initial height to 100% */
+}
+
+.date-time-input {
         display: flex;
         justify-content: flex-end;
         margin-top: 10px;
@@ -195,7 +209,19 @@ var routingControl = L.Routing.control(routingOptions).addTo(map);
 
 </script>
 
-    <script>
+<script>
+    // Function to set map height dynamically based on window size
+function setMapHeight() {
+    var windowHeight = window.innerHeight;
+    var mapContainer = document.getElementById('map-container');
+    var mapHeight = windowHeight - mapContainer.offsetTop; // Adjust as needed
+    document.getElementById('map').style.height = mapHeight + 'px';
+}
+
+// Call setMapHeight initially and on window resize
+setMapHeight();
+window.addEventListener('resize', setMapHeight);
+
     $(document).ready(function() {
     // Inisialisasi Select2 untuk dropdown perangkat
     $('#device-select').select2({
@@ -229,23 +255,6 @@ var routingControl = L.Routing.control(routingOptions).addTo(map);
 
 
         $('#reset-btn').on('click', function () {
-        // // Mereset nilai Select2 ke null dan memicu perubahan
-        // $('#device-select').val(null).trigger('change');
-
-        // // Hapus semua marker dari peta
-        // map.eachLayer(function (layer) {
-        //     if (layer instanceof L.Marker) {
-        //         map.removeLayer(layer);
-        //     }
-        // });
-
-        // // Hapus semua garis dari peta
-        // map.eachLayer(function (layer) {
-        //     if (layer instanceof L.Polyline) {
-        //         map.removeLayer(layer);
-        //     }
-        // });
-
         // Refresh halaman dengan memuat ulang URL
         location.href = location.href + '?rand=' + Math.random();
     });
@@ -504,19 +513,16 @@ var routingControl = L.Routing.control(routingOptions).addTo(map);
         }
     });
 
-  if ($('#accuracy-checkbox').is(':checked')) {
+ if ($('#accuracy-checkbox').is(':checked')) {
     if (accuracy <= 10) {
         opacity = 1.0; // Set opasitas ke 1.0 jika akurasi kurang dari atau sama dengan 10 (tidak transparan)
-        color = 'green'; // Jika akurasi <= 10, warna adalah hijau
-        weight = 10; // Ketebalan 10
+        
     } else if (accuracy <= 20) {
         opacity = 0.6; // Set opasitas ke 0.6 jika akurasi di antara 11 dan 20 (sedang transparan)
-        color = 'yellow'; // Jika akurasi <= 20, warna adalah kuning
-        weight = 7; // Ketebalan 7
+
     } else {
         opacity = 0.3; // Set opasitas ke 0.3 jika akurasi di atas 20 (transparan)
-        color = 'red'; // Jika akurasi > 20, warna adalah merah
-        weight = 3; // Ketebalan 3
+
     }
 } else {
     // Jika checkbox "Accuracy" tidak dicentang, atur opasitas default
@@ -531,7 +537,6 @@ var routingControl = L.Routing.control(routingOptions).addTo(map);
         weight: weight,
         opacity: opacity
     });
-
 
 
             // Ikatan popup ke polyline
@@ -572,17 +577,16 @@ var routingControl = L.Routing.control(routingOptions).addTo(map);
     });
 
     // Tambahkan event handler untuk checkbox
-$('#speed-checkbox, #accuracy-checkbox').change(function() {
-    filterMap();
-});
+      $('#speed-checkbox, #accuracy-checkbox').change(function() {
+       filterMap();
+       });
 
 
             dateRangePicker.config.onChange.push(function (selectedDates, dateStr, instance) {
                 filterMap();
             });
         });
-
-        </script>
+ </script>
 
 
 @endsection

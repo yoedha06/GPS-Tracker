@@ -19,49 +19,71 @@
 
 
 <div id="main">
-  <div class="form-group mb-3" style="width: 99%;"> <!-- Anda dapat mengubah nilai width sesuai dengan kebutuhan -->
-    <label class="form-label">Select Device Users And Device</label>
-    <select id="user_device" class="form-select input" style="width: 100%;">
-        <option value="" disabled selected>Select</option>
-        @foreach ($devices->sortBy('name') as $device)
-            @if ($device->latestHistory && $device->user)
-                <option value="{{ $device->id_device }}" data-device-id="{{ $device->id_device }}">
-                    {{ $device->name }} - {{ $device->user->name }}
-                </option>
-            @endif
-        @endforeach
-    </select>
-    <button id="reset-btn" class="btn btn-danger btn-sm" style="margin-left: auto;">Reset</button>
+<div class="row d-flex align-items-center">
+    <div class="col-md-6">
+        <div class="form-group mb-3" style="width: 99%;">
+            <label class="form-label">Select Device Users And Device</label>
+            <select id="user_device" class="form-select input" style="width: 100%;">
+                <option value="" disabled selected>Select</option>
+                @foreach ($devices->sortBy('name') as $device)
+                    @if ($device->latestHistory && $device->user)
+                        <option value="{{ $device->id_device }}" data-device-id="{{ $device->id_device }}">
+                            {{ $device->name }} - {{ $device->user->name }}
+                        </option>
+                    @endif
+                @endforeach
+            </select>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group ml-3 date-time-input" style="display: flex; flex-direction: column; width: 100%;">
+            <label for="date_range" style="margin-bottom: 5px;">Date range:</label>
+            <div class="date-label" style="position: relative; left: 0;">
+                <input type="text" id="date_range" class="form-control" placeholder="Start Date & Time - End Date & Time" style="width: 100%; padding-right: 30px;">
+                <i class="fas fa-calendar" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%);"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-md-6">
+        <button id="reset-btn" class="btn btn-danger btn-sm">Reset</button>
+    </div>
 </div>
 
-    <div id="device-names" data-device-names="{{ json_encode($deviceNames) }}" style="display: none;"></div>
-    <div>
-      <div class="form-group ml-3 date-time-input" style="display: flex; flex-direction: column; width: 100%;">
-        <label for="date_range" style="margin-bottom: 5px;">Date range:</label>
-        <div class="date-label" style="position: relative; left: 0;">
-            <input type="text" id="date_range" class="form-control" placeholder="Start Date & Time - End Date & Time" style="width: 100%; padding-right: 30px;">
-            <i class="fas fa-calendar" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%);"></i>
-        </div>
+
+
 <div id="filter-options">
     <label for="speed-checkbox">
-        <input type="checkbox" id="speed-checkbox" class="filter-checkbox" checked> Speed
+        <input type="checkbox" id="speed-checkbox" class="filter-checkbox"  > Speed
     </label>
     <label for="accuracy-checkbox">
-        <input type="checkbox" id="accuracy-checkbox" class="filter-checkbox" checked> Accuracy
+        <input type="checkbox" id="accuracy-checkbox" class="filter-checkbox"   > Accuracy
     </label>
 </div>
 
     </div>
 </div>
 </div>
-<div id="map" style="height: 50%; width: 100%;"></div>
+<div id="map-container">
+    <div id="map"></div>
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="path/to/jquery.fancybox.min.js"></script>
 
 <style>
+#map-container {
+    width: 100%;
+    position: relative;
+}
+
+#map {
+    width: 100%;
+    height: 100%; /* Set initial height to 100% */
+}
     .date-time-input {
         display: flex;
         justify-content: flex-end;
@@ -144,7 +166,9 @@
         opacity: 1;
     }
 }
-
+#filter-options {
+    display: none; /* Sembunyikan container filter */
+}
 </style>
 
 <!-- Include Select2 JS -->
@@ -152,97 +176,116 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
+    // Function to set map height dynamically based on window size
+function setMapHeight() {
+    var windowHeight = window.innerHeight;
+    var mapContainer = document.getElementById('map-container');
+    var mapHeight = windowHeight - mapContainer.offsetTop; // Adjust as needed
+    document.getElementById('map').style.height = mapHeight + 'px';
+}
+
+// Call setMapHeight initially and on window resize
+setMapHeight();
+window.addEventListener('resize', setMapHeight);
+
     $(document).ready(function() {
-    // Initialize Select2
+    // Inisialisasi Select2 untuk dropdown perangkat
     $('#user_device').select2({
         sorter: function(data) {
             return data.sort(function(a, b) {
-                // Split the option text into device name and user name
-                var aParts = a.text.split(' - ');
-                var bParts = b.text.split(' - ');
-
-                // Compare the device names first
-                var deviceCompare = aParts[0].localeCompare(bParts[0]);
-                if (deviceCompare !== 0) {
-                    return deviceCompare;
-                }
-
-                // If device names are equal, compare the user names
-                return aParts[1].localeCompare(bParts[1]);
+                return a.text.localeCompare(b.text);
             });
         }
     });
-                // Add change event listener
-                // $('#device-select').on('change', function() {
-                //     var selectedValue = $(this).val();
-                //     if (!selectedValue) {
-                //         alert('Device not selected!');
-                //     }
-                // });
 
-    $('#reset-btn').on('click', function () {
-    // // Mereset nilai Select2 ke null dan memicu perubahan
-    // $('#device-select').val(null).trigger('change');
+    // Nonaktifkan checkbox "Speed" dan "Accuracy" secara default
+    $('#speed-checkbox').prop('disabled', true);
+    $('#accuracy-checkbox').prop('disabled', true);
 
-    // // Hapus semua marker dari peta
-    // map.eachLayer(function (layer) {
-    //     if (layer instanceof L.Marker) {
-    //         map.removeLayer(layer);
-    //     }
-    // });
+    // Mengatur opsi checkbox "Speed" dan "Accuracy" menjadi tidak terlihat saat halaman dimuat
+    $('#filter-options').css('display', 'none');
 
-    // // Hapus semua garis dari peta
-    // map.eachLayer(function (layer) {
-    //     if (layer instanceof L.Polyline) {
-    //         map.removeLayer(layer);
-    //     }
-    // });
-
-    // Refresh halaman dengan memuat ulang URL
-    location.href = location.href + '?rand=' + Math.random();
-});
+    // Menambahkan event listener untuk perubahan pada dropdown #device-select
+    $('#user_device').on('change', function() {
+        // Memeriksa apakah sebuah perangkat telah dipilih
+        var selectedDevice = $(this).val();
+        if (selectedDevice) {
+            // Jika perangkat telah dipilih, tampilkan opsi checkbox "Speed" dan "Accuracy"
+            $('#filter-options').css('display', 'block');
+        } else {
+            // Jika tidak ada perangkat yang dipilih, sembunyikan opsi checkbox "Speed" dan "Accuracy"
+            $('#filter-options').css('display', 'none');
+        }
+    });
 
 
 
+        $('#reset-btn').on('click', function () {
+        // // Mereset nilai Select2 ke null dan memicu perubahan
+        // $('#device-select').val(null).trigger('change');
 
+        // // Hapus semua marker dari peta
+        // map.eachLayer(function (layer) {
+        //     if (layer instanceof L.Marker) {
+        //         map.removeLayer(layer);
+        //     }
+        // });
 
-        var deviceNames = {!! json_encode($deviceNames) !!};
-         var userNames = @json($userNames);
-        var historyData = {!! $history->toJson() !!};
-        var defaultStartDate = new Date();
-        defaultStartDate.setHours(0, 0, 0, 0);
+        // // Hapus semua garis dari peta
+        // map.eachLayer(function (layer) {
+        //     if (layer instanceof L.Polyline) {
+        //         map.removeLayer(layer);
+        //     }
+        // });
 
-        // Set default end date to today at 23:00
-        var defaultEndDate = new Date();
-        defaultEndDate.setHours(23, 0, 0, 0);
+        // Refresh halaman dengan memuat ulang URL
+        location.href = location.href + '?rand=' + Math.random();
+    });
 
-        var dateRangePicker = flatpickr("#date_range", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            defaultDate: [defaultStartDate, defaultEndDate],
-            mode: "range",
-            onChange: function(selectedDates, dateStr, instance) {
-                filterMap();
-            }
-        });
+            var deviceNames = {!! json_encode($deviceNames) !!};
+             var userNames = @json($userNames);
+            var historyData = {!! $history->toJson() !!};
+            var defaultStartDate = new Date();
+            defaultStartDate.setHours(0, 0, 0, 0);
 
-        var map = L.map('map').setView([-6.895364793103795, 107.53971757412086], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+            // Set default end date to today at 23:00
+            var defaultEndDate = new Date();
+            defaultEndDate.setHours(23, 0, 0, 0);
 
-        var markers = [];
-        var devicePolylines = {};
+            var dateRangePicker = flatpickr("#date_range", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                defaultDate: [defaultStartDate, defaultEndDate],
+                mode: "range",
+                onChange: function(selectedDates, dateStr, instance) {
+                    filterMap();
+                }
+            });
+
+            var map = L.map('map').setView([-6.895364793103795, 107.53971757412086], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            var markers = [];
+            var devicePolylines = {};
 
         function filterMap() {
-            var startDate = dateRangePicker.selectedDates[0];
-            var endDate = dateRangePicker.selectedDates[1];
-            var selectedDevice = $('#user_device').val();
- var filteredData = historyData.filter(function(item) {
-            var currentDate = new Date(item.date_time);
-            var isWithinDateRange = (!startDate || currentDate >= startDate) && (!endDate || currentDate <= endDate);
-            return isWithinDateRange && (selectedDevice === null || selectedDevice.includes(item.device_id));
-        });
+        var startDate = dateRangePicker.selectedDates[0];
+        var endDate = dateRangePicker.selectedDates[1];
+        var selectedDevice = $('#user_device').val();
+        var showSpeeds = $('#speed-checkbox').is(':checked');
+        var showAccuracy = $('#accuracy-checkbox').is(':checked');
+
+
+      var filteredData = historyData.filter(function(item) {
+        var currentDate = new Date(item.date_time);
+        var isWithinDateRange = (!startDate || currentDate >= startDate) && (!endDate || currentDate <= endDate);
+        var isDeviceSelected = !selectedDevice || selectedDevice.includes(item.device_id);
+        var isSpeedValid = showSpeeds ? parseFloat(item.speeds) > 0 : true;
+        var isAccuracyValid = showAccuracy ? parseFloat(item.accuracy) > 0 : true;
+        return isWithinDateRange && isDeviceSelected && isSpeedValid && isAccuracyValid;
+    });
 
         if (filteredData.length === 0) {
             // Tampilkan notifikasi
@@ -256,267 +299,281 @@
             // Sembunyikan notifikasi jika ada data yang cocok
             $('#notification-container').css('opacity', '0');
         }
-            // Menginisialisasi objek untuk melacak "Start" dan "End" untuk masing-masing perangkat
-            var startMarkers = {};
-            var endMarkers = {};
-
-            // Hapus semua marker dan polyline sebelum memproses data baru
-            markers.forEach(marker => {
-                map.removeLayer(marker);
-            });
-            Object.values(devicePolylines).forEach(polyline => {
-                map.removeLayer(polyline);
-            });
 
 
-            markers = [];
-            devicePolylines = {};
 
-            // Calculate average speed
-            var totalSpeed = 0;
-            for (var i = 0; i < historyData.length; i++) {
-                totalSpeed += parseFloat(historyData[i].speeds);
+                // Menginisialisasi objek untuk melacak "Start" dan "End" untuk masing-masing perangkat
+                var startMarkers = {};
+                var endMarkers = {};
+
+                // Hapus semua marker dan polyline sebelum memproses data baru
+                markers.forEach(marker => {
+                    map.removeLayer(marker);
+                });
+                Object.values(devicePolylines).forEach(polyline => {
+                    map.removeLayer(polyline);
+                });
+
+
+                markers = [];
+                devicePolylines = {};
+
+                // Calculate average speed
+                var totalSpeed = 0;
+                for (var i = 0; i < historyData.length; i++) {
+                    totalSpeed += parseFloat(historyData[i].speeds);
+                }
+                var averageSpeed = historyData.length > 0 ? totalSpeed / historyData.length : 0;
+
+
+        var startIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<i class='fas fa-map-marker-alt' style='font-size: 40px; color: green;'></i>",
+            iconSize: [42, 49],
+                                                iconAnchor: [20, 44],
+                                                popupAnchor: [-5, -41]
+        });
+
+        var endIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<i class='fas fa-map-marker-alt' style='color: red; font-size: 40px;'></i>",
+        iconSize: [42, 49],
+                                                iconAnchor: [20, 44],
+                                                popupAnchor: [-5, -41]
+        });
+
+        // Fungsi untuk menghapus semua marker dari peta
+        function clearMarkers() {
+            for (var i = 0; i < markers.length; i++) {
+                map.removeLayer(markers[i]);
             }
-            var averageSpeed = historyData.length > 0 ? totalSpeed / historyData.length : 0;
-
-
-    var startIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: "<i class='fas fa-map-marker-alt' style='font-size: 40px; color: green;'></i>",
-         iconSize: [42, 49],
-                                            iconAnchor: [20, 44],
-                                            popupAnchor: [-5, -41]
-    });
-
-    var endIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: "<i class='fas fa-map-marker-alt' style='color: red; font-size: 40px;'></i>",
-       iconSize: [42, 49],
-                                            iconAnchor: [20, 44],
-                                            popupAnchor: [-5, -41]
-    });
-
-    // Fungsi untuk menghapus semua marker dari peta
-    function clearMarkers() {
-        for (var i = 0; i < markers.length; i++) {
-            map.removeLayer(markers[i]);
+            markers = []; // Kosongkan array markers
         }
-        markers = []; // Kosongkan array markers
+
+        // Memanggil fungsi untuk menghapus semua marker sebelum menambahkan yang baru
+        clearMarkers();
+
+        // Loop melalui data histori
+        for (var i = 0; i < historyData.length; i++) {
+            var historyItem = historyData[i];
+            var lat = parseFloat(historyItem.latitude);
+            var lng = parseFloat(historyItem.longitude);
+            var deviceId = historyItem.device_id;
+            var currentDate = new Date(historyItem.date_time);
+
+            var isDeviceSelected = !selectedDevice || selectedDevice.includes(deviceId);
+            var isWithinDateRange = (!startDate || currentDate >= startDate) && (!endDate || currentDate <= endDate);
+
+            if (isDeviceSelected && isWithinDateRange) {
+                // Check if it's start or end marker
+                var isEnd = !endMarkers[deviceId]; // Reversed logic to check for end marker
+                var isStart = !isEnd; // Determine if it's a start marker
+
+        if (isStart) {
+        // Check if start marker already exists for this device
+        if (startMarkers[deviceId]) {
+            // Remove previous start marker
+            map.removeLayer(startMarkers[deviceId]);
+        }
+        var markerIcon = startIcon;
+        var popupContent = `<div>
+                                <div style="text-align: center; margin-bottom: 10px; font-weight: bold;">Start</div>
+                                Device: ${deviceNames[deviceId]}<br>
+                                User: ${userNames[deviceId]}<br>
+                                Latitude: ${lat.toFixed(6)}<br>
+                                Longitude: ${lng.toFixed(6)}<br>
+                                Date & Time: ${historyItem.date_time}<br>
+                            </div>`;
+        startMarkers[deviceId] = L.marker([lat, lng], { icon: markerIcon }).bindPopup(popupContent).addTo(map);
+    } else if (isEnd) { // If it's an end marker
+        var markerIcon = endIcon;
+        var popupContent = `<div>
+                                <div style="text-align: center; margin-bottom: 10px; font-weight: bold;">End</div>
+                                Device: ${deviceNames[deviceId]}<br>
+                                User: ${userNames[deviceId]}<br>
+                                Latitude: ${lat.toFixed(6)}<br>
+                                Longitude: ${lng.toFixed(6)}<br>
+                                Date & Time: ${historyItem.date_time}<br>
+                            </div>`;
+        endMarkers[deviceId] = L.marker([lat, lng], { icon: markerIcon }).bindPopup(popupContent).addTo(map);
     }
 
-    // Memanggil fungsi untuk menghapus semua marker sebelum menambahkan yang baru
-    clearMarkers();
 
-    // Loop melalui data histori
-    for (var i = 0; i < historyData.length; i++) {
-        var historyItem = historyData[i];
-        var lat = parseFloat(historyItem.latitude);
-        var lng = parseFloat(historyItem.longitude);
-        var deviceId = historyItem.device_id;
-        var currentDate = new Date(historyItem.date_time);
 
-        var isDeviceSelected = !selectedDevice || selectedDevice.includes(deviceId);
-        var isWithinDateRange = (!startDate || currentDate >= startDate) && (!endDate || currentDate <= endDate);
+                var marker = L.marker([lat, lng]); // Create a marker (not using icons for other markers)
+                markers.push(marker);
 
-        if (isDeviceSelected && isWithinDateRange) {
-            // Check if it's start or end marker
-            var isEnd = !endMarkers[deviceId]; // Reversed logic to check for end marker
-            var isStart = !isEnd; // Determine if it's a start marker
+                if (!devicePolylines[deviceId]) {
+                    devicePolylines[deviceId] = L.polyline([], {}).addTo(map);
+                }
 
-      if (isStart) {
-    // Check if start marker already exists for this device
-    if (startMarkers[deviceId]) {
-        // Remove previous start marker
-        map.removeLayer(startMarkers[deviceId]);
+                devicePolylines[deviceId].addLatLng([lat, lng]);
+            }
+
+
+            }
+
+            // Update popup content for start and end markers
+            Object.keys(startMarkers).forEach(deviceId => {
+                var startMarker = startMarkers[deviceId];
+                var startPopupContent = startMarker.getPopup().getContent();
+                startMarker.getPopup().setContent(startPopupContent + "");
+            });
+
+            Object.keys(endMarkers).forEach(deviceId => {
+                var endMarker = endMarkers[deviceId];
+                var endPopupContent = endMarker.getPopup().getContent();
+                endMarker.getPopup().setContent(endPopupContent + "");
+            });
+
+        // Update polyline styles
+        Object.values(devicePolylines).forEach(polyline => {
+            var color = 'blue'; // Default color
+            var weight = 3;
+            var opacity = 1.0;
+
+            // Change color for end marker polyline to red
+            if (polyline.getLatLngs().length > 0) {
+                var lastLatLng = polyline.getLatLngs()[polyline.getLatLngs().length - 1];
+                var lastDeviceId = historyData.find(item => item.latitude == lastLatLng.lat && item.longitude == lastLatLng.lng).device_id;
+                if (endMarkers[lastDeviceId]) {
+                    color = 'red';
+                }
+            }
+
+            polyline.setStyle({
+                color: color,
+                weight: weight,
+                opacity: opacity
+            });
+        });
+
+        // Fit bounds to markers
+                var allMarkers = markers;
+                    var bounds = L.featureGroup(allMarkers).getBounds();
+                    map.fitBounds(bounds);
+                    // Fly to the new bounds with animation
+                    map.flyToBounds(bounds, {
+                        animate: true,
+                        duration: 1.5, // durasi animasi dalam detik
+                        easeLinearity: 0.5 // pengaturan animasi
+                    });
+             Object.values(devicePolylines).forEach(polyline => {
+    var color;
+    var weight;
+    var opacity;
+
+    var accuracy; // Deklarasikan variabel accuracy di sini
+
+    polyline.getLatLngs().forEach(point => {
+        var data = historyData.find(data => {
+            // Membandingkan koordinat dengan toleransi 0.0001 (sekitar 11 meter)
+            return Math.abs(parseFloat(data.latitude) - point.lat) < 0.0001 &&
+                Math.abs(parseFloat(data.longitude) - point.lng) < 0.0001;
+        });
+
+        if (data && data.speeds !== null && data.speeds !== undefined) {
+            var speed = parseFloat(data.speeds);
+            accuracy = parseFloat(data.accuracy); // Set nilai accuracy di sini
+
+            // Tentukan warna dan ketebalan garis berdasarkan checkbox "Speed"
+            if ($('#speed-checkbox').is(':checked')) {
+                if (speed <= 20) {
+                    color = 'green';  // Jika kecepatan kurang dari atau sama dengan 20 km/h, warna adalah hijau
+                    weight = 10;  // Set ketebalan garis menjadi tebal
+                } else if (speed <= 40) {
+                    color = 'yellow';  // Jika kecepatan di antara 21 dan 40 km/h, warna adalah kuning
+                    weight = 7;  // Set ketebalan garis menjadi sedang
+                } else {
+                    color = 'red';  // Jika kecepatan lebih dari 40 km/h, warna adalah merah
+                    weight = 3;  // Set ketebalan garis menjadi tipis
+                }
+            } else {
+                // Jika checkbox "Speed" tidak dicentang, atur warna dan ketebalan garis default
+                color = 'blue';
+                weight = 3;
+            }
+ popupContent = "Speed: " + speed.toFixed(2) + " km/h<br>Accuracy: " + accuracy.toFixed(2) + " meters";
+            // Hentikan perulangan setelah menemukan data kecepatan pertama
+            return;
+        }
+    });
+
+ if ($('#accuracy-checkbox').is(':checked')) {
+    if (accuracy <= 10) {
+        opacity = 1.0; // Set opasitas ke 1.0 jika akurasi kurang dari atau sama dengan 10 (tidak transparan)
+       
+    } else if (accuracy <= 20) {
+        opacity = 0.6; // Set opasitas ke 0.6 jika akurasi di antara 11 dan 20 (sedang transparan)
+
+    } else {
+        opacity = 0.3; // Set opasitas ke 0.3 jika akurasi di atas 20 (transparan)
+
     }
-    var markerIcon = startIcon;
-    var popupContent = `<div>
-                            <div style="text-align: center; margin-bottom: 10px; font-weight: bold;">Start</div>
-                            Device: ${deviceNames[deviceId]}<br>
-                            User: ${userNames[deviceId]}<br>
-                            Latitude: ${lat.toFixed(6)}<br>
-                            Longitude: ${lng.toFixed(6)}<br>
-                            Date & Time: ${historyItem.date_time}<br>
-                        </div>`;
-    startMarkers[deviceId] = L.marker([lat, lng], { icon: markerIcon }).bindPopup(popupContent).addTo(map);
-} else if (isEnd) { // If it's an end marker
-    var markerIcon = endIcon;
-    var popupContent = `<div>
-                            <div style="text-align: center; margin-bottom: 10px; font-weight: bold;">End</div>
-                            Device: ${deviceNames[deviceId]}<br>
-                            User: ${userNames[deviceId]}<br>
-                            Latitude: ${lat.toFixed(6)}<br>
-                            Longitude: ${lng.toFixed(6)}<br>
-                            Date & Time: ${historyItem.date_time}<br>
-                        </div>`;
-    endMarkers[deviceId] = L.marker([lat, lng], { icon: markerIcon }).bindPopup(popupContent).addTo(map);
+} else {
+    // Jika checkbox "Accuracy" tidak dicentang, atur opasitas default
+    opacity = 1.0;
 }
 
 
 
-            var marker = L.marker([lat, lng]); // Create a marker (not using icons for other markers)
-            markers.push(marker);
-
-            if (!devicePolylines[deviceId]) {
-                devicePolylines[deviceId] = L.polyline([], {}).addTo(map);
-            }
-
-            devicePolylines[deviceId].addLatLng([lat, lng]);
-        }
-
-
-        }
-
-        // Update popup content for start and end markers
-        Object.keys(startMarkers).forEach(deviceId => {
-            var startMarker = startMarkers[deviceId];
-            var startPopupContent = startMarker.getPopup().getContent();
-            startMarker.getPopup().setContent(startPopupContent + "");
-        });
-
-        Object.keys(endMarkers).forEach(deviceId => {
-            var endMarker = endMarkers[deviceId];
-            var endPopupContent = endMarker.getPopup().getContent();
-            endMarker.getPopup().setContent(endPopupContent + "");
-        });
-
-    // Update polyline styles
-    Object.values(devicePolylines).forEach(polyline => {
-        var color = 'blue'; // Default color
-        var weight = 3;
-        var opacity = 1.0;
-
-        // Change color for end marker polyline to red
-        if (polyline.getLatLngs().length > 0) {
-            var lastLatLng = polyline.getLatLngs()[polyline.getLatLngs().length - 1];
-            var lastDeviceId = historyData.find(item => item.latitude == lastLatLng.lat && item.longitude == lastLatLng.lng).device_id;
-            if (endMarkers[lastDeviceId]) {
-                color = 'red';
-            }
-        }
-
-        polyline.setStyle({
-            color: color,
-            weight: weight,
-            opacity: opacity
-        });
+    // Atur gaya polyline
+    polyline.setStyle({
+        color: color,
+        weight: weight,
+        opacity: opacity
     });
 
-    // Fit bounds to markers
-            var allMarkers = markers;
+
+
+            // Ikatan popup ke polyline
+            polyline.bindPopup(popupContent);
+        });
+
+
+                // Fit bounds to markers
+                var allMarkers = markers;
                 var bounds = L.featureGroup(allMarkers).getBounds();
                 map.fitBounds(bounds);
-                // Fly to the new bounds with animation
-                map.flyToBounds(bounds, {
-                    animate: true,
-                    duration: 1.5, // durasi animasi dalam detik
-                    easeLinearity: 0.5 // pengaturan animasi
-                });
+            }
 
+        $('#user_device').change(function () {
+        // Dapatkan ID perangkat yang dipilih
+        var selectedDevice = $(this).val();
 
+         // Aktifkan checkbox "Speed" dan "Accuracy"
+    $('#speed-checkbox').prop('disabled', false);
+    $('#accuracy-checkbox').prop('disabled', false);
 
-
-
-            Object.values(devicePolylines).forEach(polyline => {
-        var color;
-        var weight;
-        var popupContent;
-
-        var accuracy; // Deklarasikan variabel accuracy di sini
-
-        polyline.getLatLngs().forEach(point => {
-            var data = historyData.find(data => {
-                // Membandingkan koordinat dengan toleransi 0.0001 (sekitar 11 meter)
-                return Math.abs(parseFloat(data.latitude) - point.lat) < 0.0001 &&
-                    Math.abs(parseFloat(data.longitude) - point.lng) < 0.0001;
-            });
-
-            if (data && data.speeds !== null && data.speeds !== undefined) {
-                var speed = parseFloat(data.speeds);
-                accuracy = parseFloat(data.accuracy); // Set nilai accuracy di sini
-                // console.log('Speed:', speed);
-                // console.log('Accuracy:', accuracy);
-
-                if (speed <= 20) {
-                    color = 'green';  // If speed is less than or equal to 20 km/h, color is green
-                    weight = 10;  // Set polyline weight to wide
-                } else if (speed <= 40) {
-                    color = 'yellow';  // If speed is between 21 and 40 km/h, color is yellow
-                    weight = 7;  // Set polyline weight to medium
-                } else {
-                    color = 'red';  // If speed is greater than 40 km/h, color is red
-                    weight = 3;  // Set polyline weight to thin
-                }
-                popupContent = "Speed: " + speed.toFixed(2) + " km/h<br>Accuracy: " + accuracy.toFixed(2) + " meters";
-
-                // Hentikan perulangan setelah menemukan data kecepatan pertama
-                return;
+        // Hapus semua marker dari peta
+        map.eachLayer(function (layer) {
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer);
             }
         });
 
-        if (!color || !weight) {
-            // Jika tidak ada data kecepatan yang ditemukan, berikan warna dan berat default
-            color = 'blue';
-            weight = 3;
-            popupContent = "No speed data available";
-        }
-
-        var opacity;
-
-        if (accuracy <= 10) {
-            opacity = 1.0;   // Set opasitas ke 1.0 jika akurasi kurang dari atau sama dengan 10 (tidak transparan)
-        } else if (accuracy <= 20) {
-            opacity = 0.6;   // Set opasitas ke 0.5 jika akurasi di antara 11 dan 20 (sedang transparan)
-        } else {
-            opacity = 0.3;   // Set opasitas ke 0.1 jika akurasi di atas 20 (sangat transparan)
-        }
-
-        polyline.setStyle({
-            color: color,       // Set color
-            weight: weight, // Set thickness based on accuracy
-            opacity: opacity    // Set opacity based on accuracy
+        // Hapus semua garis dari peta
+        map.eachLayer(function (layer) {
+            if (layer instanceof L.Polyline) {
+                map.removeLayer(layer);
+            }
         });
 
-
-
-        // Ikatan popup ke polyline
-        polyline.bindPopup(popupContent);
+        // Memfilter peta berdasarkan perangkat yang dipilih
+        filterMap(selectedDevice);
     });
 
-
-            // Fit bounds to markers
-            var allMarkers = markers;
-            var bounds = L.featureGroup(allMarkers).getBounds();
-            map.fitBounds(bounds);
-        }
-
-       $('#user_device').change(function () {
-    // Dapatkan ID perangkat yang dipilih
-    var selectedDevice = $(this).val();
-
-    // Hapus semua marker dari peta
-    map.eachLayer(function (layer) {
-        if (layer instanceof L.Marker) {
-            map.removeLayer(layer);
-        }
-    });
-
-    // Hapus semua garis dari peta
-    map.eachLayer(function (layer) {
-        if (layer instanceof L.Polyline) {
-            map.removeLayer(layer);
-        }
-    });
-
-    // Memfilter peta berdasarkan perangkat yang dipilih
-    filterMap(selectedDevice);
+    // Tambahkan event handler untuk checkbox
+$('#speed-checkbox, #accuracy-checkbox').change(function() {
+    filterMap();
 });
 
 
-        dateRangePicker.config.onChange.push(function (selectedDates, dateStr, instance) {
-            filterMap();
+            dateRangePicker.config.onChange.push(function (selectedDates, dateStr, instance) {
+                filterMap();
+            });
         });
-    });
 
-    </script>
+        </script>
+
 @endsection
