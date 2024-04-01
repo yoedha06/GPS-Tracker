@@ -32,7 +32,6 @@
         /* Menggunakan font family Arial */
     }
 
-    /*  */
     .navbar {
         display: flex;
         justify-content: space-between;
