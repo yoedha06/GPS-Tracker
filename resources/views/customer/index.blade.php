@@ -148,7 +148,7 @@
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                         <h6 class="text-muted font-semibold">
                                                             <h6 class="font-bold mb-0">
-                                                                Maps History Users
+                                                                Maps History
                                                                 {{-- <h6 class="font-extrabold mb-0">{{ $history }}</h6> --}}
                                                             </h6>
                                                         </h6>
@@ -236,7 +236,7 @@
                                                     <option value="speed">Speed</option>
                                                     <option value="accuracy">Accuracy</option>
                                                     <option value="heading">Heading</option>
-                                                    <option value="altitude_accuracy">Altitude Accuracy</option>
+                                                    <option value="altitude_acuracy">Altitude Accuracy</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -489,7 +489,7 @@
                             data: {
                                 selected_date: selectedDate,
                                 selected_device: selectedDevice,
-                                selected_chart: selectedChart // 
+                                selected_chart: selectedChart // Perbarui dengan opsi yang dipilih
                             },
                             success: function(response) {
                                 console.log("Response Data:", response);
@@ -508,8 +508,21 @@
                                     categories.push(item.date_time);
                                 });
 
+                                var chartType;
+                                if (selectedChart === 'speed' || selectedChart === 'altitude_accuracy' ||
+                                    selectedChart === 'latitude' || selectedChart === 'longitude' ||
+                                    selectedChart === 'accuracy' || selectedChart === 'heading' ||
+                                    selectedChart === 'altitude_acuracy') {
+                                    chartType = 'line';
+                                } else {
+                                    chartType = 'bar';
+                                }
+
                                 // Update chart with new data
                                 chart.updateOptions({
+                                    chart: {
+                                        type: chartType // Set chart type
+                                    },
                                     xaxis: {
                                         categories: categories // Use date_time as categories
                                     }
@@ -564,7 +577,7 @@
                                     }));
                                 }
 
-                                // Set selected device option
+                                // Set selected device optionx  
                                 if (selectedDevice) {
                                     deviceDropdown.val(
                                         selectedDevice); // Set the selected device as the selected option
@@ -576,6 +589,7 @@
                             }
                         });
                     }
+
 
                     // Add event listener for date input change
                     $('#selected_date').change(function() {
@@ -602,6 +616,23 @@
                     });
 
                     $(document).on('change', '#selected_chart', function() {
+                        var selectedChart = $(this).val();
+                        var selectedDevice = $('#selected_device').val();
+                        var selectedDate = $('#selected_date').val();
+
+                        if (!selectedDate) {
+                            alert('Silahkan pilih tanggal terlebih dahulu.');
+                            return;
+                        }
+
+                        if (!selectedDevice) {
+                            alert('Silahkan pilih perangkat terlebih dahulu.');
+                            return;
+                        }
+
+                        updateChart(selectedDevice, selectedChart, selectedDate);
+                    });
+                    $('#selected_chart').change(function() {
                         var selectedChart = $(this).val();
                         var selectedDevice = $('#selected_device').val();
                         var selectedDate = $('#selected_date').val();
