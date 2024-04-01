@@ -217,7 +217,7 @@
             </div>
 
             <div class="nav-item logo">
-                <a href="#">
+                <a href="/customer">
                     <img src="/images/g.png" alt="Logo">
                 </a>
             </div>
