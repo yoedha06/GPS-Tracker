@@ -1,10 +1,8 @@
 @extends('layouts.customer')
-@extends('layouts.navbarcustomer')
 
 <title>GEEX - Maps</title>
 <!-- Load Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
 <!-- Leaflet Routing Machine CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
 
@@ -77,7 +75,7 @@
 
 
 
-    <div id="map" style="height: 50%; width: 100%;"></div>
+    <div id="map" style="height: 50%; width: 100%;">
     </div>
 
     <!-- Load jQuery first -->
@@ -199,9 +197,9 @@
     <script>
         // Tentukan koordinat titik awal dan akhir rute
         var start = L.latLng(historyData[0].latitude, historyData[0]
-        .longitude); // Mengambil koordinat titik awal dari data pertama dalam historyData
+            .longitude); // Mengambil koordinat titik awal dari data pertama dalam historyData
         var end = L.latLng(historyData[historyData.length - 1].latitude, historyData[historyData.length - 1]
-        .longitude); // Mengambil koordinat titik akhir dari data terakhir dalam historyData
+            .longitude); // Mengambil koordinat titik akhir dari data terakhir dalam historyData
 
         // Tentukan opsi rute
         var routingOptions = {
@@ -323,7 +321,7 @@
                     // Atur timeout untuk menyembunyikan notifikasi setelah 5 detik (misalnya)
                     setTimeout(function() {
                         $('#notification-container').css('opacity',
-                        '0'); // Menyembunyikan notifikasi setelah 5 detik
+                            '0'); // Menyembunyikan notifikasi setelah 5 detik
                     }, 4000); // Waktu dalam milidetik (5000 milidetik = 5 detik)
                 } else {
                     // Sembunyikan notifikasi jika ada data yang cocok
@@ -515,15 +513,15 @@
                             if ($('#speed-checkbox').is(':checked')) {
                                 if (speed <= 20) {
                                     color =
-                                    'green'; // Jika kecepatan kurang dari atau sama dengan 20 km/h, warna adalah hijau
+                                        'green'; // Jika kecepatan kurang dari atau sama dengan 20 km/h, warna adalah hijau
                                     weight = 10; // Set ketebalan garis menjadi tebal
                                 } else if (speed <= 40) {
                                     color =
-                                    'yellow'; // Jika kecepatan di antara 21 dan 40 km/h, warna adalah kuning
+                                        'yellow'; // Jika kecepatan di antara 21 dan 40 km/h, warna adalah kuning
                                     weight = 7; // Set ketebalan garis menjadi sedang
                                 } else {
                                     color =
-                                    'red'; // Jika kecepatan lebih dari 40 km/h, warna adalah merah
+                                        'red'; // Jika kecepatan lebih dari 40 km/h, warna adalah merah
                                     weight = 3; // Set ketebalan garis menjadi tipis
                                 }
                             } else {
@@ -541,12 +539,12 @@
                     if ($('#accuracy-checkbox').is(':checked')) {
                         if (accuracy <= 10) {
                             opacity =
-                            1.0; // Set opasitas ke 1.0 jika akurasi kurang dari atau sama dengan 10 (tidak transparan)
+                                1.0; // Set opasitas ke 1.0 jika akurasi kurang dari atau sama dengan 10 (tidak transparan)
                             color = 'green'; // Jika akurasi <= 10, warna adalah hijau
                             weight = 10; // Ketebalan 10
                         } else if (accuracy <= 20) {
                             opacity =
-                            0.6; // Set opasitas ke 0.6 jika akurasi di antara 11 dan 20 (sedang transparan)
+                                0.6; // Set opasitas ke 0.6 jika akurasi di antara 11 dan 20 (sedang transparan)
                             color = 'yellow'; // Jika akurasi <= 20, warna adalah kuning
                             weight = 7; // Ketebalan 7
                         } else {
