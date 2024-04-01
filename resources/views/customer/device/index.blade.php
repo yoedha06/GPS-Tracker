@@ -2,6 +2,15 @@
 
 <title>GEEX - Device</title>
 <style>
+    @media (max-width: 768px) {
+
+        /* Contoh penyesuaian CSS untuk layar kecil */
+        .cardContainer {
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+    }
+
     .card {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         /* Ubah warna dan opacity (alpha) sesuai kebutuhan */
