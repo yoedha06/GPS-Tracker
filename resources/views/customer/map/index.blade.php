@@ -186,8 +186,6 @@
     <script src="https://unpkg.com/leaflet.animatedmarker/src/AnimatedMarker.js"></script>
 
 
-    
-
     <script>
         // Tentukan koordinat titik awal dan akhir rute
         var start = L.latLng(historyData[0].latitude, historyData[0]
