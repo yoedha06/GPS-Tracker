@@ -1,5 +1,4 @@
 @extends('layouts.customer')
-@extends('layouts.navbarcustomer')
 
 <title>GEEX - Device</title>
 <style>
@@ -126,7 +125,6 @@
                 </div>
             </div>
     </div>
-    </section>
 
     <!-- ADD Device Modal -->
     <div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
@@ -166,7 +164,8 @@
                         <div class="mb-3">
                             <label for="timezone" class="form-label">Timezone</label>
                             <select class="form-select" id="timezone" name="timezone" required>
-                                <option value="" {{ is_null(old('timezone')) ? 'selected' : '' }} disabled>Select Timezone</option>
+                                <option value="" {{ is_null(old('timezone')) ? 'selected' : '' }} disabled>Select
+                                    Timezone</option>
                                 <option value="-11">UTC -11</option>
                                 <option value="-10">UTC -10</option>
                                 <option value="-9">UTC -9</option>
@@ -255,8 +254,10 @@
                                 <select class="form-select" id="edit_timezone{{ $item->id_device }}" name="timezone"
                                     required>
                                     <option value="" disabled>Select Timezone</option>
-                                    <option value="-11" {{ $item->timezone == '-11' ? 'selected' : '' }}>UTC -11</option>
-                                    <option value="-10" {{ $item->timezone == '-10' ? 'selected' : '' }}>UTC -10</option>
+                                    <option value="-11" {{ $item->timezone == '-11' ? 'selected' : '' }}>UTC -11
+                                    </option>
+                                    <option value="-10" {{ $item->timezone == '-10' ? 'selected' : '' }}>UTC -10
+                                    </option>
                                     <option value="-9" {{ $item->timezone == '-9' ? 'selected' : '' }}>UTC -9</option>
                                     <option value="-8" {{ $item->timezone == '-8' ? 'selected' : '' }}>UTC -8</option>
                                     <option value="-7" {{ $item->timezone == '-7' ? 'selected' : '' }}>UTC -7</option>
@@ -359,7 +360,6 @@
             </div>
         </div>
     </footer>
-    </div>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         $('#table1').on('click', '[data-bs-toggle="modal"]', function() {
