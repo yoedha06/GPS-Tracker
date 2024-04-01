@@ -22,6 +22,9 @@
     @media (max-width: 767px) {
         #map {
             height: 60%;
+            height: 100%;
+            border-radius: 7px;
+            z-index: 1;
         }
     }
 
@@ -54,14 +57,31 @@
     #updateLocationButton {
         display: none;
     }
+
+    /*
+    .logo img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    .name {
+        max-width: 100px;
+        
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .name h6 {
+        font-weight: normal;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    } */
 </style>
 
 @section('content')
-    {{-- <header>
-    <a href="#" class="burger-btn d-block d-xl-none">
-        <i class="bi bi-justify fs-3"></i>
-    </a>
-</header> --}}
     <div id="main" style="padding-top: 4px; padding-right: 10px; padding-left: 10px;">
         <div class="page-heading">
             <div class="page-title">
@@ -70,9 +90,9 @@
                     </div>
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end"
-                            style="padding-left: 7px;
-                        margin-top: 10px;
-                        margin-bottom: -30;">
+                            style="padding-left: -50px;
+                        margin-top: 1px;
+                        margin-bottom: -45px;">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
                                         Dashboard</a></li>
@@ -100,7 +120,7 @@
                     </form>
                 </div>
                 <div class="col-md-6">
-                    <div class="d-grid gap-2 mb-3" style="margin-top:-1px;">
+                    <div class="d-grid gap-2 mb-3" style="margin-top:-5px;">
                         <button type="submit" id="refreshButton" class="btn btn-primary"><i
                                 class="bi bi-hdd-fill"></i>&nbsp;Lihat Semua Device</button>
                     </div>
@@ -214,7 +234,6 @@
                         }
                     });
                 }
-
 
                 // Memuat lokasi terakhir ketika perangkat dipilih
                 $('#selectDevice').change(function() {

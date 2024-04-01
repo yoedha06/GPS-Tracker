@@ -29,16 +29,14 @@
         align-items: center;
         background-color: #ffffff;
         height: 70px;
-        width: 375px;
+        width: 378px;
         left: 50%;
         position: fixed;
         transform: translate(-50%);
         bottom: 0;
         box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
-        border-radius: 15px;
-        /* Menambahkan border radius */
+        border-radius: 15px 15px 0 0;
         padding: 0 20px;
-        /* Memberikan padding pada navbar */
     }
 
     .nav-item {
