@@ -22,7 +22,6 @@
     @media (max-width: 767px) {
         #map {
             height: 60%;
-            height: 100%;
             border-radius: 7px;
             z-index: 1;
         }
@@ -90,7 +89,7 @@
                     </div>
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end"
-                            style="padding-left: -50px;
+                            style="padding-left: 3px;
                         margin-top: 1px;
                         margin-bottom: -45px;">
                             <ol class="breadcrumb">
@@ -107,7 +106,7 @@
         </div>
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6" style="padding-left: 7px; padding-right: 7px;">
                     <form class="mt-2">
                         <div class="mb-3" style="margin-top: -8px;">
                             <select id="selectDevice" class="form-select" aria-label="Select Device">
@@ -119,7 +118,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" style="padding-left: 7px; padding-right: 7px;">
                     <div class="d-grid gap-2 mb-3" style="margin-top:-5px;">
                         <button type="submit" id="refreshButton" class="btn btn-primary"><i
                                 class="bi bi-hdd-fill"></i>&nbsp;Lihat Semua Device</button>
