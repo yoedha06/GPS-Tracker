@@ -135,9 +135,9 @@
                     <div class="col-12 col-md-6 order-md-1 order-last">
                     </div>
                     <div class="col-12 col-md-6 order-md-2 order-first">
-                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end" style="padding-left: 7px;
-                        margin-top: 10px;
-                        margin-bottom: -30;">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end" style="padding-left: -50px;
+                        margin-top: 1px;
+                        margin-bottom: -45px;">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
                                         Dashboard</a></li>
@@ -164,7 +164,7 @@
                     </form>
                 </div>
                 <div class="col-md-6">
-                    <div class="d-grid gap-2 mb-3" style="margin-top:-1px;">
+                    <div class="d-grid gap-2 mb-3" style="margin-top:-5px;">
                         <button type="submit" id="refreshButton" class="btn btn-primary"><i class="bi bi-hdd-fill"></i>&nbsp;Lihat Semua Device</button>
                     </div>
                     <div class="d-grid gap-2 mb-3" style="margin-top:-5px;">
@@ -198,7 +198,7 @@
                                                         className: 'custom-div-icon',
                                                         html: "<i class='fas fa-map-marker-alt' style='color: #25A5E2; font-size: 40px;'></i>",
                                                         iconSize: [42, 49],
-                                                        iconAnchor: [20, 44],
+                                                        iconAnchor: [16, 45],
                                                         popupAnchor: [-5, -41]
                                                     });
 
@@ -274,7 +274,6 @@
                                 });
                             }
 
-
                             // Memuat lokasi terakhir ketika perangkat dipilih
                             $('#selectDevice').change(function() {
                                 var selectedDeviceId = $(this).val();
@@ -333,7 +332,7 @@
                                                     className: 'custom-div-icon',
                                                     html: "<i class='fas fa-map-marker-alt' style='color:yellow; font-size: 40px;'></i>",
                                                     iconSize: [42, 49],
-                                                    iconAnchor: [20, 44],
+                                                    iconAnchor: [16, 45],
                                                     popupAnchor: [-5, -41]
                                                 });
 
