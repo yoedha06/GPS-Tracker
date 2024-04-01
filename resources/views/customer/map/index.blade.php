@@ -75,7 +75,7 @@
 
 
 
-    <div id="map" style="height: 50%; width: 100%;">
+   <div id="map" style="height: 420px; width: 100%;">
     </div>
 
     <!-- Load jQuery first -->
@@ -123,27 +123,27 @@
             text-align: left;
         }
 
-        #map {
-            z-index: 0;
-            /* Atur nilai z-index yang sesuai */
-            width: 100%;
-            height: 300px;
-            /* Tinggi peta pada layar non-mobile */
-        }
+       #map {
+    z-index: 0;
+    width: 100%;
+    height: 300px;
+    margin-bottom: 50px; /* Menambahkan margin bawah 20px */
+}
 
+/* Atur lebar kontainer form */
+@media (max-width: 768px) {
+    #map {
+        height: 400px;
+        /* Sesuaikan tinggi peta untuk layar mobile */
+        margin-bottom: 50px; /* Menambahkan margin bawah 20px */
+    }
 
-        /* Atur lebar kontainer form */
-        @media (max-width: 768px) {
-            #map {
-                height: 400px;
-                /* Sesuaikan tinggi peta untuk layar mobile */
-            }
+    #main {
+        width: 100%;
+        /* Lebar kontainer form menjadi 100% */
+    }
+}
 
-            #main {
-                width: 100%;
-                /* Lebar kontainer form menjadi 100% */
-            }
-        }
 
         .custom-div-icon {
             width: 32px;
