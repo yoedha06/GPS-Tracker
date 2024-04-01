@@ -15,15 +15,11 @@
 <style>
     #map {
         width: 100%;
-        height: 70%;
+        height: 50vh;
         border-radius: 7px;
     }
 
-    @media (max-width: 767px) {
-        #map {
-            height: 60%;
-        }
-    }
+
 
     @keyframes pulse {
         0% {
@@ -57,11 +53,6 @@
 </style>
 
 @section('content')
-    {{-- <header>
-    <a href="#" class="burger-btn d-block d-xl-none">
-        <i class="bi bi-justify fs-3"></i>
-    </a>
-</header> --}}
     <div id="main" style="padding-top: 4px; padding-right: 10px; padding-left: 10px;">
         <div class="page-heading">
             <div class="page-title">
