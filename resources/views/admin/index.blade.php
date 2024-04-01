@@ -126,8 +126,10 @@
                                             <select class="form-select" id="selected_device">
                                                 <option value="" selected disabled>Select Device</option>
                                                 @foreach ($devices as $device)
-                                                    <option value="{{ $device->id }}">{{ $device->name }}</option>
+                                                    <option value="{{ $device->id }}">{{ $device->user->name }} -
+                                                        {{ $device->name }}</option>
                                                 @endforeach
+
                                             </select>
                                         </div>
                                         <div class="col-md-6">
@@ -328,7 +330,6 @@
                         },
                         success: function(response) {
                             console.log("Response Data:", response);
-                            console.log("Chart Data:", chartData);
 
                             var chartData = response.data || [];
 
@@ -343,49 +344,39 @@
                                 categories.push(item.date_time);
                             });
 
-                            var chartType;
-                            if (selectedChart === 'speed' || selectedChart === 'altitude_accuracy' ||
-                                selectedChart === 'latitude' || selectedChart === 'longitude' ||
-                                selectedChart === 'accuracy' || selectedChart === 'heading' ||
-                                selectedChart === 'altitude_acuracy') {
-                                chartType = 'line';
+                            // Update chart with new data based on the selected chart type
+                            var options = {};
+                            if (selectedChart === 'latitude' || selectedChart === 'longitude' ||
+                                selectedChart === 'speed' || selectedChart === 'accuracy' ||
+                                selectedChart === 'heading' || selectedChart === 'altitude_acuracy') {
+                                options = {
+                                    chart: {
+                                        type: 'line'
+                                    },
+                                    plotOptions: {
+                                        bar: {
+                                            columnWidth: '80%'
+                                        }
+                                    }
+                                };
                             } else {
-                                chartType = 'bar';
+                                options = {
+                                    chart: {
+                                        type: 'bar'
+                                    }
+                                };
                             }
 
-                            // Update chart with new data
-                            chart.updateOptions({
-                                chart: {
-                                    type: chartType // Set chart type
-                                },
-                                xaxis: {
-                                    categories: categories // Use date_time as categories
-                                }
-                            });
-                            chart.updateSeries([{
+                            // Set x-axis categories and series data
+                            options.xaxis = {
+                                categories: categories
+                            };
+                            options.series = [{
                                 data: seriesData
-                            }]);
+                            }];
 
-                            // Update plot options based on the number of data points
-                            if (chartData.length === 1) {
-                                // If there is only one data point, reduce the bar width
-                                chart.updateOptions({
-                                    plotOptions: {
-                                        bar: {
-                                            columnWidth: '30%' // Adjust columnWidth as needed
-                                        }
-                                    }
-                                });
-                            } else {
-                                // If there are multiple data points, reset the plot options to default
-                                chart.updateOptions({
-                                    plotOptions: {
-                                        bar: {
-                                            columnWidth: '80%' // Set the default columnWidth
-                                        }
-                                    }
-                                });
-                            }
+                            // Update chart with new options
+                            chart.updateOptions(options);
 
                             // Update device selection dropdown
                             var deviceDropdown = $('#selected_device');
@@ -412,19 +403,17 @@
                                 }));
                             }
 
-                            // Set selected device optionx  
+                            // Set selected device option
                             if (selectedDevice) {
                                 deviceDropdown.val(
-                                    selectedDevice); // Set the selected device as the selected option
+                                selectedDevice); // Set the selected device as the selected option
                             }
-
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
                         }
                     });
                 }
-
 
                 // Add event listener for date input change
                 $('#selected_date').change(function() {

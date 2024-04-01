@@ -101,7 +101,7 @@ class TampilanController extends Controller
         }
 
         // Ambil data history sesuai dengan tanggal yang dipilih
-        $historyData = $query->get();
+        $historyData = $query->latest()->take(50)->get();
 
         // Jika tidak ada data, kembalikan respons kosong
         if ($historyData->isEmpty()) {
@@ -245,7 +245,7 @@ class TampilanController extends Controller
         if ($historyData->isEmpty()) {
             return response()->json([
                 'data' => [],
-                'deviceOptions' => [],
+                'deviceOptions' => [], // Jangan lupa sertakan daftar perangkat yang tersedia
                 'deviceCount' => 0
             ]);
         }
@@ -346,7 +346,6 @@ class TampilanController extends Controller
                 ->whereColumn('id_device', 'history.device_id')
                 ->whereDate('history.date_time', $selectedDate);
         })
-            ->where('user_id', Auth::id()) // tambahkan kondisi where untuk user_id
             ->whereNotNull('name') // pastikan hanya memasukkan perangkat dengan nama yang terdefinisi
             ->pluck('name') // Ambil nama perangkat
             ->unique() // Hapus duplikat
@@ -355,7 +354,7 @@ class TampilanController extends Controller
 
         return response()->json([
             'data' => array_values($chartData),
-            'deviceOptions' => $deviceOptions,
+            'deviceOptions' => $deviceOptions, // Sertakan daftar perangkat yang tersedia
             'deviceCount' => count($deviceOptions)
         ]);
     }
