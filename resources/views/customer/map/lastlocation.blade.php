@@ -21,7 +21,7 @@
 
     @media (max-width: 767px) {
         #map {
-            height: 60%;
+            height: 70%;
             border-radius: 7px;
             z-index: 1;
         }
