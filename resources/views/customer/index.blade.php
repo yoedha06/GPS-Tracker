@@ -501,7 +501,7 @@
                             var categories = [];
 
                             // Iterate through each data point
-                            chartData.forEach(function(item) {
+                            chartData.slice(0, 50).forEach(function(item) {
                                 // Add data to series and categories arrays
                                 seriesData.push(item.count);
                                 categories.push(item.date_time);
