@@ -59,7 +59,7 @@
                                                     <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                         <h6 class="text-muted font-semibold">
                                                             <h6 class="font-bold mb-0">
-                                                                Maps History Users
+                                                                Maps History
                                                                 {{-- <h6 class="font-extrabold mb-0">{{ $history }}</h6> --}}
                                                             </h6>
                                                         </h6>
@@ -147,7 +147,7 @@
                                                     <option value="speed">Speed</option>
                                                     <option value="accuracy">Accuracy</option>
                                                     <option value="heading">Heading</option>
-                                                    <option value="altitude_accuracy">Altitude Accuracy</option>
+                                                    <option value="altitude_acuracy">Altitude Accuracy</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -318,114 +318,116 @@
 
                     // Function to update chart data
                     function updateChart(selectedDevice, selectedChart, selectedDate) {
-                        var selectedDate = $('#selected_date').val();
+                    var selectedDate = $('#selected_date').val();
 
-                        console.log("Selected Date:", selectedDate);
-                        console.log("Selected Device:", selectedDevice);
-                        console.log("Selected Chart:", selectedChart);
+                    console.log("Selected Date:", selectedDate);
+                    console.log("Selected Device:", selectedDevice);
+                    console.log("Selected Chart:", selectedChart);
 
-                        if (!selectedDate) {
-                            alert('Silahkan pilih tanggal terlebih dahulu.');
-                            return; // Stop further execution if date is not selected
-                        }
-
-                        // Show device select row and chart select row
-                        $('#device_select_row').show();
-                        $('#chart_select_row').show();
-
-                        $.ajax({
-                            method: 'GET',
-                            url: '/customer-chart',
-                            data: {
-                                selected_date: selectedDate,
-                                selected_device: selectedDevice,
-                                selected_chart: selectedChart // 
-                            },
-                            success: function(response) {
-                                console.log("Response Data:", response);
-                                console.log("Chart Data:", chartData);
-
-                                var chartData = response.data || [];
-
-                                // Prepare series data for selected device
-                                var seriesData = [];
-                                var categories = [];
-
-                                // Iterate through each data point
-                                chartData.forEach(function(item) {
-                                    // Add data to series and categories arrays
-                                    seriesData.push(item.count);
-                                    categories.push(item.date_time);
-                                });
-
-                                // Update chart with new data
-                                chart.updateOptions({
-                                    xaxis: {
-                                        categories: categories // Use date_time as categories
-                                    }
-                                });
-                                chart.updateSeries([{
-                                    data: seriesData
-                                }]);
-
-                                // Update plot options based on the number of data points
-                                if (chartData.length === 1) {
-                                    // If there is only one data point, reduce the bar width
-                                    chart.updateOptions({
-                                        plotOptions: {
-                                            bar: {
-                                                columnWidth: '30%' // Adjust columnWidth as needed
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    // If there are multiple data points, reset the plot options to default
-                                    chart.updateOptions({
-                                        plotOptions: {
-                                            bar: {
-                                                columnWidth: '80%' // Set the default columnWidth
-                                            }
-                                        }
-                                    });
-                                }
-
-                                // Update device selection dropdown
-                                var deviceDropdown = $('#selected_device');
-                                deviceDropdown.empty(); // Clear previous options
-
-                                if (response.deviceOptions.length > 0) {
-                                    deviceDropdown.append($('<option>', {
-                                        value: '', // Empty value
-                                        text: 'All History Device'
-                                    }));
-
-                                    // Add device options received from the server response
-                                    response.deviceOptions.forEach(function(device) {
-                                        deviceDropdown.append($('<option>', {
-                                            value: device,
-                                            text: device // Use the device name directly as the option text
-                                        }));
-                                    });
-                                } else {
-                                    // If no device options available, show default option
-                                    deviceDropdown.append($('<option>', {
-                                        value: '', // Empty value
-                                        text: 'Tidak Ada Perangkat Tersedia'
-                                    }));
-                                }
-
-                                // Set selected device option
-                                if (selectedDevice) {
-                                    deviceDropdown.val(
-                                        selectedDevice); // Set the selected device as the selected option
-                                }
-
-                            },
-                            error: function(xhr, status, error) {
-                                console.error(error);
-                            }
-                        });
+                    if (!selectedDate) {
+                        alert('Silahkan pilih tanggal terlebih dahulu.');
+                        return; // Stop further execution if date is not selected
                     }
+
+                    // Show device select row and chart select row
+                    $('#device_select_row').show();
+                    $('#chart_select_row').show();
+
+                    $.ajax({
+                        method: 'GET',
+                        url: '/admin-chart',
+                        data: {
+                            selected_date: selectedDate,
+                            selected_device: selectedDevice,
+                            selected_chart: selectedChart // Perbarui dengan opsi yang dipilih
+                        },
+                        success: function(response) {
+                            console.log("Response Data:", response);
+
+                            var chartData = response.data || [];
+
+                            // Prepare series data for selected device
+                            var seriesData = [];
+                            var categories = [];
+
+                            // Iterate through each data point
+                            chartData.slice(0, 50).forEach(function(item) {
+                                // Add data to series and categories arrays
+                                seriesData.push(item.count);
+                                categories.push(item.date_time);
+                            });
+
+                            // Update chart with new data based on the selected chart type
+                            var options = {};
+                            if (selectedChart === 'latitude' || selectedChart === 'longitude' ||
+                                selectedChart === 'speed' || selectedChart === 'accuracy' ||
+                                selectedChart === 'heading' || selectedChart === 'altitude_acuracy') {
+                                options = {
+                                    chart: {
+                                        type: 'line'
+                                    },
+                                    plotOptions: {
+                                        bar: {
+                                            columnWidth: '80%'
+                                        }
+                                    }
+                                };
+                            } else {
+                                options = {
+                                    chart: {
+                                        type: 'bar'
+                                    }
+                                };
+                            }
+
+                            // Set x-axis categories and series data
+                            options.xaxis = {
+                                categories: categories
+                            };
+                            options.series = [{
+                                data: seriesData
+                            }];
+
+                            // Update chart with new options
+                            chart.updateOptions(options);
+
+                            // Update device selection dropdown
+                            var deviceDropdown = $('#selected_device');
+                            deviceDropdown.empty(); // Clear previous options
+
+                            if (response.deviceOptions.length > 0) {
+                                deviceDropdown.append($('<option>', {
+                                    value: '', // Empty value
+                                    text: 'All History Device'
+                                }));
+
+                                // Add device options received from the server response
+                                response.deviceOptions.forEach(function(device) {
+                                    deviceDropdown.append($('<option>', {
+                                        value: device,
+                                        text: device // Use the device name directly as the option text
+                                    }));
+                                });
+                            } else {
+                                // If no device options available, show default option
+                                deviceDropdown.append($('<option>', {
+                                    value: '', // Empty value
+                                    text: 'Tidak Ada Perangkat Tersedia'
+                                }));
+                            }
+
+                            // Set selected device option
+                            if (selectedDevice) {
+                                deviceDropdown.val(
+                                selectedDevice); // Set the selected device as the selected option
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                }
+
 
                     // Add event listener for date input change
                     $('#selected_date').change(function() {
