@@ -75,10 +75,7 @@
 
 
 
-    <div id="map-container">
-    <div id="map"></div>
-</div>
-
+    <div id="map" style="height: 50%; width: 100%;">
     </div>
 
     <!-- Load jQuery first -->
@@ -95,17 +92,7 @@
 
 
     <style>
-#map-container {
-    width: 100%;
-    position: relative;
-}
-
-#map {
-    width: 100%;
-    height: 100%; /* Set initial height to 100% */
-}
-
-.date-time-input {
+        .date-time-input {
             display: flex;
             justify-content: flex-end;
             margin-top: 10px;
@@ -146,11 +133,11 @@
 
 
         /* Atur lebar kontainer form */
-        @media screen and (max-width: 768px) {
-             #map {
-            height: 50vh;
-        }
-    
+        @media (max-width: 768px) {
+            #map {
+                height: 400px;
+                /* Sesuaikan tinggi peta untuk layar mobile */
+            }
 
             #main {
                 width: 100%;
@@ -228,18 +215,6 @@
     </script>
 
     <script>
-        // Function to set map height dynamically based on window size
-function setMapHeight() {
-    var windowHeight = window.innerHeight;
-    var mapContainer = document.getElementById('map-container');
-    var mapHeight = windowHeight - mapContainer.offsetTop; // Adjust as needed
-    document.getElementById('map').style.height = mapHeight + 'px';
-}
-
-// Call setMapHeight initially and on window resize
-setMapHeight();
-window.addEventListener('resize', setMapHeight);
-
         $(document).ready(function() {
             // Inisialisasi Select2 untuk dropdown perangkat
             $('#device-select').select2({
