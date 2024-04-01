@@ -212,14 +212,14 @@
     <footer>
         <div class="navbar">
             <div class="nav-item">
-                <a href="customer/lastlocation">
+                <a href="/customer/lastlocation">
                     <i class="bi bi-geo-alt-fill"></i>
                     <span>LastLoc</span>
                 </a>
             </div>
 
             <div class="nav-item">
-                <a href="customer/map">
+                <a href="/customer/map">
                     <i class="bi bi-map-fill"></i>
                     <br>
                     <span>Maps</span>
@@ -233,7 +233,7 @@
             </div>
 
             <div class="nav-item">
-                <a href="customer/device">
+                <a href="/customer/device">
                     <i class="bi bi-ev-front-fill"></i>
                     <span>Device</span>
                 </a>
@@ -250,26 +250,7 @@
                         @endif
                     </div>
                 </a>
-                {{-- <!-- Dropdown Menu -->
-            <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                <li>
-                    <!-- Link ke Profil Pengguna -->
-                    <a class="dropdown-item" href="{{ route('customer.profile') }}"><i class="fas fa-user"></i>
-                        Profile</a>
-                </li>
-                <li>
-                    <!-- Form untuk Logout -->
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                        @csrf
-                    </form>
-                    <!-- Link Logout -->
-                    <a class="dropdown-item" href="{{ route('logout') }}"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="bi bi-box-arrow-left"></i>
-                        <span>Logout</span>
-                    </a>
-                </li>
-            </ul> --}}
+
             </div>
         </div>
     </footer>
@@ -308,6 +289,5 @@
 
     });
 </script>
-</body>
 
 </html>
