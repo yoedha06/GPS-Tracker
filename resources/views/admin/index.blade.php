@@ -109,25 +109,39 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="selected_date" class="form-label">Selected Date:</label>
-                                        <input type="date" class="form-control" id="selected_date">
+                                <div class="col-md-6">
+                                    <div class="row mb-3">
+                                        <div class="col-md-12">
+                                            <label for="selected_date" class="form-label">Selected Date:</label>
+                                            <input type="date" class="form-control" id="selected_date">
+                                        </div>
                                     </div>
+                                    <div id="validation-message" class="text-danger" style="display: none;"></div>
                                 </div>
-                                <div id="validation-message" class="text-danger" style="display: none;"></div>
 
-                                <div class="row mb-3" id="device_select_row" style="display: none;">
-                                    <div class="col-md-6">
-                                        <label for="selected_device" class="form-label">Select Device:</label>
-                                        <select class="form-select" id="selected_device">
-                                            <option value="" selected disabled>Select Device</option>
-                                            <option value="all">All Users</option> <!-- Opsi untuk semua users -->
-                                            @foreach ($devices as $device)
-                                                <option value="{{ $device->id_device }}">{{ $device->name }} -
-                                                    {{ $device->user->name }}</option>
-                                            @endforeach
-                                        </select>
+                                <div class="col-md-6">
+                                    <div class="row mb-3" id="device_chart_select_row" style="display: none;">
+                                        <div class="col-md-6">
+                                            <label for="selected_device" class="form-label">Select Device:</label>
+                                            <select class="form-select" id="selected_device">
+                                                <option value="" selected disabled>Select Device</option>
+                                                @foreach ($devices as $device)
+                                                    <option value="{{ $device->id }}">{{ $device->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="selected_chart" class="form-label">Select Chart:</label>
+                                            <select class="form-select" id="selected_chart">
+                                                <option value="" selected disabled>Select Chart</option>
+                                                <option value="latitude">Latitude</option>
+                                                <option value="longitude">Longitude</option>
+                                                <option value="speed">Speed</option>
+                                                <option value="accuracy">Accuracy</option>
+                                                <option value="heading">Heading</option>
+                                                <option value="altitude_acuracy">Altitude Accuracy</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -138,118 +152,6 @@
                                         </div>
                                         <div class="card-body">
                                             <div id="chart"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 col-xl-4">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4>Profile Visit</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <div class="d-flex align-items-center">
-                                                        <svg class="bi text-primary" width="32" height="32"
-                                                            fill="blue" style="width:10px">
-                                                            <use
-                                                                xlink:href="assets/images/bootstrap-icons.svg#circle-fill" />
-                                                        </svg>
-                                                        <h5 class="mb-0 ms-3">Europe</h5>
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <h5 class="mb-0">862</h5>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div id="chart-europe"></div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <div class="d-flex align-items-center">
-                                                        <svg class="bi text-success" width="32" height="32"
-                                                            fill="blue" style="width:10px">
-                                                            <use
-                                                                xlink:href="assets/images/bootstrap-icons.svg#circle-fill" />
-                                                        </svg>
-                                                        <h5 class="mb-0 ms-3">America</h5>
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <h5 class="mb-0">375</h5>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div id="chart-america"></div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <div class="d-flex align-items-center">
-                                                        <svg class="bi text-danger" width="32" height="32"
-                                                            fill="blue" style="width:10px">
-                                                            <use
-                                                                xlink:href="assets/images/bootstrap-icons.svg#circle-fill" />
-                                                        </svg>
-                                                        <h5 class="mb-0 ms-3">Indonesia</h5>
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <h5 class="mb-0">1025</h5>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div id="chart-indonesia"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-xl-8">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4>Latest Comments</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table table-hover table-lg">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Name</th>
-                                                            <th>Comment</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td class="col-3">
-                                                                <div class="d-flex align-items-center">
-                                                                    <div class="avatar avatar-md">
-                                                                    </div>
-                                                                    <p class="font-bold ms-3 mb-0">Si Cantik</p>
-                                                                </div>
-                                                            </td>
-                                                            <td class="col-auto">
-                                                                <p class=" mb-0">Congratulations on your graduation!</p>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="col-3">
-                                                                <div class="d-flex align-items-center">
-                                                                    <div class="avatar avatar-md">
-                                                                    </div>
-                                                                    <p class="font-bold ms-3 mb-0">Si Ganteng</p>
-                                                                </div>
-                                                            </td>
-                                                            <td class="col-auto">
-                                                                <p class=" mb-0">Wow amazing design! Can you make another
-                                                                    tutorial for
-                                                                    this design?</p>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -362,7 +264,7 @@
                 // Chart configuration
                 var options = {
                     chart: {
-                        type: 'bar'
+                        type: 'line'
                     },
                     series: [{
                         name: 'Jumlah History',
@@ -400,26 +302,33 @@
                 chart.render();
 
                 // Function to update chart data
-                function updateChart(selectedDevice) {
+                function updateChart(selectedDevice, selectedChart, selectedDate) {
                     var selectedDate = $('#selected_date').val();
 
                     console.log("Selected Date:", selectedDate);
                     console.log("Selected Device:", selectedDevice);
+                    console.log("Selected Chart:", selectedChart);
 
                     if (!selectedDate) {
                         alert('Silahkan pilih tanggal terlebih dahulu.');
                         return; // Stop further execution if date is not selected
                     }
 
+                    // Show device select row and chart select row
+                    $('#device_select_row').show();
+                    $('#chart_select_row').show();
+
                     $.ajax({
                         method: 'GET',
                         url: '/admin-chart',
                         data: {
-                            selected_date: selectedDate, // Kirim data selectedDate ke server
-                            selected_device: selectedDevice
+                            selected_date: selectedDate,
+                            selected_device: selectedDevice,
+                            selected_chart: selectedChart // Perbarui dengan opsi yang dipilih
                         },
                         success: function(response) {
                             console.log("Response Data:", response);
+                            console.log("Chart Data:", chartData);
 
                             var chartData = response.data || [];
 
@@ -429,30 +338,53 @@
 
                             // Iterate through each data point
                             chartData.forEach(function(item) {
-                                // Add data only for the selected device if selectedDevice is not empty
-                                // Otherwise, add all data
-                                if (!selectedDevice || item.device_name === selectedDevice) {
-                                    // Combine user and device names
-                                    categories.push(item.user_name + ' - ' + item.device_name);
-                                    seriesData.push(item.count);
-                                }
+                                // Add data to series and categories arrays
+                                seriesData.push(item.count);
+                                categories.push(item.date_time);
                             });
+
+                            var chartType;
+                            if (selectedChart === 'speed' || selectedChart === 'altitude_accuracy' ||
+                                selectedChart === 'latitude' || selectedChart === 'longitude' ||
+                                selectedChart === 'accuracy' || selectedChart === 'heading' ||
+                                selectedChart === 'altitude_acuracy') {
+                                chartType = 'line';
+                            } else {
+                                chartType = 'bar';
+                            }
 
                             // Update chart with new data
                             chart.updateOptions({
+                                chart: {
+                                    type: chartType // Set chart type
+                                },
                                 xaxis: {
-                                    categories: categories // Use combined user and device names as categories
+                                    categories: categories // Use date_time as categories
                                 }
                             });
                             chart.updateSeries([{
                                 data: seriesData
                             }]);
 
-                            // Show or hide device selection row based on selected date or device
-                            if (selectedDate || selectedDevice) {
-                                $('#device_select_row').show();
+                            // Update plot options based on the number of data points
+                            if (chartData.length === 1) {
+                                // If there is only one data point, reduce the bar width
+                                chart.updateOptions({
+                                    plotOptions: {
+                                        bar: {
+                                            columnWidth: '30%' // Adjust columnWidth as needed
+                                        }
+                                    }
+                                });
                             } else {
-                                $('#device_select_row').hide();
+                                // If there are multiple data points, reset the plot options to default
+                                chart.updateOptions({
+                                    plotOptions: {
+                                        bar: {
+                                            columnWidth: '80%' // Set the default columnWidth
+                                        }
+                                    }
+                                });
                             }
 
                             // Update device selection dropdown
@@ -462,7 +394,7 @@
                             if (response.deviceOptions.length > 0) {
                                 deviceDropdown.append($('<option>', {
                                     value: '', // Empty value
-                                    text: 'Select Device'
+                                    text: 'All History Device'
                                 }));
 
                                 // Add device options received from the server response
@@ -480,11 +412,12 @@
                                 }));
                             }
 
-                            // Set selected device option
+                            // Set selected device optionx  
                             if (selectedDevice) {
                                 deviceDropdown.val(
-                                selectedDevice); // Set the selected device as the selected option
+                                    selectedDevice); // Set the selected device as the selected option
                             }
+
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
@@ -492,16 +425,64 @@
                     });
                 }
 
+
                 // Add event listener for date input change
                 $('#selected_date').change(function() {
+                    var selectedDate = $(this).val(); // Get the selected date
+
+                    // Check if the selected date is not empty
+                    if (selectedDate) {
+                        // Show the device and chart selection row
+                        $('#device_chart_select_row').show();
+                    } else {
+                        // Hide the device and chart selection row if the date is empty
+                        $('#device_chart_select_row').hide();
+                    }
                     updateChart();
                 });
 
                 // Add event listener for device select change
                 $('#selected_device').change(function() {
                     var selectedDevice = $(this).val();
+                    var selectedChart = $('#selected_chart').val(); // Get the selected chart
                     console.log("Selected Device:", selectedDevice);
-                    updateChart(selectedDevice);
+                    console.log("Selected Chart:", selectedChart);
+                    updateChart(selectedDevice, selectedChart);
+                });
+
+                $(document).on('change', '#selected_chart', function() {
+                    var selectedChart = $(this).val();
+                    var selectedDevice = $('#selected_device').val();
+                    var selectedDate = $('#selected_date').val();
+
+                    if (!selectedDate) {
+                        alert('Silahkan pilih tanggal terlebih dahulu.');
+                        return;
+                    }
+
+                    if (!selectedDevice) {
+                        alert('Silahkan pilih perangkat terlebih dahulu.');
+                        return;
+                    }
+
+                    updateChart(selectedDevice, selectedChart, selectedDate);
+                });
+                $('#selected_chart').change(function() {
+                    var selectedChart = $(this).val();
+                    var selectedDevice = $('#selected_device').val();
+                    var selectedDate = $('#selected_date').val();
+
+                    if (!selectedDate) {
+                        alert('Silahkan pilih tanggal terlebih dahulu.');
+                        return;
+                    }
+
+                    if (!selectedDevice) {
+                        alert('Silahkan pilih perangkat terlebih dahulu.');
+                        return;
+                    }
+
+                    updateChart(selectedDevice, selectedChart, selectedDate);
                 });
             });
         </script>
