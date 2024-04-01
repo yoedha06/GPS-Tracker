@@ -292,7 +292,7 @@
                         y: {
                             formatter: function(value) {
                                 return 'Jumlah History: ' +
-                                    value; // Menampilkan jumlah history saat mouse di atas bar
+                                    value; 
                             }
                         }
                     },
