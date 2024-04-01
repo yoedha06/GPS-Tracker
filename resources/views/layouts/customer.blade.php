@@ -37,6 +37,7 @@
         box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
         border-radius: 15px 15px 0 0;
         padding: 0 20px;
+        z-index: 2;
     }
 
     .nav-item {
