@@ -15,10 +15,11 @@ class HistoryController extends Controller
      */
     public function index()
     {
+        $history = History::latest()->limit(100)->get();
         return response()->json([
             'status' => true,
             'message' => 'success',
-            'data' => History::all()
+            'data' => $history
         ]);
     }
 
