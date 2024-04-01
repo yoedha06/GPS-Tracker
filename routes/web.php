@@ -146,15 +146,16 @@ Route::get('/history-filter', [HistoryController::class, 'filterByDate']);
 Route::get('/getDevicesByUser', [DeviceController::class, 'filter']);
 Route::get('/deviceuser/{id_device}', [MapController::class, 'deviceuser']);
 Route::get('/autoselec\t/{userId}', [LocationController::class, 'autoselect']);
-Route::get('/get-device-history/{deviceId}', [LocationController::class, 'getDeviceHistory']);
+
 
 //lastlocation
 Route::get('/lastlocation/{deviceId}', [MapController::class, 'getLastLocation']);
 Route::get('/latestlocation/{deviceId}', [MapController::class, 'getLatestLocation']);
 
-Route::get('/admin/devices/latest-history', [LocationController::class, 'getAllDevicesLatestHistory']);
+
+
 Route::get('/admin/lastlocation/{deviceId}', [LocationController::class, 'getDeviceHistory']);
-Route::get('latestlocation/{deviceId}', [LocationController::class, 'getLatestLocation']);
+Route::get('/admin/latestlocation/{deviceId}', [LocationController::class, 'getLatestLocation']);
 
 
 

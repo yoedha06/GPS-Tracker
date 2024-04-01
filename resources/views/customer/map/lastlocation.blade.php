@@ -15,11 +15,17 @@
 <style>
     #map {
         width: 100%;
-        height: 50vh;
+        height: 70%;
         border-radius: 7px;
     }
 
-
+    @media (max-width: 767px) {
+        #map {
+            height: 60%;
+            height: 50vh;
+            border-radius: 7px;
+        }
+    }
 
     @keyframes pulse {
         0% {
@@ -50,6 +56,27 @@
     #updateLocationButton {
         display: none;
     }
+/* 
+    .logo img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    .name {
+        max-width: 100px;
+        
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .name h6 {
+        font-weight: normal;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    } */
 </style>
 
 @section('content')
@@ -61,9 +88,9 @@
                     </div>
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end"
-                            style="padding-left: 7px;
-                        margin-top: 10px;
-                        margin-bottom: -30;">
+                            style="padding-left: -50px;
+                        margin-top: 1px;
+                        margin-bottom: -45px;">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
                                         Dashboard</a></li>
@@ -91,7 +118,7 @@
                     </form>
                 </div>
                 <div class="col-md-6">
-                    <div class="d-grid gap-2 mb-3" style="margin-top:-1px;">
+                    <div class="d-grid gap-2 mb-3" style="margin-top:-5px;">
                         <button type="submit" id="refreshButton" class="btn btn-primary"><i
                                 class="bi bi-hdd-fill"></i>&nbsp;Lihat Semua Device</button>
                     </div>
@@ -206,7 +233,6 @@
                     });
                 }
 
-
                 // Memuat lokasi terakhir ketika perangkat dipilih
                 $('#selectDevice').change(function() {
                     var selectedDeviceId = $(this).val();
@@ -288,7 +314,7 @@
                                     latestLocationMarker.bindPopup(popupContent).openPopup();
 
                                     updatePolyline
-                                        (); // Memperbarui polylane dengan menambahkan koordinat latest location
+                                (); // Memperbarui polylane dengan menambahkan koordinat latest location
                                     map.setView(latestLocationCoordinates, 25, {
                                         maxZoom: 18
                                     });

@@ -29,7 +29,6 @@ class LocationController extends Controller
             ->latest()
             ->first();
 
-
         if ($deviceHistory) {
             return response()->json($deviceHistory);
         } else {
@@ -39,9 +38,20 @@ class LocationController extends Controller
 
     public function getLatestLocation($deviceId)
     {
-        // Mengambil data lokasi terbaru dari database berdasarkan deviceId
-        $latestLocation = history::where('device_id', $deviceId)->latest()->first();
+        // Ambil lokasi terbaru (data baru) berdasarkan deviceId
+        $latestLocation = History::where('device_id', $deviceId)->latest()->first();
 
-        return response()->json($latestLocation);
+        if ($latestLocation) {
+            $device = Device::find($latestLocation->device_id);
+            if ($device) {
+                $latestLocation->name = $device->name;
+                $latestLocation->plate_number = $device->plat_nomor;
+                $latestLocation->photo = $device->photo;
+            }
+            return response()->json($latestLocation);
+        }
+        else {
+            return response()->json(['error' => 'Location not found'], 404);
+        }
     }
 }
