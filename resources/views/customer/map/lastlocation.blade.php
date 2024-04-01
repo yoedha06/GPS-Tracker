@@ -22,8 +22,9 @@
     @media (max-width: 767px) {
         #map {
             height: 60%;
-            height: 50vh;
+            height: 100%;
             border-radius: 7px;
+            z-index: 1;
         }
     }
 
@@ -56,7 +57,8 @@
     #updateLocationButton {
         display: none;
     }
-/* 
+
+    /*
     .logo img {
         width: 50px;
         height: 50px;
@@ -314,7 +316,7 @@
                                     latestLocationMarker.bindPopup(popupContent).openPopup();
 
                                     updatePolyline
-                                (); // Memperbarui polylane dengan menambahkan koordinat latest location
+                                        (); // Memperbarui polylane dengan menambahkan koordinat latest location
                                     map.setView(latestLocationCoordinates, 25, {
                                         maxZoom: 18
                                     });
