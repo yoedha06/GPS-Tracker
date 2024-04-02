@@ -145,85 +145,85 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4>History Grafik</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <div id="chart"></div>
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4>History Grafik</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chart"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                </div>
-                <div class="col-12 col-lg-3">
-                    <div class="card">
-                        <div class="card-body py-4 px-4">
-                            <!-- Wrap the entire column content in an anchor tag -->
-                            <a href="#" class="dropdown-toggle" id="profileDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar avatar-xl"
-                                        style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
-                                        @if (Auth::user()->photo)
-                                            <img src="/photos/{{ Auth::user()->photo }}"
-                                                style="width: 100%; height: auto; object-fit: cover; user-drag: none; -webkit-user-drag: none;">
-                                        @else
-                                            <img src="{{ asset('images/default.jpg') }}"
-                                                style="width: 100%; height: auto; user-drag: none; -webkit-user-drag: none;">
-                                        @endif
-                                    </div>
+                        <div class="col-12 col-lg-3">
+                            <div class="card">
+                                <div class="card-body py-4 px-4">
+                                    <!-- Wrap the entire column content in an anchor tag -->
+                                    <a href="#" class="dropdown-toggle" id="profileDropdown" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar avatar-xl"
+                                                style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
+                                                @if (Auth::user()->photo)
+                                                    <img src="/photos/{{ Auth::user()->photo }}"
+                                                        style="width: 100%; height: auto; object-fit: cover; user-drag: none; -webkit-user-drag: none;">
+                                                @else
+                                                    <img src="{{ asset('images/default.jpg') }}"
+                                                        style="width: 100%; height: auto; user-drag: none; -webkit-user-drag: none;">
+                                                @endif
+                                            </div>
 
-                                    @if ($user)
-                                        <div class="ms-3 name">
-                                            <h5 class="font-bold text-truncate" style="max-width: 150px;">
-                                                {{ $user->name }}</h5>
-                                            <h6 class="text-muted mb-0">{{ $user->role }}</h6>
+                                            @if ($user)
+                                                <div class="ms-3 name">
+                                                    <h5 class="font-bold text-truncate" style="max-width: 150px;">
+                                                        {{ $user->name }}</h5>
+                                                    <h6 class="text-muted mb-0">{{ $user->role }}</h6>
+                                                </div>
+                                            @else
+                                                <div class="ms-3 name">
+                                                    <h5 class="font-bold">User not found</h5>
+                                                </div>
+                                            @endif
                                         </div>
-                                    @else
-                                        <div class="ms-3 name">
-                                            <h5 class="font-bold">User not found</h5>
-                                        </div>
-                                    @endif
-                                </div>
-                            </a>
-                            <!-- Dropdown menu for profile options -->
-                            <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                                <li><a class="dropdown-item" href="admin/profile"><i class="fas fa-user"></i>
-                                        Profile</a></li>
-                                <li>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                    <a class="dropdown-item" href="{{ route('logout') }}" class='sidebar-link'
-                                        onclick="event.preventDefault();
-                                            document.getElementById('logout-form').submit();">
-                                        <i class="bi bi-box-arrow-left"></i>
-                                        <span>Logout</span>
                                     </a>
-                                </li>
-                            </ul>
+                                    <!-- Dropdown menu for profile options -->
+                                    <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                                        <li><a class="dropdown-item" href="admin/profile"><i class="fas fa-user"></i>
+                                                Profile</a></li>
+                                        <li>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                class="d-none">
+                                                @csrf
+                                            </form>
+                                            <a class="dropdown-item" href="{{ route('logout') }}" class='sidebar-link'
+                                                onclick="event.preventDefault();
+                                            document.getElementById('logout-form').submit();">
+                                                <i class="bi bi-box-arrow-left"></i>
+                                                <span>Logout</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <footer>
+                    <div class="footer clearfix mb-0 text-muted">
+                        <div class="float-start">
+                            <p>2021 &copy; GEEX</p>
+                        </div>
+                        <div class="float-end">
+                            <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
+                                    href="#">BARUDAK CIGS</a></p>
                         </div>
                     </div>
-                </div>
-                </section>
+                </footer>
             </div>
-
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; GEEX</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                href="#">BARUDAK CIGS</a></p>
-                    </div>
-                </div>
-            </footer>
-        </div>
         </div>
         <!-- Pastikan untuk memuat jQuery sebelum memuat skrip lain yang menggunakan jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
