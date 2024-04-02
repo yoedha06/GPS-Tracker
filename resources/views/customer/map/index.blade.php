@@ -22,103 +22,6 @@
 <!-- Load Font Awesome CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<style>
-    .date-time-input {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 10px;
-    }
-
-    .date-label {
-        position: relative;
-        display: inline-block;
-        margin-right: 10px;
-        float: left;
-    }
-
-    .date-label input[type="date"] {
-        padding-right: 30px;
-    }
-
-    .date-label i.fas.fa-calendar {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        pointer-events: none;
-    }
-
-    #date_range {
-        width: 350px;
-        /* Sesuaikan lebarnya sesuai kebutuhan Anda */
-        text-align: left;
-    }
-
-    #map {
-        width: 100%;
-        height: 70%;
-        border-radius: 7px;
-        z-index: 1;
-    }
-
-    @media (max-width: 767px) {
-        #map {
-            height: 70%;
-            border-radius: 7px;
-            z-index: 1;
-        }
-    }
-
-    .custom-div-icon {
-        width: 32px;
-        height: 32px;
-    }
-
-    .custom-div-icon i {
-        color: green;
-        /* Mengatur warna ikon menjadi merah */
-    }
-
-    .notification-container {
-        position: fixed;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        opacity: 0;
-        transition: opacity 0.5s ease-in-out;
-    }
-
-    .notification {
-        padding: 10px;
-        background-color: #f30e21;
-        color: #ffffff;
-        margin-left: 10px;
-        border-radius: 5px;
-        animation: slideInRight 0.5s forwards;
-    }
-
-    @keyframes slideInRight {
-        0% {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-
-        100% {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-
-    #filter-options {
-        display: none;
-        /* Sembunyikan container filter */
-    }
-</style>
-
-
 
 @section('content')
     <!-- Notifikasi -->
@@ -129,12 +32,12 @@
         </div>
     </div>
 
-    <div id="main" style="padding-top: 4px; padding-right: 10px; padding-left: 10px;">
+    <div id="main">
         <div class="form-group ml-3" style="display: flex; flex-direction: column; width: 100%;">
             <label for="device-select">Select Devicee:</label>
             <div class="d-flex">
                 <select id="device-select" class="form-select input" style="width: 100%;">
-                    <option value="" disabled selected>Select Device</option>
+                    <option value="" disabled selected>Select Devicee</option>
                     @foreach ($devices as $device)
                         <option value="{{ $device->id_device }}">{{ $device->user->name }} - {{ $device->name }}</option>
                     @endforeach
@@ -167,11 +70,13 @@
         <div>
             <div id="device-names" data-device-names="{{ json_encode($deviceNames) }}" style="display: none;"></div>
         </div>
-
-        <div id="map" class="container mt-1" style="margin-top:-10px;"></div>
     </div>
 
-    
+
+
+
+   <div id="map" style="height: 420px; width: 100%;">
+    </div>
 
     <!-- Load jQuery first -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -185,6 +90,109 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.animatedmarker/src/AnimatedMarker.js"></script>
 
+
+    <style>
+        .date-time-input {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .date-label {
+            position: relative;
+            display: inline-block;
+            margin-right: 10px;
+            float: left;
+        }
+
+        .date-label input[type="date"] {
+            padding-right: 30px;
+        }
+
+        .date-label i.fas.fa-calendar {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        #date_range {
+            width: 350px;
+            /* Sesuaikan lebarnya sesuai kebutuhan Anda */
+            text-align: left;
+        }
+
+       #map {
+    z-index: 0;
+    width: 100%;
+    height: 300px;
+    margin-bottom: 50px; /* Menambahkan margin bawah 20px */
+}
+
+/* Atur lebar kontainer form */
+@media (max-width: 768px) {
+    #map {
+        height: 400px;
+        /* Sesuaikan tinggi peta untuk layar mobile */
+        margin-bottom: 50px; /* Menambahkan margin bawah 20px */
+    }
+
+    #main {
+        width: 100%;
+        /* Lebar kontainer form menjadi 100% */
+    }
+}
+
+
+        .custom-div-icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .custom-div-icon i {
+            color: green;
+            /* Mengatur warna ikon menjadi merah */
+        }
+
+        .notification-container {
+            position: fixed;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .notification {
+            padding: 10px;
+            background-color: #f30e21;
+            color: #ffffff;
+            margin-left: 10px;
+            border-radius: 5px;
+            animation: slideInRight 0.5s forwards;
+        }
+
+        @keyframes slideInRight {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        #filter-options {
+            display: none;
+            /* Sembunyikan container filter */
+        }
+    </style>
 
     <script>
         // Tentukan koordinat titik awal dan akhir rute
@@ -296,7 +304,7 @@
             filterMap(historyData);
         } else {
             // Handle jika data riwayat tidak tersedia
-            console.error('Data riwayat tidak tersedia');
+            console.error('Data riwayat tidak tersediaa');
         }
 
 
