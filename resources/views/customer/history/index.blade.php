@@ -129,97 +129,98 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            var selectedDeviceId = null;
+    $(document).ready(function() {
+        var selectedDeviceId = null;
 
-            // Inisialisasi Select2
-            $('#selectDevice').select2();
+        // Inisialisasi Select2
+        $('#selectDevice').select2();
 
-            // Tambahkan event listener untuk perubahan nilai pada Select2
-            $('#selectDevice').on('change', function() {
-                selectedDeviceId = $(this).val();
-                getDataByDevice(selectedDeviceId);
-            });
+        // Tambahkan event listener untuk perubahan nilai pada Select2
+        $('#selectDevice').on('change', function() {
+            selectedDeviceId = $(this).val();
+            getDataByDevice(selectedDeviceId);
+        });
 
-            // Fungsi getDataByDevice untuk memperbarui data sesuai dengan perangkat yang dipilih
-            function getDataByDevice(deviceId) {
-                var perPage = 10; // Mengatur jumlah data per halaman
-                var currentPage = 1; // Halaman saat ini
+        // Fungsi getDataByDevice untuk memperbarui data sesuai dengan perangkat yang dipilih
+        function getDataByDevice(deviceId) {
+            var perPage = 10; // Mengatur jumlah data per halaman
+            var currentPage = 1; // Halaman saat ini
 
-                $.ajax({
-                    url: '/gethistorybydevice/' + deviceId,
-                    method: 'GET',
-                    data: {
-                        page: currentPage,
-                        perPage: perPage
-                    },
-                    success: function(response) {
-                        $('.row-cols-1').empty();
+            $.ajax({
+                url: '/gethistorybydevice/' + deviceId,
+                method: 'GET',
+                data: {
+                    page: currentPage,
+                    perPage: perPage
+                },
+                success: function(response) {
+                    $('.row-cols-1').empty();
 
-                        if (response.history.length > 0) {
-                            $.each(response.history, function(index, history) {
-                                var cardHtml = `
-                            <div class="col">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${response.device_name}</h5>
-                                        <p class="card-text">Latitude: ${history.latitude}<br>
-                                        Longitude: ${history.longitude}<br>
-                                        Bounds: ${history.bounds}<br>
-                                        Accuracy: ${history.accuracy}<br>
-                                        Altitude: ${history.altitude}<br>
-                                        Altitude Accuracy: ${history.altitude_accuracy}<br>
-                                        Heading: ${history.heading}<br>
-                                        Speeds: ${history.speeds}<br>
-                                        Time: ${history.date_time}</p>
+                    if (response.history.length > 0) {
+                        $.each(response.history, function(index, history) {
+                            var cardHtml = `
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${response.device_name}</h5>
+                                            <p class="card-text">Latitude: ${history.latitude}<br>
+                                            Longitude: ${history.longitude}<br>
+                                            Bounds: ${history.bounds}<br>
+                                            Accuracy: ${history.accuracy}<br>
+                                            Altitude: ${history.altitude}<br>
+                                            Altitude Accuracy: ${history.altitude_accuracy}<br>
+                                            Heading: ${history.heading}<br>
+                                            Speeds: ${history.speeds}<br>
+                                            Time: ${history.date_time}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
 
-                                $('.row-cols-1').append(cardHtml);
-                            });
+                            $('.row-cols-1').append(cardHtml);
+                        });
 
-                            showValidationMessage('Device selected successfully!');
-                            // Update dropdown perangkat dengan nilai yang dipilih sebelumnya
-                            $('#selectDevice').val(selectedDeviceId).trigger('change.select2');
+                        showValidationMessage('Device selected successfully!');
+                        // Update dropdown perangkat dengan nilai yang dipilih sebelumnya
+                        $('#selectDevice').val(selectedDeviceId).trigger('change.select2');
 
-                            // Tampilkan atau sembunyikan pagination berdasarkan jumlah data
-                            if (response.history.length > perPage) {
-                                $('.pagination').show();
-                            } else {
-                                $('.pagination').hide();
-                            }
+                        // Tampilkan atau sembunyikan pagination berdasarkan jumlah data
+                        if (response.history.length > perPage) {
+                            $('.pagination').show();
                         } else {
-                            showValidationMessage('No history data found for the selected device.');
-                            $('.pagination').hide(); // Sembunyikan pagination jika tidak ada data
+                            $('.pagination').hide();
                         }
-                    },
-                    error: function(error) {
-                        console.error('Error fetching history data:', error);
-                        showValidationMessage('Error fetching history data. Please try again.', true);
+                    } else {
+                        showValidationMessage('No history data found for the selected device.');
+                        $('.pagination').hide(); // Sembunyikan pagination jika tidak ada data
                     }
-                });
-            }
-
-            // Fungsi untuk menampilkan pesan validasi
-            function showValidationMessage(message, isError = false) {
-                var validationMessage = $("#validationMessage");
-
-                if (isError) {
-                    validationMessage.removeClass('alert-success').addClass('alert-danger');
-                } else {
-                    validationMessage.removeClass('alert-danger').addClass('alert-success');
+                },
+                error: function(error) {
+                    console.error('Error fetching history data:', error);
+                    showValidationMessage('Error fetching history data. Please try again.', true);
                 }
+            });
+        }
 
-                validationMessage.text(message);
-                validationMessage.show();
+        // Fungsi untuk menampilkan pesan validasi
+        function showValidationMessage(message, isError = false) {
+            var validationMessage = $("#validationMessage");
 
-                // Sembunyikan pesan validasi setelah beberapa detik
-                setTimeout(function() {
-                    validationMessage.hide();
-                }, 1500);
+            if (isError) {
+                validationMessage.removeClass('alert-success').addClass('alert-danger');
+            } else {
+                validationMessage.removeClass('alert-danger').addClass('alert-success');
             }
-        });
-    </script>
+
+            validationMessage.text(message);
+            validationMessage.show();
+
+            // Sembunyikan pesan validasi setelah beberapa detik
+            setTimeout(function() {
+                validationMessage.hide();
+            }, 1500);
+        }
+    });
+</script>
+
 @endsection

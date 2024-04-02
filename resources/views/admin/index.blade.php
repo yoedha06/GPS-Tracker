@@ -126,13 +126,12 @@
                                             <select class="form-select" id="selected_device">
                                                 <option value="" selected disabled>Select Device</option>
                                                 @foreach ($devices as $device)
-                                                    <option value="{{ $device->id }}">{{ $device->user->name }} -
-                                                        {{ $device->name }}</option>
+                                                    <option value="{{ $device->id }}">{{ $device->name }}</option>
                                                 @endforeach
-
                                             </select>
                                         </div>
-                                        <div class="col-md-6">
+
+                                        <div class="col-md-6" id="chart_select_col" style="display: none;">
                                             <label for="selected_chart" class="form-label">Select Chart:</label>
                                             <select class="form-select" id="selected_chart">
                                                 <option value="" selected disabled>Select Chart</option>
@@ -146,85 +145,85 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4>History Grafik</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div id="chart"></div>
-                                        </div>
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>History Grafik</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="chart"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-lg-3">
-                            <div class="card">
-                                <div class="card-body py-4 px-4">
-                                    <!-- Wrap the entire column content in an anchor tag -->
-                                    <a href="#" class="dropdown-toggle" id="profileDropdown" role="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-xl"
-                                                style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
-                                                @if (Auth::user()->photo)
-                                                    <img src="/photos/{{ Auth::user()->photo }}"
-                                                        style="width: 100%; height: auto; object-fit: cover; user-drag: none; -webkit-user-drag: none;">
-                                                @else
-                                                    <img src="{{ asset('images/default.jpg') }}"
-                                                        style="width: 100%; height: auto; user-drag: none; -webkit-user-drag: none;">
-                                                @endif
-                                            </div>
-
-                                            @if ($user)
-                                                <div class="ms-3 name">
-                                                    <h5 class="font-bold text-truncate" style="max-width: 150px;">
-                                                        {{ $user->name }}</h5>
-                                                    <h6 class="text-muted mb-0">{{ $user->role }}</h6>
-                                                </div>
-                                            @else
-                                                <div class="ms-3 name">
-                                                    <h5 class="font-bold">User not found</h5>
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </a>
-                                    <!-- Dropdown menu for profile options -->
-                                    <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-                                        <li><a class="dropdown-item" href="admin/profile"><i class="fas fa-user"></i>
-                                                Profile</a></li>
-                                        <li>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                                class="d-none">
-                                                @csrf
-                                            </form>
-                                            <a class="dropdown-item" href="{{ route('logout') }}" class='sidebar-link'
-                                                onclick="event.preventDefault();
-                                            document.getElementById('logout-form').submit();">
-                                                <i class="bi bi-box-arrow-left"></i>
-                                                <span>Logout</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
                 </div>
+                <div class="col-12 col-lg-3">
+                    <div class="card">
+                        <div class="card-body py-4 px-4">
+                            <!-- Wrap the entire column content in an anchor tag -->
+                            <a href="#" class="dropdown-toggle" id="profileDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar avatar-xl"
+                                        style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%;">
+                                        @if (Auth::user()->photo)
+                                            <img src="/photos/{{ Auth::user()->photo }}"
+                                                style="width: 100%; height: auto; object-fit: cover; user-drag: none; -webkit-user-drag: none;">
+                                        @else
+                                            <img src="{{ asset('images/default.jpg') }}"
+                                                style="width: 100%; height: auto; user-drag: none; -webkit-user-drag: none;">
+                                        @endif
+                                    </div>
 
-                <footer>
-                    <div class="footer clearfix mb-0 text-muted">
-                        <div class="float-start">
-                            <p>2021 &copy; GEEX</p>
-                        </div>
-                        <div class="float-end">
-                            <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                    href="#">BARUDAK CIGS</a></p>
+                                    @if ($user)
+                                        <div class="ms-3 name">
+                                            <h5 class="font-bold text-truncate" style="max-width: 150px;">
+                                                {{ $user->name }}</h5>
+                                            <h6 class="text-muted mb-0">{{ $user->role }}</h6>
+                                        </div>
+                                    @else
+                                        <div class="ms-3 name">
+                                            <h5 class="font-bold">User not found</h5>
+                                        </div>
+                                    @endif
+                                </div>
+                            </a>
+                            <!-- Dropdown menu for profile options -->
+                            <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                                <li><a class="dropdown-item" href="admin/profile"><i class="fas fa-user"></i>
+                                        Profile</a></li>
+                                <li>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
+                                    <a class="dropdown-item" href="{{ route('logout') }}" class='sidebar-link'
+                                        onclick="event.preventDefault();
+                                            document.getElementById('logout-form').submit();">
+                                        <i class="bi bi-box-arrow-left"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                </footer>
+                </div>
+                </section>
             </div>
+
+            <footer>
+                <div class="footer clearfix mb-0 text-muted">
+                    <div class="float-start">
+                        <p>2021 &copy; GEEX</p>
+                    </div>
+                    <div class="float-end">
+                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
+                                href="#">BARUDAK CIGS</a></p>
+                    </div>
+                </div>
+            </footer>
+        </div>
         </div>
         <!-- Pastikan untuk memuat jQuery sebelum memuat skrip lain yang menggunakan jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -292,7 +291,7 @@
                         y: {
                             formatter: function(value) {
                                 return 'Jumlah History: ' +
-                                    value; 
+                                    value;
                             }
                         }
                     },
@@ -315,10 +314,6 @@
                         alert('Silahkan pilih tanggal terlebih dahulu.');
                         return; // Stop further execution if date is not selected
                     }
-
-                    // Show device select row and chart select row
-                    $('#device_select_row').show();
-                    $('#chart_select_row').show();
 
                     $.ajax({
                         method: 'GET',
@@ -406,7 +401,7 @@
                             // Set selected device option
                             if (selectedDevice) {
                                 deviceDropdown.val(
-                                selectedDevice); // Set the selected device as the selected option
+                                    selectedDevice); // Set the selected device as the selected option
                             }
                         },
                         error: function(xhr, status, error) {
@@ -416,49 +411,48 @@
                 }
 
                 // Add event listener for date input change
+                // Add event listener for date input change
                 $('#selected_date').change(function() {
                     var selectedDate = $(this).val(); // Get the selected date
 
                     // Check if the selected date is not empty
                     if (selectedDate) {
-                        // Show the device and chart selection row
+                        // Show the device selection row
                         $('#device_chart_select_row').show();
+                        // Hide the chart select
+                        $('#chart_select_col').hide();
                     } else {
-                        // Hide the device and chart selection row if the date is empty
+                        // Hide the device selection row if the date is empty
                         $('#device_chart_select_row').hide();
+                        // Hide the chart select if the date is empty
+                        $('#chart_select_col').hide();
                     }
+                    // Call updateChart function without arguments
                     updateChart();
                 });
+
 
                 // Add event listener for device select change
                 $('#selected_device').change(function() {
                     var selectedDevice = $(this).val();
-                    var selectedChart = $('#selected_chart').val(); // Get the selected chart
+                    var selectedChart = $('#selected_chart').val();
+
+                    if (selectedDevice) {
+                        // Show chart select
+                        $('#chart_select_col').show();
+                    } else {
+                        // Hide chart select if no device is selected
+                        $('#chart_select_col').hide();
+                    }
+                    // Get the selected chart
                     console.log("Selected Device:", selectedDevice);
                     console.log("Selected Chart:", selectedChart);
                     updateChart(selectedDevice, selectedChart);
                 });
 
-                $(document).on('change', '#selected_chart', function() {
-                    var selectedChart = $(this).val();
-                    var selectedDevice = $('#selected_device').val();
-                    var selectedDate = $('#selected_date').val();
-
-                    if (!selectedDate) {
-                        alert('Silahkan pilih tanggal terlebih dahulu.');
-                        return;
-                    }
-
-                    if (!selectedDevice) {
-                        alert('Silahkan pilih perangkat terlebih dahulu.');
-                        return;
-                    }
-
-                    updateChart(selectedDevice, selectedChart, selectedDate);
-                });
                 $('#selected_chart').change(function() {
-                    var selectedChart = $(this).val();
                     var selectedDevice = $('#selected_device').val();
+                    var selectedChart = $(this).val();
                     var selectedDate = $('#selected_date').val();
 
                     if (!selectedDate) {
