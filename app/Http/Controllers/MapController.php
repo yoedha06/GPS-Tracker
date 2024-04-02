@@ -83,7 +83,7 @@ class MapController extends Controller
     {
         
         $latestLocation = History::where('device_id', $deviceId)
-            ->latest()
+            ->latest('date_time')
             ->first();
 
         if ($latestLocation) {

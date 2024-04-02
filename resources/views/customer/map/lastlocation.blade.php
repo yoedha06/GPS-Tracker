@@ -197,8 +197,7 @@
                         method: 'GET',
                         success: function(data) {
                             $(".pulse").removeClass("pulse");
-                            console.log('lokasi terakhir:', data);
-
+                            
                             lastLocation = data;
 
                             // Hapus marker last location sebelumnya (jika ada)
@@ -263,7 +262,6 @@
                             url: '/latestlocation/' + selectedDeviceId,
                             method: 'GET',
                             success: function(data) {
-                                console.log('lokasi baru:', data);
 
                                 if (data.date_time !== lastLocation.date_time) {
 
