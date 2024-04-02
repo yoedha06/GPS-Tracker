@@ -295,16 +295,34 @@
 
             var markers = [];
             var devicePolylines = {};
+          var historyData = {!! $historyData !!};
 
-            function filterMap() {
-                var startDate = dateRangePicker.selectedDates[0];
+
+
+        // Check apakah ada data riwayat
+        if (historyData) {
+            filterMap(historyData);
+        } else {
+            // Handle jika data riwayat tidak tersedia
+            console.error('Data riwayat tidak tersedia');
+        }
+
+
+            function filterMap(data) {
+
+           if (!Array.isArray(data)) {
+        console.error("Data is not an array.");
+        return; // Keluar dari fungsi jika data tidak valid
+    }
+        var startDate = dateRangePicker.selectedDates[0];
                 var endDate = dateRangePicker.selectedDates[1];
                 var selectedDevice = $('#device-select').val();
                 var showSpeeds = $('#speed-checkbox').is(':checked');
                 var showAccuracy = $('#accuracy-checkbox').is(':checked');
 
 
-                var filteredData = historyData.filter(function(item) {
+
+                var filteredData = data.filter(function(item) {
                     var currentDate = new Date(item.date_time);
                     var isWithinDateRange = (!startDate || currentDate >= startDate) && (!endDate ||
                         currentDate <= endDate);
@@ -540,16 +558,16 @@
                         if (accuracy <= 10) {
                             opacity =
                                 1.0; // Set opasitas ke 1.0 jika akurasi kurang dari atau sama dengan 10 (tidak transparan)
-                            color = 'green'; // Jika akurasi <= 10, warna adalah hijau
+
                             weight = 10; // Ketebalan 10
                         } else if (accuracy <= 20) {
                             opacity =
                                 0.6; // Set opasitas ke 0.6 jika akurasi di antara 11 dan 20 (sedang transparan)
-                            color = 'yellow'; // Jika akurasi <= 20, warna adalah kuning
+
                             weight = 7; // Ketebalan 7
                         } else {
                             opacity = 0.3; // Set opasitas ke 0.3 jika akurasi di atas 20 (transparan)
-                            color = 'red'; // Jika akurasi > 20, warna adalah merah
+
                             weight = 3; // Ketebalan 3
                         }
                     } else {
@@ -607,12 +625,12 @@
 
             // Tambahkan event handler untuk checkbox
             $('#speed-checkbox, #accuracy-checkbox').change(function() {
-                filterMap();
+                filterMap(historyData);
             });
 
 
             dateRangePicker.config.onChange.push(function(selectedDates, dateStr, instance) {
-                filterMap();
+                filterMap(historyData);
             });
         });
     </script>

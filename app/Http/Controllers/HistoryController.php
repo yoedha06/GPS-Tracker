@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\History;
 use App\Models\Device;
 use App\Models\User;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -111,8 +112,11 @@ class HistoryController extends Controller
         // Buat array untuk menyimpan nama perangkat berdasarkan ID perangkat
         $deviceNames = $devices->pluck('name', 'id_device')->toArray();
 
+        $historyData = $history->toJson();
+
+
         // Melewatkan data ke view menggunakan compact
-        return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames'));
+        return view('customer.map.index', compact('devicesWithUniqueHistory', 'historyData', 'history', 'devices', 'deviceNames'));
     }
 
 
@@ -202,7 +206,12 @@ class HistoryController extends Controller
     $devices = Device::with('latestHistory', 'user')->get();
 
     // Mengambil daftar riwayat
-    $history = History::all();
+    $startOfDay = Carbon::now()->startOfDay();
+    $endOfDay = Carbon::now()->endOfDay();
+
+    $history = History::where('date_time', '>=', $startOfDay)
+                        ->where('date_time', '<=', $endOfDay)
+                        ->get();
 
     // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
     $serialNumbers = $devices->pluck('serial_number', 'id_device');
