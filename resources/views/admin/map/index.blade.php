@@ -47,7 +47,7 @@
 </div>
 <div class="row mt-3">
     <div class="col-md-6">
-        <button id="reset-btn" class="btn btn-danger btn-sm">Reset</button>
+        <button id="reset-btn" class="btn btn-danger btn-sm">Resett</button>
     </div>
 </div>
 
@@ -502,7 +502,7 @@ window.addEventListener('resize', setMapHeight);
  if ($('#accuracy-checkbox').is(':checked')) {
     if (accuracy <= 10) {
         opacity = 1.0; // Set opasitas ke 1.0 jika akurasi kurang dari atau sama dengan 10 (tidak transparan)
-       
+
     } else if (accuracy <= 20) {
         opacity = 0.6; // Set opasitas ke 0.6 jika akurasi di antara 11 dan 20 (sedang transparan)
 
