@@ -23,6 +23,110 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 
+<style>
+    .date-time-input {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+
+    .date-label {
+        position: relative;
+        display: inline-block;
+        margin-right: 10px;
+        float: left;
+    }
+
+    .date-label input[type="date"] {
+        padding-right: 30px;
+    }
+
+    .date-label i.fas.fa-calendar {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    #date_range {
+        width: 350px;
+        /* Sesuaikan lebarnya sesuai kebutuhan Anda */
+        text-align: left;
+    }
+
+    #map {
+        width: 100%;
+        height: 70%;
+        border-radius: 7px;
+        z-index: 1;
+    }
+
+    @media (max-width: 767px) {
+        #map {
+            height: 70%;
+            border-radius: 7px;
+            z-index: 1;
+        }
+        .form-group.ml-3.date-time-input{
+            display: flex;
+            flex-direction: column;
+            width: 422px;
+            padding-left: 2px;
+        }
+    }
+
+    .custom-div-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .custom-div-icon i {
+        color: green;
+        /* Mengatur warna ikon menjadi merah */
+    }
+
+    .notification-container {
+        position: fixed;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .notification {
+        padding: 10px;
+        background-color: #f30e21;
+        color: #ffffff;
+        margin-left: 10px;
+        border-radius: 5px;
+        animation: slideInRight 0.5s forwards;
+    }
+
+    @keyframes slideInRight {
+        0% {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    #filter-options {
+        display: none;
+        /* Sembunyikan container filter */
+    }
+</style>
+
+
+
 @section('content')
     <!-- Notifikasi -->
     <div class="notification-container" id="notification-container">
@@ -32,23 +136,45 @@
         </div>
     </div>
 
-    <div id="main">
-        <div class="form-group ml-3" style="display: flex; flex-direction: column; width: 100%;">
-            <label for="device-select">Select Devicee:</label>
-            <div class="d-flex">
+
+    <div id="main" style="padding-top: 4px; padding-right: 10px; padding-left: 10px;">
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end"
+                            style="padding-left: 3px;
+                        margin-top: 1px;
+                        margin-bottom: -45px;">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
+                                        Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-geo-alt-fill"></i>
+                                    Maps
+                                    History</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group ml-3" style="display: flex; flex-direction: column; width: 100%; margin-top: 37px; margin-bottom: 0px;">
+            <div class="d-flex" style="gap:5px;">
                 <select id="device-select" class="form-select input" style="width: 100%;">
                     <option value="" disabled selected>Select Devicee</option>
                     @foreach ($devices as $device)
                         <option value="{{ $device->id_device }}">{{ $device->user->name }} - {{ $device->name }}</option>
                     @endforeach
                 </select>
-                <button id="reset-btn" class="btn btn-danger btn-sm" style="margin-left: auto;">Reset</button>
+                <button id="reset-btn" class="btn btn-danger btn-sm" style="margin-left: auto; padding-bottom: 2px;padding-top: 2px;">Reset</button>
             </div>
         </div>
 
-        <div class="form-group ml-3 date-time-input" style="display: flex; flex-direction: column; width: 100%;">
-            <label for="date_range" style="margin-bottom: 5px;">Date range:</label>
-            <div class="date-label" style="position: relative; left: 0;">
+        <div class="form-group ml-3 date-time-input" style="display: flex; flex-direction: column; width: 100%; margin-top: 5px;">
+            <label for="date_range" style="padding-left:2px;">Date range:</label>
+            <div class="date-label" style="position: relative; left: 0; margin-right: 0px;">
                 <input type="text" id="date_range" class="form-control" placeholder="Start Date & Time - End Date & Time"
                     style="width: 100%; padding-right: 30px;">
                 <i class="fas fa-calendar"
