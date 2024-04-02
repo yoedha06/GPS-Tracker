@@ -138,7 +138,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-6" id="chart_select_col" style="display: none;">
                                                 <label for="selected_chart" class="form-label">Select Chart:</label>
                                                 <select class="form-select" id="selected_chart">
                                                     <option value="" selected disabled>Select Chart</option>
@@ -328,10 +328,6 @@
                             return; // Stop further execution if date is not selected
                         }
 
-                        // Show device select row and chart select row
-                        $('#device_select_row').show();
-                        $('#chart_select_row').show();
-
                         $.ajax({
                             method: 'GET',
                             url: '/admin-chart',
@@ -433,27 +429,42 @@
 
                         // Check if the selected date is not empty
                         if (selectedDate) {
-                            // Show the device and chart selection row
+                            // Show the device selection row
                             $('#device_chart_select_row').show();
+                            // Hide the chart select
+                            $('#chart_select_col').hide();
                         } else {
-                            // Hide the device and chart selection row if the date is empty
+                            // Hide the device selection row if the date is empty
                             $('#device_chart_select_row').hide();
+                            // Hide the chart select if the date is empty
+                            $('#chart_select_col').hide();
                         }
+                        // Call updateChart function without arguments
                         updateChart();
                     });
+
 
                     // Add event listener for device select change
                     $('#selected_device').change(function() {
                         var selectedDevice = $(this).val();
-                        var selectedChart = $('#selected_chart').val(); // Get the selected chart
+                        var selectedChart = $('#selected_chart').val();
+
+                        if (selectedDevice) {
+                            // Show chart select
+                            $('#chart_select_col').show();
+                        } else {
+                            // Hide chart select if no device is selected
+                            $('#chart_select_col').hide();
+                        }
+                        // Get the selected chart
                         console.log("Selected Device:", selectedDevice);
                         console.log("Selected Chart:", selectedChart);
                         updateChart(selectedDevice, selectedChart);
                     });
 
-                    $(document).on('change', '#selected_chart', function() {
-                        var selectedChart = $(this).val();
+                    $('#selected_chart').change(function() {
                         var selectedDevice = $('#selected_device').val();
+                        var selectedChart = $(this).val();
                         var selectedDate = $('#selected_date').val();
 
                         if (!selectedDate) {
