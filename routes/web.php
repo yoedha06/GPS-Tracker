@@ -129,7 +129,7 @@ Route::get('/password/reset/{token}/{email}', [ResetPasswordController::class, '
 Route::get('/validation', [ValidationController::class, 'index'])->name('validation');
 
 
- Route::get('/map', [MapController::class, 'index'])->name('map.index');
+Route::get('/map', [MapController::class, 'index'])->name('map.index');
 
 Route::get('/admin/get-related-data/{deviceId}', [HistoryController::class, 'fetchData'])->name('admin.fetch_data');
 
@@ -161,7 +161,7 @@ Route::get('/admin/latestlocation/{deviceId}', [LocationController::class, 'getL
 
 
 //filter chart
-Route::get('/cwart', [TampilanController::class, 'customer']);
+Route::get('/chart', [TampilanController::class, 'customer']);
 Route::get('/admin-chart', [TampilanController::class, 'grafikadmin']);
 
 

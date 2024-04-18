@@ -58,7 +58,7 @@ class DeviceController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'max:255'],
             'serial_number' => ['required', 'regex:/^[A-Za-z0-9\s]+$/', 'string', 'max:50', 'unique:device,serial_number'],
-            'plat_nomor' => ['required', 'max:255', 'regex:/^[A-Za-z0-9]+$/'], // Tambahkan aturan regex untuk memastikan plat_nomor tidak mengandung spasi
+            'plat_nomor' => ['nullable','max:255', 'regex:/^[A-Za-z0-9]+$/'], // Tambahkan aturan regex untuk memastikan plat_nomor tidak mengandung spasi
             'photo' => ['nullable', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
             'timezone' => ['required']
         ], [

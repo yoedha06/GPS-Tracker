@@ -125,8 +125,9 @@
                                             <label for="selected_device" class="form-label">Select Device:</label>
                                             <select class="form-select" id="selected_device">
                                                 <option value="" selected disabled>Select Device</option>
-                                                @foreach ($devices as $device)
-                                                    <option value="{{ $device->id }}">{{ $device->name }}</option>
+                                                @foreach ($historyData as $data)
+                                                    <option value="{{ $data->device_id }}">{{ $data->user_name }} -
+                                                        {{ $data->device_name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -288,12 +289,7 @@
                     },
                     tooltip: {
                         enabled: true,
-                        y: {
-                            formatter: function(value) {
-                                return 'Jumlah History: ' +
-                                    value;
-                            }
-                        }
+                        y: {}
                     },
                     colors: ['#1f77b4'] // Ubah atau hapus opsi warna untuk mengembalikan ke warna default
                 };
@@ -341,9 +337,11 @@
 
                             // Update chart with new data based on the selected chart type
                             var options = {};
-                            if (selectedChart === 'latitude' || selectedChart === 'longitude' ||
-                                selectedChart === 'speed' || selectedChart === 'accuracy' ||
+                            var chartName = '';
+
+                            if (selectedChart === 'speed' || selectedChart === 'accuracy' ||
                                 selectedChart === 'heading' || selectedChart === 'altitude_acuracy') {
+                                chartName = selectedChart.charAt(0).toUpperCase() + selectedChart.slice(1);
                                 options = {
                                     chart: {
                                         type: 'line'
@@ -351,6 +349,47 @@
                                     plotOptions: {
                                         bar: {
                                             columnWidth: '80%'
+                                        }
+                                    },
+                                    yaxis: {
+                                        labels: {
+                                            formatter: function(value) {
+                                                return parseFloat(value).toFixed(
+                                                    2); // Format angka menjadi dua digit
+                                            }
+                                        }
+                                    },
+                                    tooltip: {
+                                        enabled: true,
+                                        y: {
+                                            formatter: function(value) {
+                                                return chartName + ': ' +
+                                                    value; // Menampilkan tooltip sesuai dengan opsi yang dipilih
+                                            }
+                                        }
+                                    }
+                                };
+                            } else if (selectedChart === 'latitude' || selectedChart === 'longitude') {
+                                options = {
+                                    chart: {
+                                        type: 'line'
+                                    },
+                                    plotOptions: {
+                                        bar: {
+                                            columnWidth: '80%'
+                                        }
+                                    },
+                                    yaxis: {
+                                        // Formatter default tanpa perubahan untuk latitude dan longitude
+                                    },
+                                    tooltip: {
+                                        enabled: true,
+                                        y: {
+                                            formatter: function(value) {
+                                                return '' + selectedChart.charAt(0)
+                                                    .toUpperCase() + selectedChart.slice(1) + ': ' +
+                                                    value;
+                                            }
                                         }
                                     }
                                 };
@@ -361,6 +400,7 @@
                                     }
                                 };
                             }
+
 
                             // Set x-axis categories and series data
                             options.xaxis = {
@@ -375,25 +415,39 @@
 
                             // Update device selection dropdown
                             var deviceDropdown = $('#selected_device');
-                            deviceDropdown.empty(); // Clear previous options
+                            deviceDropdown.empty(); // Kosongkan opsi sebelumnya
 
                             if (response.deviceOptions.length > 0) {
                                 deviceDropdown.append($('<option>', {
-                                    value: '', // Empty value
+                                    value: '', // Nilai kosong
                                     text: 'All History Device'
                                 }));
 
-                                // Add device options received from the server response
+                                // Mengurutkan opsi perangkat berdasarkan nama
+                                response.deviceOptions.sort(function(a, b) {
+                                    var nameA = a.device_name.toLowerCase();
+                                    var nameB = b.device_name.toLowerCase();
+                                    if (nameA < nameB) {
+                                        return -1;
+                                    }
+                                    if (nameA > nameB) {
+                                        return 1;
+                                    }
+                                    return 0; // Nama perangkat sama
+                                });
+
+                                // Tambahkan opsi perangkat yang sudah diurutkan ke dropdown
                                 response.deviceOptions.forEach(function(device) {
                                     deviceDropdown.append($('<option>', {
-                                        value: device,
-                                        text: device // Use the device name directly as the option text
+                                        value: device.device_id,
+                                        text: device.user_name + ' - ' + device
+                                            .device_name
                                     }));
                                 });
                             } else {
-                                // If no device options available, show default option
+                                // Jika tidak ada opsi perangkat yang tersedia, tampilkan opsi default
                                 deviceDropdown.append($('<option>', {
-                                    value: '', // Empty value
+                                    value: '', // Nilai kosong
                                     text: 'Tidak Ada Perangkat Tersedia'
                                 }));
                             }
@@ -410,7 +464,6 @@
                     });
                 }
 
-                // Add event listener for date input change
                 // Add event listener for date input change
                 $('#selected_date').change(function() {
                     var selectedDate = $(this).val(); // Get the selected date

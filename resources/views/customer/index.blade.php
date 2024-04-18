@@ -321,7 +321,7 @@
 
                         $.ajax({
                             method: 'GET',
-                            url: '/admin-chart',
+                            url: '/chart',
                             data: {
                                 selected_date: selectedDate,
                                 selected_device: selectedDevice,
@@ -372,7 +372,7 @@
                                             y: {
                                                 formatter: function(value) {
                                                     return chartName + ': ' +
-                                                    value; // Menampilkan tooltip sesuai dengan opsi yang dipilih
+                                                        value; // Menampilkan tooltip sesuai dengan opsi yang dipilih
                                                 }
                                             }
                                         }
@@ -394,7 +394,7 @@
                                             enabled: true,
                                             y: {
                                                 formatter: function(value) {
-                                                    return 'Chart: ' + selectedChart.charAt(0)
+                                                    return '' + selectedChart.charAt(0)
                                                         .toUpperCase() + selectedChart.slice(1) + ': ' +
                                                         value;
                                                 }
@@ -423,25 +423,43 @@
 
                                 // Update device selection dropdown
                                 var deviceDropdown = $('#selected_device');
-                                deviceDropdown.empty(); // Clear previous options
+                                deviceDropdown.empty(); // Kosongkan opsi sebelumnya
 
+                                // Jika ada opsi perangkat yang tersedia
                                 if (response.deviceOptions.length > 0) {
+                                    // Tambahkan opsi untuk "Semua Riwayat Perangkat"
                                     deviceDropdown.append($('<option>', {
-                                        value: '', // Empty value
+                                        value: '', // Nilai kosong
                                         text: 'All History Device'
                                     }));
 
-                                    // Add device options received from the server response
+                                    // Menggunakan sorter untuk mengurutkan opsi perangkat berdasarkan nama
+                                    response.deviceOptions.sort(function(a, b) {
+                                        // Bandingkan nama perangkat secara alfabetis
+                                        var nameA = a
+                                    .toLowerCase(); // Ubah ke huruf kecil untuk perbandingan yang tidak bersifat case sensitive
+                                        var nameB = b.toLowerCase();
+
+                                        if (nameA < nameB) {
+                                            return -1;
+                                        }
+                                        if (nameA > nameB) {
+                                            return 1;
+                                        }
+                                        return 0; // Nama perangkat sama
+                                    });
+
+                                    // Tambahkan opsi perangkat yang sudah diurutkan ke dropdown
                                     response.deviceOptions.forEach(function(device) {
                                         deviceDropdown.append($('<option>', {
-                                            value: device,
-                                            text: device // Use the device name directly as the option text
+                                            value: device, // Gunakan nama perangkat sebagai nilai opsi
+                                            text: device // Gunakan nama perangkat sebagai teks opsi
                                         }));
                                     });
                                 } else {
-                                    // If no device options available, show default option
+                                    // Jika tidak ada opsi perangkat yang tersedia, tampilkan opsi default
                                     deviceDropdown.append($('<option>', {
-                                        value: '', // Empty value
+                                        value: '', // Nilai kosong
                                         text: 'Tidak Ada Perangkat Tersedia'
                                     }));
                                 }
