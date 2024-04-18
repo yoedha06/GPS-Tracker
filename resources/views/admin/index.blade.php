@@ -401,7 +401,6 @@
                                 };
                             }
 
-
                             // Set x-axis categories and series data
                             options.xaxis = {
                                 categories: categories
