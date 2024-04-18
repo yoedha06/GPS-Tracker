@@ -347,15 +347,21 @@ class TampilanController extends Controller
                 ->whereDate('history.date_time', $selectedDate);
         })
             ->whereNotNull('name') // pastikan hanya memasukkan perangkat dengan nama yang terdefinisi
-            ->pluck('name') // Ambil nama perangkat
-            ->unique() // Hapus duplikat
-            ->values() // Re-indeks array
-            ->toArray();
+            ->with('user') // Ambil relasi pengguna
+            ->get(); // Ambil daftar perangkat
+
+        $deviceOptionsFormatted = $deviceOptions->map(function ($device) {
+            return [
+                'device_id' => $device->name,
+                'user_name' => $device->user->name, // Akses username melalui relasi user
+                'device_name' => $device->name
+            ];
+        });
 
         return response()->json([
             'data' => array_values($chartData),
-            'deviceOptions' => $deviceOptions, // Sertakan daftar perangkat yang tersedia
-            'deviceCount' => count($deviceOptions)
+            'deviceOptions' => $deviceOptionsFormatted, // Menggunakan $deviceOptionsFormatted
+            'deviceCount' => count($deviceOptionsFormatted)
         ]);
     }
 }
