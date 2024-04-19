@@ -16,6 +16,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TampilanController;
 use App\Http\Controllers\ValidationController;
+use App\Models\History;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -103,7 +104,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         //device Admin
         Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');
         Route::get('/admin/device/search', [DeviceController::class, 'search'])->name('admin.device.search');
-       
+
     });
 });
 
@@ -163,5 +164,12 @@ Route::get('/admin/latestlocation/{deviceId}', [LocationController::class, 'getL
 //filter chart
 Route::get('/cwart', [TampilanController::class, 'customer']);
 Route::get('/admin-chart', [TampilanController::class, 'grafikadmin']);
+
+//map history
+// Route::get('/customer/map', [HistoryController::class, 'updateMapData']);
+Route::get('/customer/map/filter', [HistoryController::class, 'filter']);
+Route::get('/poll-data', [HistoryController::class, 'pollData']);
+
+Route::get('/admin/map/filter', [HistoryController::class, 'filterByDeviceAndUser']);
 
 

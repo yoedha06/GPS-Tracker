@@ -2,7 +2,10 @@
 
 <title>GEEX - History Maps</title>
 
-@extends('layouts.navbaradmin')
+@
+
+
+('layouts.navbaradmin')
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
@@ -175,405 +178,330 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
-    // Function to set map height dynamically based on window size
-function setMapHeight() {
-    var windowHeight = window.innerHeight;
-    var mapContainer = document.getElementById('map-container');
-    var mapHeight = windowHeight - mapContainer.offsetTop; // Adjust as needed
-    document.getElementById('map').style.height = mapHeight + 'px';
-}
-
-// Call setMapHeight initially and on window resize
-setMapHeight();
-window.addEventListener('resize', setMapHeight);
+  <script>
 
     $(document).ready(function() {
-    // Inisialisasi Select2 untuk dropdown perangkat
-    $('#user_device').select2({
-        sorter: function(data) {
-            return data.sort(function(a, b) {
-                return a.text.localeCompare(b.text);
-            });
-        }
-    });
-
-    // Nonaktifkan checkbox "Speed" dan "Accuracy" secara default
-    $('#speed-checkbox').prop('disabled', true);
-    $('#accuracy-checkbox').prop('disabled', true);
-
-    // Mengatur opsi checkbox "Speed" dan "Accuracy" menjadi tidak terlihat saat halaman dimuat
-    $('#filter-options').css('display', 'none');
-
-    // Menambahkan event listener untuk perubahan pada dropdown #device-select
-    $('#user_device').on('change', function() {
-        // Memeriksa apakah sebuah perangkat telah dipilih
-        var selectedDevice = $(this).val();
-        if (selectedDevice) {
-            // Jika perangkat telah dipilih, tampilkan opsi checkbox "Speed" dan "Accuracy"
-            $('#filter-options').css('display', 'block');
-        } else {
-            // Jika tidak ada perangkat yang dipilih, sembunyikan opsi checkbox "Speed" dan "Accuracy"
-            $('#filter-options').css('display', 'none');
-        }
-    });
-
-
-
-        $('#reset-btn').on('click', function () {
-        // // Mereset nilai Select2 ke null dan memicu perubahan
-        // $('#device-select').val(null).trigger('change');
-
-        // // Hapus semua marker dari peta
-        // map.eachLayer(function (layer) {
-        //     if (layer instanceof L.Marker) {
-        //         map.removeLayer(layer);
-        //     }
-        // });
-
-        // // Hapus semua garis dari peta
-        // map.eachLayer(function (layer) {
-        //     if (layer instanceof L.Polyline) {
-        //         map.removeLayer(layer);
-        //     }
-        // });
-
-        // Refresh halaman dengan memuat ulang URL
-        location.href = location.href + '?rand=' + Math.random();
-    });
-
-            var deviceNames = {!! json_encode($deviceNames) !!};
-             var userNames = @json($userNames);
-            var historyData = {!! $history->toJson() !!};
-            var defaultStartDate = new Date();
-            defaultStartDate.setHours(0, 0, 0, 0);
-
-            // Set default end date to today at 23:00
-            var defaultEndDate = new Date();
-            defaultEndDate.setHours(23, 0, 0, 0);
-
-            var dateRangePicker = flatpickr("#date_range", {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                defaultDate: [defaultStartDate, defaultEndDate],
-                mode: "range",
-                onChange: function(selectedDates, dateStr, instance) {
-                    filterMap();
-                }
-            });
-
-            var map = L.map('map').setView([-6.895364793103795, 107.53971757412086], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            var markers = [];
-            var devicePolylines = {};
-
-        function filterMap() {
-        var startDate = dateRangePicker.selectedDates[0];
-        var endDate = dateRangePicker.selectedDates[1];
-        var selectedDevice = $('#user_device').val();
-        var showSpeeds = $('#speed-checkbox').is(':checked');
-        var showAccuracy = $('#accuracy-checkbox').is(':checked');
-
-
-      var filteredData = historyData.filter(function(item) {
-        var currentDate = new Date(item.date_time);
-        var isWithinDateRange = (!startDate || currentDate >= startDate) && (!endDate || currentDate <= endDate);
-        var isDeviceSelected = !selectedDevice || selectedDevice.includes(item.device_id);
-        var isSpeedValid = showSpeeds ? parseFloat(item.speeds) > 0 : true;
-        var isAccuracyValid = showAccuracy ? parseFloat(item.accuracy) > 0 : true;
-        return isWithinDateRange && isDeviceSelected && isSpeedValid && isAccuracyValid;
-    });
-
-        if (filteredData.length === 0) {
-            // Tampilkan notifikasi
-            $('#notification-container').css('opacity', '1'); // Menampilkan notifikasi
-
-            // Atur timeout untuk menyembunyikan notifikasi setelah 5 detik (misalnya)
-            setTimeout(function() {
-                $('#notification-container').css('opacity', '0'); // Menyembunyikan notifikasi setelah 5 detik
-            }, 4000); // Waktu dalam milidetik (5000 milidetik = 5 detik)
-        } else {
-            // Sembunyikan notifikasi jika ada data yang cocok
-            $('#notification-container').css('opacity', '0');
-        }
-
-
-
-                // Menginisialisasi objek untuk melacak "Start" dan "End" untuk masing-masing perangkat
-                var startMarkers = {};
-                var endMarkers = {};
-
-                // Hapus semua marker dan polyline sebelum memproses data baru
-                markers.forEach(marker => {
-                    map.removeLayer(marker);
+        // Inisialisasi Select2 untuk dropdown perangkat
+        $('#user_device').select2({
+            sorter: function(data) {
+                return data.sort(function(a, b) {
+                    return a.text.localeCompare(b.text);
                 });
-                Object.values(devicePolylines).forEach(polyline => {
-                    map.removeLayer(polyline);
-                });
-
-
-                markers = [];
-                devicePolylines = {};
-
-                // Calculate average speed
-                var totalSpeed = 0;
-                for (var i = 0; i < historyData.length; i++) {
-                    totalSpeed += parseFloat(historyData[i].speeds);
-                }
-                var averageSpeed = historyData.length > 0 ? totalSpeed / historyData.length : 0;
-
-
-        var startIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: "<i class='fas fa-map-marker-alt' style='font-size: 40px; color: green;'></i>",
-            iconSize: [42, 49],
-                                                iconAnchor: [20, 44],
-                                                popupAnchor: [-5, -41]
-        });
-
-        var endIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: "<i class='fas fa-map-marker-alt' style='color: red; font-size: 40px;'></i>",
-        iconSize: [42, 49],
-                                                iconAnchor: [20, 44],
-                                                popupAnchor: [-5, -41]
-        });
-
-        // Fungsi untuk menghapus semua marker dari peta
-        function clearMarkers() {
-            for (var i = 0; i < markers.length; i++) {
-                map.removeLayer(markers[i]);
             }
-            markers = []; // Kosongkan array markers
+        });
+
+        // Cek apakah ada perangkat yang dipilih sebelumnya
+        var selectedDevice = localStorage.getItem('selectedDevice');
+        if (selectedDevice) {
+            // Atur nilai dropdown perangkat
+            $('#user_device').val(selectedDevice);
         }
 
-        // Memanggil fungsi untuk menghapus semua marker sebelum menambahkan yang baru
-        clearMarkers();
+        // Nonaktifkan checkbox "Speed" dan "Accuracy" secara default
+        $('#speed-checkbox').prop('disabled', true);
+        $('#accuracy-checkbox').prop('disabled', true);
 
-        // Loop melalui data histori
-        for (var i = 0; i < historyData.length; i++) {
-            var historyItem = historyData[i];
-            var lat = parseFloat(historyItem.latitude);
-            var lng = parseFloat(historyItem.longitude);
-            var deviceId = historyItem.device_id;
-            var currentDate = new Date(historyItem.date_time);
+        // Mengatur opsi checkbox "Speed" dan "Accuracy" menjadi tidak terlihat saat halaman dimuat
+        $('#filter-options').css('display', 'none');
 
-            var isDeviceSelected = !selectedDevice || selectedDevice.includes(deviceId);
-            var isWithinDateRange = (!startDate || currentDate >= startDate) && (!endDate || currentDate <= endDate);
+        // Menambahkan event listener untuk perubahan pada dropdown #device-select
+        $('#user_device').on('change', function() {
+            // Memeriksa apakah sebuah perangkat telah dipilih
+            selectedDevice = $(this).val();
+            if (selectedDevice) {
+                // Jika perangkat telah dipilih, tampilkan opsi checkbox "Speed" dan "Accuracy"
+                $('#filter-options').css('display', 'block');
+            } else {
+                // Jika tidak ada perangkat yang dipilih, sembunyikan opsi checkbox "Speed" dan "Accuracy"
+                $('#filter-options').css('display', 'none');
+            }
+        });
 
-            if (isDeviceSelected && isWithinDateRange) {
-                // Check if it's start or end marker
-                var isEnd = !endMarkers[deviceId]; // Reversed logic to check for end marker
-                var isStart = !isEnd; // Determine if it's a start marker
+        $('#reset-btn').on('click', function() {
+            location.href = location.href + '?rand=' + Math.random();
+        });
 
-        if (isStart) {
-        // Check if start marker already exists for this device
-        if (startMarkers[deviceId]) {
-            // Remove previous start marker
-            map.removeLayer(startMarkers[deviceId]);
+        var deviceNames = {!! json_encode($deviceNames) !!};
+          var userNames = @json($userNames);
+        var historyData = {!! $history->toJson() !!};
+
+        var defaultStartDate = new Date();
+        defaultStartDate.setHours(0, 0, 0, 0);
+
+        // Set default end date to today at 23:00
+        var defaultEndDate = new Date();
+        defaultEndDate.setHours(23, 0, 0, 0);
+
+        var dateRangePicker = flatpickr("#date_range", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            defaultDate: [defaultStartDate, defaultEndDate],
+            mode: "range",
+            onChange: function(selectedDates, dateStr, instance) {
+                filterMap();
+            }
+        });
+
+        var map = L.map('map').setView([-6.895364793103795, 107.53971757412086], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var markers = [];
+        var devicePolylines = {};
+
+        var currentURL = new URL(window.location.href);
+
+        // Dapatkan tanggal awal dan akhir dari URL
+        var urlStartDate = currentURL.searchParams.get("start");
+        var urlEndDate = currentURL.searchParams.get("end");
+
+        // Tentukan elemen formulir untuk rentang tanggal
+        var dateRangeInput = document.querySelector("#date_range");
+
+        // Atur nilai awal formulir dengan tanggal dari URL jika tersedia
+        if (urlStartDate && urlEndDate) {
+            var startDate = new Date(urlStartDate);
+            var endDate = new Date(urlEndDate);
+            dateRangeInput.value = formatDate(startDate) + " to " + formatDate(endDate);
+        } else {
+            // Atur nilai awal formulir dengan tanggal default jika URL tidak berisi tanggal
+            dateRangeInput.value = formatDate(defaultStartDate) + " to " + formatDate(defaultEndDate);
         }
-        var markerIcon = startIcon;
-        var popupContent = `<div>
-                                <div style="text-align: center; margin-bottom: 10px; font-weight: bold;">Start</div>
-                                Device: ${deviceNames[deviceId]}<br>
-                                User: ${userNames[deviceId]}<br>
-                                Latitude: ${lat.toFixed(6)}<br>
-                                Longitude: ${lng.toFixed(6)}<br>
-                                Date & Time: ${historyItem.date_time}<br>
-                            </div>`;
-        startMarkers[deviceId] = L.marker([lat, lng], { icon: markerIcon }).bindPopup(popupContent).addTo(map);
-    } else if (isEnd) { // If it's an end marker
-        var markerIcon = endIcon;
-        var popupContent = `<div>
-                                <div style="text-align: center; margin-bottom: 10px; font-weight: bold;">End</div>
-                                Device: ${deviceNames[deviceId]}<br>
-                                User: ${userNames[deviceId]}<br>
-                                Latitude: ${lat.toFixed(6)}<br>
-                                Longitude: ${lng.toFixed(6)}<br>
-                                Date & Time: ${historyItem.date_time}<br>
-                            </div>`;
-        endMarkers[deviceId] = L.marker([lat, lng], { icon: markerIcon }).bindPopup(popupContent).addTo(map);
-    }
 
+       function filterMap() {
+    var selectedDevice = $('#user_device').val();
+    var selectedUser = $('#user_select').val(); // Mengambil ID pengguna yang dipilih
+    var startDate = dateRangePicker.selectedDates[0];
+    var endDate = dateRangePicker.selectedDates[1];
+    var startFormatted = formatDate(startDate);
+    var endFormatted = formatDate(endDate);
 
+    var ajaxURL = 'http://127.0.0.1:8000/admin/map/filter'; // Perbarui URL untuk menggunakan endpoint 'filter'
+    var requestData = {
+        start: startFormatted,
+        end: endFormatted,
+        deviceId: selectedDevice,
+        userId: selectedUser // Sertakan ID pengguna dalam data permintaan
+    };
 
-                var marker = L.marker([lat, lng]); // Create a marker (not using icons for other markers)
+    $.ajax({
+        url: ajaxURL,
+        type: 'GET', // Ubah metode permintaan menjadi POST
+        data: requestData,
+        success: function(response) {
+            var filteredData = response.filteredData;
+            updateMap(filteredData);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
+    });
+}
+
+        function updateMap(filteredData) {
+            clearMarkers();
+
+            filteredData.forEach(function(item) {
+                var lat = parseFloat(item.latitude);
+                var lng = parseFloat(item.longitude);
+                var deviceId = item.device_id;
+
+                // Tambahkan marker
+                var marker = L.marker([lat, lng]).addTo(map);
                 markers.push(marker);
 
+                // Tambahkan popup ke marker
+                var popupContent = `
+                    <div>
+                        <div style="text-align: center; margin-bottom: 10px; font-weight: bold;">Device Information</div>
+                        Device: ${deviceNames[deviceId]}<br>
+                          User: ${userNames[deviceId]}<br>
+                        Latitude: ${lat.toFixed(6)}<br>
+                        Longitude: ${lng.toFixed(6)}<br>
+                        Date & Time: ${item.date_time}<br>
+                    </div>`;
+                marker.bindPopup(popupContent);
+
+                // Tambahkan polyline dan sesuaikan gaya sesuai kebutuhan
                 if (!devicePolylines[deviceId]) {
                     devicePolylines[deviceId] = L.polyline([], {}).addTo(map);
                 }
-
                 devicePolylines[deviceId].addLatLng([lat, lng]);
-            }
-
-
-            }
-
-            // Update popup content for start and end markers
-            Object.keys(startMarkers).forEach(deviceId => {
-                var startMarker = startMarkers[deviceId];
-                var startPopupContent = startMarker.getPopup().getContent();
-                startMarker.getPopup().setContent(startPopupContent + "");
             });
 
-            Object.keys(endMarkers).forEach(deviceId => {
-                var endMarker = endMarkers[deviceId];
-                var endPopupContent = endMarker.getPopup().getContent();
-                endMarker.getPopup().setContent(endPopupContent + "");
-            });
+            // Tambahkan notifikasi
+            if (filteredData.length === 0) {
+                $('#notification-container').css('opacity', '1'); // Menampilkan notifikasi
 
-        // Update polyline styles
-        Object.values(devicePolylines).forEach(polyline => {
-            var color = 'blue'; // Default color
-            var weight = 3;
-            var opacity = 1.0;
-
-            // Change color for end marker polyline to red
-            if (polyline.getLatLngs().length > 0) {
-                var lastLatLng = polyline.getLatLngs()[polyline.getLatLngs().length - 1];
-                var lastDeviceId = historyData.find(item => item.latitude == lastLatLng.lat && item.longitude == lastLatLng.lng).device_id;
-                if (endMarkers[lastDeviceId]) {
-                    color = 'red';
-                }
-            }
-
-            polyline.setStyle({
-                color: color,
-                weight: weight,
-                opacity: opacity
-            });
-        });
-
-        // Fit bounds to markers
-                var allMarkers = markers;
-                    var bounds = L.featureGroup(allMarkers).getBounds();
-                    map.fitBounds(bounds);
-                    // Fly to the new bounds with animation
-                    map.flyToBounds(bounds, {
-                        animate: true,
-                        duration: 1.5, // durasi animasi dalam detik
-                        easeLinearity: 0.5 // pengaturan animasi
-                    });
-             Object.values(devicePolylines).forEach(polyline => {
-    var color;
-    var weight;
-    var opacity;
-
-    var accuracy; // Deklarasikan variabel accuracy di sini
-
-    polyline.getLatLngs().forEach(point => {
-        var data = historyData.find(data => {
-            // Membandingkan koordinat dengan toleransi 0.0001 (sekitar 11 meter)
-            return Math.abs(parseFloat(data.latitude) - point.lat) < 0.0001 &&
-                Math.abs(parseFloat(data.longitude) - point.lng) < 0.0001;
-        });
-
-        if (data && data.speeds !== null && data.speeds !== undefined) {
-            var speed = parseFloat(data.speeds);
-            accuracy = parseFloat(data.accuracy); // Set nilai accuracy di sini
-
-            // Tentukan warna dan ketebalan garis berdasarkan checkbox "Speed"
-            if ($('#speed-checkbox').is(':checked')) {
-                if (speed <= 20) {
-                    color = 'green';  // Jika kecepatan kurang dari atau sama dengan 20 km/h, warna adalah hijau
-                    weight = 10;  // Set ketebalan garis menjadi tebal
-                } else if (speed <= 40) {
-                    color = 'yellow';  // Jika kecepatan di antara 21 dan 40 km/h, warna adalah kuning
-                    weight = 7;  // Set ketebalan garis menjadi sedang
-                } else {
-                    color = 'red';  // Jika kecepatan lebih dari 40 km/h, warna adalah merah
-                    weight = 3;  // Set ketebalan garis menjadi tipis
-                }
+                // Atur timeout untuk menyembunyikan notifikasi setelah beberapa detik
+                setTimeout(function() {
+                    $('#notification-container').css('opacity', '0'); // Menyembunyikan notifikasi setelah beberapa detik
+                }, 4000); // Waktu dalam milidetik (misalnya 4000 milidetik = 4 detik)
             } else {
-                // Jika checkbox "Speed" tidak dicentang, atur warna dan ketebalan garis default
-                color = 'blue';
-                weight = 3;
+                $('#notification-container').css('opacity', '0'); // Sembunyikan notifikasi jika ada data yang cocok
             }
- popupContent = "Speed: " + speed.toFixed(2) + " km/h<br>Accuracy: " + accuracy.toFixed(2) + " meters";
-            // Hentikan perulangan setelah menemukan data kecepatan pertama
-            return;
+
+            // Sesuaikan warna dan ketebalan garis berdasarkan kecepatan dan akurasi
+            filteredData.forEach(function(item) {
+                var color;
+                var weight;
+                var opacity;
+                var accuracy;
+
+                // Mencari data kecepatan yang sesuai
+                var speedData = historyData.find(data => {
+                    // Membandingkan koordinat dengan toleransi 0.0001 (sekitar 11 meter)
+                    return Math.abs(parseFloat(data.latitude) - parseFloat(item.latitude)) < 0.0001 &&
+                        Math.abs(parseFloat(data.longitude) - parseFloat(item.longitude)) < 0.0001;
+                });
+
+                if (speedData && speedData.speeds !== null && speedData.speeds !== undefined) {
+                    var speed = parseFloat(speedData.speeds);
+                    accuracy = parseFloat(speedData.accuracy);
+
+                    if ($('#speed-checkbox').is(':checked')) {
+                        if (speed <= 20) {
+                            color = 'green'; // Jika kecepatan kurang dari atau sama dengan 20 km/h, warna adalah hijau
+                            weight = 10; // Set ketebalan garis menjadi tebal
+                        } else if (speed <= 40) {
+                            color = 'yellow'; // Jika kecepatan di antara 21 dan 40 km/h, warna adalah kuning
+                            weight = 7; // Set ketebalan garis menjadi sedang
+                        } else {
+                            color = 'red'; // Jika kecepatan lebih dari 40 km/h, warna adalah merah
+                            weight = 3; // Set ketebalan garis menjadi tipis
+                        }
+                    } else {
+                        // Jika checkbox "Speed" tidak dicentang, atur warna dan ketebalan garis default
+                        color = 'blue';
+                        weight = 3;
+                    }
+
+                    // Bangun konten popup
+                    var popupContent = "Speed: " + speed.toFixed(2) + " km/h<br>Accuracy: " + accuracy.toFixed(2) + " meters";
+
+                    // Atur opasitas berdasarkan akurasi
+                    if ($('#accuracy-checkbox').is(':checked')) {
+                        if (accuracy <= 10) {
+                            opacity = 1.0; // Set opasitas ke 1.0 jika akurasi kurang dari atau sama dengan 10 (tidak transparan)
+                        } else if (accuracy <= 20) {
+                            opacity = 0.6; // Set opasitas ke 0.6 jika akurasi di antara 11 dan 20 (sedang transparan)
+                        } else {
+                            opacity = 0.3; // Set opasitas ke 0.3 jika akurasi di atas 20 (transparan)
+                        }
+                    } else {
+                        // Jika checkbox "Accuracy" tidak dicentang, atur opasitas default
+                        opacity = 1.0;
+                    }
+
+                    // Atur gaya polyline
+                    devicePolylines[item.device_id].setStyle({
+                        color: color,
+                        weight: weight,
+                        opacity: opacity
+                    });
+
+                    // Ikatan popup ke polyline
+                    devicePolylines[item.device_id].bindPopup(popupContent);
+                }
+            });
         }
-    });
 
- if ($('#accuracy-checkbox').is(':checked')) {
-    if (accuracy <= 10) {
-        opacity = 1.0; // Set opasitas ke 1.0 jika akurasi kurang dari atau sama dengan 10 (tidak transparan)
+        // Fungsi untuk menghapus semua marker dari peta
+        function clearMarkers() {
+            markers.forEach(marker => {
+                map.removeLayer(marker);
+            });
+            markers = []; // Kosongkan array markers
 
-    } else if (accuracy <= 20) {
-        opacity = 0.6; // Set opasitas ke 0.6 jika akurasi di antara 11 dan 20 (sedang transparan)
+            Object.values(devicePolylines).forEach(polyline => {
+                map.removeLayer(polyline);
+            });
 
-    } else {
-        opacity = 0.3; // Set opasitas ke 0.3 jika akurasi di atas 20 (transparan)
+            devicePolylines = {};
+        }
 
+        // Fungsi untuk memformat tanggal ke format yang diinginkan (YYYY-MM-DD HH:MM)
+        function formatDate(date) {
+            var year = date.getFullYear();
+            var month = ('0' + (date.getMonth() + 1)).slice(-2); // Tambahkan 1 karena bulan dimulai dari 0
+            var day = ('0' + date.getDate()).slice(-2);
+            var hours = ('0' + date.getHours()).slice(-2);
+            var minutes = ('0' + date.getMinutes()).slice(-2);
+
+            return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
+        }
+
+        // Panggil event handler change untuk memfilter peta saat halaman dimuat
+        $('#user_device').change();
+
+        // Event handler untuk perubahan pada dropdown #device-select
+$('#user_device').change(function() {
+    selectedDevice = $(this).val();
+    var selectedDates = $('#date_range').val().split(" to ");
+    var startFormatted = selectedDates[0];
+    var endFormatted = selectedDates[1];
+    var selectedUser = $('#user_select').val(); // Mengambil ID pengguna yang dipilih
+
+    // Memeriksa apakah selectedUser adalah undefined atau null
+    if (selectedUser === undefined || selectedUser === null) {
+        selectedUser = ''; // Jika selectedUser tidak valid, beri nilai default kosong
     }
-} else {
-    // Jika checkbox "Accuracy" tidak dicentang, atur opasitas default
-    opacity = 1.0;
-}
 
+    // Membuat URL dengan parameter deviceId
+     newURL = 'http://127.0.0.1:8000/admin/map?start=' + startFormatted + '&end=' + endFormatted + '&deviceId=' + selectedDevice + '&userId=' + selectedUser;
 
+    // Jika selectedUser memiliki nilai yang valid, tambahkan userId ke URL
+    if (selectedUser.trim() !== '') {
+        newURL += '&userId=' + selectedUser;
+    }
 
-    // Atur gaya polyline
-    polyline.setStyle({
-        color: color,
-        weight: weight,
-        opacity: opacity
-    });
+    window.history.replaceState(null, null, newURL);
 
+    localStorage.setItem('selectedDevice', selectedDevice);
 
-
-            // Ikatan popup ke polyline
-            polyline.bindPopup(popupContent);
-        });
-
-
-                // Fit bounds to markers
-                var allMarkers = markers;
-                var bounds = L.featureGroup(allMarkers).getBounds();
-                map.fitBounds(bounds);
-            }
-
-        $('#user_device').change(function () {
-        // Dapatkan ID perangkat yang dipilih
-        var selectedDevice = $(this).val();
-
-         // Aktifkan checkbox "Speed" dan "Accuracy"
-    $('#speed-checkbox').prop('disabled', false);
-    $('#accuracy-checkbox').prop('disabled', false);
-
-        // Hapus semua marker dari peta
-        map.eachLayer(function (layer) {
-            if (layer instanceof L.Marker) {
-                map.removeLayer(layer);
-            }
-        });
-
-        // Hapus semua garis dari peta
-        map.eachLayer(function (layer) {
-            if (layer instanceof L.Polyline) {
-                map.removeLayer(layer);
-            }
-        });
-
-        // Memfilter peta berdasarkan perangkat yang dipilih
-        filterMap(selectedDevice);
-    });
-
-    // Tambahkan event handler untuk checkbox
-$('#speed-checkbox, #accuracy-checkbox').change(function() {
-    filterMap();
+    clearMarkers();
+    filterMap(selectedDevice);
 });
 
 
-            dateRangePicker.config.onChange.push(function (selectedDates, dateStr, instance) {
-                filterMap();
-            });
+
+        // Event handler untuk checkbox
+$('#speed-checkbox, #accuracy-checkbox').change(function() {
+    console.log('Checkbox changed');
+    filterMap(selectedDevice);
+});
+
+
+        dateRangePicker.config.onChange.push(function(selectedDates, dateStr, instance) {
+            filterMap(selectedDevice);
         });
 
-        </script>
+       dateRangeInput.addEventListener("change", function() {
+        // Perbarui peta dengan rentang tanggal yang dipilih
+        filterMap();
+
+        // Pastikan perangkat yang dipilih sebelumnya tetap dipertahankan
+        var selectedDevice = $('#user_device').val();
+        if (selectedDevice) {
+            // Jika perangkat sudah dipilih sebelumnya, atur URL dengan menambahkan tanggal baru
+            var selectedDates = this.value.split(" to ");
+            var startFormatted = selectedDates[0];
+            var endFormatted = selectedDates[1];
+            var newURL = 'http://127.0.0.1:8000/admin/map?start=' + startFormatted + '&end=' + endFormatted + '&deviceId=' + selectedDevice + '&userId=' + selectedUser;
+            window.history.replaceState(null, null, newURL);
+        } else {
+            // Jika tidak ada perangkat yang dipilih sebelumnya, atur URL hanya dengan tanggal baru
+            var selectedDates = this.value.split(" to ");
+            var startFormatted = selectedDates[0];
+            var endFormatted = selectedDates[1];
+            var newURL = 'http://127.0.0.1:8000/admin/map?start=' + startFormatted + '&end=' + endFormatted;
+            window.history.replaceState(null, null, newURL);
+        }
+    });
+
+});
+
+    </script>
 
 @endsection

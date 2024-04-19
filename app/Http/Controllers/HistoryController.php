@@ -6,7 +6,6 @@ use App\Models\History;
 use App\Models\Device;
 use App\Models\User;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
@@ -90,19 +89,27 @@ class HistoryController extends Controller
 
 
 
-    public function map()
+
+
+
+    public function map(Request $request)
     {
         $user = Auth::user();
+
+         $startTime = $request->star_date ?? now()->format('Y-m-d') . ' 00:00:00';
+         $endTime = $request->end_date ?? now()->format('Y-m-d') . ' 23:59:59';
 
         // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
         $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
             ->whereHas('history')
-            ->whereNotIn('name', ['', '']) // Memastikan nama perangkat bukan 'truck' atau 'r'
-            ->take(10) // Mengambil 10 perangkat
             ->get();
 
         // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
-        $history = DB::table('history')->limit(100)->get();
+        $history = DB::table('history')
+        ->whereIn('device_id', $devicesWithUniqueHistory->pluck('id_device'))
+        ->where('date_time', '>=', $startTime)
+        ->where('date_time', '<=', $endTime)
+        ->get();
 
         // Ambil semua perangkat dengan batasan jumlah
         $devices = Device::where('user_id', Auth::id())
@@ -112,18 +119,97 @@ class HistoryController extends Controller
         // Buat array untuk menyimpan nama perangkat berdasarkan ID perangkat
         $deviceNames = $devices->pluck('name', 'id_device')->toArray();
 
-        $historyData = $history->toJson();
-
 
         // Melewatkan data ke view menggunakan compact
-        return view('customer.map.index', compact('devicesWithUniqueHistory', 'historyData', 'history', 'devices', 'deviceNames'));
+       return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames', 'startTime', 'endTime'));
     }
 
 
+public function filter(Request $request)
+{
+    // Ambil input rentang tanggal dan deviceId dari permintaan
+    $start = $request->input('start');
+    $end = $request->input('end');
+    $deviceId = $request->input('deviceId');
+
+    // Panggil metode untuk memproses data dengan rentang tanggal dan deviceId
+    $filteredData = $this->processData($start, $end, $deviceId);
+
+    // Kembalikan respons JSON dengan data yang difilter
+    return response()->json(['filteredData' => $filteredData]);
+}
+
+
+private function processData($start, $end, $deviceId)
+{
+    // Debug: Periksa nilai input
+
+
+    // Ambil data dari model History berdasarkan rentang tanggal dan id perangkat
+$filteredData = History::join('device', 'history.device_id', '=', 'device.id_device')
+    ->where('history.device_id', $deviceId)
+    ->whereBetween('history.date_time', [$start, $end])
+    ->get();
+
+    // Debug: Periksa nilai $filteredData
+
+
+    // Return data yang telah difilter
+    return $filteredData;
+}
+
+
+public function filterByDeviceAndUser(Request $request)
+{
+    // Ambil input rentang tanggal, deviceId, dan userId dari permintaan
+    $start = $request->input('start');
+    $end = $request->input('end');
+    $deviceId = $request->input('deviceId');
+    $userId = $request->input('userId');
+
+    // Panggil metode untuk memproses data dengan rentang tanggal, deviceId, dan userId
+    $filteredData = $this->processDataByDeviceAndUser($start, $end, $deviceId, $userId);
+
+    // Kembalikan respons JSON dengan data yang difilter
+    return response()->json(['filteredData' => $filteredData]);
+}
+
+private function processDataByDeviceAndUser($start, $end, $deviceId)
+{
+    // Ambil data dari model History berdasarkan rentang tanggal dan id perangkat
+    $filteredData = History::join('device', 'history.device_id', '=', 'device.id_device')
+        ->where('history.device_id', $deviceId)
+        ->whereBetween('history.date_time', [$start, $end])
+        ->select('history.*') // Memilih semua kolom dari tabel history
+        ->addSelect('device.user_id') // Menambahkan kolom user_id dari tabel device
+        ->get();
+
+    // Return data yang telah difilter
+    return $filteredData;
+}
 
 
 
+// public function pollData(Request $request)
+// {
+//     // Ambil lastPollTime dari session jika ada, atau set ke null jika belum diset
+//     $lastPollTime = $request->session()->get('lastPollTime');
 
+//     dd($request->last);
+
+//     // Lakukan query untuk m    endapatkan data baru dari tabel history dengan date_time lebih baru dari $lastPollTime
+// $newData = History::where('date_time', '>', $lastPollTime)->get();
+
+
+//     // Perbarui lastPollTime ke waktu server saat ini
+//     $lastPollTime = Carbon::now();
+
+//     // Simpan lastPollTime ke session untuk digunakan pada polling selanjutnya
+//     $request->session()->put('lastPollTime', $lastPollTime);
+
+//     // Kirim respons dengan data baru ke klien
+//     return response()->json(['newData' => $newData]);
+// }
 
 
   public function getHistoryByDevice(Request $request, $deviceId)
@@ -265,6 +351,8 @@ class HistoryController extends Controller
 
         return response()->json($filteredData);
     }
+
+
     public function getDeviceHistory(Request $request, $deviceId)
     {
         // Ambil riwayat perangkat dari database
