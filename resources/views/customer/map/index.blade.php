@@ -22,6 +22,7 @@
 <!-- Load Font Awesome CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+
 <style>
     .date-time-input {
         display: flex;
@@ -135,6 +136,7 @@
         </div>
     </div>
 
+
     <div id="main" style="padding-top: 4px; padding-right: 10px; padding-left: 10px;">
         <div class="page-heading">
             <div class="page-title">
@@ -161,7 +163,7 @@
         <div class="form-group ml-3" style="display: flex; flex-direction: column; width: 100%; margin-top: 37px; margin-bottom: 0px;">
             <div class="d-flex" style="gap:5px;">
                 <select id="device-select" class="form-select input" style="width: 100%;">
-                    <option value="" disabled selected>Select Device</option>
+                    <option value="" disabled selected>Select Devicee</option>
                     @foreach ($devices as $device)
                         <option value="{{ $device->id_device }}">{{ $device->user->name }} - {{ $device->name }}</option>
                     @endforeach
@@ -194,11 +196,13 @@
         <div>
             <div id="device-names" data-device-names="{{ json_encode($deviceNames) }}" style="display: none;"></div>
         </div>
-
-        <div id="map" class="container mt-1" style="margin-top:-10px;"></div>
     </div>
 
-    
+
+
+
+   <div id="map" style="height: 420px; width: 100%;">
+    </div>
 
     <!-- Load jQuery first -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -212,6 +216,109 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.animatedmarker/src/AnimatedMarker.js"></script>
 
+
+    <style>
+        .date-time-input {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .date-label {
+            position: relative;
+            display: inline-block;
+            margin-right: 10px;
+            float: left;
+        }
+
+        .date-label input[type="date"] {
+            padding-right: 30px;
+        }
+
+        .date-label i.fas.fa-calendar {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        #date_range {
+            width: 350px;
+            /* Sesuaikan lebarnya sesuai kebutuhan Anda */
+            text-align: left;
+        }
+
+       #map {
+    z-index: 0;
+    width: 100%;
+    height: 300px;
+    margin-bottom: 50px; /* Menambahkan margin bawah 20px */
+}
+
+/* Atur lebar kontainer form */
+@media (max-width: 768px) {
+    #map {
+        height: 400px;
+        /* Sesuaikan tinggi peta untuk layar mobile */
+        margin-bottom: 50px; /* Menambahkan margin bawah 20px */
+    }
+
+    #main {
+        width: 100%;
+        /* Lebar kontainer form menjadi 100% */
+    }
+}
+
+
+        .custom-div-icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .custom-div-icon i {
+            color: green;
+            /* Mengatur warna ikon menjadi merah */
+        }
+
+        .notification-container {
+            position: fixed;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .notification {
+            padding: 10px;
+            background-color: #f30e21;
+            color: #ffffff;
+            margin-left: 10px;
+            border-radius: 5px;
+            animation: slideInRight 0.5s forwards;
+        }
+
+        @keyframes slideInRight {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        #filter-options {
+            display: none;
+            /* Sembunyikan container filter */
+        }
+    </style>
 
     <script>
         // Tentukan koordinat titik awal dan akhir rute
@@ -314,16 +421,34 @@
 
             var markers = [];
             var devicePolylines = {};
+          var historyData = {!! $historyData !!};
 
-            function filterMap() {
-                var startDate = dateRangePicker.selectedDates[0];
+
+
+        // Check apakah ada data riwayat
+        if (historyData) {
+            filterMap(historyData);
+        } else {
+            // Handle jika data riwayat tidak tersedia
+            console.error('Data riwayat tidak tersediaa');
+        }
+
+
+            function filterMap(data) {
+
+           if (!Array.isArray(data)) {
+        console.error("Data is not an array.");
+        return; // Keluar dari fungsi jika data tidak valid
+    }
+        var startDate = dateRangePicker.selectedDates[0];
                 var endDate = dateRangePicker.selectedDates[1];
                 var selectedDevice = $('#device-select').val();
                 var showSpeeds = $('#speed-checkbox').is(':checked');
                 var showAccuracy = $('#accuracy-checkbox').is(':checked');
 
 
-                var filteredData = historyData.filter(function(item) {
+
+                var filteredData = data.filter(function(item) {
                     var currentDate = new Date(item.date_time);
                     var isWithinDateRange = (!startDate || currentDate >= startDate) && (!endDate ||
                         currentDate <= endDate);
@@ -559,16 +684,16 @@
                         if (accuracy <= 10) {
                             opacity =
                                 1.0; // Set opasitas ke 1.0 jika akurasi kurang dari atau sama dengan 10 (tidak transparan)
-                            color = 'green'; // Jika akurasi <= 10, warna adalah hijau
+
                             weight = 10; // Ketebalan 10
                         } else if (accuracy <= 20) {
                             opacity =
                                 0.6; // Set opasitas ke 0.6 jika akurasi di antara 11 dan 20 (sedang transparan)
-                            color = 'yellow'; // Jika akurasi <= 20, warna adalah kuning
+
                             weight = 7; // Ketebalan 7
                         } else {
                             opacity = 0.3; // Set opasitas ke 0.3 jika akurasi di atas 20 (transparan)
-                            color = 'red'; // Jika akurasi > 20, warna adalah merah
+
                             weight = 3; // Ketebalan 3
                         }
                     } else {
@@ -626,12 +751,12 @@
 
             // Tambahkan event handler untuk checkbox
             $('#speed-checkbox, #accuracy-checkbox').change(function() {
-                filterMap();
+                filterMap(historyData);
             });
 
 
             dateRangePicker.config.onChange.push(function(selectedDates, dateStr, instance) {
-                filterMap();
+                filterMap(historyData);
             });
         });
     </script>

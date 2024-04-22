@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('serial_number');
             $table->string('photo')->nullable();
-            $table->string('plat_nomor');
+            $table->string('plat_nomor')->nullable();
             $table->timestamps();
         });
     }

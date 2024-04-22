@@ -313,5 +313,6 @@
                 map.fitBounds(bounds);
             });
         </script>
+        
     </div>
 @endsection

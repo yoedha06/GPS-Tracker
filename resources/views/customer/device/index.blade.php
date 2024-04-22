@@ -168,7 +168,7 @@
                         <div class="mb-3">
                             <label for="plat_nomor" class="form-label">Plat Nomor</label>
                             <input type="text" class="form-control" id="plat_nomor" name="plat_nomor"
-                                value="{{ old('plat_nomor') }}"required>
+                                value="{{ old('plat_nomor') }}">
                         </div>
                         <div class="mb-3">
                             <label for="timezone" class="form-label">Timezone</label>
@@ -370,7 +370,15 @@
         </div>
     </footer>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        $(document).ready(function() {
+            // Mengatur timezone menjadi UTC +7 ketika modal muncul
+            $('#addDeviceModal').on('show.bs.modal', function(event) {
+                $('#timezone').val('+7'); // Ubah sesuai dengan nilai timezone yang diinginkan
+            });
+        });
+
         $('#table1').on('click', '[data-bs-toggle="modal"]', function() {
             var targetModalId = $(this).data('bs-target');
             $(targetModalId).modal('show');
