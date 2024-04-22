@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\HistoryController; //paka a kecil
 use App\Http\Controllers\api\LocationController; //tidak terpakai
+use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,5 +25,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/history', [HistoryController::class, 'index']);
 Route::post('/history/store', [HistoryController::class, 'store']);
 
-Route::get('/location', [LocationController::class, 'index']);
-Route::post('/location/store', [LocationController::class, 'store']);
+// Route::post('/register', [AuthRegisterController::class, 'register'])->name('register');

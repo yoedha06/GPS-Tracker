@@ -36,7 +36,8 @@
         .btn-primary {
             background-color: #393f81;
             border-color: #393f81;
-            margin-right: 10px; /* tambahkan margin right */
+            margin-right: 10px;
+            /* tambahkan margin right */
         }
 
         .btn-primary:hover {
@@ -70,19 +71,46 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('password.email') }}">
+                        <form method="POST" id="forgot_password_form">
                             @csrf
 
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email Address</label>
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                                    name="email" value="{{ old('email') }}" required autofocus>
-                                @error('email')
-                                    <div class="error-message">{{ $message }}</div>
-                                @enderror
+                            <div class="form-outline mb-4">
+                                <label for="verification_option">Choose Contact Option</label>
+                                <select id="verification_option" class="form-control" name="verification_option"
+                                    required>
+                                    <option value="">Select</option>
+                                    <!-- Perhatikan bahwa nilai atribut "value" diubah menjadi kosong -->
+                                    <option value="email">Email</option>
+                                    <option value="phone">Phone</option>
+                                </select>
+
+                                <div id="email_field" class="form-outline mb-4" style="display: none;">
+                                    <label for="email">Email Address</label>
+                                    <input id="email" type="email"
+                                        class="form-control @error('email') is-invalid @enderror" name="email"
+                                        value="{{ old('email') }}" autofocus>
+                                    @error('email')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <div id="phone_field" class="form-outline mb-4" style="display: none;">
+                                    <label for="phone">Phone Number</label>
+                                    <input id="phone" type="text"
+                                        class="form-control @error('phone') is-invalid @enderror" name="phone"
+                                        value="{{ old('phone') }}" autofocus>
+                                    @error('phone')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
 
-                            <div class="d-flex justify-content-between align-items-center"> <!-- tambahkan class d-flex dan justify-content-between untuk sejajarkan tombol -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <!-- tambahkan class d-flex dan justify-content-between untuk sejajarkan tombol -->
                                 <button type="submit" class="btn btn-primary">Send Password Reset Link</button>
                                 <!-- tambahkan tombol kembali ke halaman login -->
                                 <a href="{{ route('login') }}" class="btn btn-secondary">Back to Login</a>
@@ -93,6 +121,40 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var verificationOption = document.getElementById('verification_option');
+            var form = document.getElementById('forgot_password_form');
+
+            verificationOption.addEventListener('change', function() {
+                if (verificationOption.value === 'email') {
+                    form.action = "{{ route('password.email') }}";
+                } else if (verificationOption.value === 'phone') {
+                    form.action = "{{ route('password.phone') }}";
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var emailField = document.getElementById('email_field');
+            var phoneField = document.getElementById('phone_field');
+            var verificationOption = document.getElementById('verification_option');
+
+            // Toggle visibility based on selected input
+            verificationOption.addEventListener('change', function() {
+                if (verificationOption.value === 'email') {
+                    emailField.style.display = 'block';
+                    phoneField.style.display = 'none';
+                } else if (verificationOption.value === 'phone') {
+                    phoneField.style.display = 'block';
+                    emailField.style.display = 'none';
+                } else {
+                    emailField.style.display = 'none';
+                    phoneField.style.display = 'none';
+                }
+            });
+        });
+    </script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">

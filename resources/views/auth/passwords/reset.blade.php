@@ -64,8 +64,18 @@
 
                             <input type="hidden" name="token" value="{{ $token }}">
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email Address</label>
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email }}" required autocomplete="email" autofocus readonly>
+                                @if ($email)
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input id="email" type="email"
+                                        class="form-control @error('email') is-invalid @enderror" name="email"
+                                        value="{{ $email }}" required autocomplete="email" autofocus readonly>
+                                @else
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input id="phone" type="text"
+                                        class="form-control @error('phone') is-invalid @enderror" name="phone"
+                                        value="{{ $phone }}" required autocomplete="phone" autofocus readonly>
+                                @endif
+
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -74,13 +84,12 @@
                             </div>
 
 
-
-
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <input id="password" type="password"
                                     class="form-control @error('password') is-invalid @enderror" name="password"
-                                    required autocomplete="new-password"> <!-- Tambahkan atribut minlength="4" untuk membatasi minimal 4 karakter -->
+                                    required autocomplete="new-password">
+                                <!-- Tambahkan atribut minlength="4" untuk membatasi minimal 4 karakter -->
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
