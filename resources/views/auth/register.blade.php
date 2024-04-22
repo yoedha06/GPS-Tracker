@@ -97,11 +97,12 @@
                             @csrf
                             <div class="logo-container">
                                 <div style="display: flex; align-items: center; margin-top: 10px;">
-                                    <img src="/images/g.png" alt="GPS logo" style="max-width: 16%; height: auto; margin-right: 10px;" />
+                                    <img src="/images/g.png" alt="GPS logo"
+                                        style="max-width: 16%; height: auto; margin-right: 10px;" />
                                     <span style="font-weight: bold;">GEEX</span>
                                 </div>
                             </div>
-                            
+
                             <h5 class="fw-normal mb-3">Register for an account</h5>
 
                             <div class="form-outline mb-4">
@@ -119,16 +120,17 @@
                             </div>
 
                             <div class="form-outline mb-4">
-                                <label for="email">Email Address</label>
-                                <input id="email" type="email"
-                                    class="form-control @error('email') is-invalid @enderror" name="email"
-                                    value="{{ old('email') }}" required autocomplete="email">
+                                <label for="username">username</label>
+                                <input id="username" type="text"
+                                    class="form-control @error('username') is-invalid @enderror" name="username"
+                                    value="{{ old('username') }}" required autocomplete="username" autofocus>
 
-                                @error('email')
+                                @error('username')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+
                             </div>
 
                             <div class="form-outline mb-4">
@@ -142,6 +144,41 @@
                                     </span>
                                 @enderror
 
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <label for="verification_option">Choose Contact Option</label>
+                                <select id="verification_option" class="form-control" name="verification_option"
+                                    required>
+                                    <option value="">Select</option>
+                                    <!-- Perhatikan bahwa nilai atribut "value" diubah menjadi kosong -->
+                                    <option value="email">Email</option>
+                                    <option value="phone">Phone</option>
+                                </select>
+
+                                <div id="email_field" class="form-outline mb-4" style="display: none;">
+                                    <label for="email">Email Address</label>
+                                    <input id="email" type="email"
+                                        class="form-control @error('email') is-invalid @enderror" name="email"
+                                        value="{{ old('email') }}" autofocus>
+                                    @error('email')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <div id="phone_field" class="form-outline mb-4" style="display: none;">
+                                    <label for="phone">Phone Number</label>
+                                    <input id="phone" type="text"
+                                        class="form-control @error('phone') is-invalid @enderror" name="phone"
+                                        value="{{ old('phone') }}" autofocus>
+                                    @error('phone')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
 
                             <div class="pt-1 mb-4">
@@ -159,5 +196,28 @@
         </div>
     </div>
 </body>
+<script>
+    document.getElementById('verification_option').addEventListener('change', function() {
+        var emailField = document.getElementById('email_field');
+        var phoneField = document.getElementById('phone_field');
+
+        if (this.value === 'email') {
+            emailField.style.display = 'block';
+            phoneField.style.display = 'none';
+            document.getElementById('email').required = true;
+            document.getElementById('phone').required = false;
+        } else if (this.value === 'phone') {
+            emailField.style.display = 'none';
+            phoneField.style.display = 'block';
+            document.getElementById('email').required = false;
+            document.getElementById('phone').required = true;
+        } else {
+            emailField.style.display = 'none';
+            phoneField.style.display = 'none';
+            document.getElementById('email').required = false;
+            document.getElementById('phone').required = false;
+        }
+    });
+</script>
 
 </html>

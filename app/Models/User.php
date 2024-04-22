@@ -24,6 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'username',
         'email',
+        'phone',
         'photo',
         'password',
         'role',
@@ -46,11 +47,13 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
     protected $dates = [
         'email_verified_at',
+        'phone_verified_at',
     ];
 
 
@@ -62,7 +65,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-     public function histories()
+    public function histories()
     {
         return $this->hasMany(History::class, 'user_id');
     }

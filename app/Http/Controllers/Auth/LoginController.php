@@ -52,11 +52,11 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $email = $request->input('email');
+        $loginField = $request->input('username');
         $password = $request->input('password');
 
         $credentials = [
-            'email' => $email,
+            filter_var($loginField, FILTER_VALIDATE_EMAIL) ? 'email' : 'username' => $loginField,
             'password' => $password
         ];
 
@@ -64,20 +64,21 @@ class LoginController extends Controller
             $user = Auth::user();
 
             if (!$user->hasVerifiedEmail()) {
-                
+
                 $user->sendEmailVerificationNotification();
 
-                return redirect('/email/verify')
-                    ->with('success','A verification link has been sent to your email address.');
+                return redirect()
+                    ->route('login')
+                    ->with('success', 'A verification link has been sent to your email address.');
             }
             // Jika sudah diverifikasi, arahkan ke halaman login
             return redirect()
-                    ->route('login')
-                    ->with('success', 'You have successfully verified your email. Please login.');
+                ->route('login')
+                ->with('success', 'You have successfully verified your email. Please login.');
         }
 
         return redirect('/login')
-                ->withErrors(['email' => 'Email or password is incorrect','password' => 'Email or password is incorrect']);
+            ->withErrors(['email' => 'Email or password is incorrect', 'password' => 'Email or password is incorrect']);
     }
 
     public function logout(Request $request)
