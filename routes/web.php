@@ -131,6 +131,7 @@ Route::post('/create-last-location', [MapController::class, 'createLastLocation'
 
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
 Route::post('/forgot-password/phone', [ForgotPasswordController::class, 'sendResetLinkPhone'])->name('password.phone');
 
 Route::get('/password/email/{token}/{email}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
