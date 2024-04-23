@@ -37,13 +37,18 @@ class TampilanController extends Controller
             ->groupBy('history.device_id', 'device.name')
             ->get();
 
+        $lastLocationsCount = History::groupBy('device_id')
+            ->selectRaw('count(*)')
+            ->get()
+            ->count();
+
         // Jumlahkan total history perangkat pengguna
         $totalHistoryPerDevice = $historyData->sum('count');
 
         // Ambil daftar perangkat yang dimiliki oleh pengguna
         $devices = $user->devices;
 
-        return view('customer.index', compact('user', 'deviceCount', 'historyData', 'devices', 'historyTotal', 'totalHistoryPerDevice', 'historyDevices'));
+        return view('customer.index', compact('user', 'deviceCount', 'historyData', 'devices', 'historyTotal', 'totalHistoryPerDevice', 'historyDevices','lastLocationsCount'));
     }
 
 
@@ -63,11 +68,15 @@ class TampilanController extends Controller
             ->select('users.name as user_name', 'device.name as device_name', DB::raw('COUNT(history.id_history) as count'))
             ->groupBy('device.id_device', 'device.name', 'users.name')
             ->get();
+        $lastLocationsCount = History::groupBy('device_id')
+            ->selectRaw('count(*)')
+            ->get()
+            ->count();
 
         // Get authenticated user
         $user = auth()->user();
 
-        return view('admin.index', compact('user', 'usersCount', 'deviceCount', 'totalHistory', 'historyData', 'history', 'devices'));
+        return view('admin.index', compact('user', 'usersCount', 'deviceCount', 'totalHistory', 'historyData', 'history', 'devices','lastLocationsCount'));
     }
 
 
