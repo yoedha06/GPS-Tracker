@@ -98,7 +98,7 @@ class RegisterController extends Controller
         $this->create($request->all());
 
         return redirect('/email/verify')
-        ->with('success','A verification link has been sent to your email address.');
+            ->with('success', 'A verification link has been sent to your email address.');
     }
 
     public function update(Request $request)

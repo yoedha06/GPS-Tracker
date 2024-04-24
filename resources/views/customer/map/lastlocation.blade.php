@@ -197,8 +197,7 @@
                         method: 'GET',
                         success: function(data) {
                             $(".pulse").removeClass("pulse");
-                            console.log('lokasi terakhir:', data);
-
+                            
                             lastLocation = data;
 
                             // Hapus marker last location sebelumnya (jika ada)
@@ -215,8 +214,17 @@
                                 `<b>Device: ${data.name}</b><br>` +
                                 `<b>Plat Nomor:</b> ${data.plate_number}<br>` +
                                 `<b>Latlng:</b> ${data.latitude}, ${data.longitude}<br>` +
-                                `<b>Date Time:</b> ${data.date_time}<br>` +
-                                `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px;">`;
+                                `<b>Date Time:</b> ${data.date_time}<br>`;
+
+                            // Periksa apakah ada foto yang tersedia
+                            if (data.photo) {
+                                // Jika ada foto, tambahkan tag img
+                                popupContent +=
+                                    `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px;">`;
+                            } else {
+                                // Jika tidak ada foto, tampilkan teks "No Photo Here"
+                                popupContent += `<p>No Photo Here</p>`;
+                            }
 
                             lastLocationMarker.bindPopup(popupContent).openPopup();
                             markers.push(lastLocationMarker);
@@ -263,7 +271,6 @@
                             url: '/latestlocation/' + selectedDeviceId,
                             method: 'GET',
                             success: function(data) {
-                                console.log('lokasi baru:', data);
 
                                 if (data.date_time !== lastLocation.date_time) {
 
@@ -309,8 +316,16 @@
                                         `<b>Device: ${data.name}</b><br>` +
                                         `<b>Plat Nomor:</b> ${data.plate_number}<br>` +
                                         `<b>Latlng:</b> ${data.latitude}, ${data.longitude}<br>` +
-                                        `<b>Date Time:</b> ${data.date_time}<br>` +
-                                        `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px;">`;
+                                        `<b>Date Time:</b> ${data.date_time}<br>`;
+
+                                    if (data.photo) {
+                                        // Jika ada foto, tambahkan tag img
+                                        popupContent +=
+                                            `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px;">`;
+                                    } else {
+                                        // Jika tidak ada foto, tampilkan teks "No Image Here"
+                                        popupContent += `<p>No Image Here</p>`;
+                                    }
 
                                     latestLocationMarker.bindPopup(popupContent).openPopup();
 
@@ -354,7 +369,11 @@
                                 `<b>Latlng:</b> {{ $history->latitude . ',' . $history->longitude }}<br>` +
                                 `<b>Nopol:</b> {{ $history->device->plat_nomor }}<br>` +
                                 `<b>LastTime:</b> {{ $history->date_time }}<br>` +
-                                `<img src="{{ asset('storage/' . $history->device->photo) }}" style="width: 199px; height: 127px;">`
+                                @if ($history->device->photo)
+                                    `<img src="{{ asset('storage/' . $history->device->photo) }}" style="width: 199px; height: 127px;">`
+                                @else
+                                    `<p>No Image Here</p>`
+                                @endif
                             );
                             markers.push(marker); // Tambahkan marker ke dalam array markers
                         @endif

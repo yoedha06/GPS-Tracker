@@ -127,36 +127,33 @@ class HistoryController extends Controller
 
 public function filter(Request $request)
 {
-    // Ambil input rentang tanggal dan deviceId dari permintaan
-    $start = $request->input('start');
-    $end = $request->input('end');
-    $deviceId = $request->input('deviceId');
+    // Ambil data yang diperlukan dari permintaan
+    $selectedDevice = $request->selectedDevice;
+    $startDate = $request->startDate;
+    $endDate = $request->endDate;
 
-    // Panggil metode untuk memproses data dengan rentang tanggal dan deviceId
-    $filteredData = $this->processData($start, $end, $deviceId);
+    // Pastikan tanggal-tanggal yang diterima adalah dalam format yang tepat
+    $startDate = date('Y-m-d H:i:s', strtotime($startDate));
+    $endDate = date('Y-m-d H:i:s', strtotime($endDate));
 
-    // Kembalikan respons JSON dengan data yang difilter
-    return response()->json(['filteredData' => $filteredData]);
+    // Ambil riwayat yang sesuai dengan rentang tanggal dan perangkat yang dipilih
+    $historyData = History::with('device')
+                    ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                        $query->where('device_id', $selectedDevice);
+                    })
+                    ->whereBetween('date_time', [$startDate, $endDate])
+                    ->get();
+
+    // Iterasi melalui data riwayat dan ambil nama perangkat untuk setiap entri
+    foreach ($historyData as $history) {
+        $deviceName = $history->device->name;
+
+    }
+
+    // Kembalikan data dalam format JSON
+    return response()->json($historyData);
 }
 
-
-private function processData($start, $end, $deviceId)
-{
-    // Debug: Periksa nilai input
-
-
-    // Ambil data dari model History berdasarkan rentang tanggal dan id perangkat
-$filteredData = History::join('device', 'history.device_id', '=', 'device.id_device')
-    ->where('history.device_id', $deviceId)
-    ->whereBetween('history.date_time', [$start, $end])
-    ->get();
-
-    // Debug: Periksa nilai $filteredData
-
-
-    // Return data yang telah difilter
-    return $filteredData;
-}
 
 
 public function filterByDeviceAndUser(Request $request)

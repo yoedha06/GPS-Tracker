@@ -131,26 +131,26 @@
                 <ul class="menu">
                     <li class="sidebar-title">Menu</li>
                     <hr>
-                    <li class="sidebar-item active">
+                    <li class="sidebar-item {{ request()->is('admin') ? 'active' : '' }}">
                         <a href="/admin" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item  has-sub">
+                    <li class="sidebar-item  has-sub {{ request()->is('admin/user') || request()->is('admin/device') ? 'active' : '' }}">
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-stack"></i>
                             <span>Users</span>
                         </a>
-                        <ul class="submenu">
-                            <li class="submenu-item">
+                        <ul class="submenu {{request()->is('admin/user') || request()->is('admin/device') ? 'active' : ''}}">
+                            <li class="submenu-item {{request()->is('admin/user') ? 'active' : ''}}">
                                 <a href="{{ route('admin.user') }}">
                                     <i class="fas fa-user"></i> <!-- Ikon user -->
                                     <span>Data User</span>
                                 </a>
                             </li>
-                            <li class="submenu-item">
+                            <li class="submenu-item {{request()->is('admin/device') ? 'active' : ''}}">
                                 <a href="{{ route('admin.device.index') }}">
                                     <i class="fas fa-laptop-code"></i> <!-- Ikon user -->
                                     <span>Data Device</span>
@@ -158,19 +158,19 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="sidebar-item has-sub">
+                    <li class="sidebar-item has-sub {{request()->is('admin/map') || request()->is('admin/lastlocation') ? 'active' : ''}}">
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-map-fill"></i>
                             <span>Map</span>
                         </a>
-                        <ul class="submenu">
-                            <li class="submenu-item ">
+                        <ul class="submenu {{request()->is('admin/map') || request()->is('admin/lastlocation') ? 'active' : ''}}">
+                            <li class="submenu-item {{request()->is('admin/map') ? 'active' : ''}}">
                                 <a href="{{ route('admin.map') }}">
                                     <i class="bi bi-clock-fill"></i>
                                     <span class="ml-1">History</span>
                                 </a>
                             </li>
-                            <li class="submenu-item">
+                            <li class="submenu-item {{request()->is('admin/lastlocation') ? 'active' : ''}}">
                                 <a href="{{ route('admin.lastlocation') }}">
                                     <i class="fas fa-map-marker-alt"></i>
                                     <span class="ml-1">Last Locations</span>

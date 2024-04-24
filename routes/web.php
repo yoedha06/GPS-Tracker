@@ -79,7 +79,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/get-related-data/{deviceId}', [HistoryController::class, 'getRelatedData']);
 
-        Route::get('/customer/lastlocation',[MapController::class, 'lastloc'])->name('lastlocation');
+        Route::get('/customer/lastlocation', [MapController::class, 'lastloc'])->name('lastlocation');
 
 
         //device Customer
@@ -88,8 +88,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/device', [DeviceController::class, 'store'])->name('device.store');
         Route::put('/device/{id_device}', [DeviceController::class, 'update'])->name('device.update');
         Route::delete('/device/{id}', [DeviceController::class, 'destroy'])->name('device.destroy');
-        Route::delete('/delete-photo/{id}', [DeviceController::class,'deletePhoto'])->name('delete-photo');
-
+        Route::delete('/delete-photo/{id}', [DeviceController::class, 'deletePhoto'])->name('delete-photo');
     });
 
     Route::middleware(['role:admin'])->group(function () {
@@ -99,19 +98,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/admin/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo');
         Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
         Route::get('/admin/map', [HistoryController::class, 'showMap'])->name('admin.map');
-        Route::get('/admin/lastlocation',[LocationController::class, 'index'])->name('admin.lastlocation');
+        Route::get('/admin/lastlocation', [LocationController::class, 'index'])->name('admin.lastlocation');
 
         //device Admin
         Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');
         Route::get('/admin/device/search', [DeviceController::class, 'search'])->name('admin.device.search');
-
     });
 });
 
 //logout customer
 Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
-Route::post('/create-last-location',[MapController::class, 'createLastLocation'])->name('create.lastlocation');
+Route::post('/create-last-location', [MapController::class, 'createLastLocation'])->name('create.lastlocation');
 
 // //logout admin
 // Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
@@ -130,7 +128,7 @@ Route::get('/password/reset/{token}/{email}', [ResetPasswordController::class, '
 Route::get('/validation', [ValidationController::class, 'index'])->name('validation');
 
 
- Route::get('/map', [MapController::class, 'index'])->name('map.index');
+Route::get('/map', [MapController::class, 'index'])->name('map.index');
 
 Route::get('/admin/get-related-data/{deviceId}', [HistoryController::class, 'fetchData'])->name('admin.fetch_data');
 
@@ -162,14 +160,12 @@ Route::get('/admin/latestlocation/{deviceId}', [LocationController::class, 'getL
 
 
 //filter chart
-Route::get('/cwart', [TampilanController::class, 'customer']);
+Route::get('/chart', [TampilanController::class, 'customer']);
 Route::get('/admin-chart', [TampilanController::class, 'grafikadmin']);
 
 //map history
 // Route::get('/customer/map', [HistoryController::class, 'updateMapData']);
-Route::get('/customer/map/filter', [HistoryController::class, 'filter']);
-Route::get('/poll-data', [HistoryController::class, 'pollData']);
+Route::post('/filter-history', [HistoryController::class, 'filter'])->name('filter.history');
 
 Route::get('/admin/map/filter', [HistoryController::class, 'filterByDeviceAndUser']);
-
 

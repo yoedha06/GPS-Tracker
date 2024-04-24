@@ -155,46 +155,40 @@
                 <ul class="menu">
                     <li class="sidebar-title">Menu</li>
                     <hr>
-                    <li class="sidebar-item active ">
+                    <li class="sidebar-item {{ request()->is('customer') ? 'active' : '' }}">
                         <a href="/customer" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <br>
-                    <a href="{{ route('lastlocation') }}" class="sidebar-link">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Last Location</span>
-                    </a>
-
-                    <a href="/customer/map" class="sidebar-link">
-                        <i class="bi bi-map-fill"></i>
-                        <span>Maps</span>
-                    </a>
-
-                    <a href="/history/customer" class="sidebar-link">
-                        <i class="bi bi-clock-fill"></i>
-                        <span>History</span>
-                    </a>
-
-                    <a href="/customer/device" class="sidebar-link">
-                        <i class="fas fa-tablet"></i>
-                        <span>Device</span>
-                    </a>
-
-                    {{-- <li class="sidebar-item  has-sub">
-                        <a href="#" class='sidebar-link'>
-                            <i class="bi bi-bar-chart-fill"></i>
-                            <span>Users</span>
+                    <li class="sidebar-item {{ request()->is('customer/lastlocation') ? 'active' : '' }}">
+                        <a href="{{ route('lastlocation') }}" class="sidebar-link">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Last Location</span>
                         </a>
-                        <ul class="submenu ">
-                            <li class="submenu-item ">
-                                <a href="/history/customer"><i class="bi bi-clock-fill"></i> History</a>
-                            </li>
-                            <li class="submenu-item ">
-                                <a href="/customer/device"><i class="fas fa-tablet"></i> Device</a>
-                            </li>
-                    </li> --}}
+                    </li>
+
+                    <li class="sidebar-item {{ request()->is('customer/map') ? 'active' : '' }}">
+                        <a href="/customer/map" class="sidebar-link">
+                            <i class="bi bi-map-fill"></i>
+                            <span>Maps</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item {{ request()->is('history/customer') ? 'active' : '' }}">
+                        <a href="/history/customer" class="sidebar-link">
+                            <i class="bi bi-clock-fill"></i>
+                            <span>History</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item {{ request()->is('customer/device') ? 'active' : '' }}">
+                        <a href="/customer/device" class="sidebar-link">
+                            <i class="fas fa-tablet"></i>
+                            <span>Device</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -251,7 +245,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 <!-- Need: Apexcharts -->
 <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
-<script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script>
+{{-- <script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script> --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Remove splash screen after a few seconds (e.g., 3 seconds)
