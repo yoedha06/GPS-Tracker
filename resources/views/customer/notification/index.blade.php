@@ -4,6 +4,26 @@
 
 @section('content')
     <div id="main">
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
+                                        Dashboard</a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-bell"></i>
+                                    </i>
+                                    Notification</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
@@ -30,13 +50,15 @@
                                     <label for="phone" class="col-md-4 col-form-label text-md-right">No handphone</label>
                                     <div class="col-md-6">
                                         <input id="phone" type="text" class="form-control" name="phone"
-                                            value="{{ auth()->user()->phone }}" style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);" readonly>
+                                            value="{{ auth()->user()->phone }}"
+                                            style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);"
+                                            readonly>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="scheduled_time" class="col-md-4 col-form-label text-md-right">Start Date
-                                        </label>
+                                    </label>
                                     <div class="col-md-6">
                                         <input id="scheduled_time" type="datetime-local" class="form-control"
                                             name="scheduled_time" required>

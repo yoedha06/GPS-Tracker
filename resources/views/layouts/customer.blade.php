@@ -190,7 +190,7 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item">
+                    <li class="sidebar-item {{ request()->is('customer/notification') ? 'active' : '' }}">
                         <a href="{{route('customer.notification.index')}}" class="sidebar-link">
                             <i class="fas fa-bell"></i>
                             <span>Notification</span>
