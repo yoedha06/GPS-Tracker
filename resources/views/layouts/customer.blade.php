@@ -185,7 +185,7 @@
 
                     <li class="sidebar-item {{ request()->is('customer/device') ? 'active' : '' }}">
                         <a href="/customer/device" class="sidebar-link">
-                            <i class="fas fa-tablet"></i>
+                            <i class="fas fa-car"></i>
                             <span>Device</span>
                         </a>
                     </li>
@@ -225,7 +225,7 @@
 
             <div class="nav-item">
                 <a href="/customer/device">
-                    <i class="bi bi-ev-front-fill"></i>
+                    <i class="fas fa-car"></i>
                     <span>Device</span>
                 </a>
             </div>
