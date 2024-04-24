@@ -46,11 +46,30 @@ Route::get('/', [TampilanController::class, 'homepage'])->name('index.homepage')
 //register customer
 Route::post('/register', [AuthRegisterController::class, 'register'])->name('register');
 
+
 Route::get('/email/resend', [AuthVerificationController::class, 'resend'])->name('verification.resend');
 
 Route::get('/email/verify', function () {
-    return view('auth.verify');
+    if (Auth::user()->email) {
+        return view('auth.verify'); // Jika pengguna mendaftar dengan email
+    } elseif (Auth::user()->phone) {
+        return redirect()->route('phone.verification.notice'); // Jika pengguna mendaftar dengan nomor telepon
+    } else {
+        abort(403, 'Unauthorized action.'); // Handle kondisi jika tidak ada informasi email atau nomor telepon
+    }
 })->middleware('auth')->name('verification.notice');
+
+
+Route::post('/phone-verification/resend', [AuthVerificationController::class, 'resendPhoneVerification'])->name('phone.verification.resend');
+Route::get('/phone/verify', function () {
+    if (Auth::user()->phone) {
+        return view('auth.verifyphone'); // Jika pengguna mendaftar dengan nomor telepon
+    } elseif (Auth::user()->email) {
+        return redirect()->route('verification.notice'); // Jika pengguna mendaftar dengan email
+    } else {
+        abort(403, 'Unauthorized action.'); // Handle kondisi jika tidak ada informasi email atau nomor telepon
+    }
+})->middleware('auth')->name('phone.verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
@@ -68,7 +87,7 @@ Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login
 Route::post('/login', [AuthLoginController::class, 'login']);
 
 //hak akses
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'ensureVerified'])->group(function () {
     Route::middleware(['role:customer'])->group(function () {
         Route::get('/customer', [TampilanController::class, 'index'])->name('index.customer');
         Route::get('/customer/profile', [ProfileController::class, 'index'])->name('customer.profile');
@@ -111,21 +130,18 @@ Route::get('/logout', [AuthLoginController::class, 'logout'])->name('logout');
 
 Route::post('/create-last-location', [MapController::class, 'createLastLocation'])->name('create.lastlocation');
 
-// //logout admin
-// Route::post('/logout/admin', [AdminController::class, 'logoutadmin'])->name('logout.admin');
-
-
-
-// Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
-// ->middleware('guest')
-// ->name('password.request');
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
-Route::get('/password/reset/{token}/{email}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-// Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
+Route::post('/forgot-password/phone', [ForgotPasswordController::class, 'sendResetLinkPhone'])->name('password.phone');
+
+Route::get('/password/email/{token}/{email}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::get('/password/phone/{token}/{phone}', [ResetPasswordController::class, 'showResetForm'])->name('password.phone.reset');
+Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 Route::get('/validation', [ValidationController::class, 'index'])->name('validation');
+
+Route::get('/validation-phone', [ValidationController::class, 'indexPhone'])->name('validation.phone');
 
 
 Route::get('/map', [MapController::class, 'index'])->name('map.index');

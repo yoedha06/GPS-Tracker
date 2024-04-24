@@ -7,9 +7,10 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -60,8 +61,10 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'username' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'min:4'],
+            'phone' => ['nullable', 'min:4'],
         ]);
     }
 
@@ -73,32 +76,65 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        // dd($data);
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'username' => $data['email'],
+            'username' => $data['username'],
+            'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
             'role' => 'customer',
         ]);
-
         event(new Registered($user));
 
         Auth::login($user);
+
+        return $user;
     }
 
     //login setelah registrasi
     public function register(Request $request)
     {
+        // dd($request->all());
         $validator = $this->validator($request->all());
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $this->create($request->all());
+        $user = $this->create($request->all());
 
-        return redirect('/email/verify')
-            ->with('success', 'A verification link has been sent to your email address.');
+        // Mengecek apakah pengguna mendaftar dengan menggunakan email
+        if ($request->email) {
+            return redirect('/email/verify')->with('success', 'A verification link has been sent to your email address.');
+        } elseif ($request->email) {
+            return redirect('/email/verify')->with('error', 'Failed to send verification link. Please try again later.');
+        }
+        // Mengecek apakah pengguna mendaftar dengan menggunakan nomor telepon
+        elseif ($request->phone) {
+            $url = "https://app.japati.id/api/send-message";
+            $appUrl = route('login');
+
+            $data = [
+                'gateway' => '6285954906329',
+                'number' => $user->phone,
+                'type' => 'text',
+                'message' => "Click this link to verify your phone: $appUrl?token=" . $user->id,
+            ];
+
+            try {
+                $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                    ->post($url, $data);
+
+                if ($response->successful()) {
+                    return redirect('/phone/verify')->with('success', 'A verification link has been sent to your phone address.');
+                } else {
+                    return redirect('/phone/verify')->with('error', 'Failed to send verification link. Please try again later.');
+                }
+            } catch (RequestException $e) {
+                return redirect('/phone/verify')->with('error', 'Failed to send verification link. Please try again later.');
+            }
+        }
     }
 
     public function update(Request $request)

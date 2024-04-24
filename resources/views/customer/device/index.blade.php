@@ -112,7 +112,11 @@
                                         @endif
                                         <h5 class="card-title" style="margin-top: 5%">{{ $item->name }}</h5>
                                         <p class="card-text">Serial Number: {{ $item->serial_number }}</p>
-                                        <p class="card-text">Plat Nomor: {{ $item->plat_nomor }}</p>
+                                        @if ($item->plat_nomor)
+                                            <p class="card-text">Plat Nomor: {{ $item->plat_nomor }}</p>
+                                        @else
+                                            <p class="card-text">Plat Nomor: -</p>
+                                        @endif
                                         @if ($item->timezone)
                                             <p class="card-text">Time Zone: UTC {{ $item->timezone }}</p>
                                         @else
@@ -309,7 +313,6 @@
         </div>
     @endforeach
 
-
     <!-- Delete Device Modals -->
     @foreach ($userDevices as $item)
         <div class="modal fade" id="deleteDeviceModal{{ $item->id_device }}" tabindex="-1"
@@ -424,7 +427,6 @@
             }
         }
 
-
         function previewPhoto(event) {
             var input = event.target;
             var reader = new FileReader();
@@ -458,7 +460,6 @@
                         }
                     }
                 };
-
                 reader.readAsDataURL(input.files[0]);
             }
         }

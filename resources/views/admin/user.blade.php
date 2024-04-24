@@ -47,7 +47,7 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="userTableBody">
                             @if (count($users) > 0)
                                 @php $iteration = 1 @endphp
                                 @foreach ($users as $user)
@@ -67,11 +67,8 @@
                                     </tr>
                                 @endforeach
                             @else
-                                <tr>
-                                    <td colspan="11" class="text-center">
-                                        <span style="font-size: 3rem;">&#x1F5FF;</span>
-                                        <p class="mt-2">Data not available, sorry.</p>
-                                    </td>
+                                <tr id="noDataFound" style="display: none;">
+                                    <td colspan="6" class="text-center">Data not found.</td>
                                 </tr>
                             @endif
                         </tbody>
@@ -93,26 +90,32 @@
             </div>
         </footer>
     </div>
-    
+
     <script>
         function liveSearchUser() {
             const searchInput = document.getElementById('searchUser');
             const searchTerm = searchInput.value.toLowerCase();
-            const tableBody = document.getElementById('table1').getElementsByTagName('tbody')[0];
+            const tableBody = document.getElementById('userTableBody');
             const tableRows = tableBody.getElementsByTagName('tr');
+            let dataFound = false;
 
             for (let i = 0; i < tableRows.length; i++) {
                 const user = tableRows[i];
                 const name = user.getElementsByTagName('td')[1].innerText.toLowerCase();
                 const username = user.getElementsByTagName('td')[2].innerText.toLowerCase();
                 const email = user.getElementsByTagName('td')[3].innerText.toLowerCase();
+                const role = user.getElementsByTagName('td')[4].innerText.toLowerCase();
+                const status = user.getElementsByTagName('td')[5].innerText.toLowerCase();
 
-                if (name.includes(searchTerm) || username.includes(searchTerm) || email.includes(searchTerm)) {
-                    tableRows[i].style.display = '';
+                if (name.includes(searchTerm) || username.includes(searchTerm) || email.includes(searchTerm) || role
+                    .includes(searchTerm) || status.includes(searchTerm)) {
+                    user.style.display = '';
+                    dataFound = true;
                 } else {
-                    tableRows[i].style.display = 'none';
+                    user.style.display = 'none';
                 }
             }
         }
     </script>
+
 @endsection

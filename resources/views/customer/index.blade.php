@@ -86,6 +86,7 @@
                                                                 Last Location
                                                             </h6>
                                                         </h6>
+                                                        <h6 class="font-extrabold mb-0">{{ $lastLocationsCount }}</h6>
                                                     </div>
                                                 </div>
                                             </div>
@@ -437,7 +438,7 @@
                                     response.deviceOptions.sort(function(a, b) {
                                         // Bandingkan nama perangkat secara alfabetis
                                         var nameA = a
-                                    .toLowerCase(); // Ubah ke huruf kecil untuk perbandingan yang tidak bersifat case sensitive
+                                            .toLowerCase(); // Ubah ke huruf kecil untuk perbandingan yang tidak bersifat case sensitive
                                         var nameB = b.toLowerCase();
 
                                         if (nameA < nameB) {

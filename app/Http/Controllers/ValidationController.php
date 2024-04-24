@@ -10,4 +10,9 @@ class ValidationController extends Controller
     {
         return view('auth.validation');
     }
+
+    public function indexPhone()
+    {
+        return view('auth.validation-phone');
+    }
 }

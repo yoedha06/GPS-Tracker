@@ -3,16 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\RequestException;
 
 
 class VerificationController extends Controller
@@ -43,12 +39,10 @@ class VerificationController extends Controller
         $request->fulfill();
         $user = $request->user();
         event(new Verified($user));
-
         Auth::logout();
 
         return redirect($this->redirectPath());
     }
-
 
     public function resend(Request $request)
     {
@@ -61,5 +55,37 @@ class VerificationController extends Controller
         session()->flash('resent', true);
 
         return back()->with('successs', 'Email verification has been successfully resent.');
+    }
+
+    public function resendPhoneVerification(Request $request)
+    {
+        $user = $request->user(); // Anda dapat menyesuaikan ini sesuai dengan struktur data aplikasi Anda
+
+        // Pastikan user ada dan memiliki nomor telepon
+        if ($user && $user->phone) {
+            $url = "https://app.japati.id/api/send-message";
+
+            $appUrl = route('login');
+
+            $data = [
+                'gateway' => '6285954906329',
+                'number' => $user->phone,
+                'type' => 'text',
+                'message' => "Click this link to verify your phone: $appUrl?token=" . $user->id,
+            ];
+
+            try {
+                $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                    ->post($url, $data);
+
+                if ($response->successful()) {
+                    return redirect('/phone/verify')->with('success', 'A verification link has been sent to your phone number.');
+                } else {
+                    return redirect('/phone/verify')->with('error', 'Failed to resend verification link to your phone number.');
+                }
+            } catch (RequestException $e) {
+                return redirect('/phone/verify')->with('error', 'Failed to resend verification link. Please try again later.');
+            }
+        }
     }
 }

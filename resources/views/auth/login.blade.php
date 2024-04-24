@@ -12,84 +12,84 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-     <style>
-    body {
-        background-color: whitesmoke;
-    }
+    <style>
+        body {
+            background-color: whitesmoke;
+        }
 
-    .card {
-        border-radius: 1rem;
-    }
-
-    .logo-container {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .logo-container i {
-        color: #ff6219;
-        font-size: 2rem;
-        margin-right: 10px;
-    }
-
-    .logo-container span {
-        font-size: 2rem;
-        font-weight: bold;
-        margin: 0;
-    }
-
-    .card-body {
-        padding: 2rem;
-    }
-
-    .form-outline {
-        margin-bottom: 1.5rem;
-    }
-
-    .btn-dark {
-        background-color: #393f81;
-        color: #fff;
-    }
-
-    .btn-dark:hover {
-        background-color: #2b2f5c;
-    }
-
-    .small {
-        font-size: 0.875rem;
-    }
-
-    .text-muted {
-        color: #6c757d;
-    }
-
-    /* Aturan untuk gambar responsif pada layar kecil */
-    @media (max-width: 768px) {
-        .img-container img {
-            max-width: 100%;
-            height: auto;
+        .card {
+            border-radius: 1rem;
         }
 
         .logo-container {
-            justify-content: center;
-            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         .logo-container i {
-            font-size: 3rem;
-            margin-right: 0;
+            color: #ff6219;
+            font-size: 2rem;
+            margin-right: 10px;
         }
 
         .logo-container span {
-            font-size: 1.5rem;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
         }
 
         .card-body {
-            padding: 1.5rem;
+            padding: 2rem;
         }
-    }
-</style>
+
+        .form-outline {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-dark {
+            background-color: #393f81;
+            color: #fff;
+        }
+
+        .btn-dark:hover {
+            background-color: #2b2f5c;
+        }
+
+        .small {
+            font-size: 0.875rem;
+        }
+
+        .text-muted {
+            color: #6c757d;
+        }
+
+        /* Aturan untuk gambar responsif pada layar kecil */
+        @media (max-width: 768px) {
+            .img-container img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .logo-container {
+                justify-content: center;
+                margin-bottom: 2rem;
+            }
+
+            .logo-container i {
+                font-size: 3rem;
+                margin-right: 0;
+            }
+
+            .logo-container span {
+                font-size: 1.5rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 
 </head>
 
@@ -123,25 +123,29 @@
                                     <form method="POST" action="{{ route('login') }}">
                                         @csrf
                                         <div class="form-outline mb-4">
-                                            <label class="form-label" for="email">Email address</label>
-                                            <input id="email" type="email"
-                                                class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
-                                                name="email" value="{{ $registered_email ?? old('email') }}"
-                                                value="{{ old('email') }}" required>
-                                            @error('email')
+                                            <label class="form-label" for="username">Email Address or Username</label>
+                                            <input id="username" type="text"
+                                                class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}"
+                                                name="username" value="{{ $registered_username ?? old('username') }}"
+                                                required>
+                                            @error('username')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
 
-    <div class="form-outline mb-4 position-relative">
-    <label class="form-label" for="password">Password</label>
-    <div class="input-group"> <!-- Tambahkan input-group di sini -->
-        <input type="password" id="password" class="form-control form-control-lg" name="password" />
-        <span id="showPasswordBtn" class="position-absolute end-0 top-50 translate-middle-y" style="cursor: pointer;">
-            <i id="showPasswordIcon" class="fas fa-eye"></i>
-        </span>
-    </div>
-</div>
+
+                                        <div class="form-outline mb-4 position-relative">
+                                            <label class="form-label" for="password">Password</label>
+                                            <div class="input-group"> <!-- Tambahkan input-group di sini -->
+                                                <input type="password" id="password"
+                                                    class="form-control form-control-lg" name="password" />
+                                                <span id="showPasswordBtn"
+                                                    class="position-absolute end-0 top-50 translate-middle-y"
+                                                    style="cursor: pointer;">
+                                                    <i id="showPasswordIcon" class="fas fa-eye"></i>
+                                                </span>
+                                            </div>
+                                        </div>
 
 
                                         <div class="pt-1 mb-4">
@@ -204,19 +208,19 @@
     </section>
 
     <script>
-      document.getElementById("showPasswordBtn").addEventListener("click", function() {
-        var passwordInput = document.getElementById("password");
-        var eyeIcon = document.getElementById("showPasswordIcon");
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-            eyeIcon.classList.remove("fa-eye");
-            eyeIcon.classList.add("fa-eye-slash");
-        } else {
-            passwordInput.type = "password";
-            eyeIcon.classList.remove("fa-eye-slash");
-            eyeIcon.classList.add("fa-eye");
-        }
-    });
+        document.getElementById("showPasswordBtn").addEventListener("click", function() {
+            var passwordInput = document.getElementById("password");
+            var eyeIcon = document.getElementById("showPasswordIcon");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        });
 
         function showRegisterForm() {
             document.getElementById('login-page').style.display = 'none';
