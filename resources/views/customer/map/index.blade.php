@@ -351,6 +351,23 @@
             var endDate;
             var selectedDevice;
             var selectedDates; // Deklarasi variabel selectedDevice di luar fungsi
+            setInterval(function() {
+                // Lakukan permintaan AJAX ke endpoint checkNewHistory
+                $.ajax({
+                    url: "{{ route('check.new.history') }}",
+                    type: "GET",
+                    success: function(response) {
+                        // Cek apakah ada data baru tersedia
+                        if (response.newDataAvailable) {
+                            // Lakukan sesuatu dengan data history terbaru, misalnya, memperbarui peta
+                            filterMap(response.newHistoryData);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }, 30000); // Lakukan permintaan setiap 30 detik
 
             flatpickr("#date_range", {
                 mode: "range",
@@ -406,6 +423,16 @@
                     return;
                 }
 
+                if (historyData.length === 0) {
+                    // Tampilkan notifikasi jika tidak ada data yang tersedia
+                    $('#notification-container').css('opacity', '1');
+
+                    // Atur waktu tertentu sebelum notifikasi hilang
+                    setTimeout(function() {
+                        $('#notification-container').css('opacity', '0');
+                    }, 5000); // Waktu dalam milidetik (misalnya 5000 = 5 detik)
+                }
+
                 // Hapus semua marker dan polyline sebelum memproses data baru
                 markers.forEach(marker => {
                     map.removeLayer(marker);
@@ -418,77 +445,117 @@
                 markers = [];
                 devicePolylines = {};
 
-                // Loop melalui data histori
+                // Buat objek untuk menyimpan data histori berdasarkan ID pengguna perangkat
+                var historyDataByDevice = {};
+
+                // Memisahkan data histori berdasarkan ID pengguna perangkat
                 historyData.forEach(historyItem => {
-                    var lat = parseFloat(historyItem.latitude);
-                    var lng = parseFloat(historyItem.longitude);
                     var deviceId = historyItem.device_id;
-                    var speedFormatted = parseFloat(historyItem.speeds).toFixed(2);
-                    var accuracyFormatted = parseFloat(historyItem.accuracy).toFixed(2);
-
-                    // Tambahkan marker dengan popup
-                    var popupContent =
-                        '<b>Nama Device:</b> ' + historyItem.device_name +
-                        '<br><b>Latlng:</b> ' + lat + ', ' + lng +
-                        '<br><b>Date Time:</b> ' + historyItem.date_time;
-
-                    var marker = L.marker([lat, lng]).addTo(map).bindPopup(popupContent);
-                    markers.push(marker);
-
-                    // Tentukan warna, ketebalan (weight), dan opasitas berdasarkan kecepatan dan akurasi
-                    var color;
-                    var weight;
-                    var opacity;
-
-                    // Menyesuaikan berdasarkan kecepatan
-                    var speed = parseFloat(historyItem.speeds);
-                    if (speed >= 0 && speed < 20) {
-                        color = 'green';
-                        weight = 5;
-                    } else if (speed >= 20 && speed < 40) {
-                        color = 'yellow';
-                        weight = 3;
-                    } else {
-                        color = 'red';
-                        weight = 1;
+                    if (!historyDataByDevice[deviceId]) {
+                        historyDataByDevice[deviceId] = [];
                     }
-
-                    // Menyesuaikan berdasarkan akurasi
-                    var accuracy = parseInt(historyItem.accuracy);
-                    if (accuracy >= 0 && accuracy < 10) {
-                        opacity = 1;
-                    } else if (accuracy >= 10 && accuracy < 20) {
-                        opacity = 0.7;
-                    } else {
-                        opacity = 0.3;
-                    }
-
-                    // Tambahkan polyline untuk setiap perangkat
-                    if (!devicePolylines[deviceId]) {
-                        devicePolylines[deviceId] = L.polyline([], {
-                            color: color,
-                            weight: weight,
-                            opacity: opacity
-                        }).addTo(map);
-                    }
-
-                    // Tambahkan informasi kecepatan dan akurasi ke dalam popup polyline
-                    var polylinePopupContent =
-                        '<b>Speed:</b> ' + speedFormatted +
-                        '<br><b>Accuracy:</b> ' + accuracyFormatted;
-
-                    devicePolylines[deviceId].bindPopup(polylinePopupContent);
-
-                    // Tambahkan titik koordinat ke polyline
-                    devicePolylines[deviceId].addLatLng([lat, lng]);
+                    historyDataByDevice[deviceId].push(historyItem);
                 });
 
+                // Loop melalui setiap grup data histori perangkat
+                Object.keys(historyDataByDevice).forEach(deviceId => {
+                    var deviceHistory = historyDataByDevice[deviceId];
 
-                // Fit bounds to polylines
+                    // Loop melalui data histori perangkat
+                    deviceHistory.forEach((historyItem, index) => {
+                        var lat = parseFloat(historyItem.latitude);
+                        var lng = parseFloat(historyItem.longitude);
+                        var speedFormatted = parseFloat(historyItem.speeds).toFixed(2);
+                        var accuracyFormatted = parseFloat(historyItem.accuracy).toFixed(2);
+
+                        // Tentukan apakah marker adalah marker pertama atau terakhir
+                        var markerType = '';
+                        if (index === 0) {
+                            markerType = 'Start';
+                        } else if (index === deviceHistory.length - 1) {
+                            markerType = 'End';
+                        }
+
+                        // Tambahkan informasi apakah data ini merupakan data terbaru atau data terakhir
+                        var isLatest = (index === deviceHistory.length - 1) ? "" : "";
+                        var isEnd = (index === 0) ? "" : "";
+
+                        // Tambahkan marker dengan popup
+                        var popupContent =
+                            '<b>Nama Device:</b> ' + historyItem.device.name +
+                            '<br><b>Latlng:</b> ' + lat + ', ' + lng +
+                            '<br><b>Date Time:</b> ' + historyItem.date_time +
+                            '<br><b>' + isLatest + '</b>' + // Tambahkan info "Data Terbaru"
+                            '<br><b>' + isEnd + '</b>' + // Tambahkan info "Data Terakhir"
+                            '<br><b>' + markerType + '</b>'; // Tambahkan info "Start" atau "End"
+
+                        var marker = L.marker([lat, lng]).addTo(map).bindPopup(popupContent);
+                        markers.push(marker);
+
+                        // Jika marker adalah "Start" atau "End", tambahkan informasi ID perangkat ke dalam popup
+                        if (markerType === 'Start' || markerType === 'End') {
+                            popupContent += ' ' + historyItem.device_id;
+                            marker.bindPopup(popupContent); // Update popup content
+                        }
+
+                        // Tentukan warna, ketebalan (weight), dan opasitas berdasarkan kecepatan dan akurasi
+                        var color;
+                        var weight;
+                        var opacity;
+
+                        // Menyesuaikan berdasarkan kecepatan
+                        var speed = parseFloat(historyItem.speeds);
+                        if (speed >= 0 && speed < 20) {
+                            color = 'green';
+                            weight = 5;
+                        } else if (speed >= 20 && speed < 40) {
+                            color = 'yellow';
+                            weight = 3;
+                        } else {
+                            color = 'red';
+                            weight = 1;
+                        }
+
+                        // Menyesuaikan berdasarkan akurasi
+                        var accuracy = parseInt(historyItem.accuracy);
+                        if (accuracy >= 0 && accuracy < 10) {
+                            opacity = 1;
+                        } else if (accuracy >= 10 && accuracy < 20) {
+                            opacity = 0.7;
+                        } else {
+                            opacity = 0.3;
+                        }
+
+                        // Tambahkan polyline untuk setiap perangkat
+                        if (!devicePolylines[deviceId]) {
+                            devicePolylines[deviceId] = L.polyline([], {
+                                color: color,
+                                weight: weight,
+                                opacity: opacity
+                            }).addTo(map);
+                        }
+
+                        // Tambahkan informasi kecepatan dan akurasi ke dalam popup polyline
+                        var polylinePopupContent =
+                            '<b>Speed:</b> ' + speedFormatted +
+                            '<br><b>Accuracy:</b> ' + accuracyFormatted;
+
+                        devicePolylines[deviceId].bindPopup(polylinePopupContent);
+
+                        // Tambahkan titik koordinat ke polyline
+                        devicePolylines[deviceId].addLatLng([lat, lng]);
+                    });
+                });
+
+                // Fit bounds to polylines diluar loop deviceHistory
                 var allPolylines = Object.values(devicePolylines);
                 var bounds = L.featureGroup(allPolylines).getBounds();
+
                 map.fitBounds(bounds);
             }
+
+
+
 
 
 
@@ -500,11 +567,15 @@
                     var end = new Date(endDate);
 
                     // Format tanggal sesuai dengan format yang diharapkan (Y-m-d H:i)
-                    var formattedStartDate = start.getFullYear() + '-' + ('0' + (start.getMonth() + 1)).slice(-2) +
-                        '-' + ('0' + start.getDate()).slice(-2) + ' ' + ('0' + start.getHours()).slice(-2) + ':' + (
+                    var formattedStartDate = start.getFullYear() + '-' + ('0' + (start.getMonth() +
+                            1)).slice(-2) +
+                        '-' + ('0' + start.getDate()).slice(-2) + ' ' + ('0' + start.getHours())
+                        .slice(-2) + ':' + (
                             '0' + start.getMinutes()).slice(-2);
-                    var formattedEndDate = end.getFullYear() + '-' + ('0' + (end.getMonth() + 1)).slice(-2) + '-' +
-                        ('0' + end.getDate()).slice(-2) + ' ' + ('0' + end.getHours()).slice(-2) + ':' + ('0' + end
+                    var formattedEndDate = end.getFullYear() + '-' + ('0' + (end.getMonth() + 1))
+                        .slice(-2) + '-' +
+                        ('0' + end.getDate()).slice(-2) + ' ' + ('0' + end.getHours()).slice(-2) +
+                        ':' + ('0' + end
                             .getMinutes()).slice(-2);
 
                     // Update URL dengan menambahkan parameter query string untuk selectedDevice
@@ -524,7 +595,8 @@
                         },
                         success: function(response) {
                             // Panggil fungsi untuk memperbarui peta dengan data yang telah difilter
-                            filterMap(response, selectedDevice); // Sertakan ID perangkat yang dipilih
+                            filterMap(response,
+                                selectedDevice); // Sertakan ID perangkat yang dipilih
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
@@ -536,15 +608,21 @@
 
 
             $('#device-select').on('change', function() {
-                selectedDevice = $(this)
+                var selectedDevice = $(this)
                     .val(); // Menggunakan nilai perangkat yang dipilih dari #device-select
                 var dateRange = $('#date_range').val();
                 var startDate = dateRange.split(" to ")[0];
                 var endDate = dateRange.split(" to ")[1];
 
+                // Update URL dengan menambahkan parameter query string untuk selectedDevice
+                var queryString =
+                    `?start=${startDate}&end=${endDate}&device=${selectedDevice}`;
+                window.history.pushState({}, '', window.location.pathname + queryString);
+
                 // Panggil fungsi untuk memfilter riwayat
                 filterHistory(selectedDevice, startDate, endDate);
             });
+
 
 
         });

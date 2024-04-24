@@ -136,8 +136,11 @@ public function filter(Request $request)
     $startDate = date('Y-m-d H:i:s', strtotime($startDate));
     $endDate = date('Y-m-d H:i:s', strtotime($endDate));
 
-    // Ambil riwayat yang sesuai dengan rentang tanggal dan perangkat yang dipilih
-    $historyData = History::with('device')
+    // Ambil riwayat yang sesuai dengan rentang tanggal dan perangkat yang dipilih,
+    // sertakan juga nama perangkat dari tabel device
+    $historyData = History::with(['device' => function ($query) {
+                        $query->select('id_device', 'name'); // Ambil hanya id dan name dari tabel device
+                    }])
                     ->when($selectedDevice, function ($query) use ($selectedDevice) {
                         $query->where('device_id', $selectedDevice);
                     })
@@ -147,7 +150,37 @@ public function filter(Request $request)
     // Iterasi melalui data riwayat dan ambil nama perangkat untuk setiap entri
     foreach ($historyData as $history) {
         $deviceName = $history->device->name;
+        // Lakukan apa pun yang Anda perlukan dengan $deviceName di sini
+    }
 
+    // Kembalikan data dalam format JSON
+    return response()->json($historyData);
+}
+public function filterHistory(Request $request)
+{
+    // Ambil data yang diperlukan dari permintaan
+    $selectedDevice = $request->selectedDevice;
+    $startDate = $request->startDate;
+    $endDate = $request->endDate;
+
+    // Pastikan tanggal-tanggal yang diterima adalah dalam format yang tepat
+    $startDate = date('Y-m-d H:i:s', strtotime($startDate));
+    $endDate = date('Y-m-d H:i:s', strtotime($endDate));
+
+   $historyData = History::with(['device.user' => function ($query) {
+                        $query->select('id', 'name'); // Ambil hanya id dan name dari tabel users
+                    }])
+                    ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                        $query->where('device_id', $selectedDevice);
+                    })
+                    ->whereBetween('date_time', [$startDate, $endDate])
+                    ->get();
+
+
+    // Iterasi melalui data riwayat dan ambil nama perangkat untuk setiap entri
+    foreach ($historyData as $history) {
+        $deviceName = $history->device->name;
+        // Lakukan apa pun yang Anda perlukan dengan $deviceName di sini
     }
 
     // Kembalikan data dalam format JSON
@@ -187,26 +220,6 @@ private function processDataByDeviceAndUser($start, $end, $deviceId)
 
 
 
-// public function pollData(Request $request)
-// {
-//     // Ambil lastPollTime dari session jika ada, atau set ke null jika belum diset
-//     $lastPollTime = $request->session()->get('lastPollTime');
-
-//     dd($request->last);
-
-//     // Lakukan query untuk m    endapatkan data baru dari tabel history dengan date_time lebih baru dari $lastPollTime
-// $newData = History::where('date_time', '>', $lastPollTime)->get();
-
-
-//     // Perbarui lastPollTime ke waktu server saat ini
-//     $lastPollTime = Carbon::now();
-
-//     // Simpan lastPollTime ke session untuk digunakan pada polling selanjutnya
-//     $request->session()->put('lastPollTime', $lastPollTime);
-
-//     // Kirim respons dengan data baru ke klien
-//     return response()->json(['newData' => $newData]);
-// }
 
 
   public function getHistoryByDevice(Request $request, $deviceId)
@@ -391,4 +404,34 @@ private function processDataByDeviceAndUser($start, $end, $deviceId)
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
+public function checkNewHistory()
+{
+    // Ambil datetime terbaru dari data history (misalnya dari database)
+    $latestDateTime = History::latest()->value('date_time');
+
+    // Anda dapat menggunakan $latestDateTime untuk memeriksa apakah ada data yang lebih baru
+    // Misalnya, bandingkan dengan datetime dari klien (waktu sekarang)
+
+    // Contoh sederhana: jika waktu sekarang lebih baru dari datetime terbaru di database
+    // maka kirimkan data history terbaru ke klien
+    $clientDateTime = now();
+
+    if ($clientDateTime > $latestDateTime) {
+        // Jika ada data baru, ambil data history terbaru dari database
+        $newHistoryData = History::where('date_time', '>', $latestDateTime)->get();
+
+        // Kirim respon JSON ke klien dengan data baru
+        return response()->json([
+            'newDataAvailable' => true,
+            'newHistoryData' => $newHistoryData,
+        ]);
+    } else {
+        // Jika tidak ada data baru, kirimkan sinyal bahwa tidak ada data baru
+        return response()->json([
+            'newDataAvailable' => false,
+            'newHistoryData' => null,
+        ]);
+    }
+}
+
 }

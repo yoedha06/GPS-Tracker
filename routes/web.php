@@ -182,6 +182,8 @@ Route::get('/admin-chart', [TampilanController::class, 'grafikadmin']);
 //map history
 // Route::get('/customer/map', [HistoryController::class, 'updateMapData']);
 Route::post('/filter-history', [HistoryController::class, 'filter'])->name('filter.history');
+Route::get('/check-new-history', [HistoryController::class, 'checkNewHistory'])->name('check.new.history');
 
 Route::get('/admin/map/filter', [HistoryController::class, 'filterByDeviceAndUser']);
+Route::post('/admin/filter-history', [HistoryController::class, 'filterHistory'])->name('admin.filter.history');
 
