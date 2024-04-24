@@ -13,11 +13,13 @@ use App\Http\Controllers\KirimEmailController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\LocationController as AdminLocationController;
 use App\Http\Controllers\MapController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TampilanController;
 use App\Http\Controllers\ValidationController;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Database\Query\IndexHint;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -94,10 +96,10 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         Route::put('/customer/profile/update', [AuthRegisterController::class, 'update'])->name('customer.profile.update');
         Route::delete('/customer/profile/delete', [ProfileController::class, 'deletePhoto'])->name('delete.photo.customer');
         Route::get('/customer/map', [HistoryController::class, 'map'])->name('customer.map.index');
-
         Route::get('/get-related-data/{deviceId}', [HistoryController::class, 'getRelatedData']);
-
         Route::get('/customer/lastlocation', [MapController::class, 'lastloc'])->name('lastlocation');
+        Route::get('/customer/notification',[NotificationController::class, 'index'])->name('customer.notification.index');
+        Route::post('/customer/notification',[NotificationController::class, 'store'])->name('customer.notification.store');
 
 
         //device Customer

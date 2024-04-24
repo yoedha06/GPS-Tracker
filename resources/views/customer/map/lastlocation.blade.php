@@ -160,6 +160,88 @@
                     popupAnchor: [-5, -41]
                 });
 
+                // fungsi untuk mendapatkankan nama jalan
+                function getStreetName(lat, lng, callback) {
+                    var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat + '&lon=' + lng;
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.address) {
+                                var address = data.address;
+                                var streetDetails = '';
+
+                                // Cek untuk elemen alamat yang relevan
+                                if (address.road) {
+                                    streetDetails += address.road;
+                                }
+                                if (address.suburb) {
+                                    streetDetails += ',' + address.suburb;
+                                }
+                                if (address.city) {
+                                    streetDetails += ',' + address.city;
+                                }
+                                if (address.county) {
+                                    streetDetails += ',' + address.county;
+                                }
+                                if (address.state) {
+                                    streetDetails += ',' + address.state;
+                                }
+                                if (address.country) {
+                                    streetDetails += ',' + address.postcode;
+                                }
+
+                                callback(streetDetails);
+                            } else {
+                                callback("Tidak ada nama jalan yang ditemukan");
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+
+                @foreach ($latestHistories as $history)
+                    @if ($history)
+                        (function() {
+                            var latitude = {{ $history->latitude }};
+                            var longitude = {{ $history->longitude }};
+                            var marker = L.marker([latitude, longitude], {
+                                icon: customIcon
+                            }).addTo(map);
+
+                            // Mendapatkan nama jalan
+                            getStreetName(latitude, longitude, function(streetName) {
+                                var popupContent =
+                                `<div style="max-width: 200px;">` +
+                                    `<center><b style="font-size:16px;">{{ $history->device->name }}</b></center><br>` +
+                                    `<i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>${latitude},${longitude}<br>` +
+                                    `<i class="fas fa-road" style="margin-right: 2px;"></i> ${streetName} <br>` +
+                                    `<i class="fas fa-id-card" style="margin-right: 5px;"></i> {{ $history->device->plat_nomor }}<br>` +
+                                    `<i class="fas fa-clock" style="margin-right: 5px;"></i> {{ $history->date_time }}<br>` +
+                                    @if ($history->device->photo)
+                                        `<img src="{{ asset('storage/' . $history->device->photo) }}" style="height: 127px;">`
+                                    @else
+                                        `<p>No Image Here</p>`
+                                    @endif +
+                                `</div>`;
+
+                                marker.bindPopup(popupContent);
+                            });
+
+                            markers.push(marker); // Tambahkan marker ke dalam array markers
+                        })();
+
+                        // Sesuaikan batas peta berdasarkan marker yang sudah ada
+                        var bounds = L.latLngBounds([
+                            @foreach ($latestHistories as $history)
+                                @if ($history)
+                                    [{{ $history->latitude }}, {{ $history->longitude }}],
+                                @endif
+                            @endforeach
+                        ]);
+                        map.fitBounds(bounds);
+                        map.setZoom(13);
+                    @endif
+                @endforeach
+
                 // Inisialisasi peta Leaflet
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -197,7 +279,7 @@
                         method: 'GET',
                         success: function(data) {
                             $(".pulse").removeClass("pulse");
-                            
+
                             lastLocation = data;
 
                             // Hapus marker last location sebelumnya (jika ada)
@@ -210,26 +292,33 @@
                                 icon: customIcon
                             }).addTo(map);
 
-                            var popupContent = `<center><b>Last location</b></center><br>` +
-                                `<b>Device: ${data.name}</b><br>` +
-                                `<b>Plat Nomor:</b> ${data.plate_number}<br>` +
-                                `<b>Latlng:</b> ${data.latitude}, ${data.longitude}<br>` +
-                                `<b>Date Time:</b> ${data.date_time}<br>`;
+                            // Mendapatkan nama jalan
+                            getStreetName(data.latitude, data.longitude, function(streetName) {
+                                var popupContent =
+                                    `<div style="max-width: 200px;">` +
+                                        `<center><b>Last location</b></center><br>` +
+                                        `<i class="fas fa-tablet" style="margin-right: 5px;"></i> ${data.name}<br>` +
+                                        `<i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> ${data.latitude}, ${data.longitude}<br>` +
+                                        `<i class="fas fa-road" style="margin-right: 2px;"></i> ${streetName}<br>` +
+                                        `<i class="fas fa-id-card" style="margin-right: 5px;"></i> ${data.plate_number}<br>` +
+                                        `<i class="fas fa-clock" style="margin-right: 5px;"></i> ${data.date_time}<br>` +
+                                    `</div>`;
 
-                            // Periksa apakah ada foto yang tersedia
-                            if (data.photo) {
-                                // Jika ada foto, tambahkan tag img
-                                popupContent +=
-                                    `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px;">`;
-                            } else {
-                                // Jika tidak ada foto, tampilkan teks "No Photo Here"
-                                popupContent += `<p>No Photo Here</p>`;
-                            }
+                                // Periksa apakah ada foto yang tersedia
+                                if (data.photo) {
+                                    // Jika ada foto, tambahkan tag img
+                                    popupContent +=
+                                        `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px;">`;
+                                } else {
+                                    // Jika tidak ada foto, tampilkan teks "No Photo Here"
+                                    popupContent += `<p>No Photo Here</p>`;
+                                }
 
-                            lastLocationMarker.bindPopup(popupContent).openPopup();
-                            markers.push(lastLocationMarker);
+                                lastLocationMarker.bindPopup(popupContent).openPopup();
+                                markers.push(lastLocationMarker);
 
-                            map.setView([data.latitude, data.longitude], 20);
+                                map.setView([data.latitude, data.longitude], 20);
+                            });
                         },
                         error: function(error) {
                             $(".pulse").removeClass("pulse");
@@ -311,26 +400,29 @@
                                         }
                                     ).addTo(map);
 
-                                    var popupContent =
-                                        `<center><b style="color: yellow; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" >Latest location</b></center><br>` +
-                                        `<b>Device: ${data.name}</b><br>` +
-                                        `<b>Plat Nomor:</b> ${data.plate_number}<br>` +
-                                        `<b>Latlng:</b> ${data.latitude}, ${data.longitude}<br>` +
-                                        `<b>Date Time:</b> ${data.date_time}<br>`;
+                                    getStreetName(data.latitude, data.longitude, function(streetName) {
+                                        var popupContent =
+                                            `<div style="max-width: 199px;">` +
+                                                `<center><b style="color: yellow; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" >Latest location</b></center><br>` +
+                                                `<i class="fas fa-tablet" style="margin-right: 5px;"></i> ${data.name} <br>` +
+                                                `<i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> ${data.latitude}, ${data.longitude}<br>` +
+                                                `<i class="fas fa-road" style="margin-right: 2px;"></i> ${streetName}<br>` +
+                                                `<i class="fas fa-id-card" style="margin-right: 5px;"></i> ${data.plate_number}<br>` +
+                                                `<i class="fas fa-clock" style="margin-right: 5px;"></i> ${data.date_time}<br>`;
+                                            `</div>`;
+                                        if (data.photo) {
+                                            // Jika ada foto, tambahkan tag img
+                                            popupContent +=
+                                                `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px;">`;
+                                        } else {
+                                            // Jika tidak ada foto, tampilkan teks "No Image Here"
+                                            popupContent += `<p>No Image Here</p>`;
+                                        }
 
-                                    if (data.photo) {
-                                        // Jika ada foto, tambahkan tag img
-                                        popupContent +=
-                                            `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px;">`;
-                                    } else {
-                                        // Jika tidak ada foto, tampilkan teks "No Image Here"
-                                        popupContent += `<p>No Image Here</p>`;
-                                    }
+                                        latestLocationMarker.bindPopup(popupContent).openPopup();
+                                    });
 
-                                    latestLocationMarker.bindPopup(popupContent).openPopup();
-
-                                    updatePolyline
-                                        (); // Memperbarui polylane dengan menambahkan koordinat latest location
+                                    updatePolyline(); // Memperbarui polylane dengan menambahkan koordinat latest location
                                     map.setView(latestLocationCoordinates, 25, {
                                         maxZoom: 18
                                     });
@@ -357,38 +449,6 @@
                     location.reload();
                 });
 
-                @if ($latestHistories && count($latestHistories) > 0)
-                    @foreach ($latestHistories as $history)
-                        @if ($history)
-                            var marker = L.marker([{{ $history->latitude }}, {{ $history->longitude }}], {
-                                icon: customIcon
-                            }).addTo(map);
-
-                            marker.bindPopup(
-                                `<center><b>{{ $history->device->name }}</b></center><br>` +
-                                `<b>Latlng:</b> {{ $history->latitude . ',' . $history->longitude }}<br>` +
-                                `<b>Nopol:</b> {{ $history->device->plat_nomor }}<br>` +
-                                `<b>LastTime:</b> {{ $history->date_time }}<br>` +
-                                @if ($history->device->photo)
-                                    `<img src="{{ asset('storage/' . $history->device->photo) }}" style="width: 199px; height: 127px;">`
-                                @else
-                                    `<p>No Image Here</p>`
-                                @endif
-                            );
-                            markers.push(marker); // Tambahkan marker ke dalam array markers
-                        @endif
-                    @endforeach
-
-                    // Sesuaikan batas peta berdasarkan marker yang sudah ada
-                    var bounds = L.latLngBounds([
-                        @foreach ($latestHistories as $history)
-                            @if ($history)
-                                [{{ $history->latitude }}, {{ $history->longitude }}],
-                            @endif
-                        @endforeach
-                    ]);
-                    map.fitBounds(bounds);
-                @endif
                 $('#myLocationButton').click(function() {
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(function(position) {
@@ -397,41 +457,39 @@
 
                             console.log('Current Location:', latitude, longitude);
 
-                            // var customIcon = L.icon({
-                            //     iconUrl: '/images/mapgreen.png',
-                            //     iconSize: [42, 42],
-                            //     iconAnchor: [20, 44],
-                            //     popupAnchor: [1, -41]
-                            // });
+                            // Mendapatkan nama jalan
+                            getStreetName(latitude, longitude, function(streetName) {
+                                var customIcon = L.divIcon({
+                                    className: 'custom-div-icon',
+                                    html: "<i class='fas fa-map-marker-alt' style='color: green; font-size: 40px;'></i>",
+                                    iconSize: [42, 49],
+                                    iconAnchor: [20, 44],
+                                    popupAnchor: [-5, -41]
+                                });
 
-                            var customIcon = L.divIcon({
-                                className: 'custom-div-icon',
-                                html: "<i class='fas fa-map-marker-alt' style='color: green; font-size: 40px;'></i>",
-                                iconSize: [42, 49],
-                                iconAnchor: [20, 44],
-                                popupAnchor: [-5, -41]
+                                var popupContent =
+                                    `<center><b>Lokasi Anda</b></center><br>` +
+                                    `<i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> ${latitude},${longitude}<br>` +
+                                    `<i class="fas fa-road" style="margin-right: 2px;"></i> ${streetName}`;
+
+                                // Menghapus marker sebelumnya jika ada
+                                if (userMarker) {
+                                    map.removeLayer(userMarker);
+                                }
+
+                                userMarker = L.marker([latitude, longitude], {
+                                    icon: customIcon
+                                }).addTo(map);
+                                userMarker.bindPopup(popupContent).openPopup();
+                                map.setView([latitude, longitude], 17);
+
+                                var alertText = 'Lokasi Anda berhasil ditampilkan pada peta.';
+                                $('#alertText').text(alertText);
+                                var alertMessage = $('#alertMessage');
+                                alertMessage.removeClass('alert-danger alert-primary').addClass(
+                                    'alert-success');
+                                alertMessage.show();
                             });
-
-                            var popupContent = `<center><b> Lokasi Anda </b></center><br>` +
-                                `${latitude},${longitude}`;
-
-                            // Menghapus marker sebelumnya jika ada
-                            if (userMarker) {
-                                map.removeLayer(userMarker);
-                            }
-
-                            userMarker = L.marker([latitude, longitude], {
-                                icon: customIcon
-                            }).addTo(map);
-                            userMarker.bindPopup(popupContent).openPopup();
-                            map.setView([latitude, longitude], 17);
-
-                            var alertText = 'Lokasi Anda berhasil ditampilkan pada peta.';
-                            $('#alertText').text(alertText);
-                            var alertMessage = $('#alertMessage');
-                            alertMessage.removeClass('alert-danger alert-primary').addClass(
-                                'alert-success');
-                            alertMessage.show();
                         }, function(error) {
                             console.error('Error getting user location:', error);
                             var alertMessage = $('#alertMessage');

@@ -189,6 +189,13 @@
                             <span>Device</span>
                         </a>
                     </li>
+
+                    <li class="sidebar-item">
+                        <a href="{{route('customer.notification.index')}}" class="sidebar-link">
+                            <i class="fas fa-bell"></i>
+                            <span>Notification</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
