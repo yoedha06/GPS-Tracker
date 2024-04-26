@@ -69,7 +69,7 @@ class NotificationController extends Controller
 
                 if (!$response->ok()) {
                     logger($response);
-                    // Menampilkan informasi kesalahan jika gagal mengirim pesan
+                    
                     $errorResponse = $response->json();
                     logger($errorResponse);
                     return redirect()->route('customer.notification.index');

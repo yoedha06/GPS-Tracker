@@ -104,8 +104,8 @@
 
 <body>
     <div id="splash-screen" style="height: 100%">
-        <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
-            alt="Logo" style="width: 350px; height: 310px;">
+        {{-- <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
+            alt="Logo" style="width: 350px; height: 310px;"> --}}
     </div>
     @yield('content')
     <div id="sidebar" class="active">
@@ -190,7 +190,7 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item">
+                    <li class="sidebar-item {{ request()->is('customer/notification') ? 'active' : '' }}">
                         <a href="{{route('customer.notification.index')}}" class="sidebar-link">
                             <i class="fas fa-bell"></i>
                             <span>Notification</span>
@@ -248,37 +248,36 @@
 </body>
 <script src="{{ asset('template/assets/js/bootstrap.js') }}"></script>
 <script src="{{ asset('template/assets/js/app.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 <!-- Need: Apexcharts -->
 <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
 <script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Remove splash screen after a few seconds (e.g., 3 seconds)
-        setTimeout(function() {
-            document.getElementById('splash-screen').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }, 1000);
-    });
-    $(document).ready(function() {
-        $('#selectUser').change(function() {
-            var userId = $(this).val();
+         setTimeout(function() {
+             document.getElementById('splash-screen').style.display = 'none';
+             document.body.style.overflow = 'auto';
+         }, 0);
+     });
+    // $(document).ready(function() {
+    //     $('#selectUser').change(function() {
+    //         var userId = $(this).val();
 
-            // Use Ajax to update the table based on the selected user
-            $.ajax({
-                url: '/admin/device/' + userId, // Update the URL based on your Laravel routes
-                type: 'GET',
-                success: function(data) {
-                    $('#table1 tbody').html(data);
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
-        });
+    //         // Use Ajax to update the table based on the selected user
+    //         $.ajax({
+    //             url: '/admin/device/' + userId, // Update the URL based on your Laravel routes
+    //             type: 'GET',
+    //             success: function(data) {
+    //                 $('#table1 tbody').html(data);
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 console.error(xhr.responseText);
+    //             }
+    //         });
+    //     });
 
-    });
+    // });
 </script>
 
 </html>

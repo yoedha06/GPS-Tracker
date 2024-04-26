@@ -76,7 +76,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        // dd($data);
+        // dd($data); // dump data
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -112,7 +112,9 @@ class RegisterController extends Controller
         }
         // Mengecek apakah pengguna mendaftar dengan menggunakan nomor telepon
         elseif ($request->phone) {
+            // Kirim tautan verifikasi nomor telepon
             $url = "https://app.japati.id/api/send-message";
+            // tidak masuk login
             $appUrl = route('login');
 
             $data = [
@@ -127,6 +129,10 @@ class RegisterController extends Controller
                     ->post($url, $data);
 
                 if ($response->successful()) {
+                    // Setel waktu verifikasi telepon
+                    $user->phone_verified_at = now();
+                    $user->save();
+
                     return redirect('/phone/verify')->with('success', 'A verification link has been sent to your phone address.');
                 } else {
                     return redirect('/phone/verify')->with('error', 'Failed to send verification link. Please try again later.');

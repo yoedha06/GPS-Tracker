@@ -14,9 +14,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
 
-    
-
-
     <link href="/images/geex.png" rel="icon">
     <link rel="stylesheet" href="{{ asset('template/assets/css/shared/iconly.css') }}">
     <style>
@@ -26,29 +23,24 @@
             overflow: hidden;
         }
 
-        #splash-screen {
+        /* #splash-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
-            /* Menggunakan tinggi viewport untuk menutupi seluruh tinggi layar */
             background: #ffffff;
-            /* Warna latar belakang dapat disesuaikan */
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            /* Menetapkan nilai z-index tinggi agar elemen muncul di atas elemen lain */
         }
 
 
         #splash-screen img {
             width: 150px;
-            /* Adjust the width as needed */
             height: 70px;
-            /* Adjust the height as needed */
-        }
+        } */
 
         #validationMessage {
             display: none;
@@ -78,8 +70,8 @@
 
 <body>
     <div id="splash-screen">
-        <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
-            alt="Logo" style="width: 300px; height: 300px;">
+        {{-- <img src="https://cdn.dribbble.com/users/1595839/screenshots/12327466/media/76bf93a21483ac790702bd19a20f0be5.gif"
+            alt="Logo" style="width: 300px; height: 300px;"> --}}
     </div>
     @yield('content')
     <div id="sidebar" class="active">
@@ -203,6 +195,4 @@
         }, 1000);
     });
 </script>
-</body>
-
 </html>
