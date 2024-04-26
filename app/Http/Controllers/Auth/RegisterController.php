@@ -76,21 +76,12 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $email = null;
-        $phone = null;
-
-        if ($data['verification_option'] == 'email') {
-            $email = $data['email'];
-        } elseif ($data['verification_option'] == 'phone') {
-            $phone = $data['phone'];
-        }
-
         // dd($data);
         $user = User::create([
             'name' => $data['name'],
-            'email' => $email,
+            'email' => $data['email'],
             'username' => $data['username'],
-            'phone' => $phone,
+            'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
             'role' => 'customer',
         ]);
