@@ -114,6 +114,7 @@ class RegisterController extends Controller
         elseif ($request->phone) {
             // Kirim tautan verifikasi nomor telepon
             $url = "https://app.japati.id/api/send-message";
+            // tidak masuk login
             $appUrl = route('login');
 
             $data = [
