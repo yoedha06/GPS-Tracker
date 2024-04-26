@@ -1,6 +1,6 @@
 @extends('layouts.customer')
 
-@section('title', 'GEEX - Notification')
+<title>GEEX - Notification</title>
 
 @section('content')
     <div id="main">
@@ -8,12 +8,16 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header"><b>Send Data History</b></div>
+                        <center>
+                            <div class="card-header"><b style="font-size: 1.5rem;">Send Data History</b></div>
+                        </center>
 
                         <div class="card-body">
                             @if (Session::has('success'))
-                                <div class="alert alert-success" role="alert">
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
                                     {{ Session::get('success') }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
                                 </div>
                             @endif
 
@@ -27,19 +31,35 @@
                                 @csrf
 
                                 <div class="form-group row">
-                                    <label for="phone" class="col-md-4 col-form-label text-md-right">No handphone</label>
+                                    <label for="phone" class="col-md-4 col-form-label text-md-right">My phone
+                                        number</label>
                                     <div class="col-md-6">
                                         <input id="phone" type="text" class="form-control" name="phone"
-                                            value="{{ auth()->user()->phone }}" style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);" readonly>
+                                            placeholder="your phone number" value="{{ auth()->user()->phone }}"
+                                            style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);"
+                                            readonly>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="scheduled_time" class="col-md-4 col-form-label text-md-right">Start Date
-                                        </label>
+                                    <label for="device" class="col-md-4 col-form-label text-md-right">Select
+                                        Device</label>
+                                    <div class="col-md-6">
+                                        <select id="device" class="form-select" name="device" required>
+                                            <option value="">Select Device</option>
+                                            @foreach ($devices as $device)
+                                                <option value="{{ $device->id_device }}">{{ $device->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="scheduled_time" class="col-md-4 col-form-label text-md-right">Start
+                                        Date</label>
                                     <div class="col-md-6">
                                         <input id="scheduled_time" type="datetime-local" class="form-control"
-                                            name="scheduled_time" required>
+                                            name="scheduled_time" required step="1">
                                     </div>
                                 </div>
 
@@ -48,7 +68,7 @@
                                         Date</label>
                                     <div class="col-md-6">
                                         <input id="scheduled_end_time" type="datetime-local" class="form-control"
-                                            name="scheduled_end_time" required>
+                                            name="scheduled_end_time" required step="1">
                                     </div>
                                 </div>
 
@@ -58,6 +78,7 @@
                                     </div>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                 </div>

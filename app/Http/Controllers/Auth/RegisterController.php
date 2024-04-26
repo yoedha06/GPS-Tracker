@@ -144,12 +144,13 @@ class RegisterController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            // Add any other validation rules as necessary
+            'phone' => 'max:13|unique:users,phone,' . $user->id . ',id',
         ]);
 
         $user->name = $request->input('name');
         $user->email = $request->input('email');
-        $user->username = $request['email'];
+        $user->username = $request['username'];
+        $user->phone = $request['phone'];
         // Update other fields as necessary
 
         if ($user->isDirty('email')) {
@@ -165,8 +166,10 @@ class RegisterController extends Controller
             $user->photo = $photo;
         }
 
-        $user->save();
-
-        return redirect()->back()->with('status', 'Profile updated successfully. Please verify your new email address if you changed it.');
+        if ($user->save()) {
+            return redirect()->back()->with('status', 'Profile updated successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
+        }
     }
 }
