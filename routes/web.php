@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Auth\PhoneVerificationController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
@@ -54,6 +55,8 @@ Route::get('/email/verify', function () {
     }
 })->middleware('auth')->name('verification.notice');
 
+Route::get('/phone/verify/{token}', [PhoneVerificationController::class, 'verify'])->name('phone.verify');
+Route::post('/loginWithToken', [PhoneVerificationController::class, 'loginWithToken'])->name('loginWithToken');
 
 Route::post('/phone-verification/resend', [AuthVerificationController::class, 'resendPhoneVerification'])->name('phone.verification.resend');
 Route::get('/phone/verify', function () {

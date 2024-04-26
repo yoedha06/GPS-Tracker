@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\PasswordResetPhoneToken;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
@@ -114,14 +116,23 @@ class RegisterController extends Controller
         elseif ($request->phone) {
             // Kirim tautan verifikasi nomor telepon
             $url = "https://app.japati.id/api/send-message";
-            // tidak masuk login
-            $appUrl = route('login');
+
+            $token = Str::random(64);
+
+            $currentTime = Carbon::now()->toDateTimeString();
+            // Simpan token ke dalam database
+            PasswordResetPhoneToken::updateOrCreate(
+                ['phone' => $request->phone], // Kriteria pencarian
+                ['token' => $token, 'created_at' => $currentTime] // Data untuk di-update atau dibuat
+            );
+
+            $appUrl = route('phone.verify', ['token' => $token]); // Mengarahkan ke route verifikasi dengan menyertakan token
 
             $data = [
                 'gateway' => '6285954906329',
                 'number' => $user->phone,
                 'type' => 'text',
-                'message' => "Click this link to verify your phone: $appUrl?token=" . $user->id,
+                'message' => "Click this link to verify your phone: $appUrl?token=" . $token,
             ];
 
             try {
@@ -129,14 +140,11 @@ class RegisterController extends Controller
                     ->post($url, $data);
 
                 if ($response->successful()) {
-                    // Setel waktu verifikasi telepon
-                    $user->phone_verified_at = now();
-                    $user->save();
-
                     return redirect('/phone/verify')->with('success', 'A verification link has been sent to your phone address.');
                 } else {
                     return redirect('/phone/verify')->with('error', 'Failed to send verification link. Please try again later.');
                 }
+                // Auth::logout();
             } catch (RequestException $e) {
                 return redirect('/phone/verify')->with('error', 'Failed to send verification link. Please try again later.');
             }
