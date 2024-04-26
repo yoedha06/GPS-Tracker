@@ -43,10 +43,11 @@
                                             style="width: 100%;  user-drag: none; -webkit-user-drag: none;  height: 100%; object-fit: cover;">
                                     @endif
                                 </div>
-                    
+
                                 <!-- Nama User -->
-                                <h3 class="mt-3" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">{{ $user->name }}</h3>
-                    
+                                <h3 class="mt-3" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ $user->name }}</h3>
+
                                 <!-- Tombol Hapus Foto -->
                                 @if ($user->photo)
                                     <form action="{{ route('delete.photo.customer') }}" method="POST">
@@ -58,32 +59,61 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="col-12 col-lg-8">
                     <div class="card">
                         <div class="card-body">
+
+                            @if ($message = Session::get('status'))
+                                <div class="alert alert-success alert-dismissible show fade">
+                                    <i class="bi bi-check-circle"></i>&nbsp;{{ $message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            @endif
+
+                            @if ($message = Session::get('error'))
+                                <div class="alert alert-danger alert-dismissible show fade">
+                                    {{ $message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            @endif
+
                             <form action="{{ route('customer.profile.update', $user->id) }}" method="POST"
                                 enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
+
+
                                 <div class="form-group">
                                     <label for="name" class="form-label">Name</label>
-                                    <input type="text" name="name" id="name" class="form-control"
-                                        placeholder="Your Name" value="{{ $user->name }}" fdprocessedid="pczq">
+                                    <input type="text" name="name" id="name" class="form-control" placeholder="Your Name" value="{{ old('name', $user->name) }}" fdprocessedid="pczq">
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
                                     <input type="text" name="username" class="form-control"
                                         placeholder="Your Username" value="{{ $user->username }}" fdprocessedid="cgz6v"
-                                        style="background-color: #f8f8f8;" readonly>
+                                        style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);" readonly>
                                 </div>
-
+                                
+                                <div class="form-group">
+                                    <label for="phone" class="form-label">Phone</label>
+                                    <input type="tel" name="phone" id="phone" class="form-control" placeholder="Your Phone" value="{{ old('phone', $user->phone) }}" fdprocessedid="cgz6v" nullable>
+                                    @error('phone')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                
                                 <div class="form-group">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="text" name="email" id="email" class="form-control"
-                                        placeholder="Your Email" value="{{ $user->email }}" fdprocessedid="cgz6v">
+                                    <input type="text" name="email" id="email" class="form-control" placeholder="Your Email" value="{{ old('email', $user->email) }}" fdprocessedid="cgz6v">
+                                    @error('email')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">
@@ -104,7 +134,7 @@
                                         Logout
                                     </a>
                                 </div>
-                                
+
                             </form>
                         </div>
                     </div>
