@@ -79,6 +79,8 @@
                                     <td>
                                         @if ($item->photo)
                                             <img src="{{ asset('storage/' . $item->photo) }}" alt="Device Photo"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#viewPhotoModal{{ $item->id_device }}"
                                                 style="max-width: 100px; max-height: 100px;">
                                         @else
                                             No Image
@@ -95,6 +97,30 @@
                 </div>
             </div>
         </section>
+
+        <!-- Modals Photo device -->
+        @foreach ($device as $item)
+            <div class="modal fade" id="viewPhotoModal{{ $item->id_device }}" tabindex="-1"
+                aria-labelledby="viewPhotoModalLabel{{ $item->id_device }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewPhotoModalLabel{{ $item->id_device }}">Picture -
+                                {{ $item->name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            @if ($item->photo)
+                                <img src="{{ asset('storage/' . $item->photo) }}" alt="Device Photo"
+                                    style="max-width: 100%; max-height: 100vh; border-radius: 10px">
+                            @else
+                                No Image
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
         <footer>
             <div class="footer clearfix mb-0 text-muted">
                 <div class="float-start">
@@ -145,23 +171,22 @@
                 tableBody.empty();
 
                 // Iterasi melalui data dan tambahkan baris ke tabel
-                $.each(data, function(index, item) {
-                    console.log('Processing item:', item);
-                    var platNomor = item.plat_nomor ? item.plat_nomor :
-                    '-'; // Jika plat_nomor tidak ada, gunakan tanda strip (-)
-                    var row = `<tr>
-                        <td>${index + 1}</td>
-                        <td>${item.user ? item.user.name : ''}</td>
-                        <td>${item.name}</td>
-                        <td>${item.serial_number}</td>
-                        <td>${platNomor}</td> <!-- Gunakan variabel platNomor -->
-                        <td>
-                            ${item.photo ? `<img src="/storage/${item.photo}" alt="Device Photo" style="max-width: 100px; max-height: 100px;">` : 'No Image'}
-                        </td>
-                    </tr>`;
-                    tableBody.append(row);
+            $.each(data, function(index, item) {
+                console.log('Processing item:', item);
+                var platNomor = item.plat_nomor ? item.plat_nomor : '-';
+                var row = `<tr>
+                <td>${index + 1}</td>
+                <td>${item.user ? item.user.name : ''}</td>
+                <td>${item.name}</td>
+                <td>${item.serial_number}</td>
+                <td>${platNomor}</td>
+                <td>
+                    ${item.photo ? `<img src="/storage/${item.photo}" alt="Device Photo" data-bs-toggle="modal"
+                                            data-bs-target="#viewPhotoModal${item.id_device}" style="max-width: 100px; max-height: 100px;">` : 'No Image'}
+                </td>
+                </tr>`;
+                tableBody.append(row);
                 });
-
             }
 
             // Fungsi untuk menampilkan pesan validasi

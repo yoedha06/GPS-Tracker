@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Api\HistoryController as ApiHistoryController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
@@ -9,18 +8,13 @@ use App\Http\Controllers\Auth\VerificationController as AuthVerificationControll
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HistoryController;
-use App\Http\Controllers\KirimEmailController;
 use App\Http\Controllers\Admin\LocationController;
-use App\Http\Controllers\LocationController as AdminLocationController;
+use App\Http\Controllers\Auth\PhoneVerificationController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TampilanController;
 use App\Http\Controllers\ValidationController;
-use App\Models\History;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Database\Query\IndexHint;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -61,6 +55,8 @@ Route::get('/email/verify', function () {
     }
 })->middleware('auth')->name('verification.notice');
 
+Route::get('/phone/verify/{token}', [PhoneVerificationController::class, 'verify'])->name('phone.verify');
+Route::post('/loginWithToken', [PhoneVerificationController::class, 'loginWithToken'])->name('loginWithToken');
 
 Route::post('/phone-verification/resend', [AuthVerificationController::class, 'resendPhoneVerification'])->name('phone.verification.resend');
 Route::get('/phone/verify', function () {
@@ -99,8 +95,8 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         Route::get('/customer/map', [HistoryController::class, 'map'])->name('customer.map.index');
         Route::get('/get-related-data/{deviceId}', [HistoryController::class, 'getRelatedData']);
         Route::get('/customer/lastlocation', [MapController::class, 'lastloc'])->name('lastlocation');
-        Route::get('/customer/notification',[NotificationController::class, 'index'])->name('customer.notification.index');
-        Route::post('/customer/notification',[NotificationController::class, 'store'])->name('customer.notification.store');
+        Route::get('/customer/notification', [NotificationController::class, 'index'])->name('customer.notification.index');
+        Route::post('/customer/notification', [NotificationController::class, 'store'])->name('customer.notification.store');
 
 
         //device Customer
