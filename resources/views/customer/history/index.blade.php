@@ -235,7 +235,7 @@ function renderPagination(paginationData) {
 
     $('.pagination').append(paginationHtml);
 }
-    
+
         // Fungsi untuk menampilkan pesan validasi
         function showValidationMessage(message, isError = false) {
             var validationMessage = $("#validationMessage");
