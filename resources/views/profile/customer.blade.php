@@ -99,18 +99,9 @@
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
                                     <input type="text" name="username" class="form-control"
-                                        placeholder="Your Username" value="{{ $user->username }}"
-                                        style="background-color: #f8f8f8;" readonly>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="phone" class="form-label">Phone</label>
-                                    <input type="tel" name="phone" id="phone" class="form-control"
-                                        placeholder="Your Phone" value="{{ old('phone', $user->phone) }}"
-                                        fdprocessedid="cgz6v" nullable>
-                                    @error('phone')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                                        placeholder="Your Username" value="{{ $user->username }}" fdprocessedid="cgz6v"
+                                        style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);"
+                                        readonly>
                                 </div>
 
                                 <div class="form-group">
