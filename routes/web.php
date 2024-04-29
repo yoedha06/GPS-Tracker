@@ -71,7 +71,7 @@ Route::get('/phone/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    // Cek apakah pengguna sudah login 
+    // Cek apakah pengguna sudah login
     if (Auth::check()) {
         Auth::logout();
         return redirect()->route('login')->with('success', 'Your email has been verified. Please log in.');
@@ -176,3 +176,12 @@ Route::get('/admin/latestlocation/{deviceId}', [LocationController::class, 'getL
 //filter chart
 Route::get('/chart', [TampilanController::class, 'customer']);
 Route::get('/admin-chart', [TampilanController::class, 'grafikadmin']);
+
+//map history
+// Route::get('/customer/map', [HistoryController::class, 'updateMapData']);
+Route::post('/filter-history', [HistoryController::class, 'filter'])->name('filter.history');
+
+
+Route::get('/admin/map/filter', [HistoryController::class, 'filterByDeviceAndUser']);
+Route::post('/admin/filter-history', [HistoryController::class, 'filterHistory'])->name('admin.filter.history');
+
