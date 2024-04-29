@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class RegisterController extends Controller
@@ -158,18 +157,44 @@ class RegisterController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'nullable|numeric|unique:users,phone,' . $user->id,
             // Add any other validation rules as necessary
         ]);
 
         $user->name = $request->input('name');
         $user->email = $request->input('email');
-        $user->username = $request['email'];
+        $user->username = $request->input('username');
+        $user->phone = $request->input('phone'); // Update phone number
+
         // Update other fields as necessary
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
             $user->save();
             $user->sendEmailVerificationNotification();
+        }
+
+        // Send phone verification message if phone number is provided
+        if ($request->filled('phone')) {
+            $url = "https://app.japati.id/api/send-message";
+            $token = Str::random(64);
+            $currentTime = Carbon::now()->toDateTimeString();
+
+            PasswordResetPhoneToken::updateOrCreate(
+                ['phone' => $user->phone], // Use user's phone number for search criteria
+                ['token' => $token, 'created_at' => $currentTime]
+            );
+
+            $appUrl = route('phone.verify', ['token' => $token]);
+            $data = [
+                'gateway' => '6285954906329',
+                'number' => $user->phone,
+                'type' => 'text',
+                'message' => "Click this link to verify your phone: $appUrl?token=" . $token,
+            ];
+
+            $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                ->post($url, $data);
         }
 
         // Handle photo upload if a file is present

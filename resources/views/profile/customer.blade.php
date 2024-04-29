@@ -8,7 +8,6 @@
             <i class="bi bi-justify fs-3"></i>
         </a>
     </header>
-
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -43,10 +42,11 @@
                                             style="width: 100%;  user-drag: none; -webkit-user-drag: none;  height: 100%; object-fit: cover;">
                                     @endif
                                 </div>
-                    
+
                                 <!-- Nama User -->
-                                <h3 class="mt-3" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">{{ $user->name }}</h3>
-                    
+                                <h3 class="mt-3" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ $user->name }}</h3>
+
                                 <!-- Tombol Hapus Foto -->
                                 @if ($user->photo)
                                     <form action="{{ route('delete.photo.customer') }}" method="POST">
@@ -58,7 +58,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="col-12 col-lg-8">
                     <div class="card">
@@ -76,14 +76,22 @@
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
                                     <input type="text" name="username" class="form-control"
-                                        placeholder="Your Username" value="{{ $user->username }}" fdprocessedid="cgz6v"
+                                        placeholder="Your Username" value="{{ $user->username }}"
                                         style="background-color: #f8f8f8;" readonly>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="text" name="email" id="email" class="form-control"
-                                        placeholder="Your Email" value="{{ $user->email }}" fdprocessedid="cgz6v">
+                                        placeholder="Your Email" value="{{ $user->email }}"
+                                        {{ $user->email ? 'readonly' : '' }}>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="phone" class="form-label">Phone</label>
+                                    <input type="number" name="phone" id="phone" class="form-control"
+                                        placeholder="Your Phone" value="{{ $user->phone }}"
+                                        {{ $user->phone ? 'readonly' : '' }}>
                                 </div>
 
                                 <div class="form-group">
@@ -104,7 +112,7 @@
                                         Logout
                                     </a>
                                 </div>
-                                
+
                             </form>
                         </div>
                     </div>

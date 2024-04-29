@@ -41,21 +41,21 @@ class PhoneVerificationController extends Controller
         return redirect()->route('login')->with('error', 'Invalid verification link.');
     }
 
-    public function loginWithToken(Request $request)
-    {
-        // Jika request memiliki token
-        if ($request->has('token')) {
-            // Cari pengguna berdasarkan token
-            $user = User::find($request->input('token'));
+    // public function loginWithToken(Request $request)
+    // {
+    //     // Jika request memiliki token
+    //     if ($request->has('token')) {
+    //         // Cari pengguna berdasarkan token
+    //         $user = User::find($request->input('token'));
 
-            // Jika pengguna ditemukan, otentikasi pengguna dan arahkan ke halaman yang dimaksud
-            if ($user) {
-                Auth::login($user);
-                return redirect()->route('login');
-            }
-        }
+    //         // Jika pengguna ditemukan, otentikasi pengguna dan arahkan ke halaman yang dimaksud
+    //         if ($user) {
+    //             Auth::login($user);
+    //             return redirect()->route('login');
+    //         }
+    //     }
 
-        // Jika token tidak valid atau tidak ada, arahkan ke halaman yang sesuai
-        return redirect()->route('login')->with('error', 'Invalid verification token.');
-    }
+    //     // Jika token tidak valid atau tidak ada, arahkan ke halaman yang sesuai
+    //     return redirect()->route('login')->with('error', 'Invalid verification token.');
+    // }
 }

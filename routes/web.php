@@ -49,7 +49,7 @@ Route::get('/email/verify', function () {
     if (Auth::user()->email) {
         return view('auth.verify'); // Jika pengguna mendaftar dengan email
     } elseif (Auth::user()->phone) {
-        return redirect()->route('phone.verification.notice'); // Jika pengguna mendaftar dengan nomor telepon
+        return redirect()->route('email.verification.notice'); // Jika pengguna mendaftar dengan nomor telepon
     } else {
         abort(403, 'Unauthorized action.'); // Handle kondisi jika tidak ada informasi email atau nomor telepon
     }
