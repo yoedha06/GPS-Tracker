@@ -204,8 +204,10 @@ class RegisterController extends Controller
             $user->photo = $photo;
         }
 
-        $user->save();
-
-        return redirect()->back()->with('status', 'Profile updated successfully. Please verify your new email address if you changed it.');
+        if ($user->save()) {
+            return redirect()->back()->with('status', 'Profile updated successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
+        }
     }
 }
