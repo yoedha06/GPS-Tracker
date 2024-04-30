@@ -22,8 +22,7 @@ class WebhookController extends Controller
         Log::debug('Mengirim pesan:', ['data' => $data]);
 
         // Melakukan permintaan HTTP
-        $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqqw')
-            ->post($url, $data);
+        $response = Http::post($url, $data);
 
         // Menulis pesan debug setelah melakukan permintaan HTTP
         Log::debug('Respon dari permintaan:', ['response' => $response->json()]);
