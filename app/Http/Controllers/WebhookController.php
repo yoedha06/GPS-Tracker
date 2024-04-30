@@ -53,7 +53,8 @@ class WebhookController extends Controller
             ->get();
 
         // Periksa apakah ada history terbaru
-        if ($latestHistory) {
+        if ($latestHistory->isNotEmpty()) {
+            $latestHistory = $latestHistory->first();
             $address = $this->getAddressFromCoordinates($latestHistory->latitude, $latestHistory->longitude);
 
             // Mendapatkan URL foto perangkat
@@ -83,11 +84,14 @@ class WebhookController extends Controller
             // Memeriksa apakah permintaan berhasil
             if ($response->ok()) {
                 Log::info('Pesan terkirim:', ['response' => $response->getBody()->getContents()]);
+                // Tidak ada perintah return karena tidak ada yang perlu di return setelah proses selesai
             } else {
                 Log::error('Gagal mengirim pesan:', ['error' => $response->json()]);
+                // Tidak ada perintah return karena tidak ada yang perlu di return setelah proses selesai
             }
         } else {
             Log::error('Tidak ada data histori yang ditemukan.');
+            // Tidak ada perintah return karena tidak ada yang perlu di return setelah proses selesai
         }
     }
 }
