@@ -47,9 +47,10 @@ class WebhookController extends Controller
                 'media_file' => $photoUrl
             ];
 
+            Log::debug("message", ['data' => $data]);
+
             // Melakukan permintaan HTTP untuk mengirim pesan
-            $response = Http::timeout(60)
-                ->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+            $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
                 ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
                 ->post($url, $data);
 
