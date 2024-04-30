@@ -12,20 +12,15 @@ class WebhookController extends Controller
     {
         $url = "https://app.japati.id/api/send-message";
 
-        // $data = [
-        //     'message' => 'message',
-        //     'bufferImage' => 'base64 image, null if message not contain image',
-        //     'from' => '6281312634776',
-        //     'gateway' => '6285954906329',
-        // ];
+        // Mengambil data dari request yang diterima oleh webhook
+        $requestData = $request->all();
 
+        // Membangun data yang akan dikirim ke endpoint
         $data = [
-            'message' => 'message',
-            'bufferImage' => 'base64 image, null if message not contain image',
-            'from' => '6281312634776',
-            'gateway' => '6285954906329',
-            // 'number' => '6281312634776', // Nomor penerima
-            // 'type' => 'text' // Jenis pesan
+            "gateway" => $requestData['gateway'],
+            "number" => $requestData['from'], // Menggunakan nomor pengirim sebagai nomor penerima
+            "type" => "text",
+            "message" => $requestData['message'],
         ];
 
         Log::debug('Mengirim pesan:', ['data' => $data]);
