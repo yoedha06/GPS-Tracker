@@ -51,9 +51,8 @@ class WebhookController extends Controller
             ->orderByDesc('date_time')
             ->first(); // Menggunakan first() untuk mendapatkan satu hasil saja
 
-
         // Periksa apakah ada history terbaru
-        if ($latestHistory->isNotEmpty()) {
+        if ($latestHistory?->isNotEmpty()) {
             $latestHistory = $latestHistory->first();
             $address = $this->getAddressFromCoordinates($latestHistory->latitude, $latestHistory->longitude);
 
@@ -90,5 +89,7 @@ class WebhookController extends Controller
         } else {
             Log::error('Tidak ada data histori yang ditemukan.');
         }
+
+        return 'ok';
     }
 }
