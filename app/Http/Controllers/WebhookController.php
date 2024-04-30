@@ -47,10 +47,10 @@ class WebhookController extends Controller
 
         // Mencari data history terbaru menggunakan relasi
         $latestHistory = History::with('device')
-            ->where('device_id', $request->id_device) // Filter berdasarkan device yang dipilih
+            ->where('device_id', $request->id_device)
             ->orderByDesc('date_time')
-            ->take(1)
-            ->get();
+            ->first(); // Menggunakan first() untuk mendapatkan satu hasil saja
+
 
         // Periksa apakah ada history terbaru
         if ($latestHistory->isNotEmpty()) {
@@ -84,14 +84,11 @@ class WebhookController extends Controller
             // Memeriksa apakah permintaan berhasil
             if ($response->ok()) {
                 Log::info('Pesan terkirim:', ['response' => $response->getBody()->getContents()]);
-                // Tidak ada perintah return karena tidak ada yang perlu di return setelah proses selesai
             } else {
                 Log::error('Gagal mengirim pesan:', ['error' => $response->json()]);
-                // Tidak ada perintah return karena tidak ada yang perlu di return setelah proses selesai
             }
         } else {
             Log::error('Tidak ada data histori yang ditemukan.');
-            // Tidak ada perintah return karena tidak ada yang perlu di return setelah proses selesai
         }
     }
 }
