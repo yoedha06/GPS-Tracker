@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
@@ -18,6 +19,13 @@ class WebhookController extends Controller
             'gateway' => '6285954906329',
         ];
 
-        Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')->post($url, $data);
+        Log::debug('Mengirim pesan:', ['data' => $data]);
+
+        // Melakukan permintaan HTTP
+        $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqqw')
+            ->post($url, $data);
+
+        // Menulis pesan debug setelah melakukan permintaan HTTP
+        Log::debug('Respon dari permintaan:', ['response' => $response->json()]);
     }
 }
