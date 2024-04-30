@@ -99,9 +99,7 @@
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
                                     <input type="text" name="username" class="form-control"
-                                        placeholder="Your Username" value="{{ $user->username }}" fdprocessedid="cgz6v"
-                                        style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);"
-                                        readonly>
+                                        placeholder="Your Username" value="{{ $user->username }}" readonly>
                                 </div>
 
                                 <div class="form-group">
