@@ -17,16 +17,15 @@ class WebhookController extends Controller
         // Mengambil data dari request yang diterima oleh webhook
         $requestData = $request->all();
 
-        $device = Device::find($request->device);
-
         // Mencari data history terakhir
         $latestHistory = History::with('device')
             ->where('device_id', $request->device) // Filter berdasarkan device yang dipilih
             ->orderByDesc('date_time')
-            ->get();;
+            ->get();
 
         // Memeriksa apakah data history terakhir ada
-        if ($latestHistory) {
+        if ($latestHistory->isNotEmpty()) {
+            $latestHistory = $latestHistory->first();
             // Mendapatkan data perangkat terkait
             $device = $latestHistory->device;
 
@@ -48,7 +47,7 @@ class WebhookController extends Controller
                 ->post($url, $data);
 
             // Menulis pesan debug setelah melakukan permintaan HTTP
-            // Log::debug('Respon dari permintaan:', ['response' => $response->getBody()->getContents()]);
+            Log::info('Pesan terkirim dengan sukses:', ['response' => $response->getBody()->getContents()]);
         } else {
             Log::error('Tidak ada data histori yang ditemukan.');
         }
