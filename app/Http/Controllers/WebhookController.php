@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Device;
+use App\Models\History;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -12,24 +14,49 @@ class WebhookController extends Controller
     {
         $url = "https://app.japati.id/api/send-message";
 
-        // Mengambil data dari request yang diterima oleh webhook
-        $requestData = $request->all();
+        // Mendapatkan data histori terbaru dari perangkat
+        $device = Device::find($request->device);
 
-        // Membangun data yang akan dikirim ke endpoint
-        $data = [
-            "gateway" => $requestData['gateway'],
-            "number" => $requestData['from'], // Menggunakan nomor pengirim sebagai nomor penerima
-            "type" => "text",
-            "message" => $requestData['message'],
-        ];
+        if (!$device) {
+            return redirect()->route('customer.notification.index')->with('error', 'Perangkat tidak ditemukan');
+        }
 
-        // Log::debug('Mengirim pesan:', ['data' => $data]);
+        $histories = History::with('device')
+            ->where('device_id', $request->device) // Filter berdasarkan device yang dipilih
+            ->orderByDesc('date_time') // Urutkan histori berdasarkan waktu descending
+            ->take(1) // Ambil hanya 1 data histori terbaru
+            ->get();
 
-        // Melakukan permintaan HTTP
-        $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-            ->post($url, $data);
+        if ($histories->isNotEmpty()) {
+            $history = $histories->first();
 
-        // Menulis pesan debug setelah melakukan permintaan HTTP
-        // Log::debug('Respon dari permintaan:', ['response' => $response->getBody()->getContents()]);
+            $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
+            $photoUrl = asset('storage/' . $device->photo); // URL foto perangkat
+
+            $message = "Data terbaru dari perangkat: {$device->name}\n";
+            $message .= "Alamat: {$address}\n";
+            $message .= "LatLong: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
+            $message .= "Plat Nomor: {$device->plat_nomor}\n";
+            $message .= "Waktu: {$history->date_time}\n";
+
+            $data = [
+                'gateway' => '6285954906329',
+                'number' => $request->phone,
+                'type' => 'media',
+                'message' => $message,
+                'media_file' => $photoUrl
+            ];
+
+            // Melakukan permintaan HTTP untuk mengirim pesan
+            $response = Http::timeout(60)
+                ->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+                ->post($url, $data);
+
+            // Menulis pesan debug setelah melakukan permintaan HTTP
+            Log::debug('Respon dari permintaan:', ['response' => $response->getBody()->getContents()]);
+        } else {
+            Log::error('Tidak ada histori ditemukan.');
+        }
     }
 }
