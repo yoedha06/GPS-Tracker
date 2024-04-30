@@ -37,6 +37,7 @@ class WebhookController extends Controller
 
 
 
+
     public function store(Request $request)
     {
         $url = "https://app.japati.id/api/send-message";
@@ -44,7 +45,7 @@ class WebhookController extends Controller
         // Check if the device exists
         $device = Device::find($request->device);
 
-        // Mencari data history terakhir
+        // Mencari data history terbaru menggunakan relasi
         $latestHistory = History::with('device')
             ->where('device_id', $request->device) // Filter berdasarkan device yang dipilih
             ->orderByDesc('date_time')
@@ -52,8 +53,7 @@ class WebhookController extends Controller
             ->get();
 
         // Periksa apakah ada history terbaru
-        if ($latestHistory->isNotEmpty()) {
-            $latestHistory = $latestHistory->first();
+        if ($latestHistory) {
             $address = $this->getAddressFromCoordinates($latestHistory->latitude, $latestHistory->longitude);
 
             // Mendapatkan URL foto perangkat
