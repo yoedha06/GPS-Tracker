@@ -43,11 +43,11 @@ class WebhookController extends Controller
         $url = "https://app.japati.id/api/send-message";
 
         // Check if the device exists
-        $device = Device::find($request->device);
+        $device = Device::find($request->id_device);
 
         // Mencari data history terbaru menggunakan relasi
         $latestHistory = History::with('device')
-            ->where('device_id', $request->device) // Filter berdasarkan device yang dipilih
+            ->where('device_id', $request->id_device) // Filter berdasarkan device yang dipilih
             ->orderByDesc('date_time')
             ->take(1)
             ->get();
