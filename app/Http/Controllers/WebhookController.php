@@ -17,42 +17,25 @@ class WebhookController extends Controller
     //     // Mengambil data dari request yang diterima oleh webhook
     //     $requestData = $request->all();
 
-    //     // Mencari data history terakhir
-    //     $latestHistory = History::with('device')
-    //         ->where('device_id', $request->device) // Filter berdasarkan device yang dipilih
-    //         ->orderByDesc('date_time')
-    //         ->take(1)
-    //         ->get();
+    //     // Membangun data yang akan dikirim ke endpoint
+    //     $data = [
+    //         "gateway" => $requestData['gateway'],
+    //         "number" => $requestData['from'], // Menggunakan nomor pengirim sebagai nomor penerima
+    //         "type" => "text",
+    //         "message" => $requestData['message'],
+    //     ];
 
-    //     // Memeriksa apakah data history terakhir ada
-    //     if ($latestHistory->isNotEmpty()) {
-    //         $latestHistory = $latestHistory->first();
-    //         // Mendapatkan data perangkat terkait
-    //         $device = $latestHistory->device;
+    //     // Log::debug('Mengirim pesan:', ['data' => $data]);
 
-    //         // Membangun pesan
-    //         $message = "Data histori terbaru dari perangkat {$device->name}:\n";
-    //         $message .= "Waktu: {$latestHistory->created_at}\n";
-    //         // tambahkan informasi lain yang Anda inginkan dari data histori dan perangkat
+    //     // Melakukan permintaan HTTP
+    //     $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+    //         ->post($url, $data);
 
-    //         // Membangun data yang akan dikirim ke endpoint
-    //         $data = [
-    //             "gateway" => $requestData['gateway'],
-    //             "number" => $requestData['from'], // Menggunakan nomor pengirim sebagai nomor penerima
-    //             "type" => "text",
-    //             "message" => $message,
-    //         ];
-
-    //         // Melakukan permintaan HTTP
-    //         $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-    //             ->post($url, $data);
-
-    //         // Menulis pesan debug setelah melakukan permintaan HTTP
-    //         Log::info('Pesan terkirim dengan sukses:', ['response' => $response->getBody()->getContents()]);
-    //     } else {
-    //         Log::error('Tidak ada data histori yang ditemukan.');
-    //     }
+    //     // Menulis pesan debug setelah melakukan permintaan HTTP
+    //     // Log::debug('Respon dari permintaan:', ['response' => $response->getBody()->getContents()]);
     // }
+
+
 
     public function store(Request $request)
     {
@@ -60,10 +43,6 @@ class WebhookController extends Controller
 
         // Check if the device exists
         $device = Device::find($request->device);
-
-        if (!$device) {
-            return redirect()->route('customer.notification.index')->with('error', 'Perangkat tidak ditemukan');
-        }
 
         // Mencari data history terakhir
         $latestHistory = History::with('device')
@@ -103,15 +82,12 @@ class WebhookController extends Controller
 
             // Memeriksa apakah permintaan berhasil
             if ($response->ok()) {
-                return redirect()->route('customer.notification.index')->with('success', 'Pesan terkirim');
+                Log::info('Pesan terkirim:', ['response' => $response->getBody()->getContents()]);
             } else {
-                logger($response);
-                $errorResponse = $response->json();
-                logger($errorResponse);
-                return redirect()->route('customer.notification.index')->with('error', 'Gagal mengirim pesan');
+                Log::error('Gagal mengirim pesan:', ['error' => $response->json()]);
             }
         } else {
-            return redirect()->route('customer.notification.index')->with('error', 'Tidak ada data histori yang ditemukan');
+            Log::error('Tidak ada data histori yang ditemukan.');
         }
     }
 }
