@@ -45,6 +45,26 @@ class WebhookController extends Controller
         // Check if the device exists
         $device = Device::find($request->id_device);
 
+        // "history YT4567UZ"
+        $explodedMessage = explode(" ", $request->message);
+        if (str($request->message)->startsWith("history") && count($explodedMessage) == 2 && ($explodedMessage[1] ?? false)) {
+
+            $plat = $explodedMessage[1];
+
+            $data = [
+                'gateway' => '6285954906329',
+                'number' => $request->phone,
+                'type' => 'text',
+                'message' => 'anda mengambil history ' . $plat,
+                // 'media_file' => $photoUrl
+            ];
+
+            // Melakukan permintaan HTTP
+            $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+                ->post($url, $data);
+        }
+
         // Mencari data history terbaru menggunakan relasi
         $latestHistory = History::with('device')
             ->where('device_id', $request->id_device)
@@ -89,7 +109,6 @@ class WebhookController extends Controller
         } else {
             Log::error('Tidak ada data histori yang ditemukan.');
         }
-
         return 'ok';
     }
 }
