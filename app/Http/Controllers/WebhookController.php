@@ -48,13 +48,13 @@ class WebhookController extends Controller
 
             // Find device based on the plat number
             $device = Device::where('plat_nomor', $plat)->first();
-            Log::info($device);
+
             if ($device) {
                 // Retrieve history for the device
                 $history = History::where('device_id', $device->id_device)
                     ->latest()
                     ->first();
-                Log::info($history);
+
                 if ($history) {
                     // Get address from coordinates
                     $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
