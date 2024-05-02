@@ -51,7 +51,7 @@ class WebhookController extends Controller
             Log::info($device);
             if ($device) {
                 // Retrieve history for the device
-                $history = History::where('device_id', $device->id)
+                $history = History::where('device_id', $device->id_device)
                     ->latest()
                     ->first();
                 Log::info($history);
