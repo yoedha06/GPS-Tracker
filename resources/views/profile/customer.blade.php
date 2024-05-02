@@ -8,7 +8,6 @@
             <i class="bi bi-justify fs-3"></i>
         </a>
     </header>
-
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -68,14 +67,16 @@
                             @if ($message = Session::get('status'))
                                 <div class="alert alert-success alert-dismissible show fade">
                                     <i class="bi bi-check-circle"></i>&nbsp;{{ $message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
                                 </div>
                             @endif
 
                             @if ($message = Session::get('error'))
                                 <div class="alert alert-danger alert-dismissible show fade">
                                     {{ $message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
                                 </div>
                             @endif
 
@@ -87,7 +88,9 @@
 
                                 <div class="form-group">
                                     <label for="name" class="form-label">Name</label>
-                                    <input type="text" name="name" id="name" class="form-control" placeholder="Your Name" value="{{ old('name', $user->name) }}" fdprocessedid="pczq">
+                                    <input type="text" name="name" id="name" class="form-control"
+                                        placeholder="Your Name" value="{{ old('name', $user->name) }}"
+                                        fdprocessedid="pczq">
                                     @error('name')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -96,24 +99,21 @@
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
                                     <input type="text" name="username" class="form-control"
-                                        placeholder="Your Username" value="{{ $user->username }}" fdprocessedid="cgz6v"
-                                        style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);" readonly>
+                                        placeholder="Your Username" value="{{ $user->username }}" readonly>
                                 </div>
-                                
-                                <div class="form-group">
-                                    <label for="phone" class="form-label">Phone</label>
-                                    <input type="tel" name="phone" id="phone" class="form-control" placeholder="Your Phone" value="{{ old('phone', $user->phone) }}" fdprocessedid="cgz6v" nullable>
-                                    @error('phone')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                
+
                                 <div class="form-group">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="text" name="email" id="email" class="form-control" placeholder="Your Email" value="{{ old('email', $user->email) }}" fdprocessedid="cgz6v">
-                                    @error('email')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                                    <input type="text" name="email" id="email" class="form-control"
+                                        placeholder="Your Email" value="{{ $user->email }}"
+                                        {{ $user->email ? 'readonly' : '' }}>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="phone" class="form-label">Phone</label>
+                                    <input type="number" name="phone" id="phone" class="form-control"
+                                        placeholder="Your Phone" value="{{ $user->phone }}"
+                                        {{ $user->phone ? 'readonly' : '' }}>
                                 </div>
 
                                 <div class="form-group">
