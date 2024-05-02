@@ -64,12 +64,12 @@ class NotificationController extends Controller
                 ];
 
                 $response = Http::timeout(60)->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-                ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+                    ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
                     ->post($url, $data);
 
                 if (!$response->ok()) {
                     logger($response);
-                    
+
                     $errorResponse = $response->json();
                     logger($errorResponse);
                     return redirect()->route('customer.notification.index');
