@@ -42,6 +42,8 @@ class WebhookController extends Controller
     {
         $url = "https://app.japati.id/api/send-message";
 
+        // hapus
+
         // "history YT4567UZ"
         $explodedMessage = explode(" ", $request->message);
         if (str($request->message)->startsWith("history") && count($explodedMessage) == 2 && ($explodedMessage[1] ?? false)) {
