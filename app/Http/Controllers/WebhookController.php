@@ -42,37 +42,58 @@ class WebhookController extends Controller
     {
         $url = "https://app.japati.id/api/send-message";
 
-        // "history YT4567UZ"
+        // Check if the message is a history request
         $explodedMessage = explode(" ", $request->message);
         if (str($request->message)->startsWith("history") && count($explodedMessage) == 2 && ($explodedMessage[1] ?? false)) {
 
+            // Extract the plat number from the message
             $plat = $explodedMessage[1];
 
-            // Ambil data perangkat dari database berdasarkan nomor plat
+            // Find device based on the plat number
             $device = Device::where('plat_nomor', $plat)->first();
 
             if ($device) {
-                $data = [
-                    'gateway' => '6285954906329',
-                    'number' => $request->from,
-                    'type' => 'text',
-                    'message' => 'anda mengambil history ' . $plat,
-                    // 'media_file' => $photoUrl
-                ];
+                // Retrieve history for the device
+                $history = History::where('device_id', $device->id)
+                    ->latest()
+                    ->first();
 
-                // Melakukan permintaan HTTP
-                $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-                    ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
-                    ->post($url, $data);
+                if ($history) {
+                    // Get address from coordinates
+                    $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
 
-                // Debug logger
-                Log::debug('Plat nomor: ' . $plat);
-                Log::debug('Data perangkat: ' . json_encode($device));
+                    // Compose message with history details
+                    $message = "History terbaru untuk perangkat {$device->name} (Plat Nomor: {$plat}):\n";
+                    $message .= "Alamat: {$address}\n";
+                    $message .= "Waktu: {$history->date_time}\n";
+                    $message .= "Lokasi: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
+
+                    // Send message
+                    $data = [
+                        'gateway' => '6285954906329',
+                        'number' => $request->from,
+                        'type' => 'text',
+                        'message' => $message,
+                    ];
+
+                    // Send HTTP request
+                    $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                        ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+                        ->post($url, $data);
+
+                    // Check if the request is successful
+                    if ($response->ok()) {
+                        Log::info('Pesan terkirim:', ['response' => $response->getBody()->getContents()]);
+                    } else {
+                        Log::error('Gagal mengirim pesan:', ['error' => $response->json()]);
+                    }
+                } else {
+                    Log::error('Tidak ada riwayat untuk perangkat dengan plat_nomor:', ['plat_nomor' => $plat]);
+                }
             } else {
                 Log::error('Perangkat tidak ditemukan untuk plat_nomor:', ['plat_nomor' => $plat]);
             }
         }
-
         return 'ok';
     }
 }
