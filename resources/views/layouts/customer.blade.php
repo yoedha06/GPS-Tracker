@@ -252,7 +252,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 <!-- Need: Apexcharts -->
 <script src="{{ asset('template/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
-<script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script>
+{{-- <script src="{{ asset('template/assets/js/pages/dashboard.js') }}"></script> --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
          setTimeout(function() {

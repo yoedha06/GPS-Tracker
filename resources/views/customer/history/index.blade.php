@@ -242,7 +242,7 @@
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
-                `;
+                            `;
 
                 for (var i = 1; i <= paginationData.last_page; i++) {
                     paginationHtml += `
@@ -263,6 +263,36 @@
                 `;
 
                 $('.pagination').append(paginationHtml);
+
+                var paginationHtml = `
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item ${paginationData.current_page == 1 ? 'disabled' : ''}">
+                            <a class="page-link" href="#" onclick="getDataByDevice(${deviceId}, ${paginationData.current_page - 1})" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    `;
+
+                for (var i = 1; i <= paginationData.last_page; i++) {
+                    paginationHtml += `
+                <li class="page-item ${paginationData.current_page == i ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="getDataByDevice(${deviceId}, ${i})">${i}</a>
+                </li>
+                `;
+                }
+
+                paginationHtml += `
+            <li class="page-item ${paginationData.current_page == paginationData.last_page ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="getDataByDevice(${deviceId}, ${paginationData.current_page + 1})" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+                </ul>
+            </nav>
+            `;
+
+                $('.pagination').append(paginationHtml);
             }
 
             // Fungsi untuk menampilkan pesan validasi
@@ -275,13 +305,24 @@
                     validationMessage.removeClass('alert-danger').addClass('alert-success');
                 }
 
-                validationMessage.text(message);
-                validationMessage.show();
+                // Fungsi untuk menampilkan pesan validasi
+                function showValidationMessage(message, isError = false) {
+                    var validationMessage = $("#validationMessage");
 
-                // Sembunyikan pesan validasi setelah beberapa detik
-                setTimeout(function() {
-                    validationMessage.hide();
-                }, 1500);
+                    if (isError) {
+                        validationMessage.removeClass('alert-success').addClass('alert-danger');
+                    } else {
+                        validationMessage.removeClass('alert-danger').addClass('alert-success');
+                    }
+
+                    validationMessage.text(message);
+                    validationMessage.show();
+
+                    // Sembunyikan pesan validasi setelah beberapa detik
+                    setTimeout(function() {
+                        validationMessage.hide();
+                    }, 1500);
+                }
             }
         });
     </script>

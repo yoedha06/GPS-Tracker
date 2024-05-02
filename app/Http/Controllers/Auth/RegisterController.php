@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\PasswordResetPhoneToken;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
@@ -12,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class RegisterController extends Controller
@@ -76,7 +77,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        // dd($data);
+        // dd($data); // dump data
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -112,14 +113,25 @@ class RegisterController extends Controller
         }
         // Mengecek apakah pengguna mendaftar dengan menggunakan nomor telepon
         elseif ($request->phone) {
+            // Kirim tautan verifikasi nomor telepon
             $url = "https://app.japati.id/api/send-message";
-            $appUrl = route('login');
+
+            $token = Str::random(64);
+
+            $currentTime = Carbon::now()->toDateTimeString();
+            // Simpan token ke dalam database
+            PasswordResetPhoneToken::updateOrCreate(
+                ['phone' => $request->phone], // Kriteria pencarian
+                ['token' => $token, 'created_at' => $currentTime] // Data untuk di-update atau dibuat
+            );
+
+            $appUrl = route('phone.verify', ['token' => $token]); // Mengarahkan ke route verifikasi dengan menyertakan token
 
             $data = [
                 'gateway' => '6285954906329',
                 'number' => $user->phone,
                 'type' => 'text',
-                'message' => "Click this link to verify your phone: $appUrl?token=" . $user->id,
+                'message' => "Click this link to verify your phone: $appUrl?token=" . $token,
             ];
 
             try {
@@ -131,6 +143,7 @@ class RegisterController extends Controller
                 } else {
                     return redirect('/phone/verify')->with('error', 'Failed to send verification link. Please try again later.');
                 }
+                // Auth::logout();
             } catch (RequestException $e) {
                 return redirect('/phone/verify')->with('error', 'Failed to send verification link. Please try again later.');
             }
@@ -144,18 +157,44 @@ class RegisterController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'nullable|numeric|unique:users,phone,' . $user->id,
             // Add any other validation rules as necessary
         ]);
 
         $user->name = $request->input('name');
         $user->email = $request->input('email');
-        $user->username = $request['email'];
+        $user->username = $request->input('username');
+        $user->phone = $request->input('phone'); // Update phone number
+
         // Update other fields as necessary
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
             $user->save();
             $user->sendEmailVerificationNotification();
+        }
+
+        // Send phone verification message if phone number is provided
+        if ($request->filled('phone')) {
+            $url = "https://app.japati.id/api/send-message";
+            $token = Str::random(64);
+            $currentTime = Carbon::now()->toDateTimeString();
+
+            PasswordResetPhoneToken::updateOrCreate(
+                ['phone' => $user->phone], // Use user's phone number for search criteria
+                ['token' => $token, 'created_at' => $currentTime]
+            );
+
+            $appUrl = route('phone.verify', ['token' => $token]);
+            $data = [
+                'gateway' => '6285954906329',
+                'number' => $user->phone,
+                'type' => 'text',
+                'message' => "Click this link to verify your phone: $appUrl?token=" . $token,
+            ];
+
+            $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                ->post($url, $data);
         }
 
         // Handle photo upload if a file is present
@@ -165,8 +204,10 @@ class RegisterController extends Controller
             $user->photo = $photo;
         }
 
-        $user->save();
-
-        return redirect()->back()->with('status', 'Profile updated successfully. Please verify your new email address if you changed it.');
+        if ($user->save()) {
+            return redirect()->back()->with('status', 'Profile updated successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
+        }
     }
 }
