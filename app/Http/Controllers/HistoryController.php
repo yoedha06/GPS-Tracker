@@ -127,6 +127,7 @@ class HistoryController extends Controller
 
 public function filter(Request $request)
 {
+     $user = Auth::user();
     // Ambil data yang diperlukan dari permintaan
     $selectedDevice = $request->selectedDevice;
     $startDate = $request->startDate;
@@ -165,12 +166,13 @@ public function filterHistory(Request $request)
     $startDate = $request->startDate;
     $endDate = $request->endDate;
 
+
     // Pastikan tanggal-tanggal yang diterima adalah dalam format yang tepat
     $startDate = date('Y-m-d H:i:s', strtotime($startDate));
     $endDate = date('Y-m-d H:i:s', strtotime($endDate));
 
-   $historyData = History::with(['device.user' => function ($query) {
-                        $query->select('id', 'name'); // Ambil hanya id dan name dari tabel users
+    $historyData = History::with(['device.user' => function ($query) {
+                            $query->select('id', 'name'); // Ambil hanya id dan name dari tabel users
                     }])
                     ->when($selectedDevice, function ($query) use ($selectedDevice) {
                         $query->where('device_id', $selectedDevice);
@@ -178,16 +180,10 @@ public function filterHistory(Request $request)
                     ->whereBetween('date_time', [$startDate, $endDate])
                     ->get();
 
-
-    // Iterasi melalui data riwayat dan ambil nama perangkat untuk setiap entri
-    foreach ($historyData as $history) {
-        $deviceName = $history->device->name;
-        // Lakukan apa pun yang Anda perlukan dengan $deviceName di sini
-    }
-
     // Kembalikan data dalam format JSON
     return response()->json($historyData);
 }
+
 
 
 

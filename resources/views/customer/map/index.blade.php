@@ -120,10 +120,7 @@
         }
     }
 
-    #filter-options {
-        display: none;
-        /* Sembunyikan container filter */
-    }
+
 </style>
 
 
@@ -189,18 +186,12 @@
 
         </form>
 
-        <div id="filter-options" style="display: none;">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="speeds-checkbox" name="speeds-checkbox">
-                <label class="form-check-label" for="speeds-checkbox">
-                    Speeds
+      <div id="filter-options">
+                <label for="speed-checkbox">
+                    <input type="checkbox" id="speed-checkbox" class="filter-checkbox"> Speed
                 </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="accuracy-checkbox"
-                    name="accuracy-checkbox">
-                <label class="form-check-label" for="accuracy-checkbox">
-                    Accuracy
+                <label for="accuracy-checkbox">
+                    <input type="checkbox" id="accuracy-checkbox" class="filter-checkbox"> Accuracy
                 </label>
             </div>
         </div>
@@ -324,10 +315,7 @@
             }
         }
 
-        #filter-options {
-            display: none;
-            /* Sembunyikan container filter */
-        }
+
     </style>
 
     <script>
@@ -361,6 +349,21 @@
                 $('#date_range').val(queryStart + ' - ' + queryEnd);
                 filterHistory(queryDevice == 'null' ? '' : queryDevice, queryStart, queryEnd);
             }
+
+
+              $('#device-select').select2({
+                    sorter: function(data) {
+                        return data.sort(function(a, b) {
+                            return a.text.localeCompare(b.text);
+                        });
+                           if (historyData.length === 0) {
+                    $('#notification-container').css('opacity', '1');
+                    setTimeout(function() {
+                        $('#notification-container').css('opacity', '0');
+                    }, 5000);
+                }
+                    }
+                });
 
             var startDate;
             var endDate;
@@ -427,20 +430,16 @@
                     map.removeLayer(polyline);
                 });
 
+                
                 markers = [];
                 devicePolylines = {};
 
-                var historyDataByDevice = {};
+                // Plot markers and polylines for each device
                 historyData.forEach(historyItem => {
                     var deviceId = historyItem.device_id;
-                    if (!historyDataByDevice[deviceId]) {
-                        historyDataByDevice[deviceId] = [];
-                    }
-                    historyDataByDevice[deviceId].push(historyItem);
-                });
-
-                Object.keys(historyDataByDevice).forEach(deviceId => {
-                    var deviceHistory = historyDataByDevice[deviceId];
+                    var deviceHistory = historyData.filter(item => item.device_id === deviceId);
+                    var startHistoryItem = deviceHistory[0];
+                    var endHistoryItem = deviceHistory[deviceHistory.length - 1];
 
                     var startIcon = L.divIcon({
                         className: 'custom-div-icon',
@@ -457,9 +456,6 @@
                         iconAnchor: [20, 44],
                         popupAnchor: [-5, -41]
                     });
-
-                    var startHistoryItem = deviceHistory[0];
-                    var endHistoryItem = deviceHistory[deviceHistory.length - 1];
 
                     var startMarker = L.marker([parseFloat(startHistoryItem.latitude), parseFloat(
                         startHistoryItem.longitude)], {
@@ -487,16 +483,15 @@
                     endMarker.bindPopup(endPopupContent);
 
                     var polylinePoints = [];
-                    deviceHistory.forEach((historyItem, index) => {
+                    var color, weight, opacity;
+                    var speed, accuracy; // Deklarasi variabel di luar forEach loop
+
+                    deviceHistory.forEach(historyItem => {
                         var lat = parseFloat(historyItem.latitude);
                         var lng = parseFloat(historyItem.longitude);
-                        var speed = parseFloat(historyItem.speeds);
-                        var accuracy = parseFloat(historyItem.accuracy);
-                        console.log(speed, accuracy);
-                        var color;
-                        var weight;
-                        var opacity;
-                        var speed = parseFloat(historyItem.speeds);
+                        speed = parseFloat(historyItem.speeds); // Assign value to speed variable
+                        accuracy = parseFloat(historyItem
+                        .accuracy); // Assign value to accuracy variable
 
                         if (!isNaN(speed)) {
                             if (speed >= 0 && speed < 20) {
@@ -511,7 +506,6 @@
                             }
                         }
 
-                        var accuracy = parseFloat(historyItem.accuracy);
                         if (!isNaN(accuracy)) {
                             if (accuracy >= 0 && accuracy < 10) {
                                 opacity = 1;
@@ -523,29 +517,29 @@
                         }
 
                         polylinePoints.push([lat, lng]);
-
-
-                        if (!devicePolylines[deviceId]) {
-                            devicePolylines[deviceId] = L.polyline([], {
-                                color: color || 'blue',
-                                weight: weight || 1,
-                                opacity: opacity || 1
-                            }).addTo(map);
-                        }
-
-                        devicePolylines[deviceId].setLatLngs(polylinePoints);
-
-                        var polylinePopupContent =
-                            '<b>Speed:</b> ' + speed +
-                            '<br><b>Accuracy:</b> ' + accuracy;
-                        devicePolylines[deviceId].bindPopup(polylinePopupContent);
                     });
+
+                    if (!devicePolylines[deviceId]) {
+                        devicePolylines[deviceId] = L.polyline(polylinePoints, {
+                            color: color || 'blue',
+                            weight: weight || 1,
+                            opacity: opacity || 1
+                        }).addTo(map);
+                    } else {
+                        devicePolylines[deviceId].setLatLngs(polylinePoints);
+                    }
+
+                    var polylinePopupContent =
+                        '<b>Speed:</b> ' + speed +
+                        '<br><b>Accuracy:</b> ' + accuracy;
+                    devicePolylines[deviceId].bindPopup(polylinePopupContent);
                 });
 
                 var allPolylines = Object.values(devicePolylines);
                 var bounds = L.featureGroup(allPolylines).getBounds();
                 map.fitBounds(bounds);
             }
+
 
             function filterHistory(selectedDevice, startDate, endDate) {
                 if (startDate && endDate) {
