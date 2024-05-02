@@ -48,34 +48,26 @@ class WebhookController extends Controller
 
             $plat = $explodedMessage[1];
 
-            // Ambil plat_nomor dari database berdasarkan plat_nomor yang diberikan
-            $device = Device::where('plat_nomor', $plat)->first();
+            $data = [
+                'gateway' => '6285954906329',
+                'number' => $request->from,
+                'type' => 'text',
+                'message' => 'anda mengambil history ' . $plat,
+                // 'media_file' => $photoUrl
+            ];
 
-            if ($device) {
-                $data = [
-                    'gateway' => '6285954906329',
-                    'number' => $request->from,
-                    'type' => 'text',
-                    'message' => 'anda mengambil history ' . $plat,
-                    // 'media_file' => $photoUrl
-                ];
-
-                // Melakukan permintaan HTTP
-                $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-                    ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
-                    ->post($url, $data);
-
-                // Memeriksa apakah permintaan berhasil
-                if ($response->ok()) {
-                    Log::info('Pesan terkirim:', ['response' => $response->getBody()->getContents()]);
-                } else {
-                    Log::error('Gagal mengirim pesan:', ['error' => $response->json()]);
-                }
-            } else {
-                Log::error('Perangkat tidak ditemukan untuk plat_nomor:', ['plat_nomor' => $plat]);
-            }
+            // Melakukan permintaan HTTP
+            $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+                ->post($url, $data);
         }
 
+        // Memeriksa apakah permintaan berhasil
+        if ($response->ok()) {
+            Log::info('Pesan terkirim:', ['response' => $response->getBody()->getContents()]);
+        } else {
+            Log::error('Gagal mengirim pesan:', ['error' => $response->json()]);
+        }
         return 'ok';
     }
 }
