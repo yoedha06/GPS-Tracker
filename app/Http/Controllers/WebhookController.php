@@ -42,73 +42,40 @@ class WebhookController extends Controller
     {
         $url = "https://app.japati.id/api/send-message";
 
-        // Check if the device exists
-        $device = Device::find($request->id_device);
-
         // "history YT4567UZ"
         $explodedMessage = explode(" ", $request->message);
         if (str($request->message)->startsWith("history") && count($explodedMessage) == 2 && ($explodedMessage[1] ?? false)) {
 
             $plat = $explodedMessage[1];
 
-            $data = [
-                'gateway' => '6285954906329',
-                'number' => $request->from,
-                'type' => 'text',
-                'message' => 'anda mengambil history ' . $plat,
-                // 'media_file' => $photoUrl
-            ];
+            // Ambil plat_nomor dari database berdasarkan plat_nomor yang diberikan
+            $device = Device::where('plat_nomor', $plat)->first();
 
-            // Melakukan permintaan HTTP
-            $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-                ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
-                ->post($url, $data);
-        }
+            if ($device) {
+                $data = [
+                    'gateway' => '6285954906329',
+                    'number' => $request->from,
+                    'type' => 'text',
+                    'message' => 'anda mengambil history ' . $plat,
+                    // 'media_file' => $photoUrl
+                ];
 
-        // Mencari data history terbaru menggunakan relasi
-        $latestHistory = History::with('device')
-            ->where('device_id', $request->id_device)
-            ->orderByDesc('date_time')
-            ->first(); // Menggunakan first() untuk mendapatkan satu hasil saja
+                // Melakukan permintaan HTTP
+                $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                    ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+                    ->post($url, $data);
 
-        // Periksa apakah ada history terbaru
-        if ($latestHistory?->isNotEmpty()) {
-            $latestHistory = $latestHistory->first();
-            $address = $this->getAddressFromCoordinates($latestHistory->latitude, $latestHistory->longitude);
-
-            // Mendapatkan URL foto perangkat
-            $photoUrl = asset('storage/' . $device->photo); // Sesuaikan dengan lokasi penyimpanan foto perangkat
-
-            // Membangun pesan
-            $message = "Data terbaru dari perangkat: {$device->name}\n";
-            $message .= "Alamat: {$address}\n";
-            $message .= "LatLong: https://www.google.com/maps?q={$latestHistory->latitude},{$latestHistory->longitude}\n";
-            $message .= "Plat Nomor: {$device->plat_nomor}\n";
-            $message .= "Waktu: {$latestHistory->date_time}\n";
-
-            // Membangun data yang akan dikirim ke endpoint
-            $data = [
-                'gateway' => '6285954906329',
-                'number' => $request->phone,
-                'type' => 'media',
-                'message' => $message,
-                'media_file' => $photoUrl
-            ];
-
-            // Melakukan permintaan HTTP
-            $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-                ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
-                ->post($url, $data);
-
-            // Memeriksa apakah permintaan berhasil
-            if ($response->ok()) {
-                Log::info('Pesan terkirim:', ['response' => $response->getBody()->getContents()]);
+                // Memeriksa apakah permintaan berhasil
+                if ($response->ok()) {
+                    Log::info('Pesan terkirim:', ['response' => $response->getBody()->getContents()]);
+                } else {
+                    Log::error('Gagal mengirim pesan:', ['error' => $response->json()]);
+                }
             } else {
-                Log::error('Gagal mengirim pesan:', ['error' => $response->json()]);
+                Log::error('Perangkat tidak ditemukan untuk plat_nomor:', ['plat_nomor' => $plat]);
             }
-        } else {
-            Log::error('Tidak ada data histori yang ditemukan.');
         }
+
         return 'ok';
     }
 }
