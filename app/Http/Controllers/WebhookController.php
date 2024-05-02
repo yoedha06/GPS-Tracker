@@ -93,4 +93,16 @@ class WebhookController extends Controller
         }
         return 'ok';
     }
+
+    private function getAddressFromCoordinates($latitude, $longitude)
+    {
+        $url = "https://nominatim.openstreetmap.org/reverse?lat={$latitude}&lon={$longitude}&format=json";
+        $response = Http::get($url);
+        $data = $response->json();
+        if (isset($data['display_name'])) {
+            return $data['display_name'];
+        } else {
+            return "Alamat tidak ditemukan";
+        }
+    }
 }
