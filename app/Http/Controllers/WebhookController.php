@@ -56,7 +56,7 @@ class WebhookController extends Controller
                     'gateway' => '6285954906329',
                     'number' => $request->from,
                     'type' => 'text',
-                    'message' => 'anda mengambil history ' . $plat,
+                    'message' => 'anda mengambil history ' . $device->plat_nomor,
                     // 'media_file' => $photoUrl
                 ];
 
