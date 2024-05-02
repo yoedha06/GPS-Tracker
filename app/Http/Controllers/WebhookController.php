@@ -48,12 +48,12 @@ class WebhookController extends Controller
 
             // Find device based on the plat number
             $device = Device::where('plat_nomor', $plat)->first();
+            // Retrieve history for the device
+            $history = History::where('device_id', $device->id)
+                ->latest()
+                ->first();
 
-            if ($device) {
-                // Retrieve history for the device
-                $history = History::where('device_id', $device->id)
-                    ->latest()
-                    ->first();
+            if ($device == $history) {
 
                 if ($history) {
                     // Get address from coordinates
@@ -85,7 +85,7 @@ class WebhookController extends Controller
                         Log::error('Gagal mengirim pesan:', ['error' => $response->json()]);
                     }
                 } else {
-                    Log::error('Tidak ada riwayat untuk perangkat dengan plat_nomor:', ['plat_nomor' => $plat]);
+                    Log::error('Tidak ada riwayat untuk perangkat dengan plat_nomor:', ['plat_nomor' => $plat, 'history' => $history]);
                 }
             } else {
                 Log::error('Perangkat tidak ditemukan untuk plat_nomor:', ['plat_nomor' => $plat]);
