@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\About;
 use App\Models\Device;
 use App\Models\History;
+use App\Models\Informasi_Contact;
+use App\Models\Informasi_Sosmed;
+use App\Models\Pengaturan;
 use App\Models\User;
+use App\Models\Team;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -48,7 +53,7 @@ class TampilanController extends Controller
         // Ambil daftar perangkat yang dimiliki oleh pengguna
         $devices = $user->devices;
 
-        return view('customer.index', compact('user', 'deviceCount', 'historyData', 'devices', 'historyTotal', 'totalHistoryPerDevice', 'historyDevices','lastLocationsCount'));
+        return view('customer.index', compact('user', 'deviceCount', 'historyData', 'devices', 'historyTotal', 'totalHistoryPerDevice', 'historyDevices', 'lastLocationsCount'));
     }
 
 
@@ -76,15 +81,69 @@ class TampilanController extends Controller
         // Get authenticated user
         $user = auth()->user();
 
-        return view('admin.index', compact('user', 'usersCount', 'deviceCount', 'totalHistory', 'historyData', 'history', 'devices','lastLocationsCount'));
+        return view('admin.index', compact('user', 'usersCount', 'deviceCount', 'totalHistory', 'historyData', 'history', 'devices', 'lastLocationsCount'));
     }
-
 
     public function homepage()
     {
-        //tampilan homepage
-        return view('layouts.homepage');
+        // Pengaturan
+        $pengaturan = Pengaturan::first(); // Ambil data pengaturan sekali saja
+        $title_pengaturan = $pengaturan ? $pengaturan->title_pengaturan : null;
+        $name_pengaturan =  $pengaturan ? $pengaturan->name_pengaturan : null;
+        $background =  $pengaturan ? $pengaturan->background : null;
+        $logo =  $pengaturan ? $pengaturan->logo : null;
+
+        // About
+        $about = About::first(); // Ambil data tentang sekali saja
+        $title_about = $about ? $about->title_about : null;
+        $left_description = $about ? $about->left_description : null;
+        $right_description = $about ? $about->right_description : null;
+        $feature_1 = $about ? $about->feature_1 : null;
+        $feature_2 = $about ? $about->feature_2 : null;
+        $feature_3 = $about ? $about->feature_3 : null;
+
+        //team
+        $team = Team::first();
+        $informasi = $team ? $team->informasi : null;
+        $username_1 = $team ? $team->username_1 : null;
+        $posisi_1 = $team ? $team->posisi_1 : null;
+        $deskripsi_1 = $team ? $team->deskripsi_1 : null;
+        $photo_1 = $team ? $team->photo_1 : null;
+
+        $username_2 = $team ? $team->username_2 : null;
+        $posisi_2 = $team ? $team->posisi_2 : null;
+        $deskripsi_2 = $team ? $team->deskripsi_2 : null;
+        $photo_2 = $team ? $team->photo_2 : null;
+
+        $username_3 = $team ? $team->username_3 : null;
+        $posisi_3 = $team ? $team->posisi_3 : null;
+        $deskripsi_3 = $team ? $team->deskripsi_3 : null;
+        $photo_3 = $team ? $team->photo_3 : null;
+
+        $username_4 = $team ? $team->username_4 : null;
+        $posisi_4 = $team ? $team->posisi_4 : null;
+        $deskripsi_4 = $team ? $team->deskripsi_4 : null;
+        $photo_4 = $team ? $team->photo_4 : null;
+
+        //informasi contact
+        $informasi_contact = Informasi_Contact::first();
+        $name_location = $informasi_contact ? $informasi_contact->name_location : null;
+        $email_informasi = $informasi_contact ? $informasi_contact->email_informasi : null;
+        $call_informasi = $informasi_contact ? $informasi_contact->call_informasi : null;
+
+        //informasi sosmed
+        $informasi_sosmed = Informasi_Sosmed::first();
+        $title_sosmed = $informasi_sosmed ? $informasi_sosmed->title_sosmed : null;
+        $street_name = $informasi_sosmed ? $informasi_sosmed->street_name : null;
+        $subdistrict = $informasi_sosmed ? $informasi_sosmed->subdistrict : null;
+        $ward = $informasi_sosmed ? $informasi_sosmed->ward : null;
+        $call = $informasi_sosmed ? $informasi_sosmed->call : null;
+        $email = $informasi_sosmed ? $informasi_sosmed->email : null;
+
+
+        return view('layouts.homepage', compact('title_pengaturan', 'name_pengaturan', 'background', 'logo', 'title_about', 'left_description', 'pengaturan', 'about', 'right_description', 'feature_1', 'feature_2', 'feature_3', 'informasi', 'username_1', 'posisi_1', 'deskripsi_1', 'photo_1', 'username_2', 'posisi_2', 'deskripsi_2', 'photo_2', 'username_3', 'posisi_3', 'deskripsi_3', 'photo_3','username_4', 'posisi_4', 'deskripsi_4', 'photo_4','name_location', 'email_informasi', 'call_informasi','title_sosmed', 'street_name', 'subdistrict', 'ward', 'call', 'email'));
     }
+
 
     public function customer(Request $request)
     {

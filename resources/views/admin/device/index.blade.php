@@ -4,6 +4,27 @@
 
 @extends('layouts.navbaradmin')
 
+<style>
+    .loader {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: auto;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
 @section('content')
     <div id="main">
         <div class="page-heading">
@@ -42,15 +63,21 @@
             </button>
         </div>
 
-        <section class="section">
-            <div class="card">
-                <div id="validationMessage">
-                    Successfully selected data!
-                </div>
+        <div class="card">
+            <div id="validationMessage">
+                Successfully selected data!
+            </div>
+            <section class="section">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Device User</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="position: relative;">
+                    <div id="overlay"
+                        style="display:none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.7);">
+                        <div class="overlay-content d-flex justify-content-center align-items-center">
+                            <div class="loader"></div>
+                        </div>
+                    </div>
                     <table class="table table-striped" id="table1" style="table-layout: auto">
                         <thead>
                             <tr>
@@ -95,7 +122,7 @@
                         {{ $device->links('vendor.pagination.bootstrap-5') }}
                     </div>
                 </div>
-            </div>
+        </div>
         </section>
 
         <!-- Modals Photo device -->
@@ -171,21 +198,21 @@
                 tableBody.empty();
 
                 // Iterasi melalui data dan tambahkan baris ke tabel
-            $.each(data, function(index, item) {
-                console.log('Processing item:', item);
-                var platNomor = item.plat_nomor ? item.plat_nomor : '-';
-                var row = `<tr>
-                <td>${index + 1}</td>
-                <td>${item.user ? item.user.name : ''}</td>
-                <td>${item.name}</td>
-                <td>${item.serial_number}</td>
-                <td>${platNomor}</td>
-                <td>
-                    ${item.photo ? `<img src="/storage/${item.photo}" alt="Device Photo" data-bs-toggle="modal"
-                                            data-bs-target="#viewPhotoModal${item.id_device}" style="max-width: 100px; max-height: 100px;">` : 'No Image'}
-                </td>
-                </tr>`;
-                tableBody.append(row);
+                $.each(data, function(index, item) {
+                    console.log('Processing item:', item);
+                    var platNomor = item.plat_nomor ? item.plat_nomor : '-';
+                    var row = `<tr>
+                    <td>${index + 1}</td>
+                    <td>${item.user ? item.user.name : ''}</td>
+                    <td>${item.name}</td>
+                    <td>${item.serial_number}</td>
+                    <td>${platNomor}</td>
+                    <td>
+                        ${item.photo ? `<img src="/storage/${item.photo}" alt="Device Photo" data-bs-toggle="modal"
+                                                                            data-bs-target="#viewPhotoModal${item.id_device}" style="max-width: 100px; max-height: 100px;">` : 'No Image'}
+                    </td>
+                    </tr>`;
+                    tableBody.append(row);
                 });
             }
 
@@ -201,6 +228,7 @@
                 }, 1500);
             }
 
+
             // Fungsi untuk mengambil data dari server berdasarkan user ID
             function fetchData(userId) {
                 // Kirim permintaan Ajax untuk mendapatkan data berdasarkan nilai yang dipilih
@@ -210,10 +238,16 @@
                     data: {
                         userId: userId
                     },
+                    beforeSend: function() {
+                        // Tampilkan overlay sebelum mengirim permintaan
+                        $('#overlay').show();
+                    },
                     success: function(response) {
                         console.log('Received response:', response);
+                        // Sembunyikan overlay setelah menerima respons yang berhasil
+                        $('#overlay').hide();
 
-                        // Check if the response is an array and not empty
+                        // Periksa jika respons adalah array dan tidak kosong
                         if (Array.isArray(response) && response.length > 0) {
                             // Perbarui tabel atau bagian tampilan dengan data yang diterima
                             updateDeviceTable(response);
@@ -223,9 +257,13 @@
                     },
                     error: function(error) {
                         console.error('Error fetching devices:', error);
+                        // Sembunyikan overlay jika terjadi kesalahan
+                        $('#overlay').hide();
                     }
                 });
             }
+
+            // Tambahkan event listener untuk tombol "Lihat Semua Data"
             $("#showAllDataBtn").on('click', function() {
                 // Reload the current page
                 location.reload();

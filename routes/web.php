@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\Auth\VerificationController as AuthVerificationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Auth\PhoneVerificationController;
@@ -120,6 +121,18 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         //device Admin
         Route::get('/admin/device', [DeviceController::class, 'indexadmin'])->name('admin.device.index');
         Route::get('/admin/device/search', [DeviceController::class, 'search'])->name('admin.device.search');
+
+        //admin settings
+        Route::get('/admin/settings', [SettingsController::class, 'index'])->name('admin.settings');
+        Route::put('/admin/pengaturan/{id}', [SettingsController::class, 'updatepengaturan'])->name('pengaturan.update');
+        Route::put('/admin/about/{id}', [SettingsController::class, 'updateabout'])->name('about.update');
+        Route::put('/admin/informasi/{id}', [SettingsController::class, 'informasi'])->name('informasi.update');
+        Route::put('/admin/team1/{id}', [SettingsController::class, 'updateteam1'])->name('team1.update');
+        Route::put('/admin/team2/{id}', [SettingsController::class, 'updateteam2'])->name('team2.update');
+        Route::put('/admin/team3/{id}', [SettingsController::class, 'updateteam3'])->name('team3.update');
+        Route::put('/admin/team4/{id}', [SettingsController::class, 'updateteam4'])->name('team4.update');
+        Route::put('/admin/informasicontact/{id}', [SettingsController::class, 'updateinformasicontact'])->name('informasicontact.update');
+        Route::put('/admin/informasisosmed/{id}', [SettingsController::class, 'updateinformasisosmed'])->name('informasisosmed.update');
     });
 });
 
