@@ -72,7 +72,7 @@ class WebhookController extends Controller
                         'type' => 'text',
                         'message' => $message,
                     ];
-
+                    log::info('Pesan dikirim:', ['data' => $data]);
                     // Send HTTP request
                     $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
                         ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -85,7 +85,7 @@ class WebhookController extends Controller
                         Log::error('Gagal mengirim pesan:', ['error' => $response->json()]);
                     }
                 } else {
-                    Log::error('Tidak ada riwayat untuk perangkat dengan plat_nomor:', ['plat_nomor' => $plat, 'history' => $history]);
+                    Log::error('Tidak ada riwayat untuk perangkat dengan plat_nomor:', ['plat_nomor' => $plat]);
                 }
             } else {
                 Log::error('Perangkat tidak ditemukan untuk plat_nomor:', ['plat_nomor' => $plat]);
