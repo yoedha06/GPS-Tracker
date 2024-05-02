@@ -43,8 +43,8 @@ class WebhookController extends Controller
         $explodedMessage = explode(" ", $request->message);
         if (str($request->message)->startsWith("history") && count($explodedMessage) == 2 && ($explodedMessage[1] ?? false)) {
 
-            // Extract the plat number from the message
-            $plat = $explodedMessage[1];
+            // Extract the plat number from the message and convert it to uppercase
+            $plat = strtoupper($explodedMessage[1]);
 
             // Find device based on the plat number
             $device = Device::where('plat_nomor', $plat)->first();
