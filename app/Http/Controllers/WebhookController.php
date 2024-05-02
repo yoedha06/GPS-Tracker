@@ -48,12 +48,12 @@ class WebhookController extends Controller
 
             // Find device based on the plat number
             $device = Device::where('plat_nomor', $plat)->first();
-            // Retrieve history for the device
-            $history = History::where('device_id', $device->id)
-                ->latest()
-                ->first();
 
-            if ($device == $history) {
+            if ($device) {
+                // Retrieve history for the device
+                $history = History::where('device_id', $device->id)
+                    ->latest()
+                    ->first();
 
                 if ($history) {
                     // Get address from coordinates
@@ -65,6 +65,9 @@ class WebhookController extends Controller
                     $message .= "Waktu: {$history->date_time}\n";
                     $message .= "Lokasi: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
 
+                    // Log the message
+                    Log::info('Pesan untuk pengguna:', ['message' => $message]);
+
                     // Send message
                     $data = [
                         'gateway' => '6285954906329',
@@ -72,7 +75,7 @@ class WebhookController extends Controller
                         'type' => 'text',
                         'message' => $message,
                     ];
-                    log::info('Pesan dikirim:', ['data' => $data]);
+
                     // Send HTTP request
                     $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
                         ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
