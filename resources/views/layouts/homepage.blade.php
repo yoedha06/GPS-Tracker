@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+    .gacor-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: #03136d;
+        text-transform: uppercase;
+        text-shadow: 2px 2px px rgba(0, 0, 0, 0.5);
+        letter-spacing: 2px;
+    }
+</style>
 
 <head>
     <meta charset="utf-8">
@@ -34,47 +44,41 @@
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top ">
         <div class="container d-flex align-items-center">
-            @if ($logo)
-                <a href=""><img src="{{ asset('storage/' . $logo) }}" alt="Logo"
-                        style="width: 120px; height: 90px;"></a>
-            @else
-                <a href=""><img src="{{ asset('path/to/default/photo.jpg') }}" alt=""
-                        style="width: 120px; height: 90px;"></a>
-            @endif
-
-            <h1 class="logo me-auto">
-                @if ($title_pengaturan)
-                    <a href="">{{ $title_pengaturan }}</a>
+            <a href="">
+                @if ($logo)
+                    <img src="{{ asset('storage/' . $logo) }}" alt="Logo" style="width: 120px; height: 90px;">
                 @else
-                    SILAHKAN ISI TAMPILAN PENGATURAN
+                    <img src="{{ asset('images/g.png') }}" alt="Default Logo" style="width: 120px; height: 90px;">
                 @endif
-            </h1>
-        </div>
-
-
-        <nav id="navbar" class="navbar">
-            <ul>
-                <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-                <li><a class="nav-link scrollto" href="#about">About</a></li>
-                <li><a class="nav-link scrollto" href="#team">Team</a></li>
-                <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-            </ul>
-            <i class="bi bi-list mobile-nav-toggle"></i>
-        </nav><!-- .navbar -->
+            </a>
+            <h1 class="logo me-auto"><a href="">
+                    @empty($title_pengaturan)
+                        GPS EXPLORER
+                    @else
+                        {{ $title_pengaturan }}
+                    @endempty
+                </a></h1>
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+                    <li><a class="nav-link scrollto" href="#about">About</a></li>
+                    <li><a class="nav-link scrollto" href="#team">Team</a></li>
+                    <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle"></i>
+            </nav><!-- .navbar -->
 
         </div>
     </header><!-- End Header -->
 
     <!-- ======= Hero Section ======= -->
     <section id="hero"
-        style="background-image: url('{{ $background ? asset('storage/' . $background) : asset('path/to/default/photo.jpg') }}') ; background-position: right; background-size: cover; background-repeat: no-repeat;"
-        class="d-flex align-items-center">
-
+        style="background-image: url('{{ $background ? asset('storage/' . $background) : asset('images/BG.webp') }}'); background-position: right; background-size: cover; background-repeat: no-repeat;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1"
                     data-aos="fade-up" data-aos-delay="200">
-                    <h1>{{ $name_pengaturan ? $name_pengaturan : 'Please Edit' }}</h1>
+                    <h1>{{ $name_pengaturan ? $name_pengaturan : 'Welcome to GPS Explorer' }}</h1>
                     <h2>Please log in below!</h2>
                     <div class="d-flex justify-content-center justify-content-lg-start">
                         <a href="{{ route('login') }}" class="btn-get-started scrollto">Log in here</a>
@@ -92,28 +96,24 @@
             <div class="container" data-aos="fade-up">
 
                 <div class="section-title">
-                    <h2>{{ $title_about }}</h2>
+                    <h2>{{ $title_about ? $title_about : 'About GPS Explorer' }}</h2>
                 </div>
 
                 <div class="row content">
                     <div class="col-lg-6">
                         <p>
-                            {{-- GPS Explorer is a web-based application that simplifies the management of location-based
-                            data and navigation. --}} {{ $left_description }}
+                            {{ $left_description ? $left_description : 'GPS Explorer is a web-based application that simplifies the management of location-based data and navigation' }}
                         </p>
                         <ul>
-                            <li><i class="ri-check-double-line"></i>{{ $feature_1 }}</li>
-                            <li><i class="ri-check-double-line"></i>{{ $feature_2 }}</li>
-                            <li><i class="ri-check-double-line"></i> {{ $feature_3 }}</li>
+                            <li><i class="ri-check-double-line"></i>{{ $feature_1 ?: 'Accessible from anywhere' }}</li>
+                            <li><i class="ri-check-double-line"></i>{{ $feature_2 ?: 'Minimizes unwanted risks' }}</li>
+                            <li><i class="ri-check-double-line"></i>
+                                {{ $feature_3 ?: ' Efficient storage and data maintenance' }}</li>
                         </ul>
                     </div>
                     <div class="col-lg-6 pt-4 pt-lg-0">
                         <p>
-                            {{-- GPS Explorer provides a comprehensive platform for managing and exploring geographical data.
-                            It allows users to access and analyze location-related information efficiently. The digital
-                            mapping system aims to enhance traditional navigation methods and provide real-time insights
-                            into geographical data. --}} {{ $right_description }}
-                        </p>
+                            {{ $right_description ?: 'GPS Explorer provides a comprehensive platform for managing and exploring geographical data. It allows users to access and analyze location-related information efficiently. The digital mapping system aims to enhance traditional navigation methods and provide real-time insights into geographical data' }}
                     </div>
                 </div>
             </div>
@@ -127,7 +127,7 @@
 
                 <div class="section-title">
                     <h2>Team</h2>
-                    <p>{{ $informasi }}</p>
+                    <p class="gacor-text">{{ $informasi }}</p>
                 </div>
 
 
@@ -136,14 +136,15 @@
                         <div class="member d-flex align-items-start">
                             <div class="pic"
                                 style="width: 150px; height: 120px; overflow: hidden; border-radius: 50%;">
-                                <img src="{{ asset('storage/' . $photo_1) }}" alt="Logo"
-                                    style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="{{ $photo_4 ? asset('storage/' . $photo_4) : asset('images/default.jpg') }}"
+                                    alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
-                                <h4>{{ $username_1 }}</h4>
-                                <span>{{ $posisi_1 }}</span>
-                                <p>{{ $deskripsi_1 }}</p>
-                            </div>
+                                <h4>{{ $username_1 ?: 'Dzaki Ahmad Fauzan' }}</h4>
+                                <span>{{ $posisi_1 ?: 'CIGS' }}</span>
+                                <p>{{ $deskripsi_1 ?: 'Belajarlah Dengan Giat Raihlah Gelar Sampat Dapat Dan Jangan Lupakan Gelar Sejadah' }}
+                                </p>
+                            </div> 
                         </div>
                     </div>
 
@@ -152,13 +153,14 @@
                         <div class="member d-flex align-items-start">
                             <div class="pic"
                                 style="width: 150px; height: 120px; overflow: hidden; border-radius: 50%;">
-                                <img src="{{ asset('storage/' . $photo_2) }}" alt="Logo"
+                                <img src="{{ $photo_4 ? asset('storage/' . $photo_4) : asset('images/default.jpg') }}" alt="Logo"
                                     style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
-                                <h4>{{ $username_2 }}</h4>
-                                <span>{{ $posisi_2 }}</span>
-                                <p>{{ $deskripsi_2 }}</p>
+                                <h4>{{ $username_2 ?: 'Yuda Hidayat' }}</h4>
+                                <span>{{ $posisi_2 ?: 'CIGS' }}</span>
+                                <p>{{ $deskripsi_2 ?: 'Ketika Hujan Tak Kunjung Berhenti Masi Ada Yuda Yang Siap Menanti' }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -167,14 +169,16 @@
                         <div class="member d-flex align-items-start">
                             <div class="pic"
                                 style="width: 150px; height: 120px; overflow: hidden; border-radius: 50%;">
-                                <img src="{{ asset('storage/' . $photo_3) }}" alt="Logo"
+                                <img src="{{ $photo_3 ? asset('storage/' . $photo_3) : asset('images/default.jpg') }}" alt="Logo"
                                     style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
-                                <h4>{{ $username_3 }}</h4>
-                                <span>{{ $posisi_3 }}</span>
-                                <p>{{ $deskripsi_3 }}</p>
+                                <h4>{{ $username_3 ?: 'Chepi Syaehbudien Basil' }}</h4>
+                                <span>{{ $posisi_3 ?: 'CIGS' }}</span>
+                                <p>{{ $deskripsi_3 ?: 'Jika Ada Yang Lebih Manis Dari Gula Mungkin Itu Raffi' }}
+                                </p>
                             </div>
+
                         </div>
                     </div>
 
@@ -182,13 +186,14 @@
                         <div class="member d-flex align-items-start">
                             <div class="pic"
                                 style="width: 150px; height: 120px; overflow: hidden; border-radius: 50%;">
-                                <img src="{{ asset('storage/' . $photo_4) }}" alt="Logo"
+                                <img src="{{ $photo_4 ? asset('storage/' . $photo_4) : asset('images/default.jpg') }}" alt="Logo"
                                     style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
-                                <h4>{{ $username_4 }}</h4>
-                                <span>{{ $posisi_4 }}</span>
-                                <p>{{ $deskripsi_4 }}</p>
+                                <h4>{{ $username_4 ?: 'Ryan Rahma Bakti' }}</h4>
+                                <span>{{ $posisi_4 ?: 'CIGS' }}</span>
+                                <p>{{ $deskripsi_4 ?: 'Orang Orang Apa Yang Pemberani Tampan Dan Juga Manis?? Ohhh iyaa Rafii' }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -212,19 +217,19 @@
                             <div class="address">
                                 <i class="bi bi-geo-alt"></i>
                                 <h4>Location:</h4>
-                                <p>{{ $name_location }}</p>
+                                <p>{{ $name_location ?: 'Jl. CIGS No. 1' }}</p>
                             </div>
 
                             <div class="email">
                                 <i class="bi bi-envelope"></i>
                                 <h4>Email:</h4>
-                                <p>{{ $email_informasi }}</p>
+                                <p>{{ $email_informasi ?: 'geexeplorer@gmail.com'}}</p>
                             </div>
 
                             <div class="phone">
                                 <i class="bi bi-phone"></i>
                                 <h4>Call:</h4>
-                                <p>{{ $call_informasi }}</p>
+                                <p>{{ $call_informasi ?: '08123456789'}}</p>
                             </div>
                         </div>
                     </div>
@@ -253,13 +258,13 @@
                 <div class="row">
 
                     <div class="col-lg-3 col-md-6 footer-contact">
-                        <h3>{{ $title_sosmed }}</h3>
+                        <h3>{{ $title_sosmed ?: 'BARUDAK CIGS' }}</h3>
                         <p>
-                            {{ $street_name }} <br>
-                            {{ $ward }}<br>
-                            {{ $subdistrict }} <br><br>
-                            <strong>Phone:</strong>{{ $call }}<br>
-                            <strong>Email:</strong>{{ $email }}<br>
+                            {{ $street_name ?:'Jl. CIGS No. 1'}} <br>
+                            {{ $ward ?:'CIGS' }}<br>
+                            {{ $subdistrict ?:'CIGS'}} <br><br>
+                            <strong>Phone:</strong>{{ $call ?:'08123456789' }}<br>
+                            <strong>Email:</strong>{{ $email ?:'geexeplorer@gmailcom'}}<br>
                         </p>
                     </div>
 

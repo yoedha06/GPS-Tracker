@@ -266,17 +266,19 @@
                                             <td>Fitur 3</td>
                                             <td>{{ $item->feature_3 }}</td>
                                         </tr>
+                                        <tr>
+                                            <td>Action :</td>
+                                            <td colspan="3">
+                                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                    data-target="#editModalAbout{{ $item->id }}">
+                                                    <i class="fa-regular fa-pen-to-square"></i> Edit
+                                                </button>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 @endforeach
-
                             </table>
                         <tr>
-                            <td colspan="3">
-                                <button type="button" class="btn btn-primary" data-toggle="modal"
-                                    data-target="#editModalAbout{{ $item->id }}">
-                                    <i class="fa-regular fa-pen-to-square"></i> Edit
-                                </button>
-                            </td>
                         </tr>
                         </tr>
                     </thead>
@@ -357,15 +359,18 @@
                                         <td>Informasi</td>
                                         <td>{{ $item->informasi }}</td>
                                     </tr>
+                                    <tr>
+                                        <td>Action</td>
+                                        <td colspan="3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#editinfomasi{{ $item->id }}">
+                                                <i class="fa-regular fa-pen-to-square"></i> Edit
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             @endforeach
                         </table>
-                        <td colspan="3">
-                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#editinfomasi{{ $item->id }}">
-                                <i class="fa-regular fa-pen-to-square"></i> Edit
-                            </button>
-                        </td>
                     </thead>
                     <br>
                     <br>
@@ -430,21 +435,26 @@
                                                 data-toggle="modal" data-target="#phototeam1{{ $item->id }}">
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>Action :</td>
+                                        <td colspan="3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#editModalTeam1{{ $item->id }}">
+                                                <i class="fa-regular fa-pen-to-square"></i> Edit
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             @endforeach
                         </table>
-                        <td colspan="3">
-                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#editModalTeam1{{ $item->id }}">
-                                <i class="fa-regular fa-pen-to-square"></i> Edit
-                            </button>
-                        </td>
+
                     </thead>
                 </tr>
                 <br>
                 <br>
                 <br>
                 <hr>
+
                 <!-- Modal Edit Team 1 -->
                 @foreach ($team as $item)
                     <div class="modal fade" id="editModalteam1{{ $item->id }}" tabindex="-1" role="dialog"
@@ -550,15 +560,18 @@
                                                 data-toggle="modal" data-target="#phototeam2{{ $item->id }}">
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>Action :</td>
+                                        <td colspan="3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#editModalTeam2{{ $item->id }}">
+                                                <i class="fa-regular fa-pen-to-square"></i> Edit
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             @endforeach
                         </table>
-                        <td colspan="3">
-                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#editModalTeam2{{ $item->id }}">
-                                <i class="fa-regular fa-pen-to-square"></i> Edit
-                            </button>
-                        </td>
                     </thead>
                 </tr>
                 <br>
@@ -671,16 +684,19 @@
                                                 data-toggle="modal" data-target="#phototeam3{{ $item->id }}">
                                         </td>
                                     </tr>
-
+                                    <tr>
+                                        <td>Action :</td>
+                                        <td colspan="3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#editModalTeam3{{ $item->id }}"
+                                                style="margin-bottom:4px;">
+                                                <i class="fa-regular fa-pen-to-square"></i> Edit
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             @endforeach
                         </table>
-                        <td colspan="3">
-                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#editModalTeam3{{ $item->id }}" style="margin-bottom:4px;">
-                                <i class="fa-regular fa-pen-to-square"></i> Edit
-                            </button>
-                        </td>
                     </thead>
                 </tr>
                 <br>
@@ -793,16 +809,18 @@
                                                 data-toggle="modal" data-target="#phototeam4{{ $item->id }}">
                                         </td>
                                     </tr>
-
                                 </tbody>
                             @endforeach
                         </table>
-                        <td colspan="3">
-                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#editModalTeam4{{ $item->id }}" style="margin-bottom:4px;">
-                                <i class="fa-regular fa-pen-to-square"></i> Edit
-                            </button>
-                        </td>
+                        <tr>
+                            <td>Action :</td>
+                            <td colspan="3">
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#editModalTeam4{{ $item->id }}" style="margin-bottom:4px;">
+                                    <i class="fa-regular fa-pen-to-square"></i> Edit
+                                </button>
+                            </td>
+                        </tr>
                     </thead>
                 </tr>
             </div>
@@ -905,6 +923,16 @@
                                         <tr>
                                             <td>Call</td>
                                             <td>{{ $item->call_informasi }}</td>
+                                        </tr>
+                                        <td>Action :</td>
+                                        <tr>
+                                            <td colspan="3">
+                                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                    data-target="#editModalTeam3{{ $item->id }}"
+                                                    style="margin-bottom:4px;">
+                                                    <i class="fa-regular fa-pen-to-square"></i> Edit
+                                                </button>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 @endforeach
