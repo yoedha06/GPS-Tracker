@@ -127,6 +127,7 @@ class HistoryController extends Controller
 
 public function filter(Request $request)
 {
+     $user = Auth::user();
     // Ambil data yang diperlukan dari permintaan
     $selectedDevice = $request->selectedDevice;
     $startDate = $request->startDate;
@@ -139,21 +140,32 @@ public function filter(Request $request)
     // Ambil riwayat yang sesuai dengan rentang tanggal dan perangkat yang dipilih,
     // sertakan juga nama perangkat dari tabel device
    $historyData = History::with(['device' => function ($query) {
-                    $query->select('id_device', 'name'); // Ambil hanya id dan name dari tabel device
+                    $query->select('id_device', 'name');
                 }])
-                ->select('id_history', 'device_id', 'date_time', 'latitude', 'longitude', 'speeds', 'accuracy') // Pilih kolom-kolom yang ingin Anda ambil
+                ->select('id_history', 'device_id', 'date_time', 'latitude', 'longitude', 'speeds', 'accuracy')
                 ->when($selectedDevice, function ($query) use ($selectedDevice) {
                     $query->where('device_id', $selectedDevice);
                 })
                 ->whereBetween('date_time', [$startDate, $endDate])
-                ->get();
+                ->get(['speeds', 'accuracy']); // Mengambil langsung kolom speeds dan accuracy dari database
+$polylinePoints = []; // Inisialisasi array untuk menyimpan titik polyline
 
+foreach ($historyData as $history) {
+    $deviceName = $history->device->name;
+    $speed = $history->speeds;
+    $accuracy = $history->accuracy;
 
-    // Iterasi melalui data riwayat dan ambil nama perangkat untuk setiap entri
-    foreach ($historyData as $history) {
-        $deviceName = $history->device->name;
-        // Lakukan apa pun yang Anda perlukan dengan $deviceName di sini
-    }
+    // Lakukan apa pun yang Anda butuhkan dengan $deviceName, $speed, dan $accuracy di sini
+
+    // Misalnya, tambahkan titik polyline menggunakan data latitude dan longitude
+    $lat = $history->latitude;
+    $lng = $history->longitude;
+    $polylinePoints[] = ['lat' => $lat, 'lng' => $lng, 'speed' => $speed, 'accuracy' => $accuracy];
+}
+
+// Sekarang Anda memiliki semua titik polyline dalam $polylinePoints yang dapat Anda gunakan dalam JavaScript untuk membuat polyline
+// Anda bisa melewatkan $polylinePoints ke frontend Anda, kemudian gunakan dalam JavaScript seperti yang Anda lakukan sebelumnya
+
 
     // Kembalikan data dalam format JSON
     return response()->json($historyData);
@@ -162,32 +174,31 @@ public function filterHistory(Request $request)
 {
     // Ambil data yang diperlukan dari permintaan
     $selectedDevice = $request->selectedDevice;
+    // $selectedUserId = $request->selectedUserId;
     $startDate = $request->startDate;
     $endDate = $request->endDate;
+
 
     // Pastikan tanggal-tanggal yang diterima adalah dalam format yang tepat
     $startDate = date('Y-m-d H:i:s', strtotime($startDate));
     $endDate = date('Y-m-d H:i:s', strtotime($endDate));
 
-   $historyData = History::with(['device.user' => function ($query) {
-                        $query->select('id', 'name'); // Ambil hanya id dan name dari tabel users
+    $historyData = History::with(['device.user' => function ($query) {
+                            $query->select('id', 'name'); // Ambil hanya id dan name dari tabel users
                     }])
                     ->when($selectedDevice, function ($query) use ($selectedDevice) {
                         $query->where('device_id', $selectedDevice);
                     })
+                    // ->when($selectedUserId, function ($query) use ($selectedUserId) {
+                    //     $query->where('id', $selectedUserId);
+                    // })
                     ->whereBetween('date_time', [$startDate, $endDate])
                     ->get();
-
-
-    // Iterasi melalui data riwayat dan ambil nama perangkat untuk setiap entri
-    foreach ($historyData as $history) {
-        $deviceName = $history->device->name;
-        // Lakukan apa pun yang Anda perlukan dengan $deviceName di sini
-    }
-
+// dd($historyData);
     // Kembalikan data dalam format JSON
     return response()->json($historyData);
 }
+
 
 
 
