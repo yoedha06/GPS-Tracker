@@ -127,7 +127,7 @@
 
                 <div class="section-title">
                     <h2>Team</h2>
-                    <p class="gacor-text">{{ $informasi }}</p>
+                    <p class="gacor-text">{{ $informasi ?: 'Orang Orang Sukses Dan Beriman Kami' }}</p>
                 </div>
 
 
@@ -159,7 +159,7 @@
                             <div class="member-info">
                                 <h4>{{ $username_2 ?: 'Yuda Hidayat' }}</h4>
                                 <span>{{ $posisi_2 ?: 'CIGS' }}</span>
-                                <p>{{ $deskripsi_2 ?: 'Ketika Hujan Tak Kunjung Berhenti Masi Ada Yuda Yang Siap Menanti' }}
+                                <p>{{ $deskripsi_2 ?: 'Ketika Hujan Tak Kunjung Berhenti Masi Ada Yuda Yang Siap Menemani' }}
                                 </p>
                             </div>
                         </div>
