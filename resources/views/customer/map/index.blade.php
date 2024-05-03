@@ -430,7 +430,7 @@
                     map.removeLayer(polyline);
                 });
 
-                
+
                 markers = [];
                 devicePolylines = {};
 

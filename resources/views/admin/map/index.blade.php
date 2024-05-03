@@ -6,87 +6,17 @@
 
 
     ('layouts.navbaradmin')
+    <header>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet"
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-    @section('content')
-        <div class="notification-container" id="notification-container">
-            <div class="notification" id="notification">
-                <i class="fas fa-exclamation-circle"></i> Tidak ada data yang tersedia untuk perangkat dan rentang tanggal
-                yang
-                dipilih.
-            </div>
-        </div>
-
-
-        <div id="main">
-            <div class="row d-flex align-items-center">
-                <div class="col-md-6">
-                    <div class="form-group mb-3" style="width: 99%;">
-                        <label class="form-label">Select Device Users And Device</label>
-                        <select id="user_device" class="form-select input" style="width: 100%;">
-                            <option value="" disabled selected>Select</option>
-                            @foreach ($devices->sortBy('name') as $device)
-                                @if ($device->latestHistory && $device->user)
-                                    <option value="{{ $device->id_device }}" data-device-id="{{ $device->id_device }}"
-                                        data-user-id="{{ $device->user->id }}"
-                                        {{ request('device') == $device->id_device ? 'selected' : '' }}>
-                                        {{ $device->name }} - {{ $device->user->name }}
-                                    </option>
-                                @endif
-                            @endforeach
-
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group ml-3 date-time-input"
-                        style="display: flex; flex-direction: column; width: 100%;">
-                        <label for="date_range" style="margin-bottom: 5px;">Date range:</label>
-                        <div class="date-label" style="position: relative; left: 0;">
-                            <input type="text" id="date_range" class="form-control"
-                                placeholder="Start Date & Time - End Date & Time" style="width: 100%; padding-right: 30px;">
-                            <i class="fas fa-calendar"
-                                style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%);"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <button id="reset-btn" class="btn btn-danger btn-sm">Resett</button>
-                </div>
-            </div>
-
-
-
-            <div id="filter-options">
-                <label for="speed-checkbox">
-                    <input type="checkbox" id="speed-checkbox" class="filter-checkbox"> Speed
-                </label>
-                <label for="accuracy-checkbox">
-                    <input type="checkbox" id="accuracy-checkbox" class="filter-checkbox"> Accuracy
-                </label>
-            </div>
-
-        </div>
-        </div>
-        </div>
-        <div id="map-container">
-            <div id="map"></div>
-        </div>
-
-
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-        <style>
+    </header>
+    @section('content')        <style>
             #map-container {
                 width: 100%;
                 position: relative;
@@ -193,13 +123,102 @@
                     opacity: 1;
                 }
             }
-
-            
         </style>
+
+        <div class="notification-container" id="notification-container">
+            <div class="notification" id="notification">
+                <i class="fas fa-exclamation-circle"></i> Tidak ada data yang tersedia untuk perangkat dan rentang tanggal
+                yang
+                dipilih.
+            </div>
+        </div>
+
+
+        <div id="main">
+            <div class="row d-flex align-items-center">
+                <div class="col-md-6">
+                    <div class="form-group mb-3" style="width: 99%;">
+                        <label class="form-label">Select Device Users And Device</label>
+                        <select id="user_device" class="form-select input" style="width: 100%;">
+                            <option value="" disabled selected>Select</option>
+                            @foreach ($devices->sortBy('name') as $device)
+                                @if ($device->latestHistory && $device->user)
+                                    <option value="{{ $device->id_device }}" data-device-id="{{ $device->id_device }}"
+                                        data-user-id="{{ $device->user->id }}"
+                                        {{ request('device') == $device->id_device ? 'selected' : '' }}>
+                                        {{ $device->name }} - {{ $device->user->name }}
+                                    </option>
+                                @endif
+                                {{-- @dump($device) --}}
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group ml-3 date-time-input"
+                        style="display: flex; flex-direction: column; width: 100%;">
+                        <label for="date_range" style="margin-bottom: 5px;">Date range:</label>
+                        <div class="date-label" style="position: relative; left: 0;">
+                            <input type="text" id="date_range" class="form-control"
+                                placeholder="Start Date & Time - End Date & Time" style="width: 100%; padding-right: 30px;">
+                            <i class="fas fa-calendar"
+                                style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%);"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <button id="reset-btn" class="btn btn-danger btn-sm">Resett</button>
+                </div>
+            </div>
+
+
+
+            <div id="filter-options">
+                <label for="speed-checkbox">
+                    <input type="checkbox" id="speed-checkbox" class="filter-checkbox"> Speed
+                </label>
+                <label for="accuracy-checkbox">
+                    <input type="checkbox" id="accuracy-checkbox" class="filter-checkbox"> Accuracy
+                </label>
+            </div>
+
+        </div>
+        </div>
+        </div>
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
+
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 
         <!-- Include Select2 JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+        {{-- <script>
+            document.getElementById('user_device').addEventListener('change', function() {
+                var selectedValue = this.value;
+                console.log('Nilai yang dipilih:', selectedValue);
+            });
+        </script>
+
+        <script>
+            document.getElementById('user_device').addEventListener('click', function() {
+                var selectedOption = this.options[this.selectedIndex];
+                console.log('Opsi yang dipilih:', selectedOption.textContent);
+                console.log('Nilai yang dipilih:', selectedOption.value);
+                console.log('ID Perangkat:', selectedOption.getAttribute('data-device-id'));
+                console.log('ID Pengguna:', selectedOption.getAttribute('data-user-id'));
+            });
+        </script>
+ --}}
 
         <script>
             $(document).ready(function() {
@@ -229,7 +248,6 @@
                 var endDate;
                 var selectedDevice;
                 var selectedDates;
-
 
                 flatpickr("#date_range", {
                     mode: "range",
@@ -419,7 +437,7 @@
                 }
 
 
-                function filterHistory(selectedDevice, startDate, endDate) {
+                function filterHistory(selectedDevice, startDate, endDate, selectedUserId) {
                     if (startDate && endDate) {
                         var start = new Date(startDate);
                         var end = new Date(endDate);
@@ -433,17 +451,19 @@
                             ('0' + end.getDate()).slice(-2) + ' ' + ('0' + end.getHours()).slice(-2) +
                             ':' + ('0' + end.getMinutes()).slice(-2);
                         var queryString =
-                            `?start=${formattedStartDate}&end=${formattedEndDate}&device=${selectedDevice}`;
+                            `?start=${formattedStartDate}&end=${formattedEndDate}&device=${selectedDevice}&user=${selectedUserId}`;
                         window.history.pushState({}, '', window.location.pathname + queryString);
                         $.ajax({
                             url: "{{ route('admin.filter.history') }}",
                             type: "POST",
                             data: {
+                                selectedUserId: selectedUserId,
                                 selectedDevice: selectedDevice,
                                 startDate: formattedStartDate,
                                 endDate: formattedEndDate,
                                 _token: "{{ csrf_token() }}"
                             },
+                            
                             success: function(response) {
                                 filterMap(response, selectedDevice);
                             },
@@ -457,15 +477,15 @@
                 $('#user_device').on('change', function() {
                     var selectedDevice = $(this).val();
                     var selectedUserId = $(this).find(':selected').data(
-                    'user-id'); // Ambil ID pengguna dari data attribute
+                        'user-id'); // Ambil ID pengguna dari data attribute
                     var dateRange = $('#date_range').val();
                     var dates = dateRange.split(" - ");
-                    var startDate = dates[0];
-                    var endDate = dates[1];
+                    var startDate = dateRange.split(" to ")[0];
+                    var endDate = dateRange.split(" to ")[1];
                     var queryString =
                         `?start=${startDate}&end=${endDate}&device=${selectedDevice}&user=${selectedUserId}`;
                     window.history.pushState({}, '', window.location.pathname + queryString);
-                    filterHistory(selectedDevice, startDate, endDate);
+                    filterHistory(selectedDevice, startDate, endDate, selectedUserId);
                 });
 
 
