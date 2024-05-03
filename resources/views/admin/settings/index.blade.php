@@ -809,18 +809,19 @@
                                                 data-toggle="modal" data-target="#phototeam4{{ $item->id }}">
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>Action :</td>
+                                        <td colspan="3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#editModalTeam4{{ $item->id }}"
+                                                style="margin-bottom:4px;">
+                                                <i class="fa-regular fa-pen-to-square"></i> Edit
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             @endforeach
                         </table>
-                        <tr>
-                            <td>Action :</td>
-                            <td colspan="3">
-                                <button type="button" class="btn btn-primary" data-toggle="modal"
-                                    data-target="#editModalTeam4{{ $item->id }}" style="margin-bottom:4px;">
-                                    <i class="fa-regular fa-pen-to-square"></i> Edit
-                                </button>
-                            </td>
-                        </tr>
                     </thead>
                 </tr>
             </div>
@@ -928,7 +929,7 @@
                                         <tr>
                                             <td colspan="3">
                                                 <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                    data-target="#editModalTeam3{{ $item->id }}"
+                                                    data-target="#editModalInformasiContact{{ $item->id }}"
                                                     style="margin-bottom:4px;">
                                                     <i class="fa-regular fa-pen-to-square"></i> Edit
                                                 </button>
@@ -937,13 +938,6 @@
                                     </tbody>
                                 @endforeach
                             </table>
-                            <td colspan="3">
-                                <button type="button" class="btn btn-primary" data-toggle="modal"
-                                    data-target="#editModalInformasiContact{{ $item->id }}"
-                                    style="margin-bottom:4px;">
-                                    <i class="fa-regular fa-pen-to-square"></i> Edit
-                                </button>
-                            </td>
                         </tr>
                     </thead>
                 </table>
@@ -1032,18 +1026,21 @@
                                             <td>Email</td>
                                             <td>{{ $item->email }}</td>
                                         </tr>
+                                        <tr>
+                                            <td>Action</td>
+                                            <td colspan="3">
+                                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                    data-target="#editModalInformasiSosmed{{ $item->id }}"
+                                                    style="margin-bottom:4px;">
+                                                    <i class="fa-regular fa-pen-to-square"></i> Edit
+                                                </button>
+                                            </td>
+                                        </tr>
                                     </tbody>
-                                @endforeach
                             </table>
-                            <td colspan="3">
-                                <button type="button" class="btn btn-primary" data-toggle="modal"
-                                    data-target="#editModalInformasiSosmed{{ $item->id }}"
-                                    style="margin-bottom:4px;">
-                                    <i class="fa-regular fa-pen-to-square"></i> Edit
-                                </button>
-                            </td>
                         </tr>
                     </thead>
+                    @endforeach
                 </table>
             </div>
         </div>
