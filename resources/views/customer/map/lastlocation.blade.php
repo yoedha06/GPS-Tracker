@@ -93,8 +93,8 @@
                         margin-top: 1px;
                         margin-bottom: -45px;">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
-                                        Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/customer"> <i class="fas fa-user"></i></i>
+                                        Customer</a></li>
                                 <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-geo-alt-fill"></i>
                                     Last
                                     Location</li>

@@ -17,26 +17,26 @@ class HistoryController extends Controller
      * Display a listing of the resource.
      */
 
- public function index()
-{
-    $devices = Device::all();
+    public function index()
+    {
+        $devices = Device::all();
 
-    // Get the authenticated user
-    $user = Auth::user();
+        // Get the authenticated user
+        $user = Auth::user();
 
-    // Fetch all devices associated with the authenticated user
-    $devices = $user->devices ?? collect();
+        // Fetch all devices associated with the authenticated user
+        $devices = $user->devices ?? collect();
 
-    $deviceIds = $devices->pluck('id_device')->toArray(); // Convert to array
+        $deviceIds = $devices->pluck('id_device')->toArray(); // Convert to array
 
-    $history = History::whereIn('device_id', $deviceIds)
-        ->join('device', 'history.device_id', '=', 'device.id_device')
-        ->orderBy('date_time', 'desc')    // Order by date_time in descending order first
-        ->orderBy('device.name', 'asc')   // Then order by device name in ascending order
-        ->paginate(20);
+        $history = History::whereIn('device_id', $deviceIds)
+            ->join('device', 'history.device_id', '=', 'device.id_device')
+            ->orderBy('date_time', 'desc')    // Order by date_time in descending order first
+            ->orderBy('device.name', 'asc')   // Then order by device name in ascending order
+            ->paginate(20);
 
-    return view('customer.history.index', ['history' => $history, 'devices' => $devices]);
-}
+        return view('customer.history.index', ['history' => $history, 'devices' => $devices]);
+    }
 
 
     /**
@@ -96,8 +96,8 @@ class HistoryController extends Controller
     {
         $user = Auth::user();
 
-         $startTime = $request->star_date ?? now()->format('Y-m-d') . ' 00:00:00';
-         $endTime = $request->end_date ?? now()->format('Y-m-d') . ' 23:59:59';
+        $startTime = $request->star_date ?? now()->format('Y-m-d') . ' 00:00:00';
+        $endTime = $request->end_date ?? now()->format('Y-m-d') . ' 23:59:59';
 
         // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
         $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
@@ -106,10 +106,10 @@ class HistoryController extends Controller
 
         // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
         $history = DB::table('history')
-        ->whereIn('device_id', $devicesWithUniqueHistory->pluck('id_device'))
-        ->where('date_time', '>=', $startTime)
-        ->where('date_time', '<=', $endTime)
-        ->get();
+            ->whereIn('device_id', $devicesWithUniqueHistory->pluck('id_device'))
+            ->where('date_time', '>=', $startTime)
+            ->where('date_time', '<=', $endTime)
+            ->get();
 
         // Ambil semua perangkat dengan batasan jumlah
         $devices = Device::where('user_id', Auth::id())
@@ -121,165 +121,165 @@ class HistoryController extends Controller
 
 
         // Melewatkan data ke view menggunakan compact
-       return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames', 'startTime', 'endTime'));
+        return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames', 'startTime', 'endTime'));
     }
 
 
-public function filter(Request $request)
-{
-     $user = Auth::user();
-    // Ambil data yang diperlukan dari permintaan
-    $selectedDevice = $request->selectedDevice;
-    $startDate = $request->startDate;
-    $endDate = $request->endDate;
+    public function filter(Request $request)
+    {
+        $user = Auth::user();
+        // Ambil data yang diperlukan dari permintaan
+        $selectedDevice = $request->selectedDevice;
+        $startDate = $request->startDate;
+        $endDate = $request->endDate;
 
-    // Pastikan tanggal-tanggal yang diterima adalah dalam format yang tepat
-    $startDate = date('Y-m-d H:i:s', strtotime($startDate));
-    $endDate = date('Y-m-d H:i:s', strtotime($endDate));
+        // Pastikan tanggal-tanggal yang diterima adalah dalam format yang tepat
+        $startDate = date('Y-m-d H:i:s', strtotime($startDate));
+        $endDate = date('Y-m-d H:i:s', strtotime($endDate));
 
-    // Ambil riwayat yang sesuai dengan rentang tanggal dan perangkat yang dipilih,
-    // sertakan juga nama perangkat dari tabel device
-   $historyData = History::with(['device' => function ($query) {
-                    $query->select('id_device', 'name');
-                }])
-                ->select('id_history', 'device_id', 'date_time', 'latitude', 'longitude', 'speeds', 'accuracy')
-                ->when($selectedDevice, function ($query) use ($selectedDevice) {
-                    $query->where('device_id', $selectedDevice);
-                })
-                ->whereBetween('date_time', [$startDate, $endDate])
-                ->get(['speeds', 'accuracy']); // Mengambil langsung kolom speeds dan accuracy dari database
-$polylinePoints = []; // Inisialisasi array untuk menyimpan titik polyline
+        // Ambil riwayat yang sesuai dengan rentang tanggal dan perangkat yang dipilih,
+        // sertakan juga nama perangkat dari tabel device
+        $historyData = History::with(['device' => function ($query) {
+            $query->select('id_device', 'name');
+        }])
+            ->select('id_history', 'device_id', 'date_time', 'latitude', 'longitude', 'speeds', 'accuracy')
+            ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                $query->where('device_id', $selectedDevice);
+            })
+            ->whereBetween('date_time', [$startDate, $endDate])
+            ->get(['speeds', 'accuracy']); // Mengambil langsung kolom speeds dan accuracy dari database
+        $polylinePoints = []; // Inisialisasi array untuk menyimpan titik polyline
 
-foreach ($historyData as $history) {
-    $deviceName = $history->device->name;
-    $speed = $history->speeds;
-    $accuracy = $history->accuracy;
+        foreach ($historyData as $history) {
+            $deviceName = $history->device->name;
+            $speed = $history->speeds;
+            $accuracy = $history->accuracy;
 
-    // Lakukan apa pun yang Anda butuhkan dengan $deviceName, $speed, dan $accuracy di sini
+            // Lakukan apa pun yang Anda butuhkan dengan $deviceName, $speed, dan $accuracy di sini
 
-    // Misalnya, tambahkan titik polyline menggunakan data latitude dan longitude
-    $lat = $history->latitude;
-    $lng = $history->longitude;
-    $polylinePoints[] = ['lat' => $lat, 'lng' => $lng, 'speed' => $speed, 'accuracy' => $accuracy];
-}
+            // Misalnya, tambahkan titik polyline menggunakan data latitude dan longitude
+            $lat = $history->latitude;
+            $lng = $history->longitude;
+            $polylinePoints[] = ['lat' => $lat, 'lng' => $lng, 'speed' => $speed, 'accuracy' => $accuracy];
+        }
 
-// Sekarang Anda memiliki semua titik polyline dalam $polylinePoints yang dapat Anda gunakan dalam JavaScript untuk membuat polyline
-// Anda bisa melewatkan $polylinePoints ke frontend Anda, kemudian gunakan dalam JavaScript seperti yang Anda lakukan sebelumnya
-
-
-    // Kembalikan data dalam format JSON
-    return response()->json($historyData);
-}
-public function filterHistory(Request $request)
-{
-    // Ambil data yang diperlukan dari permintaan
-    $selectedDevice = $request->selectedDevice;
-    // $selectedUserId = $request->selectedUserId;
-    $startDate = $request->startDate;
-    $endDate = $request->endDate;
+        // Sekarang Anda memiliki semua titik polyline dalam $polylinePoints yang dapat Anda gunakan dalam JavaScript untuk membuat polyline
+        // Anda bisa melewatkan $polylinePoints ke frontend Anda, kemudian gunakan dalam JavaScript seperti yang Anda lakukan sebelumnya
 
 
-    // Pastikan tanggal-tanggal yang diterima adalah dalam format yang tepat
-    $startDate = date('Y-m-d H:i:s', strtotime($startDate));
-    $endDate = date('Y-m-d H:i:s', strtotime($endDate));
-
-    $historyData = History::with(['device.user' => function ($query) {
-                            $query->select('id', 'name'); // Ambil hanya id dan name dari tabel users
-                    }])
-                    ->when($selectedDevice, function ($query) use ($selectedDevice) {
-                        $query->where('device_id', $selectedDevice);
-                    })
-                    // ->when($selectedUserId, function ($query) use ($selectedUserId) {
-                    //     $query->where('id', $selectedUserId);
-                    // })
-                    ->whereBetween('date_time', [$startDate, $endDate])
-                    ->get();
-// dd($historyData);
-    // Kembalikan data dalam format JSON
-    return response()->json($historyData);
-}
+        // Kembalikan data dalam format JSON
+        return response()->json($historyData);
+    }
+    public function filterHistory(Request $request)
+    {
+        // Ambil data yang diperlukan dari permintaan
+        $selectedDevice = $request->selectedDevice;
+        // $selectedUserId = $request->selectedUserId;
+        $startDate = $request->startDate;
+        $endDate = $request->endDate;
 
 
+        // Pastikan tanggal-tanggal yang diterima adalah dalam format yang tepat
+        $startDate = date('Y-m-d H:i:s', strtotime($startDate));
+        $endDate = date('Y-m-d H:i:s', strtotime($endDate));
 
-
-public function filterByDeviceAndUser(Request $request)
-{
-    // Ambil input rentang tanggal, deviceId, dan userId dari permintaan
-    $start = $request->input('start');
-    $end = $request->input('end');
-    $deviceId = $request->input('deviceId');
-    $userId = $request->input('userId');
-
-    // Panggil metode untuk memproses data dengan rentang tanggal, deviceId, dan userId
-    $filteredData = $this->processDataByDeviceAndUser($start, $end, $deviceId, $userId);
-
-    // Kembalikan respons JSON dengan data yang difilter
-    return response()->json(['filteredData' => $filteredData]);
-}
-
-private function processDataByDeviceAndUser($start, $end, $deviceId)
-{
-    // Ambil data dari model History berdasarkan rentang tanggal dan id perangkat
-    $filteredData = History::join('device', 'history.device_id', '=', 'device.id_device')
-        ->where('history.device_id', $deviceId)
-        ->whereBetween('history.date_time', [$start, $end])
-        ->select('history.*') // Memilih semua kolom dari tabel history
-        ->addSelect('device.user_id') // Menambahkan kolom user_id dari tabel device
-        ->get();
-
-    // Return data yang telah difilter
-    return $filteredData;
-}
-
-
-
-
-
-  public function getHistoryByDevice(Request $request, $deviceId)
-{
-    logger('Request for device history. Device ID: ' . $deviceId);
-
-    // Ensure $deviceId is valid and exists in the devices associated with the authenticated user
-    $user = Auth::user();
-    $device = $user->devices()->where('id_device', $deviceId)->first();
-
-    if (!$device) {
-        return response()->json(['error' => 'Invalid device ID'], 404);
+        $historyData = History::with(['device.user' => function ($query) {
+            $query->select('id', 'name'); // Ambil hanya id dan name dari tabel users
+        }])
+            ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                $query->where('device_id', $selectedDevice);
+            })
+            // ->when($selectedUserId, function ($query) use ($selectedUserId) {
+            //     $query->where('id', $selectedUserId);
+            // })
+            ->whereBetween('date_time', [$startDate, $endDate])
+            ->get();
+        // dd($historyData);
+        // Kembalikan data dalam format JSON
+        return response()->json($historyData);
     }
 
-    // Fetch history records for the specified device with pagination
-    $perPage = $request->query('perPage', 20); // Jumlah data per halaman
-    $history = History::where('device_id', $deviceId)
-        ->orderBy('date_time', 'desc') // Urutkan berdasarkan tanggal secara descending
-        ->paginate($perPage);
 
-    // Transform history data
-    $history->transform(function ($item, $key) {
-        $itemArray = $item->toArray(); // Convert object to array
-        $itemArray['altitude_accuracy'] = $item->altitude_acuracy;
-        unset($itemArray['altitude_acuracy']); // Remove altitude_acuracy attribute
-        return $itemArray;
-    });
 
-    // Include device information and history data in the response
-    $response = [
-        'device_name' => $device->name,
-        'history' => $history->items(), // Get items on that page
-        'pagination' => [
-            'total' => $history->total(),
-            'per_page' => $history->perPage(),
-            'current_page' => $history->currentPage(),
-            'last_page' => $history->lastPage(),
-            'from' => $history->firstItem(),
-            'to' => $history->lastItem(),
-        ],
-    ];
 
-    // Log device name
-    logger('Device name: ' . $device->name);
+    public function filterByDeviceAndUser(Request $request)
+    {
+        // Ambil input rentang tanggal, deviceId, dan userId dari permintaan
+        $start = $request->input('start');
+        $end = $request->input('end');
+        $deviceId = $request->input('deviceId');
+        $userId = $request->input('userId');
 
-    return response()->json($response);
-}
+        // Panggil metode untuk memproses data dengan rentang tanggal, deviceId, dan userId
+        $filteredData = $this->processDataByDeviceAndUser($start, $end, $deviceId, $userId);
+
+        // Kembalikan respons JSON dengan data yang difilter
+        return response()->json(['filteredData' => $filteredData]);
+    }
+
+    private function processDataByDeviceAndUser($start, $end, $deviceId)
+    {
+        // Ambil data dari model History berdasarkan rentang tanggal dan id perangkat
+        $filteredData = History::join('device', 'history.device_id', '=', 'device.id_device')
+            ->where('history.device_id', $deviceId)
+            ->whereBetween('history.date_time', [$start, $end])
+            ->select('history.*') // Memilih semua kolom dari tabel history
+            ->addSelect('device.user_id') // Menambahkan kolom user_id dari tabel device
+            ->get();
+
+        // Return data yang telah difilter
+        return $filteredData;
+    }
+
+
+
+
+
+    public function getHistoryByDevice(Request $request, $deviceId)
+    {
+        logger('Request for device history. Device ID: ' . $deviceId);
+
+        // Ensure $deviceId is valid and exists in the devices associated with the authenticated user
+        $user = Auth::user();
+        $device = $user->devices()->where('id_device', $deviceId)->first();
+
+        if (!$device) {
+            return response()->json(['error' => 'Invalid device ID'], 404);
+        }
+
+        // Fetch history records for the specified device with pagination
+        $perPage = $request->query('perPage', 20); // Jumlah data per halaman
+        $history = History::where('device_id', $deviceId)
+            ->orderBy('date_time', 'desc') // Urutkan berdasarkan tanggal secara descending
+            ->paginate($perPage);
+
+        // Transform history data
+        $history->transform(function ($item, $key) {
+            $itemArray = $item->toArray(); // Convert object to array
+            $itemArray['altitude_accuracy'] = $item->altitude_acuracy;
+            unset($itemArray['altitude_acuracy']); // Remove altitude_acuracy attribute
+            return $itemArray;
+        });
+
+        // Include device information and history data in the response
+        $response = [
+            'device_name' => $device->name,
+            'history' => $history->items(), // Get items on that page
+            'pagination' => [
+                'total' => $history->total(),
+                'per_page' => $history->perPage(),
+                'current_page' => $history->currentPage(),
+                'last_page' => $history->lastPage(),
+                'from' => $history->firstItem(),
+                'to' => $history->lastItem(),
+            ],
+        ];
+
+        // Log device name
+        logger('Device name: ' . $device->name);
+
+        return response()->json($response);
+    }
 
     public function getRelatedData($userId)
 
@@ -306,41 +306,41 @@ private function processDataByDeviceAndUser($start, $end, $deviceId)
 
 
 
-   public function showMap()
-{
-    // Mengambil daftar pengguna
-    $users = User::all();
+    public function showMap()
+    {
+        // Mengambil daftar pengguna
+        $users = User::all();
 
-    // Mengambil daftar perangkat beserta relasi riwayat terakhir dan pengguna
-    $devices = Device::with('latestHistory', 'user')->get();
+        // Mengambil daftar perangkat beserta relasi riwayat terakhir dan pengguna
+        $devices = Device::with('latestHistory', 'user')->get();
 
-    // Mengambil daftar riwayat
-    $startOfDay = Carbon::now()->startOfDay();
-    $endOfDay = Carbon::now()->endOfDay();
+        // Mengambil daftar riwayat
+        $startOfDay = Carbon::now()->startOfDay();
+        $endOfDay = Carbon::now()->endOfDay();
 
-    $history = History::where('date_time', '>=', $startOfDay)
-                        ->where('date_time', '<=', $endOfDay)
-                        ->get();
+        $history = History::where('date_time', '>=', $startOfDay)
+            ->where('date_time', '<=', $endOfDay)
+            ->get();
 
-    // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
-    $serialNumbers = $devices->pluck('serial_number', 'id_device');
+        // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
+        $serialNumbers = $devices->pluck('serial_number', 'id_device');
 
-    // Membuat array nama perangkat yang berisi id perangkat sebagai kunci dan nama perangkat sebagai nilai
-    $deviceNames = $devices->pluck('name', 'id_device')->toArray();
+        // Membuat array nama perangkat yang berisi id perangkat sebagai kunci dan nama perangkat sebagai nilai
+        $deviceNames = $devices->pluck('name', 'id_device')->toArray();
 
-    // Membuat array nama pengguna yang berisi id perangkat sebagai kunci dan nama pengguna sebagai nilai
-    // Menggunakan relasi 'user' untuk mengambil nama pengguna
-    $userNames = $devices->pluck('user.name', 'id_device')->toArray();
+        // Membuat array nama pengguna yang berisi id perangkat sebagai kunci dan nama pengguna sebagai nilai
+        // Menggunakan relasi 'user' untuk mengambil nama pengguna
+        $userNames = $devices->pluck('user.name', 'id_device')->toArray();
 
-    return view('admin.map.index', [
-        'users' => $users, // Mengirim data pengguna ke tampilan
-        'devices' => $devices, // Mengirim data perangkat ke tampilan
-        'history' => $history, // Mengirim data riwayat ke tampilan
-        'serialNumbers' => $serialNumbers, // Mengirim data serial number ke tampilan
-        'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
-        'userNames' => $userNames, // Mengirim data nama pengguna ke tampilan
-    ]);
-}
+        return view('admin.map.index', [
+            'users' => $users, // Mengirim data pengguna ke tampilan
+            'devices' => $devices, // Mengirim data perangkat ke tampilan
+            'history' => $history, // Mengirim data riwayat ke tampilan
+            'serialNumbers' => $serialNumbers, // Mengirim data serial number ke tampilan
+            'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
+            'userNames' => $userNames, // Mengirim data nama pengguna ke tampilan
+        ]);
+    }
 
 
 
@@ -405,18 +405,16 @@ private function processDataByDeviceAndUser($start, $end, $deviceId)
     }
 
     public function fetchLatestData()
-   {
-    try {
-        // Ambil data terbaru dari tabel history
-        $latestData = History::latest()->get(); // Misalnya, mengambil semua data terbaru
+    {
+        try {
+            // Ambil data terbaru dari tabel history
+            $latestData = History::latest()->get(); // Misalnya, mengambil semua data terbaru
 
-        // Kembalikan data sebagai respons JSON
-        return response()->json(['data' => $latestData]);
-    } catch (\Exception $e) {
-        // Tangani jika terjadi kesalahan saat mengambil data dari tabel history
-        return response()->json(['error' => $e->getMessage()], 500);
+            // Kembalikan data sebagai respons JSON
+            return response()->json(['data' => $latestData]);
+        } catch (\Exception $e) {
+            // Tangani jika terjadi kesalahan saat mengambil data dari tabel history
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-}
-
-
 }
