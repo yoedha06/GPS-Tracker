@@ -458,6 +458,8 @@
                 }
 
 
+                
+
                 function filterHistory(selectedDevice, startDate, endDate, selectedUserId) {
                     if (startDate && endDate) {
                         var start = new Date(startDate);
