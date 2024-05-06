@@ -1,8 +1,10 @@
 @extends('layouts.admin')
-@extends('layouts.navbaradmin')
+
 <title>GEEX - Settings</title>
 
 @section('content')
+@include('layouts.navbaradmin')
+
     <div id="main">
         <div class="page-heading">
             <div class="page-title">
@@ -12,8 +14,8 @@
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/admin"><i class="fas fa-tachometer-alt"></i>
-                                        Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/admin"><i class="bi bi-person-square"></i>
+                                        Admin</a></li>
                                 <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-cog"></i>
                                     Settings</li>
                             </ol>
@@ -63,7 +65,7 @@
                                                 <td>
                                                     @if ($item->logo)
                                                         <img src="{{ asset('storage/' . $item->logo) }}" alt="Logo"
-                                                            style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px;"
+                                                            style="max-width: 150px; max-height: 150px; cursor: pointer; border-radius: 5px;"
                                                             data-toggle="modal"
                                                             data-target="#viewLogoPhotoModal{{ $item->id }}">
                                                     @else
@@ -77,7 +79,7 @@
                                                     @if ($item->background)
                                                         <img src="{{ asset('storage/' . $item->background) }}"
                                                             alt="Background"
-                                                            style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px;"
+                                                            style="max-width: 150px; max-height: 150px; cursor: pointer; border-radius: 5px;"
                                                             data-toggle="modal"
                                                             data-target="#viewBackgroundPhotoModal{{ $item->id }}">
                                                     @else
@@ -110,15 +112,6 @@
                                             <tr>
                                                 <td>Background :</td>
                                                 <td>No data available</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Action :</td>
-                                                <td colspan="3">
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                        data-target="#editModalPengaturan">
-                                                        <i class="fa-regular fa-pen-to-square"></i> Edit
-                                                    </button>
-                                                </td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -167,8 +160,7 @@
                                 <div class="form-group">
                                     <label for="background">Background:</label>
                                     <input type="file" class="form-control" id="background" name="background"
-                                        onchange="previewImage(this, 'backgroundPreview')"
-                                        value="{{ $item->background }}">
+                                        onchange="previewImage(this, 'backgroundPreview')" value="{{ $item->background }}">
                                     <img id="backgroundPreview" src="{{ asset('storage/' . $item->background) }}"
                                         alt="backgroundPreview"
                                         style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px;">
@@ -236,7 +228,7 @@
                     <thead>
                         <tr>
                             <table class="table table-striped" id="table1" style="table-layout: auto">
-                                @foreach ($about as $item)
+                                @forelse ($about as $item)
                                     <tbody>
                                         <tr>
                                             <td>Title About</td>
@@ -275,8 +267,33 @@
                                                 </button>
                                             </td>
                                         </tr>
+                                    @empty
+                                        <tr>
+                                            <td>Title About</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Deskripsi Kiri</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Deskripsi Kanan</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fitur 1</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fitur 2</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fitur 3</td>
+                                            <td>No data available</td>
+                                        </tr>
                                     </tbody>
-                                @endforeach
+                                @endforelse
                             </table>
                         <tr>
                         </tr>
@@ -353,7 +370,7 @@
                     <thead>
                         <!-- Informasi -->
                         <table class="table table-striped" id="table2" style="table-layout: auto">
-                            @foreach ($team as $item)
+                            @forelse ($team as $item)
                                 <tbody>
                                     <tr>
                                         <td>Informasi</td>
@@ -368,8 +385,13 @@
                                             </button>
                                         </td>
                                     </tr>
+                                @empty
+                                    <tr>
+                                        <td>Informasi</td>
+                                        <td>No data available</td>
+                                    </tr>
                                 </tbody>
-                            @endforeach
+                            @endforelse
                         </table>
                     </thead>
                     <br>
@@ -412,27 +434,31 @@
 
                     <!-- Tim 1 -->
                     <thead>
-                        <table class="table table-striped" id="table2" style="table-layout: auto">
-                            @foreach ($team as $item)
+                        <table class="table table-striped" id="table1" style="table-layout: auto">
+                            @forelse ($team as $item)
                                 <tbody>
                                     <tr>
                                         <td>Name 1</td>
                                         <td>{{ $item->username_1 }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Posision 1</td>
+                                        <td>Position 1</td>
                                         <td>{{ $item->posisi_1 }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Deskripsi 1</td>
+                                        <td>Description 1</td>
                                         <td>{{ $item->deskripsi_1 }}</td>
                                     </tr>
                                     <tr>
                                         <td>Photo 1</td>
                                         <td>
-                                            <img src="{{ asset('storage/' . $item->photo_1) }}" alt="Logo"
-                                                style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px;"
-                                                data-toggle="modal" data-target="#phototeam1{{ $item->id }}">
+                                            @if ($item->photo_1)
+                                                <img src="{{ asset('storage/' . $item->photo_1) }}" alt="Photo 1"
+                                                    style="max-width: 150px; max-height: 150px; cursor: pointer; border-radius: 5px;"
+                                                    data-toggle="modal" data-target="#phototeam1{{ $item->id }}">
+                                            @else
+                                                No Photo Available
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
@@ -445,9 +471,27 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            @endforeach
+                            @empty
+                                <tbody>
+                                    <tr>
+                                        <td>Name 1</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Position 1</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Description 1</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Photo 1</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                </tbody>
+                            @endforelse
                         </table>
-
                     </thead>
                 </tr>
                 <br>
@@ -458,7 +502,7 @@
                 <!-- Modal Edit Team 1 -->
                 @foreach ($team as $item)
                     <div class="modal fade" id="editModalteam1{{ $item->id }}" tabindex="-1" role="dialog"
-                        aria-labelledby="editModalAbout" aria-hidden="true">
+                        aria-labelledby="editModalteam1" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -538,26 +582,30 @@
                 <tr>
                     <thead>
                         <table class="table table-striped" id="table2" style="table-layout: auto">
-                            @foreach ($team as $item)
+                            @forelse ($team as $item)
                                 <tbody>
                                     <tr>
                                         <td>Name 2</td>
                                         <td>{{ $item->username_2 }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Posision 2</td>
+                                        <td>Position 2</td>
                                         <td>{{ $item->posisi_2 }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Deskripsi 2</td>
+                                        <td>Description 2</td>
                                         <td>{{ $item->deskripsi_2 }}</td>
                                     </tr>
                                     <tr>
                                         <td>Photo 2</td>
                                         <td>
-                                            <img src="{{ asset('storage/' . $item->photo_2) }}" alt="Logo"
-                                                style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px;"
-                                                data-toggle="modal" data-target="#phototeam2{{ $item->id }}">
+                                            @if ($item->photo_1)
+                                                <img src="{{ asset('storage/' . $item->photo_2) }}" alt="Photo 2"
+                                                    style="max-width: 150px; max-height: 150px; cursor: pointer; border-radius: 5px;"
+                                                    data-toggle="modal" data-target="#phototeam2{{ $item->id }}">
+                                            @else
+                                                No Photo Available
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
@@ -570,7 +618,26 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            @endforeach
+                            @empty
+                                <tbody>
+                                    <tr>
+                                        <td>Name 2</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Position 2</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Description 2</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Photo 2</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                </tbody>
+                            @endforelse
                         </table>
                     </thead>
                 </tr>
@@ -662,40 +729,62 @@
                 <tr>
                     <thead>
                         <table class="table table-striped" id="table3" style="table-layout: auto">
-                            @foreach ($team as $item)
+                            @forelse ($team as $item)
                                 <tbody>
                                     <tr>
                                         <td>Name 3</td>
                                         <td>{{ $item->username_3 }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Posision 3</td>
+                                        <td>Position 3</td>
                                         <td>{{ $item->posisi_3 }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Deskripsi 3</td>
+                                        <td>Description 3</td>
                                         <td>{{ $item->deskripsi_3 }}</td>
                                     </tr>
                                     <tr>
                                         <td>Photo 3</td>
                                         <td>
-                                            <img src="{{ asset('storage/' . $item->photo_3) }}" alt="Logo"
-                                                style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px;"
-                                                data-toggle="modal" data-target="#phototeam3{{ $item->id }}">
+                                            @if ($item->photo_3)
+                                                <img src="{{ asset('storage/' . $item->photo_3) }}" alt="Photo 3"
+                                                    style="max-width: 150px; max-height: 150px; cursor: pointer; border-radius: 5px;"
+                                                    data-toggle="modal" data-target="#phototeam3{{ $item->id }}">
+                                            @else
+                                                No Photo Available
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Action :</td>
                                         <td colspan="3">
                                             <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#editModalTeam3{{ $item->id }}"
-                                                style="margin-bottom:4px;">
+                                                data-target="#editModalTeam3{{ $item->id }}">
                                                 <i class="fa-regular fa-pen-to-square"></i> Edit
                                             </button>
                                         </td>
                                     </tr>
                                 </tbody>
-                            @endforeach
+                            @empty
+                                <tbody>
+                                    <tr>
+                                        <td>Name 3</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Position 3</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Description 3</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Photo 3</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                </tbody>
+                            @endforelse
                         </table>
                     </thead>
                 </tr>
@@ -706,7 +795,7 @@
                 <!-- Modal Edit Team 3 -->
                 @foreach ($team as $item)
                     <div class="modal fade" id="editModalteam3{{ $item->id }}" tabindex="-1" role="dialog"
-                        aria-labelledby="editModalAbout" aria-hidden="true">
+                        aria-labelledby="editModalteam3" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -787,40 +876,62 @@
                 <tr>
                     <thead>
                         <table class="table table-striped" id="table4" style="table-layout: auto">
-                            @foreach ($team as $item)
+                            @forelse ($team as $item)
                                 <tbody>
                                     <tr>
                                         <td>Name 4</td>
                                         <td>{{ $item->username_4 }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Posision 4</td>
+                                        <td>Position 4</td>
                                         <td>{{ $item->posisi_4 }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Deskripsi 4</td>
+                                        <td>Description 4</td>
                                         <td>{{ $item->deskripsi_4 }}</td>
                                     </tr>
                                     <tr>
                                         <td>Photo 4</td>
                                         <td>
-                                            <img src="{{ asset('storage/' . $item->photo_4) }}" alt="Logo"
-                                                style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px;"
-                                                data-toggle="modal" data-target="#phototeam4{{ $item->id }}">
+                                            @if ($item->photo_1)
+                                                <img src="{{ asset('storage/' . $item->photo_4) }}" alt="Photo 4"
+                                                    style="max-width: 150px; max-height: 150px; cursor: pointer; border-radius: 5px;"
+                                                    data-toggle="modal" data-target="#phototeam4{{ $item->id }}">
+                                            @else
+                                                No Photo Available
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Action :</td>
                                         <td colspan="3">
                                             <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#editModalTeam4{{ $item->id }}"
-                                                style="margin-bottom:4px;">
+                                                data-target="#editModalTeam4{{ $item->id }}">
                                                 <i class="fa-regular fa-pen-to-square"></i> Edit
                                             </button>
                                         </td>
                                     </tr>
                                 </tbody>
-                            @endforeach
+                            @empty
+                                <tbody>
+                                    <tr>
+                                        <td>Name 4</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Position 4</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Description 4</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Photo 4</td>
+                                        <td>No data available</td>
+                                    </tr>
+                                </tbody>
+                            @endforelse
                         </table>
                     </thead>
                 </tr>
@@ -911,7 +1022,7 @@
                     <thead>
                         <tr>
                             <table class="table table-striped" id="table1" style="table-layout: auto">
-                                @foreach ($contact as $item)
+                                @forelse ($contact as $item)
                                     <tbody>
                                         <tr>
                                             <td>Name Location</td>
@@ -935,8 +1046,21 @@
                                                 </button>
                                             </td>
                                         </tr>
+                                        @empty
+                                        <tr>
+                                            <td>Name Location</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Email</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Call</td>
+                                            <td>No data available</td>
+                                        </tr>
                                     </tbody>
-                                @endforeach
+                                @endforelse
                             </table>
                         </tr>
                     </thead>
@@ -1000,7 +1124,7 @@
                     <thead>
                         <tr>
                             <table class="table table-striped" id="table1" style="table-layout: auto">
-                                @foreach ($sosmed as $item)
+                                @forelse ($sosmed as $item)
                                     <tbody>
                                         <tr>
                                             <td>Title</td>
@@ -1036,11 +1160,36 @@
                                                 </button>
                                             </td>
                                         </tr>
+                                        @empty
+                                        <tr>
+                                            <td>Title</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Nama Jalan</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kecamatan</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kelurahan</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Call</td>
+                                            <td>No data available</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Email</td>
+                                            <td>No data available</td>
+                                        </tr>
                                     </tbody>
                             </table>
                         </tr>
                     </thead>
-                    @endforeach
+                    @endforelse
                 </table>
             </div>
         </div>

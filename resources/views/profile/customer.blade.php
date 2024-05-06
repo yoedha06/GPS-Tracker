@@ -18,11 +18,17 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/customer">Dashboard</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                            <li class="breadcrumb-item">
+                                <a href="/customer">
+                                    <i class="fas fa-user"></i> Customer
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <i class="fas fa-user-circle"></i> Profile
+                            </li>
                         </ol>
                     </nav>
-                </div>
+                </div>                
             </div>
         </div>
         <section class="section">
