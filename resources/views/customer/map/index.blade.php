@@ -318,25 +318,7 @@
 
     </style>
 
-    <script>
-        // Tentukan koordinat titik awal dan akhir rute
-        var start = L.latLng(historyData[0].latitude, historyData[0]
-            .longitude); // Mengambil koordinat titik awal dari data pertama dalam historyData
-        var end = L.latLng(historyData[historyData.length - 1].latitude, historyData[historyData.length - 1]
-            .longitude); // Mengambil koordinat titik akhir dari data terakhir dalam historyData
 
-        // Tentukan opsi rute
-        var routingOptions = {
-            waypoints: [
-                start,
-                end
-            ],
-            routeWhileDragging: true
-        };
-
-        // Buat objek rute dengan menggunakan routingOptions
-        var routingControl = L.Routing.control(routingOptions).addTo(map);
-    </script>
 
     <script>
         $(document).ready(function() {

@@ -437,6 +437,8 @@
                 }
 
 
+                
+
                 function filterHistory(selectedDevice, startDate, endDate, selectedUserId) {
                     if (startDate && endDate) {
                         var start = new Date(startDate);
@@ -463,7 +465,7 @@
                                 endDate: formattedEndDate,
                                 _token: "{{ csrf_token() }}"
                             },
-                            
+
                             success: function(response) {
                                 filterMap(response, selectedDevice);
                             },

@@ -127,7 +127,7 @@ class HistoryController extends Controller
 
 public function filter(Request $request)
 {
-     $user = Auth::user();
+    $user = Auth::user(); // Ambil pengguna yang sedang login
     // Ambil data yang diperlukan dari permintaan
     $selectedDevice = $request->selectedDevice;
     $startDate = $request->startDate;
@@ -139,15 +139,18 @@ public function filter(Request $request)
 
     // Ambil riwayat yang sesuai dengan rentang tanggal dan perangkat yang dipilih,
     // sertakan juga nama perangkat dari tabel device
-   $historyData = History::with(['device' => function ($query) {
+     $historyData = History::with(['device' => function ($query) {
                     $query->select('id_device', 'name');
                 }])
+                ->whereHas('device', function ($query) use ($user) {
+                    $query->where('user_id', $user->id); // Filter berdasarkan id pengguna
+                })
                 ->select('id_history', 'device_id', 'date_time', 'latitude', 'longitude', 'speeds', 'accuracy')
                 ->when($selectedDevice, function ($query) use ($selectedDevice) {
                     $query->where('device_id', $selectedDevice);
                 })
                 ->whereBetween('date_time', [$startDate, $endDate])
-                ->get(['speeds', 'accuracy']); // Mengambil langsung kolom speeds dan accuracy dari database
+                ->get(['speeds', 'accuracy']);// Mengambil langsung kolom speeds dan accuracy dari database
 $polylinePoints = []; // Inisialisasi array untuk menyimpan titik polyline
 
 foreach ($historyData as $history) {
@@ -177,7 +180,6 @@ public function filterHistory(Request $request)
     // $selectedUserId = $request->selectedUserId;
     $startDate = $request->startDate;
     $endDate = $request->endDate;
-
 
     // Pastikan tanggal-tanggal yang diterima adalah dalam format yang tepat
     $startDate = date('Y-m-d H:i:s', strtotime($startDate));
@@ -209,6 +211,8 @@ public function filterByDeviceAndUser(Request $request)
     $end = $request->input('end');
     $deviceId = $request->input('deviceId');
     $userId = $request->input('userId');
+
+
 
     // Panggil metode untuk memproses data dengan rentang tanggal, deviceId, dan userId
     $filteredData = $this->processDataByDeviceAndUser($start, $end, $deviceId, $userId);
@@ -306,40 +310,41 @@ private function processDataByDeviceAndUser($start, $end, $deviceId)
 
 
 
-   public function showMap()
+   public function showMap(Request $request)
 {
-    // Mengambil daftar pengguna
-    $users = User::all();
+  $start = $request->start;
+$end = $request->end;
 
-    // Mengambil daftar perangkat beserta relasi riwayat terakhir dan pengguna
-    $devices = Device::with('latestHistory', 'user')->get();
+if (! $start || ! $end) {
+    return redirect(route('admin.map') . '?start=' . now()->subHour()->format('Y-m-d H:i:s'). '&end=' . now()->format('Y-m-d H:i:s'));
+}
 
-    // Mengambil daftar riwayat
-    $startOfDay = Carbon::now()->startOfDay();
-    $endOfDay = Carbon::now()->endOfDay();
+// Mengambil daftar pengguna
+$users = User::all();
 
-    $history = History::where('date_time', '>=', $startOfDay)
-                        ->where('date_time', '<=', $endOfDay)
-                        ->get();
+// Mengambil daftar perangkat beserta pengguna
+$devices = Device::with('user')->get();
 
-    // Membuat array serial number yang berisi id perangkat sebagai kunci dan serial number sebagai nilai
-    $serialNumbers = $devices->pluck('serial_number', 'id_device');
+// Mengambil daftar riwayat
+$startOfDay = Carbon::parse($start)->startOfDay(); // Gunakan waktu awal dari permintaan
+$endOfDay = Carbon::parse($end)->endOfDay(); // Gunakan waktu akhir dari permintaan
 
-    // Membuat array nama perangkat yang berisi id perangkat sebagai kunci dan nama perangkat sebagai nilai
-    $deviceNames = $devices->pluck('name', 'id_device')->toArray();
+$history = History::where('date_time', '>=', $startOfDay)
+                    ->where('date_time', '<=', $endOfDay)
+                    ->get();
 
-    // Membuat array nama pengguna yang berisi id perangkat sebagai kunci dan nama pengguna sebagai nilai
-    // Menggunakan relasi 'user' untuk mengambil nama pengguna
-    $userNames = $devices->pluck('user.name', 'id_device')->toArray();
+// Membuat array nama perangkat yang berisi id perangkat sebagai kunci dan nama perangkat sebagai nilai
+$deviceNames = $devices->pluck('name', 'id_device')->toArray();
+$userNames = $devices->pluck('user.name', 'id_device')->toArray();
 
-    return view('admin.map.index', [
-        'users' => $users, // Mengirim data pengguna ke tampilan
-        'devices' => $devices, // Mengirim data perangkat ke tampilan
-        'history' => $history, // Mengirim data riwayat ke tampilan
-        'serialNumbers' => $serialNumbers, // Mengirim data serial number ke tampilan
-        'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
-        'userNames' => $userNames, // Mengirim data nama pengguna ke tampilan
-    ]);
+return view('admin.map.index', [
+    'users' => $users, // Mengirim data pengguna ke tampilan
+    'devices' => $devices, // Mengirim data perangkat ke tampilan
+    'history' => $history, // Mengirim data riwayat ke tampilan
+    'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
+    'userNames' => $userNames, // Mengirim data nama pengguna ke tampilan
+]);
+
 }
 
 
