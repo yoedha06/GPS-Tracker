@@ -12,8 +12,8 @@
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
-                                        Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/customer"> <i class="fas fa-user"></i></i>
+                                        Customer</a></li>
                                 <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-bell"></i>
                                     </i>
                                     Notification</li>
@@ -55,7 +55,7 @@
                                         number</label>
                                     <div class="col-md-6">
                                         <input id="phone" type="text" class="form-control" name="phone"
-                                            placeholder="your phone number" value="{{ auth()->user()->phone }}" 
+                                            placeholder="your phone number" value="{{ auth()->user()->phone }}"
                                             style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);"
                                             readonly>
                                     </div>
