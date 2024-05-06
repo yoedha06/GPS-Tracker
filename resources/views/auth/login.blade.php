@@ -128,25 +128,29 @@
                                                 class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}"
                                                 name="username" value="{{ $registered_username ?? old('username') }}"
                                                 required>
-                                            @error('username')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            @if ($errors->has('password') && !$errors->has('username'))
+                                                <div class="invalid-feedback" style="display: block;">
+                                                    {{ $errors->first('password') }}</div>
+                                            @endif
                                         </div>
-
 
                                         <div class="form-outline mb-4 position-relative">
                                             <label class="form-label" for="password">Password</label>
                                             <div class="input-group"> <!-- Tambahkan input-group di sini -->
                                                 <input type="password" id="password"
-                                                    class="form-control form-control-lg" name="password" />
+                                                    class="form-control form-control-lg {{ $errors->has('password') ? 'is-invalid' : '' }}"
+                                                    name="password" />
                                                 <span id="showPasswordBtn"
-                                                    class="position-absolute end-0 top-50 translate-middle-y"
+                                                    class="position-absolute end-0 p-2 top-50 translate-middle-y"
                                                     style="cursor: pointer;">
                                                     <i id="showPasswordIcon" class="fas fa-eye"></i>
                                                 </span>
                                             </div>
+                                            @if ($errors->has('password') && !$errors->has('username'))
+                                                <div class="invalid-feedback" style="display: block;">
+                                                    {{ $errors->first('password') }}</div>
+                                            @endif
                                         </div>
-
 
                                         <div class="pt-1 mb-4">
                                             <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
@@ -192,7 +196,8 @@
                                     <label class="form-label" for="form2ExampleForgetEmail">Email address</label>
                                 </div>
                                 <div class="pt-1 mb-4">
-                                    <button class="btn btn-dark btn-lg btn-block" type="button">Reset Password</button>
+                                    <button class="btn btn-dark btn-lg btn-block" type="button">Reset
+                                        Password</button>
                                 </div>
                                 <p class="mb-5" style="color: #393f81;">Remember your password? <a
                                         href="javascript:void(0);" onclick="showLoginForm()"

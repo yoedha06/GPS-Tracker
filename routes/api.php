@@ -3,6 +3,7 @@
 use App\Http\Controllers\api\HistoryController; //paka a kecil
 use App\Http\Controllers\api\LocationController; //tidak terpakai
 use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
