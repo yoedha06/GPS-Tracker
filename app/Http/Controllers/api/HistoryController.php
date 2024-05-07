@@ -16,7 +16,7 @@ class HistoryController extends Controller
      */
     public function index()
     {
-        $history = History::latest()->limit(100)->get();
+        $history = History::latest()->limit(10000)->get();
         return response()->json([
             'status' => true,
             'message' => 'success',
