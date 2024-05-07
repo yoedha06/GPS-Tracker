@@ -31,7 +31,7 @@ class WebhookController extends Controller
                     ->first();
 
                 if ($history) {
-                    // Get address from coordinates
+                    // mengambil di function getAddressFromCoordinates
                     $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
 
                     // Compose message with history details
