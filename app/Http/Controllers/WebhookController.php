@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
+    //webhook untuk mengirim data history
     public function store(Request $request)
     {
         $url = "https://app.japati.id/api/send-message";
