@@ -68,7 +68,6 @@ class WebhookController extends Controller
         }
         return 'ok';
     }
-    //Method untuk diatas
     private function getAddressFromCoordinates($latitude, $longitude)
     {
         $url = "https://nominatim.openstreetmap.org/reverse?lat={$latitude}&lon={$longitude}&format=json";
