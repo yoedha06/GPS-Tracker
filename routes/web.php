@@ -195,6 +195,6 @@ Route::get('/admin-chart', [TampilanController::class, 'grafikadmin']);
 Route::post('/filter-history', [HistoryController::class, 'filter'])->name('filter.history');
 
 
-Route::get('/admin/map/filter', [HistoryController::class, 'filterByDeviceAndUser']);
+Route::get('/admin/map/filter', [HistoryController::class, 'filterByDeviceAndUser'])->name('admin.history.index');
 Route::post('/admin/filter-history', [HistoryController::class, 'filterHistory'])->name('admin.filter.history');
 

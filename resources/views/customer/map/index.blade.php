@@ -146,8 +146,8 @@
                         margin-top: 1px;
                         margin-bottom: -45px;">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
-                                        Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/customer"> <i class="fas fa-user"></i></i>
+                                    Customer</a></li>
                                 <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-geo-alt-fill"></i>
                                     Maps
                                     History</li>
@@ -318,25 +318,7 @@
 
     </style>
 
-    <script>
-        // Tentukan koordinat titik awal dan akhir rute
-        var start = L.latLng(historyData[0].latitude, historyData[0]
-            .longitude); // Mengambil koordinat titik awal dari data pertama dalam historyData
-        var end = L.latLng(historyData[historyData.length - 1].latitude, historyData[historyData.length - 1]
-            .longitude); // Mengambil koordinat titik akhir dari data terakhir dalam historyData
 
-        // Tentukan opsi rute
-        var routingOptions = {
-            waypoints: [
-                start,
-                end
-            ],
-            routeWhileDragging: true
-        };
-
-        // Buat objek rute dengan menggunakan routingOptions
-        var routingControl = L.Routing.control(routingOptions).addTo(map);
-    </script>
 
     <script>
         $(document).ready(function() {

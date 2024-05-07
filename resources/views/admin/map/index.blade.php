@@ -2,128 +2,129 @@
 
     <title>GEEX - History Maps</title>
 
-    @
-
-
-    ('layouts.navbaradmin')
     <header>
 
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
         <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     </header>
-    @section('content')        <style>
-            #map-container {
-                width: 100%;
-                position: relative;
-            }
 
+    <style>
+        #map-container {
+            width: 100%;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            /* Set initial height to 100% */
+        }
+
+        .date-time-input {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .date-label {
+            position: relative;
+            display: inline-block;
+            margin-right: 10px;
+            float: left;
+        }
+
+        .date-label input[type="date"] {
+            padding-right: 30px;
+        }
+
+        .date-label i.fas.fa-calendar {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        #date_range {
+            width: 350px;
+            /* Sesuaikan lebarnya sesuai kebutuhan Anda */
+            text-align: left;
+        }
+
+        #map {
+            z-index: 0;
+            /* Atur nilai z-index yang sesuai */
+            width: 100%;
+            height: 300px;
+            /* Tinggi peta pada layar non-mobile */
+        }
+
+
+        /* Atur lebar kontainer form */
+        @media (max-width: 768px) {
             #map {
+                height: 400px;
+                /* Sesuaikan tinggi peta untuk layar mobile */
+            }
+
+            #main {
                 width: 100%;
-                height: 100%;
-                /* Set initial height to 100% */
+                /* Lebar kontainer form menjadi 100% */
             }
+        }
 
-            .date-time-input {
-                display: flex;
-                justify-content: flex-end;
-                margin-top: 10px;
-            }
+        .custom-div-icon {
+            width: 32px;
+            height: 32px;
+        }
 
-            .date-label {
-                position: relative;
-                display: inline-block;
-                margin-right: 10px;
-                float: left;
-            }
+        .custom-div-icon i {
+            color: green;
+            /* Mengatur warna ikon menjadi merah */
+        }
 
-            .date-label input[type="date"] {
-                padding-right: 30px;
-            }
+        .notification-container {
+            position: fixed;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
 
-            .date-label i.fas.fa-calendar {
-                position: absolute;
-                top: 50%;
-                right: 10px;
-                transform: translateY(-50%);
-                pointer-events: none;
-            }
+        .notification {
+            padding: 10px;
+            background-color: #f30e21;
+            color: #ffffff;
+            margin-left: 10px;
+            border-radius: 5px;
+            animation: slideInRight 0.5s forwards;
+        }
 
-            #date_range {
-                width: 350px;
-                /* Sesuaikan lebarnya sesuai kebutuhan Anda */
-                text-align: left;
-            }
-
-            #map {
-                z-index: 0;
-                /* Atur nilai z-index yang sesuai */
-                width: 100%;
-                height: 300px;
-                /* Tinggi peta pada layar non-mobile */
-            }
-
-
-            /* Atur lebar kontainer form */
-            @media (max-width: 768px) {
-                #map {
-                    height: 400px;
-                    /* Sesuaikan tinggi peta untuk layar mobile */
-                }
-
-                #main {
-                    width: 100%;
-                    /* Lebar kontainer form menjadi 100% */
-                }
-            }
-
-            .custom-div-icon {
-                width: 32px;
-                height: 32px;
-            }
-
-            .custom-div-icon i {
-                color: green;
-                /* Mengatur warna ikon menjadi merah */
-            }
-
-            .notification-container {
-                position: fixed;
-                top: 50%;
-                right: 10px;
-                transform: translateY(-50%);
-                z-index: 9999;
-                display: flex;
-                align-items: center;
+        @keyframes slideInRight {
+            0% {
+                transform: translateX(100%);
                 opacity: 0;
-                transition: opacity 0.5s ease-in-out;
             }
 
-            .notification {
-                padding: 10px;
-                background-color: #f30e21;
-                color: #ffffff;
-                margin-left: 10px;
-                border-radius: 5px;
-                animation: slideInRight 0.5s forwards;
+            100% {
+                transform: translateX(0);
+                opacity: 1;
             }
+        }
+    </style>
 
-            @keyframes slideInRight {
-                0% {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
 
-                100% {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-        </style>
+        @section('content')
+        @include('layouts.navbaradmin')
 
         <div class="notification-container" id="notification-container">
             <div class="notification" id="notification">
@@ -133,8 +134,28 @@
             </div>
         </div>
 
-
         <div id="main">
+            <div class="page-heading">
+                <div class="page-title">
+                    <div class="row">
+                        <div class="col-12 col-md-6 order-md-1 order-last">
+                        </div>
+                        <div class="col-12 col-md-6 order-md-2 order-first">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="/admin">
+                                            <i class="bi bi-person-square"></i> Admin
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-map-fill"></i>
+                                        Maps</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row d-flex align-items-center">
                 <div class="col-md-6">
                     <div class="form-group mb-3" style="width: 99%;">
@@ -437,6 +458,8 @@
                 }
 
 
+                
+
                 function filterHistory(selectedDevice, startDate, endDate, selectedUserId) {
                     if (startDate && endDate) {
                         var start = new Date(startDate);
@@ -463,7 +486,7 @@
                                 endDate: formattedEndDate,
                                 _token: "{{ csrf_token() }}"
                             },
-                            
+
                             success: function(response) {
                                 filterMap(response, selectedDevice);
                             },

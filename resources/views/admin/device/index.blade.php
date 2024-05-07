@@ -2,7 +2,6 @@
 
 <title>GEEX - Data Device</title>
 
-@extends('layouts.navbaradmin')
 
 <style>
     .loader {
@@ -26,6 +25,8 @@
     }
 </style>
 @section('content')
+@include('layouts.navbaradmin')
+
     <div id="main">
         <div class="page-heading">
             <div class="page-title">
@@ -35,8 +36,11 @@
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/admin"><i class="fas fa-tachometer-alt"></i>
-                                        Dashboard</a></li>
+                                <li class="breadcrumb-item">
+                                    <a href="/admin">
+                                        <i class="bi bi-person-square"></i> Admin
+                                    </a>
+                                </li>
                                 <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-hdd-stack-fill"></i>
                                     Data
                                     Device</li>
@@ -108,7 +112,7 @@
                                             <img src="{{ asset('storage/' . $item->photo) }}" alt="Device Photo"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#viewPhotoModal{{ $item->id_device }}"
-                                                style="max-width: 100px; max-height: 100px;">
+                                                style="max-width: 150px; max-height: 150px;">
                                         @else
                                             No Image
                                         @endif
@@ -148,6 +152,7 @@
                 </div>
             </div>
         @endforeach
+
         <footer>
             <div class="footer clearfix mb-0 text-muted">
                 <div class="float-start">
@@ -209,7 +214,7 @@
                     <td>${platNomor}</td>
                     <td>
                         ${item.photo ? `<img src="/storage/${item.photo}" alt="Device Photo" data-bs-toggle="modal"
-                                                                            data-bs-target="#viewPhotoModal${item.id_device}" style="max-width: 100px; max-height: 100px;">` : 'No Image'}
+                                                                                data-bs-target="#viewPhotoModal${item.id_device}" style="max-width: 100px; max-height: 100px;">` : 'No Image'}
                     </td>
                     </tr>`;
                     tableBody.append(row);
