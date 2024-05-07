@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+    .gacor-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: #03136d;
+        text-transform: uppercase;
+        text-shadow: 2px 2px px rgba(0, 0, 0, 0.5);
+        letter-spacing: 2px;
+    }
+</style>
 
 <head>
     <meta charset="utf-8">
@@ -29,38 +39,46 @@
     <link href="assets/css/style.css" rel="stylesheet">
 </head>
 
-<body>
 
+<body>
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top ">
         <div class="container d-flex align-items-center">
-            <a href=""><img src="/images/g.png" alt="Logo" style="width: 120px; height: 90px;">
-                <h1 class="logo me-auto"><a href="">GPS EXPLORER</a></h1>
-
-                <nav id="navbar" class="navbar">
-                    <ul>
-                        <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-                        <li><a class="nav-link scrollto" href="#about">About</a></li>
-                        <li><a class="nav-link scrollto" href="#team">Team</a></li>
-                        <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-                    </ul>
-                    <i class="bi bi-list mobile-nav-toggle"></i>
-                </nav><!-- .navbar -->
+            <a href="">
+                @if ($logo)
+                    <img src="{{ asset('storage/' . $logo) }}" alt="Logo" style="width: 120px; height: 90px;">
+                @else
+                    <img src="{{ asset('images/g.png') }}" alt="Default Logo" style="width: 120px; height: 90px;">
+                @endif
+            </a>
+            <h1 class="logo me-auto"><a href="">
+                    @empty($title_pengaturan)
+                        GPS EXPLORER
+                    @else
+                        {{ $title_pengaturan }}
+                    @endempty
+                </a></h1>
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+                    <li><a class="nav-link scrollto" href="#about">About</a></li>
+                    <li><a class="nav-link scrollto" href="#team">Team</a></li>
+                    <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle"></i>
+            </nav><!-- .navbar -->
 
         </div>
     </header><!-- End Header -->
 
     <!-- ======= Hero Section ======= -->
     <section id="hero"
-        style="background-image: url('/images/BG.webp');background-position: right;background-size: cover;
-    background-repeat: no-repeat;"
-        class="d-flex align-items-center">
-
+        style="background-image: url('{{ $background ? asset('storage/' . $background) : asset('images/BG.webp') }}'); background-position: right; background-size: cover; background-repeat: no-repeat;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1"
                     data-aos="fade-up" data-aos-delay="200">
-                    <h1>Welcome to the GPS EXPLORER Page</h1>
+                    <h1>{{ $name_pengaturan ? $name_pengaturan : 'Welcome to GPS Explorer' }}</h1>
                     <h2>Please log in below!</h2>
                     <div class="d-flex justify-content-center justify-content-lg-start">
                         <a href="{{ route('login') }}" class="btn-get-started scrollto">Log in here</a>
@@ -68,8 +86,8 @@
                 </div>
             </div>
         </div>
+    </section>
 
-    </section><!-- End Hero -->
 
     <main id="main">
 
@@ -78,28 +96,24 @@
             <div class="container" data-aos="fade-up">
 
                 <div class="section-title">
-                    <h2>About GPS Explorer</h2>
+                    <h2>{{ $title_about ? $title_about : 'About GPS Explorer' }}</h2>
                 </div>
 
                 <div class="row content">
                     <div class="col-lg-6">
                         <p>
-                            GPS Explorer is a web-based application that simplifies the management of location-based
-                            data and navigation.
+                            {{ $left_description ? $left_description : 'GPS Explorer is a web-based application that simplifies the management of location-based data and navigation' }}
                         </p>
                         <ul>
-                            <li><i class="ri-check-double-line"></i> Accessible from anywhere</li>
-                            <li><i class="ri-check-double-line"></i> Minimizes unwanted risks</li>
-                            <li><i class="ri-check-double-line"></i> Efficient storage and data maintenance</li>
+                            <li><i class="ri-check-double-line"></i>{{ $feature_1 ?: 'Accessible from anywhere' }}</li>
+                            <li><i class="ri-check-double-line"></i>{{ $feature_2 ?: 'Minimizes unwanted risks' }}</li>
+                            <li><i class="ri-check-double-line"></i>
+                                {{ $feature_3 ?: ' Efficient storage and data maintenance' }}</li>
                         </ul>
                     </div>
                     <div class="col-lg-6 pt-4 pt-lg-0">
                         <p>
-                            GPS Explorer provides a comprehensive platform for managing and exploring geographical data.
-                            It allows users to access and analyze location-related information efficiently. The digital
-                            mapping system aims to enhance traditional navigation methods and provide real-time insights
-                            into geographical data.
-                        </p>
+                            {{ $right_description ?: 'GPS Explorer provides a comprehensive platform for managing and exploring geographical data. It allows users to access and analyze location-related information efficiently. The digital mapping system aims to enhance traditional navigation methods and provide real-time insights into geographical data' }}
                     </div>
                 </div>
             </div>
@@ -113,69 +127,73 @@
 
                 <div class="section-title">
                     <h2>Team</h2>
-                    <p>Becoming a part of the GPS Explorer team is an extraordinary experience, where each member plays
-                        a crucial role in the development and success of our platform. In forming the GPS Explorer team,
-                        let's unite to create innovative solutions in delivering location information and navigation
-                        that facilitates users in exploring the world.</p>
+                    <p class="gacor-text">{{ $informasi ?: 'Orang Orang Sukses Dan Beriman Kami' }}</p>
                 </div>
 
 
                 <div class="row">
-
                     <div class="col-lg-6" data-aos="zoom-in" data-aos-delay="100">
                         <div class="member d-flex align-items-start">
-                            <div class="pic"><img
-                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa_yIGv4w2_bngi0rQw8aLXfrMgNSTs1N3WL6wivl1hBt4PN5yhxhwAUa7a9YfIcNUsBM&usqp=CAU"
-                                    class="img-fluid" alt="">
+                            <div class="pic"
+                                style="width: 150px; height: 120px; overflow: hidden; border-radius: 50%;">
+                                <img src="{{ $photo_4 ? asset('storage/' . $photo_4) : asset('images/default.jpg') }}"
+                                    alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
-                                <h4>Dzaki Ahmad Fuzan</h4>
-                                <span>CIGS</span>
-                                <p>"Belajarlah Dengan Giat,Raihlah Gelar Sampai Dapat Dan Jangan Lupakan Gelar Sejadah"
+                                <h4>{{ $username_1 ?: 'Dzaki Ahmad Fauzan' }}</h4>
+                                <span>{{ $posisi_1 ?: 'CIGS' }}</span>
+                                <p>{{ $deskripsi_1 ?: 'Belajarlah Dengan Giat Raihlah Gelar Sampat Dapat Dan Jangan Lupakan Gelar Sejadah' }}
                                 </p>
-                            </div>
+                            </div> 
                         </div>
                     </div>
 
-                    <div class="col-lg-6 mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="200">
+
+                    <div class="col-lg-6" data-aos="zoom-in" data-aos-delay="100">
                         <div class="member d-flex align-items-start">
-                            <div class="pic"><img
-                                    src="https://thumbs.dreamstime.com/b/avatar-girl-short-hair-avatar-face-single-icon-cartoon-style-rater-bitmap-symbol-stock-illustration-web-91848067.jpg"
-                                    class="img-fluid" alt="">
+                            <div class="pic"
+                                style="width: 150px; height: 120px; overflow: hidden; border-radius: 50%;">
+                                <img src="{{ $photo_4 ? asset('storage/' . $photo_4) : asset('images/default.jpg') }}" alt="Logo"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
-                                <h4>Yudha Hidayat</h4>
-                                <span>CIGS</span>
-                                <p>"Sabar adalah kunci kesuksesan. Bersabarlah dalam menghadapi cobaan, karena Allah
-                                    selalu bersama orang yang sabar." </p>
+                                <h4>{{ $username_2 ?: 'Yuda Hidayat' }}</h4>
+                                <span>{{ $posisi_2 ?: 'CIGS' }}</span>
+                                <p>{{ $deskripsi_2 ?: 'Ketika Hujan Tak Kunjung Berhenti Masi Ada Yuda Yang Siap Menemani' }}
+                                </p>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="300">
                         <div class="member d-flex align-items-start">
-                            <div class="pic"><img
-                                    src="https://as2.ftcdn.net/v2/jpg/01/40/33/03/1000_F_140330375_e7tnFRYyvlcL7TwX5e0uo1zWARI1RmOw.jpg"
-                                    class="img-fluid" alt=""></div>
-                            <div class="member-info">
-                                <h4>Chepi Syaehbudien Basil</h4>
-                                <span>CIGS</span>
-                                <p>"Keberhasilan sejati adalah ketika kita meraih keridhaan Allah, bukan sekadar pujian
-                                    dari manusia."</p>
+                            <div class="pic"
+                                style="width: 150px; height: 120px; overflow: hidden; border-radius: 50%;">
+                                <img src="{{ $photo_3 ? asset('storage/' . $photo_3) : asset('images/default.jpg') }}" alt="Logo"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
+                            <div class="member-info">
+                                <h4>{{ $username_3 ?: 'Chepi Syaehbudien Basil' }}</h4>
+                                <span>{{ $posisi_3 ?: 'CIGS' }}</span>
+                                <p>{{ $deskripsi_3 ?: 'Jika Ada Yang Lebih Manis Dari Gula Mungkin Itu Raffi' }}
+                                </p>
+                            </div>
+
                         </div>
                     </div>
 
                     <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="400">
                         <div class="member d-flex align-items-start">
-                            <div class="pic"><img
-                                    src="https://image.freepik.com/free-vector/businessman-profile-cartoon_18591-58479.jpg"
-                                    class="img-fluid" alt=""></div>
+                            <div class="pic"
+                                style="width: 150px; height: 120px; overflow: hidden; border-radius: 50%;">
+                                <img src="{{ $photo_4 ? asset('storage/' . $photo_4) : asset('images/default.jpg') }}" alt="Logo"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
                             <div class="member-info">
-                                <h4>Ryan Rahma Bakti</h4>
-                                <span>CIGS</span>
-                                <p>"Doa adalah senjata seorang mukmin. Teruslah berdoa, karena Allah mendengar setiap
-                                    doa dari hati yang tulus."</p>
+                                <h4>{{ $username_4 ?: 'Ryan Rahma Bakti' }}</h4>
+                                <span>{{ $posisi_4 ?: 'CIGS' }}</span>
+                                <p>{{ $deskripsi_4 ?: 'Orang Orang Apa Yang Pemberani Tampan Dan Juga Manis?? Ohhh iyaa Rafii' }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -199,20 +217,19 @@
                             <div class="address">
                                 <i class="bi bi-geo-alt"></i>
                                 <h4>Location:</h4>
-                                <p>Jl. HMS Mintareja Sarjana Hukum No.1, Baros, Kec. Cimahi Tengah, Kota Cimahi, Jawa
-                                    Barat 40521</p>
+                                <p>{{ $name_location ?: 'Jl. CIGS No. 1' }}</p>
                             </div>
 
                             <div class="email">
                                 <i class="bi bi-envelope"></i>
                                 <h4>Email:</h4>
-                                <p>gpsexplorer@gmail.com</p>
+                                <p>{{ $email_informasi ?: 'geexeplorer@gmail.com'}}</p>
                             </div>
 
                             <div class="phone">
                                 <i class="bi bi-phone"></i>
                                 <h4>Call:</h4>
-                                <p>+62 80 1234 5678</p>
+                                <p>{{ $call_informasi ?: '08123456789'}}</p>
                             </div>
                         </div>
                     </div>
@@ -241,13 +258,13 @@
                 <div class="row">
 
                     <div class="col-lg-3 col-md-6 footer-contact">
-                        <h3>GPS Explorer</h3>
+                        <h3>{{ $title_sosmed ?: 'BARUDAK CIGS' }}</h3>
                         <p>
-                            Baros <br>
-                            Sukaraja<br>
-                            Kec. Cicendo <br><br>
-                            <strong>Phone:</strong>+62 80 1234 5678<br>
-                            <strong>Email:</strong> gpsexplorer@gmail.com<br>
+                            {{ $street_name ?:'Jl. CIGS No. 1'}} <br>
+                            {{ $ward ?:'CIGS' }}<br>
+                            {{ $subdistrict ?:'CIGS'}} <br><br>
+                            <strong>Phone:</strong>{{ $call ?:'08123456789' }}<br>
+                            <strong>Email:</strong>{{ $email ?:'geexeplorer@gmailcom'}}<br>
                         </p>
                     </div>
 

@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Device;
 use App\Models\History;
 use App\Models\NotificationLogs;
+use App\Models\TypeNotif;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class NotificationController extends Controller
@@ -102,67 +104,48 @@ class NotificationController extends Controller
         }
     }
 
-    public function NotificationAuto(Request $request)
-    {
-        $request->validate([
-            'notification_type' => 'required|in:1,2,3',
-        ]);
-
-        if ($request->notification_type == 1) {
-            return("belum disetting");
-        }
-
-        if ($request->notification_type == 2) {
-            $currentTime = Carbon::now();
-
-            session()->put('notification_selected_time', $currentTime);
-
-            if ($currentTime->hour < 8) {
-                return redirect()->back()->with('info', 'Please wait until after 8 AM for data to be sent.');
-            } else {
-
-                $this->sendDataAfter8AM();
-
-                return redirect()->back()->with('successs', 'Data sent successfully');
-            }
-        }
-
-        if ($request->notification_type == 3) {
-            return("belum disetting");
-        }
-    }
-
-    public function sendDataAfter8AM()
+    public function notificationtype()
     {
         $url = "https://app.japati.id/api/send-message";
 
         $user = auth()->user();
 
-        $sendData = History::where('date_time', '>', Carbon::now()->startOfDay()->addHours(8))->orderby('date_time', 'asc')->first();
+        if (Carbon::now()->format('H') >= 8) {
+            // Ambil data dari tabel history dengan date_time di atas jam 8 pagi hari ini
+            $sendData = History::where('date_time', '>', Carbon::now()->startOfDay()->addHours(8))
+                               ->where('date_time', '<', Carbon::now())
+                               ->orderBy('date_time', 'asc')
+                               ->first();
+    
+            if ($sendData) {
+                $notificationType = TypeNotif::where('user_id', $user->id)
+                                                    ->where('notification_type', 2)
+                                                    ->first();
+    
+                if ($notificationType) {
+                    $message = "New data received:\n";
+                    $message .= "Date Time: " . $sendData->date_time . "\n";
+    
+                    $phoneNumber = $user->phone;
+    
+                    $data = [
+                        'gateway' => '6285954906329',
+                        'number' => $phoneNumber,
+                        'type' => 'text',
+                        'message' => $message
+                    ];
+    
+                    $response = Http::timeout(60)
+                                    ->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                                    ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+                                    ->post($url, $data);
+    
+                    if ($response->ok()) {
+                        $sendData->update(['whatsapp_sent' => 'terkirim']);
+                        Log::info($response);
+                    }
 
-        if ($sendData) {
-            $message = "New data received:\n";
-            $message .= "Date Time: " . $sendData->date_time . "\n";
-
-            $phoneNumber = $user->phone;
-
-            $data = [
-                'gateway' => '6285954906329',
-                'number' => $phoneNumber,
-                'type' => 'text',
-                'message' => $message
-            ];
-
-            $response = Http::timeout(60)->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-                ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
-                ->post($url, $data);
-
-            if (!$response->ok()) {
-                logger($response);
-
-                $errorResponse = $response->json();
-                logger($errorResponse);
-                return redirect()->route('customer.notification.index');
+                }
             }
         }
     }

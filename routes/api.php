@@ -1,9 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\HistoryController; //paka a kecil
-use App\Http\Controllers\api\LocationController; //tidak terpakai
-use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
-use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\WebhookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,5 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/history', [HistoryController::class, 'index']);
 Route::post('/history/store', [HistoryController::class, 'store']);
+
+Route::post('/webhook', [WebhookController::class, 'store']);
 
 // Route::post('/register', [AuthRegisterController::class, 'register'])->name('register');

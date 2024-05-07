@@ -12,8 +12,8 @@
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
-                                        Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/customer"> <i class="fas fa-user"></i></i>
+                                        Customer</a></li>
                                 <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-bell"></i>
                                     </i>
                                     Notification</li>
@@ -31,24 +31,28 @@
                         <div class="card-header"><b style="font-size: 1.5rem;">Send Automatic Notification</b></div>
 
                         <div class="card-body">
-                            @if (Session::has('info'))
-                                <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                                    {{ Session::get('info') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                                </div>
-                            @endif
 
-                            @if (Session::has('successs'))
+                            @if (Session::has('notif'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    {{ Session::get('successs') }}
+                                    {{ Session::get('notif') }}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                         aria-label="Close"></button>
                                 </div>
                             @endif
 
-                            <form method="POST" action="{{ route('customer.notifauto') }}">
+                            <form method="POST" action="{{ route('store.notiftype') }}">
                                 @csrf
+
+                                <div class="form-group row">
+                                    <label for="phone" class="col-md-4 col-form-label text-md-right">My phone
+                                        number</label>
+                                    <div class="col-md-8">
+                                        <input id="phone" type="text" class="form-control" name="phone"
+                                            placeholder="your phone number" value="{{ auth()->user()->phone }}"
+                                            style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);"
+                                            readonly>
+                                    </div>
+                                </div>
 
                                 <div class="form-group row">
                                     <label for="notification_type"
@@ -57,9 +61,15 @@
                                         <select id="notification_type" class="form-select" name="notification_type" required
                                             onchange="showCustomInterval()">
                                             <option value="">Select Type</option>
-                                            <option value="1" {{ session('notification_type') == 1 ? 'selected' : '' }}>Send 5 data per day</option>
-                                            <option value="2" {{ session('notification_type') == 2 ? 'selected' : '' }}>Send 1 data after 8 AM</option>
-                                            <option value="3" {{ session('notification_type') == 3 ? 'selected' : '' }}>Custom Interval (1-5 hours)</option>
+                                            <option value="1"
+                                                {{ session('notification_type') == 1 ? 'selected' : '' }}>Send 5 data per
+                                                day</option>
+                                            <option value="2"
+                                                {{ session('notification_type') == 2 ? 'selected' : '' }}>Send 1 data after
+                                                8 AM</option>
+                                            <option value="3"
+                                                {{ session('notification_type') == 3 ? 'selected' : '' }}>Custom Interval
+                                                (1-5 hours)</option>
                                         </select>
                                     </div>
                                 </div>
@@ -82,7 +92,7 @@
 
                                 <div class="form-group row mb-0">
                                     <div class="col-md-8 offset-md-4">
-                                        <button type="submit" class="btn btn-primary">ok</button>
+                                        <button type="submit" class="btn btn-primary">submit</button>
                                     </div>
                                 </div>
                             </form>
@@ -175,7 +185,7 @@
                                         <tr>
                                             <th scope="col" class="text-bold-500">#</th>
                                             <th scope="col" class="text-bold-500">device</th>
-                                            <th scope="col" class="text-bold-500">latitude & longitude</th>
+                                            <th scope="col" class="text-bold-500">Coordinate</th>
                                             <th scope="col" class="text-bold-500">Speeds</th>
                                             <th scope="col" class="text-bold-500">Date Time</th>
                                         </tr>
@@ -197,14 +207,14 @@
                     </div>
                 </div>
 
-            <script>
-                function showCustomInterval() {
-                    var selectedValue = document.getElementById("notification_type").value;
-                    if (selectedValue == 3) {
-                        document.getElementById("custom_interval").style.display = "block";
-                    } else {
-                        document.getElementById("custom_interval").style.display = "none";
+                <script>
+                    function showCustomInterval() {
+                        var selectedValue = document.getElementById("notification_type").value;
+                        if (selectedValue == 3) {
+                            document.getElementById("custom_interval").style.display = "block";
+                        } else {
+                            document.getElementById("custom_interval").style.display = "none";
+                        }
                     }
-                }
-            </script>
-        @endsection
+                </script>
+            @endsection

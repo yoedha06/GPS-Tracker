@@ -3,6 +3,27 @@
 <title>Dashboard</title>
 
 @section('content')
+    <style>
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 
     <body>
         <div id="app">
@@ -116,7 +137,6 @@
                                             <input type="date" class="form-control" id="selected_date">
                                         </div>
                                     </div>
-                                    <div id="validation-message" class="text-danger" style="display: none;"></div>
                                 </div>
 
                                 <div class="col-md-6">
@@ -146,13 +166,27 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Validation message -->
+                                <div id="validation-message" class="alert alert-success mt-3" style="display: none;">
+                                    <i class="bi bi-check-circle-fill"></i> <span class="fw-bold">Sukses!</span> Anda telah
+                                    berhasil memilih chart.
+                                </div>
 
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-header">
                                             <h4>History Grafik</h4>
                                         </div>
-                                        <div class="card-body">
+                                        <div class="card-body" style="position: relative;">
+                                            <!-- Tempatkan overlay di dalam div yang mengandung chart -->
+                                            <div id="overlay"
+                                                style="display:none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.7);">
+                                                <div
+                                                    class="overlay-content d-flex justify-content-center align-items-center">
+                                                    <div class="loader"></div>
+                                                </div>
+                                            </div>
+
                                             <div id="chart"></div>
                                         </div>
                                     </div>
@@ -301,6 +335,8 @@
                 // Function to update chart data
                 function updateChart(selectedDevice, selectedChart, selectedDate) {
                     var selectedDate = $('#selected_date').val();
+                    var overlay = $('#overlay');
+                    overlay.show();
 
                     console.log("Selected Date:", selectedDate);
                     console.log("Selected Device:", selectedDevice);
@@ -321,6 +357,7 @@
                         },
                         success: function(response) {
                             console.log("Response Data:", response);
+                            overlay.hide();
 
                             var chartData = response.data || [];
 
@@ -519,6 +556,48 @@
 
                     updateChart(selectedDevice, selectedChart, selectedDate);
                 });
+
+                // Function to validate selections
+                function validateSelections() {
+                    var selectedDate = $('#selected_date').val();
+                    var selectedDevice = $('#selected_device').val();
+                    var selectedChart = $('#selected_chart').val();
+                    var validationMessage = $('#validation-message');
+
+                    if (!selectedDevice) {
+                        validationMessage.html(
+                            '<i class="bi bi-check-circle-fill"></i> Silahkan Pilih Device Anda.').show();
+                        setTimeout(function() {
+                            validationMessage.hide();
+                        }, 2000); // Hide after 2 seconds
+                        return false;
+                    }
+
+                    if (!selectedChart) {
+                        validationMessage.html(
+                            '<i class="bi bi-check-circle-fill"></i> Berhasil Memilih Device Silahkan Pilih Chart Anda.'
+                        ).show();
+                        setTimeout(function() {
+                            validationMessage.hide();
+                        }, 2000); // Hide after 2 seconds
+                        return false;
+                    }
+
+                    if (selectedChart) {
+                        validationMessage.html(
+                            '<i class="bi bi-check-circle-fill"></i> Chart Berhasil Di Update.').show();
+                        setTimeout(function() {
+                            validationMessage.hide();
+                        }, 2000); // Hide after 2 seconds
+                    }
+
+                    return true;
+                }
+
+                // Add event listeners for changes in selections
+                $('#selected_date').change(validateSelections);
+                $('#selected_device').change(validateSelections);
+                $('#selected_chart').change(validateSelections);
             });
         </script>
     </body>

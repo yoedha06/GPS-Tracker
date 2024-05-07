@@ -30,6 +30,6 @@ class TypeNotifController extends Controller
 
         $notification->save();
 
-        return redirect()->back()->with('success', 'Notifikasi ditambahkan');
+        return redirect()->back()->with('notif', 'Notifikasi ditambahkan'); 
     }
 }

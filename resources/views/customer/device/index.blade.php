@@ -32,8 +32,8 @@
                     <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/customer"><i class="fas fa-tachometer-alt"></i>
-                                        Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="/customer"> <i class="fas fa-user"></i></i>
+                                    Customer</a></li>
                                 <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-hdd-stack-fill"></i>
                                     Data Device</li>
                             </ol>
@@ -152,12 +152,12 @@
                         enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
+                            <label for="name" class="form-label">Name <span style="color: red">*</span></label>
                             <input type="text" class="form-control" id="name" name="name"
                                 value="{{ old('name') }}" required>
                         </div>
                         <div class="mb-3">
-                            <label for="serial_number" class="form-label">Serial Number</label>
+                            <label for="serial_number" class="form-label">Serial Number <span style="color: red">*</span></label>
                             <input type="text" class="form-control" id="serial_number" name="serial_number"
                                 value="{{ old('serial_number') }}"required>
                         </div>
@@ -229,13 +229,13 @@
                         @method('PUT')
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="edit_name{{ $item->id_device }}" class="form-label">Name</label>
+                                <label for="edit_name{{ $item->id_device }}" class="form-label">Name <span style="color: red">*</span></label>
                                 <input type="text" class="form-control" id="edit_name{{ $item->id_device }}"
                                     name="name" value="{{ $item->name }}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="edit_serial_number{{ $item->id_device }}" class="form-label">Serial
-                                    Number</label>
+                                    Number <span style="color: red">*</span></label>
                                 <input type="text" class="form-control" id="edit_serial_number{{ $item->id_device }}"
                                     name="serial_number" value="{{ $item->serial_number }}" required readonly>
                             </div>

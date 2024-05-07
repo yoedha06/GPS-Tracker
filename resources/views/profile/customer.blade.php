@@ -18,11 +18,17 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/customer">Dashboard</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                            <li class="breadcrumb-item">
+                                <a href="/customer">
+                                    <i class="fas fa-user"></i> Customer
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <i class="fas fa-user-circle"></i> Profile
+                            </li>
                         </ol>
                     </nav>
-                </div>
+                </div>                
             </div>
         </div>
         <section class="section">
@@ -99,9 +105,7 @@
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
                                     <input type="text" name="username" class="form-control"
-                                        placeholder="Your Username" value="{{ $user->username }}" fdprocessedid="cgz6v"
-                                        style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);"
-                                        readonly>
+                                        placeholder="Your Username" value="{{ $user->username }}" readonly>
                                 </div>
 
                                 <div class="form-group">

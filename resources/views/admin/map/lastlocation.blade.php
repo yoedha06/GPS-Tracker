@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 
+
 <title>GEEX - Last Location</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -15,10 +16,16 @@
 </style>
 
 @section('content')
+@include('layouts.navbaradmin')
+
     <div id="main" style="margin-top:-20px;">
         <nav aria-label="breadcrumb" class="breadcrumb-header float-end float-lg-end">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/admin"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="breadcrumb-item">
+                    <a href="/admin">
+                        <i class="bi bi-person-square"></i> Admin
+                    </a>
+                </li>
                 <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-map-marker-alt"></i> LastLocation
                 </li>
             </ol>
