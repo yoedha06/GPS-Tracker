@@ -41,7 +41,7 @@ class WebhookController extends Controller
 
         // Check if the message is a history request
         $explodedMessage = explode(" ", $request->message);
-        if (str($request->message)->startsWith("history") && count($explodedMessage) == 2 && ($explodedMessage[1] ?? false)) {
+        if (str($request->message)->startsWith("lokasi") && count($explodedMessage) == 2 && ($explodedMessage[1] ?? false)) {
 
             // Extract the plat number from the message and convert it to uppercase
             $plat = strtoupper($explodedMessage[1]);
