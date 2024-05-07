@@ -210,18 +210,18 @@
                             // Mendapatkan nama jalan
                             getStreetName(latitude, longitude, function(streetName) {
                                 var popupContent =
-                                `<div style="max-width: 200px;">` +
+                                    `<div style="max-width: 200px;">` +
                                     `<center><b style="font-size:16px;">{{ $history->device->name }}</b></center><br>` +
                                     `<i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>${latitude},${longitude}<br>` +
                                     `<i class="fas fa-road" style="margin-right: 2px;"></i> ${streetName} <br>` +
                                     `<i class="fas fa-id-card" style="margin-right: 5px;"></i> {{ $history->device->plat_nomor }}<br>` +
                                     `<i class="fas fa-clock" style="margin-right: 5px;"></i> {{ $history->date_time }}<br>` +
                                     @if ($history->device->photo)
-                                        `<img src="{{ asset('storage/' . $history->device->photo) }}" style="height: 127px;">`
+                                        `<img src="{{ asset('storage/' . $history->device->photo) }}" style="width: 199px; height: 127px; margin-top: 5px;">`
                                     @else
                                         `<p>No Image Here</p>`
                                     @endif +
-                                `</div>`;
+                                    `</div>`;
 
                                 marker.bindPopup(popupContent);
                             });
@@ -296,19 +296,19 @@
                             getStreetName(data.latitude, data.longitude, function(streetName) {
                                 var popupContent =
                                     `<div style="max-width: 200px;">` +
-                                        `<center><b>Last location</b></center><br>` +
-                                        `<i class="fas fa-tablet" style="margin-right: 5px;"></i> ${data.name}<br>` +
-                                        `<i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> ${data.latitude}, ${data.longitude}<br>` +
-                                        `<i class="fas fa-road" style="margin-right: 2px;"></i> ${streetName}<br>` +
-                                        `<i class="fas fa-id-card" style="margin-right: 5px;"></i> ${data.plate_number}<br>` +
-                                        `<i class="fas fa-clock" style="margin-right: 5px;"></i> ${data.date_time}<br>` +
+                                    `<center><b>Last location</b></center><br>` +
+                                    `<i class="fas fa-tablet" style="margin-right: 5px;"></i> ${data.name}<br>` +
+                                    `<i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> ${data.latitude}, ${data.longitude}<br>` +
+                                    `<i class="fas fa-road" style="margin-right: 2px;"></i> ${streetName}<br>` +
+                                    `<i class="fas fa-id-card" style="margin-right: 5px;"></i> ${data.plate_number}<br>` +
+                                    `<i class="fas fa-clock" style="margin-right: 5px;"></i> ${data.date_time}<br>` +
                                     `</div>`;
 
                                 // Periksa apakah ada foto yang tersedia
                                 if (data.photo) {
                                     // Jika ada foto, tambahkan tag img
                                     popupContent +=
-                                        `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px;">`;
+                                        `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px; margin-top:5px;">`;
                                 } else {
                                     // Jika tidak ada foto, tampilkan teks "No Photo Here"
                                     popupContent += `<p>No Photo Here</p>`;
@@ -403,17 +403,17 @@
                                     getStreetName(data.latitude, data.longitude, function(streetName) {
                                         var popupContent =
                                             `<div style="max-width: 199px;">` +
-                                                `<center><b style="color: yellow; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" >Latest location</b></center><br>` +
-                                                `<i class="fas fa-tablet" style="margin-right: 5px;"></i> ${data.name} <br>` +
-                                                `<i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> ${data.latitude}, ${data.longitude}<br>` +
-                                                `<i class="fas fa-road" style="margin-right: 2px;"></i> ${streetName}<br>` +
-                                                `<i class="fas fa-id-card" style="margin-right: 5px;"></i> ${data.plate_number}<br>` +
-                                                `<i class="fas fa-clock" style="margin-right: 5px;"></i> ${data.date_time}<br>`;
-                                            `</div>`;
+                                            `<center><b style="color: yellow; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" >Latest location</b></center><br>` +
+                                            `<i class="fas fa-tablet" style="margin-right: 5px;"></i> ${data.name} <br>` +
+                                            `<i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> ${data.latitude}, ${data.longitude}<br>` +
+                                            `<i class="fas fa-road" style="margin-right: 2px;"></i> ${streetName}<br>` +
+                                            `<i class="fas fa-id-card" style="margin-right: 5px;"></i> ${data.plate_number}<br>` +
+                                            `<i class="fas fa-clock" style="margin-right: 5px;"></i> ${data.date_time}<br>`;
+                                        `</div>`;
                                         if (data.photo) {
                                             // Jika ada foto, tambahkan tag img
                                             popupContent +=
-                                                `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px;">`;
+                                                `<img src="{{ asset('storage') }}/${data.photo}" style="width: 199px; height: 127px; margin-top:5px;">`;
                                         } else {
                                             // Jika tidak ada foto, tampilkan teks "No Image Here"
                                             popupContent += `<p>No Image Here</p>`;
@@ -422,7 +422,8 @@
                                         latestLocationMarker.bindPopup(popupContent).openPopup();
                                     });
 
-                                    updatePolyline(); // Memperbarui polylane dengan menambahkan koordinat latest location
+                                    updatePolyline
+                                (); // Memperbarui polylane dengan menambahkan koordinat latest location
                                     map.setView(latestLocationCoordinates, 25, {
                                         maxZoom: 18
                                     });
