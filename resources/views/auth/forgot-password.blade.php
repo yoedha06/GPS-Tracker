@@ -113,7 +113,7 @@
                                 <!-- tambahkan class d-flex dan justify-content-between untuk sejajarkan tombol -->
                                 <button type="submit" class="btn btn-primary">Send Password Reset Link</button>
                                 <!-- tambahkan tombol kembali ke halaman login -->
-                                <a href="{{ route('login') }}" class="btn btn-secondary">Back to Login</a>
+                                <a href="{{ route('login') }}" class="btn btn-primary">Back to Login</a>
                             </div>
                         </form>
                     </div>
