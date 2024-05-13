@@ -15,6 +15,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TampilanController;
+use App\Http\Controllers\TypeNotifController;
 use App\Http\Controllers\ValidationController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
@@ -98,6 +99,7 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         Route::get('/customer/lastlocation', [MapController::class, 'lastloc'])->name('lastlocation');
         Route::get('/customer/notification', [NotificationController::class, 'index'])->name('customer.notification.index');
         Route::post('/customer/notification', [NotificationController::class, 'store'])->name('customer.notification.store');
+        
 
 
         //device Customer
@@ -202,3 +204,7 @@ Route::post('/filter-history', [HistoryController::class, 'filter'])->name('filt
 
 Route::get('/admin/map/filter', [HistoryController::class, 'filterByDeviceAndUser'])->name('admin.history.index');
 Route::post('/admin/filter-history', [HistoryController::class, 'filterHistory'])->name('admin.filter.history');
+
+Route::post('/customer/typenotif', [TypeNotifController::class, 'store'])->name('store.notiftype');
+Route::post('/customer/notificationAuto', [NotificationController::class, 'NotificationAuto'])->name('customer.notifauto');
+

@@ -4,18 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Device;
 use App\Models\History;
+use App\Models\NotificationLogs;
+use App\Models\TypeNotif;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class NotificationController extends Controller
 {
     public function index()
     {
         $devices = Device::where('user_id', auth()->user()->id)->get();
+        $today = Carbon::today();
+        $logs = DB::table('history')
+            ->where('user_id', auth()->user()->id)
+            ->join('device', 'history.device_id', '=', 'device.id_device')
+            ->select('history.*', 'device.name as device_name')
+            ->orderby('date_time', 'desc')
+            ->whereDate('date_time', $today)
+            ->get();
 
-        return view('customer.notification.index', ['devices' => $devices]);
+        return view('customer.notification.index', ['devices' => $devices, 'logs' => $logs]);
     }
 
     public function store(Request $request)
@@ -40,27 +52,25 @@ class NotificationController extends Controller
             ->whereBetween('date_time', [$startDateTime, $endDateTime])
             ->get();
 
-        // Periksa data dalam range
         if ($histories->isNotEmpty()) {
+            $message = "";
             foreach ($histories as $history) {
                 $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
+                // // Mendapatkan URL foto perangkat
+                // $photoUrl = asset('storage/' . $device->photo); // Sesuaikan dengan lokasi penyimpanan foto perangkat
+                // // $photoUrl = "https://files.f-g.my.id/images/dummy/buku-2.jpg";
 
-                // Mendapatkan URL foto perangkat
-                $photoUrl = asset('storage/' . $device->photo); // Sesuaikan dengan lokasi penyimpanan foto perangkat
-                // $photoUrl = "https://files.f-g.my.id/images/dummy/buku-2.jpg";
-
-                $message = "Data terbaru dari perangkat: {$device->name}\n";
-                $message .= "Alamat: {$address}\n";
-                $message .= "LatLong: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
-                $message .= "Plat Nomor: {$device->plat_nomor}\n";
-                $message .= "Waktu: {$history->date_time}\n";
+                $message .= "New Data from Device: {$histories[0]->device->name}\n";
+                $message .= "Address: " . $address . "\n";
+                $message .= "Location: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
+                $message .= "Plat Nomor: " . $history->device->plat_nomor . "\n";
+                $message .= "Waktu: " . $history->date_time . "\n\n";
 
                 $data = [
                     'gateway' => '6285954906329',
                     'number' => $request->phone,
-                    'type' => 'media',
-                    'message' => $message,
-                    'media_file' => $photoUrl
+                    'type' => 'text',
+                    'message' => $message
                 ];
 
                 $response = Http::timeout(60)->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
@@ -82,8 +92,6 @@ class NotificationController extends Controller
         }
     }
 
-
-
     private function getAddressFromCoordinates($latitude, $longitude)
     {
         $url = "https://nominatim.openstreetmap.org/reverse?lat={$latitude}&lon={$longitude}&format=json";
@@ -93,6 +101,52 @@ class NotificationController extends Controller
             return $data['display_name'];
         } else {
             return "Alamat tidak ditemukan";
+        }
+    }
+
+    public function notificationtype()
+    {
+        $url = "https://app.japati.id/api/send-message";
+
+        $user = auth()->user();
+
+        if (Carbon::now()->format('H') >= 8) {
+            // Ambil data dari tabel history dengan date_time di atas jam 8 pagi hari ini
+            $sendData = History::where('date_time', '>', Carbon::now()->startOfDay()->addHours(8))
+                               ->where('date_time', '<', Carbon::now())
+                               ->orderBy('date_time', 'asc')
+                               ->first();
+    
+            if ($sendData) {
+                $notificationType = TypeNotif::where('user_id', $user->id)
+                                                    ->where('notification_type', 2)
+                                                    ->first();
+    
+                if ($notificationType) {
+                    $message = "New data received:\n";
+                    $message .= "Date Time: " . $sendData->date_time . "\n";
+    
+                    $phoneNumber = $user->phone;
+    
+                    $data = [
+                        'gateway' => '6285954906329',
+                        'number' => $phoneNumber,
+                        'type' => 'text',
+                        'message' => $message
+                    ];
+    
+                    $response = Http::timeout(60)
+                                    ->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                                    ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+                                    ->post($url, $data);
+    
+                    if ($response->ok()) {
+                        $sendData->update(['whatsapp_sent' => 'terkirim']);
+                        Log::info($response);
+                    }
+
+                }
+            }
         }
     }
 }

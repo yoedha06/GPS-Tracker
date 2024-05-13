@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\History;
+use App\Models\NotificationLogs;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -15,14 +16,13 @@ class HistoryController extends Controller
      */
     public function index()
     {
-        $history = History::latest()->limit(100)->get();
+        $history = History::latest()->limit(10000)->get();
         return response()->json([
             'status' => true,
             'message' => 'success',
             'data' => $history
         ]);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -96,27 +96,5 @@ class HistoryController extends Controller
             'status' => $history,
         ], 201);
     }
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    
 }
