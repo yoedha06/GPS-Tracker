@@ -1496,8 +1496,6 @@
             </div>
         </div>
     </div>
-@endsection
-
 
     <!-- Modal Edit Informasi Sosmed -->
     @foreach ($sosmed as $item)
@@ -1634,3 +1632,5 @@
         }
     }
 </script>
+
+@endsection
