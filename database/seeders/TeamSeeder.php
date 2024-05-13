@@ -25,7 +25,7 @@ class TeamSeeder extends Seeder
             'posisi_4' => 'CIGS',
             'deskripsi_1' => 'Belajarlah Dengan Giat Raihlah Gelar Sampai Dapat Dan Jangan Lupakan Gelar Sejadah',
             'deskripsi_2' => 'Ketika Hujan Tak Kunjung Berhenti Masi Ada Yuda Yang Siap Menemani',
-            'deskripsi_3' => 'ORANG ORANG APA YANG KEREN? RAFII',
+            'deskripsi_3' => 'Jika Ada Yang Lebih Manis Dari Gula Mungkin Itu Raffi',
             'deskripsi_4' => 'ORANG ORANG APA YANG MANIS? RAFII',
         ]);
     }
