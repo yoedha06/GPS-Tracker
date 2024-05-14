@@ -44,7 +44,7 @@ class WebhookController extends Controller
                     $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
 
                     // Compose message with history details
-                    $message = "Lokari Terakhir ({*$plat*}):\n";
+                    $message = "Lokasi Terakhir (*{$plat}*):\n";
                     $message .= "Alamat: {$address}\n";
                     $message .= "Waktu: {$history->date_time}\n";
                     $message .= "Lokasi: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
