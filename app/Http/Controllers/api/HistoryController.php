@@ -130,6 +130,7 @@ class HistoryController extends Controller
                 }
             }
         }
+        //response
         return response()->json([
             'message' => true,
             'status' => $history,
