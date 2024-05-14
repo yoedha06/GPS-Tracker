@@ -119,8 +119,6 @@
             opacity: 1;
         }
     }
-
-
 </style>
 
 
@@ -129,8 +127,7 @@
     <!-- Notifikasi -->
     <div class="notification-container" id="notification-container">
         <div class="notification" id="notification">
-            <i class="fas fa-exclamation-circle"></i> Tidak ada data yang tersedia untuk perangkat dan rentang tanggal yang
-            dipilih.
+            <i class="fas fa-exclamation-circle"></i>
         </div>
     </div>
 
@@ -147,7 +144,7 @@
                         margin-bottom: -45px;">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="/customer"> <i class="fas fa-user"></i></i>
-                                    Customer</a></li>
+                                        Customer</a></li>
                                 <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-geo-alt-fill"></i>
                                     Maps
                                     History</li>
@@ -163,12 +160,14 @@
                 style="display: flex; flex-direction: column; width: 100%; margin-top: 37px; margin-bottom: 0px;">
                 <div class="d-flex" style="gap:5px;">
                     <select id="device-select" class="form-select input" style="width: 100%;">
-                        <option value="" disabled selected>Select Devicee</option>
+                        <option value="" disabled>Select Device</option>
                         @foreach ($devices as $device)
-                            <option value="{{ $device->id_device }}" @selected(request('device') == $device->id_device)>{{ $device->user->name }}
-                                - {{ $device->name }}</option>
+                            <option value="{{ $device->id_device }}" @if ($device->id_device == $latestDevice->id_device) selected @endif>
+                                {{ $device->user->name }} - {{ $device->name }}
+                            </option>
                         @endforeach
                     </select>
+
                 </div>
             </div>
 
@@ -186,21 +185,32 @@
 
         </form>
 
-      <div id="filter-options">
-                <label for="speed-checkbox">
-                    <input type="checkbox" id="speed-checkbox" class="filter-checkbox"> Speed
-                </label>
-                <label for="accuracy-checkbox">
-                    <input type="checkbox" id="accuracy-checkbox" class="filter-checkbox"> Accuracy
-                </label>
-            </div>
+        <div id="filter-options">
+            <label for="speed-checkbox">
+                <input type="checkbox" id="speed-checkbox" class="filter-checkbox"> Speed
+            </label>
+            <label for="accuracy-checkbox">
+                <input type="checkbox" id="accuracy-checkbox" class="filter-checkbox"> Accuracy
+            </label>
         </div>
-        <div>
-            <div id="device-names" data-device-names="{{ json_encode($deviceNames) }}" style="display: none;"></div>
+    </div>
+    </div>
+
+    <div>
+        <div id="device-names" data-device-names="{{ json_encode($deviceNames) }}" style="display: none;"></div>
+    </div>
+
+    </div>
+
+    <div id="map-container">
+        <div id="map"></div>
+        <div id="loading-overlay">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only"></span>
+            </div>
         </div>
     </div>
 
-    <div id="map" style="height: 420px; width: 100%;"></div>
 
 
     <!-- Load jQuery first -->
@@ -315,13 +325,34 @@
             }
         }
 
+        #map-container {
+            position: relative;
+        }
 
+        #loading-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            display: none;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
     </style>
 
 
 
     <script>
         $(document).ready(function() {
+            //         setInterval(function() {
+            //     // Mendapatkan data terbaru dan memperbarui peta
+            //     filterHistory(selectedDevice, startDate, endDate);
+            // }, 1000); // Waktu dalam milidetik (1 detik = 1000 milidetik)
+
             let queryParam = new URLSearchParams(window.location.search);
             let queryDevice = queryParam.get('device');
             let queryStart = queryParam.get('start');
@@ -330,22 +361,28 @@
             if (queryStart && queryEnd) {
                 $('#date_range').val(queryStart + ' - ' + queryEnd);
                 filterHistory(queryDevice == 'null' ? '' : queryDevice, queryStart, queryEnd);
+            } else {
+                let latestDevice = "{{ $latestDevice->id_device }}";
+                $('#device-select').val(latestDevice).trigger('change');
+                let startDate = "{{ now()->subHour(3)->format('Y-m-d H:i:s') }}";
+                let endDate = "{{ now()->format('Y-m-d H:i:s') }}";
+                $('#date_range').val(startDate + ' - ' + endDate);
+                filterHistory(latestDevice, startDate, endDate);
             }
 
-
-              $('#device-select').select2({
-                    sorter: function(data) {
-                        return data.sort(function(a, b) {
-                            return a.text.localeCompare(b.text);
-                        });
-                           if (historyData.length === 0) {
-                    $('#notification-container').css('opacity', '1');
-                    setTimeout(function() {
-                        $('#notification-container').css('opacity', '0');
-                    }, 5000);
-                }
+            $('#device-select').select2({
+                sorter: function(data) {
+                    return data.sort(function(a, b) {
+                        return a.text.localeCompare(b.text);
+                    });
+                    if (historyData.length === 0) {
+                        $('#notification-container').css('opacity', '1');
+                        setTimeout(function() {
+                            $('#notification-container').css('opacity', '0');
+                        }, 5000);
                     }
-                });
+                }
+            });
 
             var startDate;
             var endDate;
@@ -353,13 +390,19 @@
             var selectedDates;
 
 
+            // Mendapatkan waktu sekarang
+            var now = new Date();
+
+            // Mengatur waktu mulai 3 jam sebelum waktu sekarang
+            var start = new Date(now.getTime() - 3 * 60 * 60 * 1000); // Mengurangi 3 jam dalam milidetik
+
             flatpickr("#date_range", {
                 mode: "range",
                 dateFormat: "Y-m-d H:i",
                 enableTime: true,
                 defaultDate: [
-                    new Date().setHours(0, 0, 0, 0), // Mulai dari jam 00:00
-                    new Date().setHours(23, 0, 0, 0) // Berakhir pada jam 23:00
+                    start, // Waktu mulai 3 jam sebelum waktu sekarang
+                    now // Waktu akhir adalah waktu sekarang
                 ],
                 onClose: function(selectedDates) {
                     startDate = selectedDates[0];
@@ -393,6 +436,7 @@
             var devicePolylines = {};
 
             function filterMap(historyData) {
+
                 if (!Array.isArray(historyData)) {
                     console.error("Data is not an array.");
                     return;
@@ -425,7 +469,7 @@
 
                     var startIcon = L.divIcon({
                         className: 'custom-div-icon',
-                        html: "<i class='fas fa-map-marker-alt' style='font-size: 40px; color: green;'></i>",
+                        html: "<i class='fas fa-map-marker-alt' style='font-size: 40px; color: light green;'></i>",
                         iconSize: [42, 49],
                         iconAnchor: [20, 44],
                         popupAnchor: [-5, -41]
@@ -466,14 +510,14 @@
 
                     var polylinePoints = [];
                     var color, weight, opacity;
-                    var speed, accuracy; // Deklarasi variabel di luar forEach loop
+                    var speed, accuracy;
 
                     deviceHistory.forEach(historyItem => {
                         var lat = parseFloat(historyItem.latitude);
                         var lng = parseFloat(historyItem.longitude);
                         speed = parseFloat(historyItem.speeds); // Assign value to speed variable
                         accuracy = parseFloat(historyItem
-                        .accuracy); // Assign value to accuracy variable
+                            .accuracy); // Assign value to accuracy variable
 
                         if (!isNaN(speed)) {
                             if (speed >= 0 && speed < 20) {
@@ -520,25 +564,37 @@
                 var allPolylines = Object.values(devicePolylines);
                 var bounds = L.featureGroup(allPolylines).getBounds();
                 map.fitBounds(bounds);
+
             }
 
 
+
+
+            function showNotification(message) {
+                const notificationContainer = $('#notification-container');
+                const notification = $('#notification');
+                notification.html('<i class="fas fa-exclamation-circle"></i> ' + message);
+                notificationContainer.css('opacity', '1');
+                setTimeout(function() {
+                    notificationContainer.css('opacity', '0');
+                }, 5000);
+            }
+
             function filterHistory(selectedDevice, startDate, endDate) {
                 if (startDate && endDate) {
+                    $('#loading-overlay').show();
                     var start = new Date(startDate);
                     var end = new Date(endDate);
-                    var formattedStartDate = start.getFullYear() + '-' + ('0' + (start.getMonth() +
-                            1)).slice(-2) +
-                        '-' + ('0' + start.getDate()).slice(-2) + ' ' + ('0' + start.getHours())
-                        .slice(-2) + ':' + (
-                            '0' + start.getMinutes()).slice(-2);
-                    var formattedEndDate = end.getFullYear() + '-' + ('0' + (end.getMonth() + 1))
-                        .slice(-2) + '-' +
-                        ('0' + end.getDate()).slice(-2) + ' ' + ('0' + end.getHours()).slice(-2) +
-                        ':' + ('0' + end.getMinutes()).slice(-2);
+                    var formattedStartDate = start.getFullYear() + '-' + ('0' + (start.getMonth() + 1)).slice(-2) +
+                        '-' + ('0' + start.getDate()).slice(-2) + ' ' + ('0' + start.getHours()).slice(-2) + ':' +
+                        ('0' + start.getMinutes()).slice(-2);
+                    var formattedEndDate = end.getFullYear() + '-' + ('0' + (end.getMonth() + 1)).slice(-2) + '-' +
+                        ('0' + end.getDate()).slice(-2) + ' ' + ('0' + end.getHours()).slice(-2) + ':' +
+                        ('0' + end.getMinutes()).slice(-2);
                     var queryString =
                         `?start=${formattedStartDate}&end=${formattedEndDate}&device=${selectedDevice}`;
                     window.history.pushState({}, '', window.location.pathname + queryString);
+
                     $.ajax({
                         url: "{{ route('filter.history') }}",
                         type: "POST",
@@ -549,14 +605,33 @@
                             _token: "{{ csrf_token() }}"
                         },
                         success: function(response) {
-                            filterMap(response, selectedDevice);
+                            if (response && response.length > 0) {
+                                filterMap(response, selectedDevice);
+                            } else {
+                                showNotification("No data found for the selected range.");
+                            }
+                            $('#loading-overlay').hide();
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
+                            $('#loading-overlay').hide();
                         }
                     });
                 }
             }
+
+            $('#speed-checkbox').on('change', function() {
+                var showSpeed = $(this).is(":checked");
+                var showAccuracy = $('#accuracy-checkbox').is(":checked");
+                filterMap(historyData, showSpeed, showAccuracy);
+            });
+
+            // Event handler untuk checkbox Accuracy
+            $('#accuracy-checkbox').on('change', function() {
+                var showSpeed = $('#speed-checkbox').is(":checked");
+                var showAccuracy = $(this).is(":checked");
+                filterMap(historyData, showSpeed, showAccuracy);
+            });
 
             $('#device-select').on('change', function() {
                 var selectedDevice = $(this).val();

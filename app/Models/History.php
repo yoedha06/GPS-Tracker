@@ -23,6 +23,7 @@ class History extends Model
         "speeds",
         "date_time",
         "original",
+        "whatsapp_sent",
     ];
 
     protected $casts = [

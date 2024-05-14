@@ -15,7 +15,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>GPS EXPLORER</title>
+    <title>{{$title_pengaturan ?: 'Geex'}}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -135,9 +135,9 @@
                                     alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
-                                <h4>{{ $username_1 ?: 'Dzaki Ahmad Fauzan' }}</h4>
-                                <span>{{ $posisi_1 ?: 'CIGS' }}</span>
-                                <p>{{ $deskripsi_1 ?: 'Belajarlah Dengan Giat Raihlah Gelar Sampat Dapat Dan Jangan Lupakan Gelar Sejadah' }}
+                                <h4>{{ $username_1 ?: 'NAMA 1' }}</h4>
+                                <span>{{ $posisi_1 ?: 'POSISI 1' }}</span>
+                                <p>{{ $deskripsi_1 ?: 'DESKRIPSI 1' }}
                                 </p>
                             </div> 
                         </div>
@@ -151,9 +151,9 @@
                                     style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
-                                <h4>{{ $username_2 ?: 'Yuda Hidayat' }}</h4>
-                                <span>{{ $posisi_2 ?: 'CIGS' }}</span>
-                                <p>{{ $deskripsi_2 ?: 'Ketika Hujan Tak Kunjung Berhenti Masi Ada Yuda Yang Siap Menemani' }}
+                                <h4>{{ $username_2 ?: 'NAMA 2' }}</h4>
+                                <span>{{ $posisi_2 ?: 'POSISI 2' }}</span>
+                                <p>{{ $deskripsi_2 ?: 'DESKRIPSI 2' }}
                                 </p>
                             </div>
                         </div>
@@ -167,9 +167,9 @@
                                     style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
-                                <h4>{{ $username_3 ?: 'Chepi Syaehbudien Basil' }}</h4>
-                                <span>{{ $posisi_3 ?: 'CIGS' }}</span>
-                                <p>{{ $deskripsi_3 ?: 'Jika Ada Yang Lebih Manis Dari Gula Mungkin Itu Raffi' }}
+                                <h4>{{ $username_3 ?: 'NAMA 3' }}</h4>
+                                <span>{{ $posisi_3 ?: 'POSISI 3' }}</span>
+                                <p>{{ $deskripsi_3 ?: 'DESKRIPSI 3' }}
                                 </p>
                             </div>
 
@@ -184,9 +184,9 @@
                                     style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
-                                <h4>{{ $username_4 ?: 'Ryan Rahma Bakti' }}</h4>
-                                <span>{{ $posisi_4 ?: 'CIGS' }}</span>
-                                <p>{{ $deskripsi_4 ?: 'Orang Orang Apa Yang Pemberani Tampan Dan Juga Manis?? Ohhh iyaa Rafii' }}
+                                <h4>{{ $username_4 ?: 'NAMA 4' }}</h4>
+                                <span>{{ $posisi_4 ?: 'POSISI 4' }}</span>
+                                <p>{{ $deskripsi_4 ?: 'DESKRIPSI 4' }}
                                 </p>
                             </div>
                         </div>
