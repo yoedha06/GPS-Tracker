@@ -13,23 +13,19 @@ class TypeNotifController extends Controller
     {
         // Validasi data yang diterima dari formulir
         $request->validate([
-            'notification_type' => 'required',
+            'count' => 'required',
+            'time_schedule' => 'required',
         ]);
 
-        // Simpan data ke dalam tabel notifikasi
-        $notification = new TypeNotif();
-        $notification->notification_type = $request->input('notification_type');
+        $existingNotification = TypeNotif::where('user_id', Auth::id())->first();
 
-        // Jika jenis notifikasi adalah "Custom Interval", simpan juga interval yang dipilih
-        if ($request->input('notification_type') == 3) {
-            $notification->custom_interval_hours = $request->input('custom_interval_hours');
-        }
+        TypeNotif::updateOrCreate(
+            ['user_id' => Auth::id()],
+            ['count' => $request->count, 'time_schedule' => $request->time_schedule]
+        );
 
-        $userId = Auth::id(); 
-        $notification->user_id = $userId;
+        $message = $existingNotification ? 'Update successfully' : 'You will receive the data at the time you specify';
 
-        $notification->save();
-
-        return redirect()->back()->with('notif', 'Notifikasi ditambahkan'); 
+        return redirect()->back()->with('notif', $message);
     }
 }

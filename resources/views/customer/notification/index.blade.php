@@ -55,6 +55,20 @@
                                 </div>
 
                                 <div class="form-group row">
+                                    <label for="count" class="col-md-4 col-form-label text-md-right">amount of data<span style="color:red;">*</span></label>
+                                    <div class="col-md-8">
+                                        <input type="number" class="form-control" name="count" id="count" placeholder="amount of data to send" min="1" style="font-style: italic;" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="scedhule" class="col-md-4 col-form-label text-md-right">schedule<span style="color:red;">*</span></label>
+                                    <div class="col-md-8">
+                                        <input type="time" class="form-control" name="time_schedule" id="scedule" required>
+                                    </div>
+                                </div>
+
+                                {{-- <div class="form-group row">
                                     <label for="notification_type"
                                         class="col-md-4 col-form-label text-md-right">Notification Type</label>
                                     <div class="col-md-8">
@@ -72,9 +86,9 @@
                                                 (1-5 hours)</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
 
-                                <div class="form-group row" id="custom_interval" style="display: none;">
+                                {{-- <div class="form-group row" id="custom_interval" style="display: none;">
                                     <label for="notification_type" class="col-md-6 col-form-label text-md-right">Select
                                         interval</label>
                                     <div class="col-md-8">
@@ -87,7 +101,7 @@
                                             <option value="5jam">5 hours</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
 
 
                                 <div class="form-group row mb-0">
@@ -188,6 +202,7 @@
                                             <th scope="col" class="text-bold-500">Coordinate</th>
                                             <th scope="col" class="text-bold-500">Speeds</th>
                                             <th scope="col" class="text-bold-500">Date Time</th>
+                                            <th scope="col" class="text-bold-500">Whattsapp</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -198,6 +213,7 @@
                                                 <td>{{ $log->latitude }}, {{ $log->longitude }}</td>
                                                 <td>{{ $log->speeds }}</td>
                                                 <td>{{ $log->date_time }}</td>
+                                                <td>{{ $log->whatsapp_sent }}
                                             </tr>
                                         @endforeach
                                     </tbody>
