@@ -145,11 +145,14 @@ class NotificationController extends Controller
                         $sendData->update(['whatsapp_sent' => 'terkirim']);
                         Log::info($response);
                     }
+<<<<<<< HEAD
 
                     return response()->json([
                         'success' => true,
                         'msg' => 'Data successfully sent',
                     ]);
+=======
+>>>>>>> 43daf75b650997dd58619bd59df9db74d7d3989b
                 }
             }
         } 

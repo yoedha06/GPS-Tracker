@@ -116,9 +116,11 @@
                                         </div>
                                     @endif
 
-                                    <div class="logo-container">
-                                        <span class="h1">GEEX</span>
+                                    <div class="img-container d-flex align-items-center justify-content-center" style="height: 60px;">
+                                        <img src="/images/g.png" alt="login form" class="img-fluid me-2" style="max-height: 100%;" />
+                                        <span class="h1 m-0">GEEX</span>
                                     </div>
+                                    
                                     <h5 class="fw-normal mb-3">Sign into your account</h5>
                                     <form method="POST" action="{{ route('login') }}">
                                         @csrf
@@ -164,8 +166,8 @@
                                         <a href="#!" class="small text-muted">Privacy policy</a>
                                         <hr>
                                         <a href="{{ route('index.homepage') }}" class="btn btn-dark mb-3">
-                                            <i class="fas fa-arrow-left me-2"></i> Back To Home
-                                        </a>
+                                            <i class="fas fa-arrow-left me-2"></i> Back To Home <i class="fas fa-home me-2"></i> 
+                                        </a>                                        
                                     </form>
                                 </div>
                             </div>

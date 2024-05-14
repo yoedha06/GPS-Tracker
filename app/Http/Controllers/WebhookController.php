@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
+
+    public function index()
+    {
+        return response()->json([
+            'message' => 'Webhook endpoint',
+            'status' => true
+        ]);
+    }
     //webhook untuk mengirim data history
     public function store(Request $request)
     {
@@ -36,7 +44,7 @@ class WebhookController extends Controller
                     $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
 
                     // Compose message with history details
-                    $message = "History terbaru untuk perangkat {$device->name} (Plat Nomor: {$plat}):\n";
+                    $message = "Lokasi Terakhir *{$plat}*:\n"; //ubah pesan
                     $message .= "Alamat: {$address}\n";
                     $message .= "Waktu: {$history->date_time}\n";
                     $message .= "Lokasi: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";

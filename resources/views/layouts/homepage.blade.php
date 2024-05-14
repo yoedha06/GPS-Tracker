@@ -4,7 +4,7 @@
     .gacor-text {
         font-size: 24px;
         font-weight: bold;
-        color: #03136d;
+        color: #10228a;
         text-transform: uppercase;
         text-shadow: 2px 2px px rgba(0, 0, 0, 0.5);
         letter-spacing: 2px;
@@ -21,6 +21,7 @@
 
     <!-- Favicons -->
     <link href="/images/geex.png" rel="icon">
+
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
@@ -38,7 +39,6 @@
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
 </head>
-
 
 <body>
     <!-- ======= Header ======= -->
@@ -67,7 +67,6 @@
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
-
         </div>
     </header><!-- End Header -->
 
@@ -88,9 +87,7 @@
         </div>
     </section>
 
-
     <main id="main">
-
         <!-- ======= About Us Section ======= -->
         <section id="about" class="about">
             <div class="container" data-aos="fade-up">
@@ -118,7 +115,6 @@
                 </div>
             </div>
         </section>
-
         <!-- End About Us Section -->
 
         <!-- ======= Team Section ======= -->
@@ -130,13 +126,12 @@
                     <p class="gacor-text">{{ $informasi ?: 'Orang Orang Sukses Dan Beriman Kami' }}</p>
                 </div>
 
-
                 <div class="row">
                     <div class="col-lg-6" data-aos="zoom-in" data-aos-delay="100">
                         <div class="member d-flex align-items-start">
                             <div class="pic"
                                 style="width: 150px; height: 120px; overflow: hidden; border-radius: 50%;">
-                                <img src="{{ $photo_4 ? asset('storage/' . $photo_4) : asset('images/default.jpg') }}"
+                                <img src="{{ $photo_1 ? asset('storage/' . $photo_1) : asset('images/default.jpg') }}"
                                     alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
@@ -148,12 +143,11 @@
                         </div>
                     </div>
 
-
                     <div class="col-lg-6" data-aos="zoom-in" data-aos-delay="100">
                         <div class="member d-flex align-items-start">
                             <div class="pic"
                                 style="width: 150px; height: 120px; overflow: hidden; border-radius: 50%;">
-                                <img src="{{ $photo_4 ? asset('storage/' . $photo_4) : asset('images/default.jpg') }}" alt="Logo"
+                                <img src="{{ $photo_2 ? asset('storage/' . $photo_2) : asset('images/default.jpg') }}" alt="Logo"
                                     style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
@@ -198,7 +192,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </section><!-- End Team Section -->
 
@@ -211,7 +204,6 @@
                 </div>
 
                 <div class="row">
-
                     <div class="col-lg-5 d-flex align-items-stretch">
                         <div class="info">
                             <div class="address">
@@ -242,17 +234,13 @@
                                 referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </section><!-- End Contact Section -->
-
     </main><!-- End #main -->
 
     <!-- ======= Footer ======= -->
     <footer id="footer">
-
         <div class="footer-top">
             <div class="container">
                 <div class="row">
@@ -261,8 +249,8 @@
                         <h3>{{ $title_sosmed ?: 'BARUDAK CIGS' }}</h3>
                         <p>
                             {{ $street_name ?:'Jl. CIGS No. 1'}} <br>
-                            {{ $ward ?:'CIGS' }}<br>
-                            {{ $subdistrict ?:'CIGS'}} <br><br>
+                            {{ $ward ?:'Kecamatan' }}<br>
+                            {{ $subdistrict ?:'Kelurahan'}} <br><br>
                             <strong>Phone:</strong>{{ $call ?:'08123456789' }}<br>
                             <strong>Email:</strong>{{ $email ?:'geexeplorer@gmailcom'}}<br>
                         </p>
@@ -276,7 +264,6 @@
                             <a href="#" class="youtube"><i class="bx bxl-youtube"></i></a>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -308,5 +295,4 @@
     <script src="assets/js/main.js"></script>
 
 </body>
-
 </html>
