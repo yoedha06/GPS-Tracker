@@ -13,13 +13,64 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        $pengaturan = Pengaturan::all();
-        $about = About::all();
+        $pengaturan = Pengaturan::first();
+        $about = About::first();
         $team =  Team::all();
         $contact =  Informasi_Contact::all();
         $sosmed =  Informasi_Sosmed::all();
 
         return view('admin.settings.index', compact('pengaturan', 'about', 'team', 'contact', 'sosmed'));
+    }
+
+    public function storepengaturan(Request $request)
+    {
+        // Validasi data yang diterima dari formulir
+        $request->validate([
+            'title_pengaturan' => 'required|string|max:25',
+            'name_pengaturan' => 'required|string|max:50',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:min_width=280,min_height=280',
+            'background' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:min_width=768,min_height=432',
+        ], [
+            'title_pengaturan.required' => 'Title harus diisi.',
+            'title_pengaturan.string' => 'Title harus berupa teks.',
+            'title_pengaturan.max' => 'Title tidak boleh lebih dari :max karakter.',
+            'name_pengaturan.required' => 'Name harus diisi.',
+            'name_pengaturan.string' => 'Name harus berupa teks.',
+            'name_pengaturan.max' => 'Name tidak boleh lebih dari :max karakter.',
+            'logo.image' => 'File harus berupa gambar.',
+            'logo.mimes' => 'File harus berformat jpeg, png, jpg, gif, atau webp.',
+            'logo.max' => 'File tidak boleh lebih dari :max KB.',
+            'logo.dimensions' => 'Ukuran logo minimal harus 548x455 piksel.',
+            'background.image' => 'File harus berupa gambar.',
+            'background.mimes' => 'File harus berformat jpeg, png, jpg, gif, atau webp.',
+            'background.max' => 'File tidak boleh lebih dari :max KB.',
+            'background.dimensions' => 'Ukuran background minimal harus 768x432 piksel.',
+        ]);
+
+        // Buat instance baru dari model Pengaturan
+        $pengaturan = new Pengaturan();
+
+        // Set atribut-atribut yang sesuai dengan data yang dikirimkan dari formulir
+        $pengaturan->title_pengaturan = $request->input('title_pengaturan');
+        $pengaturan->name_pengaturan = $request->input('name_pengaturan');
+
+        // Upload dan simpan gambar logo jika ada
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('logos', 'public');
+            $pengaturan->logo = $logoPath;
+        }
+
+        // Upload dan simpan gambar background jika ada
+        if ($request->hasFile('background')) {
+            $backgroundPath = $request->file('background')->store('backgrounds', 'public');
+            $pengaturan->background = $backgroundPath;
+        }
+
+        // Simpan data ke dalam database
+        $pengaturan->save();
+
+        // Redirect pengguna kembali ke halaman yang sesuai
+        return redirect()->back()->with('success', 'Pengaturan berhasil disimpan.');
     }
 
     public function updatepengaturan(Request $request, $id)
@@ -73,7 +124,7 @@ class SettingsController extends Controller
         return redirect()->back()->with('success', 'Pengaturan berhasil diperbarui.');
     }
 
-    public function updateabout(Request $request, $id)
+    public function storeabout(Request $request)
     {
         // Validasi data yang diterima dari formulir
         $request->validate([
@@ -89,6 +140,50 @@ class SettingsController extends Controller
             'title_about.max' => 'Judul tidak boleh lebih dari :max karakter.',
             'left_description.required' => 'Deskripsi kiri harus diisi.',
             'left_description.string' => 'Deskripsi kiri harus berupa teks.',
+        ]);
+
+        try {
+            // Buat instance baru dari model About
+            $about = new About();
+
+            // Isi data pada instance About
+            $about->title_about = $request->input('title_about');
+            $about->left_description = $request->input('left_description');
+            $about->right_description = $request->input('right_description');
+            $about->feature_1 = $request->input('feature_1');
+            $about->feature_2 = $request->input('feature_2');
+            $about->feature_3 = $request->input('feature_3');
+
+            // Simpan data baru ke dalam database
+            $about->save();
+
+            // Redirect ke halaman yang sesuai dengan keberhasilan
+            return redirect()->back()->with('success', 'Data About berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            // Tangani jika terjadi kesalahan
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+
+    public function updateabout(Request $request, $id)
+    {
+        // Validasi data yang diterima dari formulir
+        $request->validate([
+            'title_about' => 'required|string|max:25',
+            'left_description' => 'required|string',
+            'right_description' => 'required|string',
+            'feature_1' => 'nullable|string|max:70',
+            'feature_2' => 'nullable|string',
+            'feature_3' => 'nullable|string',
+        ], [
+            'title_about.required' => 'Judul harus diisi.',
+            'title_about.string' => 'Judul harus berupa teks.',
+            'title_about.max' => 'Judul tidak boleh lebih dari :max karakter.',
+            'left_description.required' => 'Deskripsi kiri harus diisi.',
+            'left_description.string' => 'Deskripsi kiri harus berupa teks.',
+            'right_description.required' => 'Deskripsi kanan harus diisi.',
+            'right_description.string' => 'Deskripsi kanan harus berupa teks.',
         ]);
 
         try {
@@ -110,6 +205,72 @@ class SettingsController extends Controller
             // Tangani jika terjadi kesalahan
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
+    }
+
+    public function storeteam(Request $request)
+    {
+        // Validasi input
+        $validatedData = $request->validate([
+            'informasi' => 'required',
+            'username_1' => 'required',
+            'posisi_1' => 'required',
+            'deskripsi_1' => 'required',
+            'username_2' => 'required',
+            'posisi_2' => 'required',
+            'deskripsi_2' => 'required',
+            'username_3' => 'required',
+            'posisi_3' => 'required',
+            'deskripsi_3' => 'required',
+            'username_4' => 'required',
+            'posisi_4' => 'required',
+            'deskripsi_4' => 'required',
+        ]);
+
+        // Simpan data
+        $team = new Team();
+        $team->informasi = $validatedData['informasi'];
+        $team->username_1 = $validatedData['username_1'];
+        $team->posisi_1 = $validatedData['posisi_1'];
+        $team->deskripsi_1 = $validatedData['deskripsi_1'];
+        $team->username_2 = $validatedData['username_2'];
+        $team->posisi_2 = $validatedData['posisi_2'];
+        $team->deskripsi_2 = $validatedData['deskripsi_2'];
+        $team->username_3 = $validatedData['username_3'];
+        $team->posisi_3 = $validatedData['posisi_3'];
+        $team->deskripsi_3 = $validatedData['deskripsi_3'];
+        $team->username_4 = $validatedData['username_4'];
+        $team->posisi_4 = $validatedData['posisi_4'];
+        $team->deskripsi_4 = $validatedData['deskripsi_4'];
+
+        // Jika foto diunggah, simpan foto yang baru
+        if ($request->hasFile('photo_1')) {
+            $imagePath = $request->file('photo_1')->store('photos', 'public');
+            $team->photo_1 = $imagePath;
+        }
+
+        // Jika foto diunggah, simpan foto yang baru
+        if ($request->hasFile('photo_2')) {
+            $imagePath = $request->file('photo_2')->store('photos', 'public');
+            $team->photo_2 = $imagePath;
+        }
+
+        // Jika foto diunggah, simpan foto yang baru
+        if ($request->hasFile('photo_3')) {
+            $imagePath = $request->file('photo_3')->store('photos', 'public');
+            $team->photo_3 = $imagePath;
+        }
+
+        // Jika foto diunggah, simpan foto yang baru
+        if ($request->hasFile('photo_4')) {
+            $imagePath = $request->file('photo_4')->store('photos', 'public');
+            $team->photo_4 = $imagePath;
+        }
+
+        // Simpan informasi
+        $team->save();
+
+        // Redirect back
+        return redirect()->back()->with('success', 'Data tim berhasil ditambahkan!');
     }
 
     public function informasi(Request $request, $id)
@@ -333,6 +494,29 @@ class SettingsController extends Controller
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
+
+    public function storeinformasicontact(Request $request)
+    {
+        // Validasi data yang dikirim dari form
+        $validatedData = $request->validate([
+            'name_location' => 'required',
+            'email_informasi' => 'required|email',
+            'call_informasi' => 'required|numeric',
+        ]);
+
+        // Buat instance model InformasiContact untuk menyimpan data
+        $informasiContact = new Informasi_Contact();
+        $informasiContact->name_location = $request->name_location;
+        $informasiContact->email_informasi = $request->email_informasi;
+        $informasiContact->call_informasi = $request->call_informasi;
+
+        // Simpan data ke dalam database
+        $informasiContact->save();
+
+        // Redirect kembali ke halaman sebelumnya dengan pesan sukses
+        return back()->with('success', 'Informasi Contact berhasil disimpan.');
+    }
+
     public function updateinformasisosmed(Request $request, $id)
     {
         // Validasi input jika diperlukan
@@ -356,10 +540,15 @@ class SettingsController extends Controller
         ]);
 
         try {
-            // Cari data tim yang akan diperbarui
-            $informasi_sosmed = Informasi_Sosmed::findOrFail($id);
+            // Cari data informasi sosmed yang akan diperbarui
+            $informasi_sosmed = Informasi_Sosmed::find($id);
 
-            // Update data tim dengan data baru dari request
+            // Periksa apakah data ditemukan
+            if (!$informasi_sosmed) {
+                return redirect()->back()->withErrors(['error' => 'Data informasi sosmed tidak ditemukan.']);
+            }
+
+            // Update data informasi sosmed dengan data baru dari request
             $informasi_sosmed->title_sosmed = $request->input('title_sosmed');
             $informasi_sosmed->street_name = $request->input('street_name');
             $informasi_sosmed->subdistrict = $request->input('subdistrict');
@@ -374,5 +563,33 @@ class SettingsController extends Controller
             // Tangani jika terjadi kesalahan
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
+    }
+
+    public function storeinformasisosmed(Request $request)
+    {
+        // Validasi data yang diterima dari formulir
+        $validatedData = $request->validate([
+            'title_sosmed' => 'required',
+            'street_name' => 'required',
+            'subdistrict' => 'required',
+            'ward' => 'required',
+            'call' => 'required|numeric',
+            'email' => 'required|email',
+        ]);
+
+        // Buat objek informasi sosmed baru dengan data yang diverifikasi
+        $informasiSosmed = new Informasi_Sosmed();
+        $informasiSosmed->title_sosmed = $validatedData['title_sosmed'];
+        $informasiSosmed->street_name = $validatedData['street_name'];
+        $informasiSosmed->subdistrict = $validatedData['subdistrict'];
+        $informasiSosmed->ward = $validatedData['ward'];
+        $informasiSosmed->call = $validatedData['call'];
+        $informasiSosmed->email = $validatedData['email'];
+
+        // Simpan informasi sosmed baru ke dalam database
+        $informasiSosmed->save();
+
+        // Redirect ke halaman yang sesuai atau kembali ke halaman sebelumnya
+        return redirect()->back()->with('success', 'Informasi Sosmed telah berhasil ditambahkan.');
     }
 }

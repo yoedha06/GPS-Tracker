@@ -10,38 +10,22 @@ use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
-    // public function store(Request $request)
-    // {
-    //     $url = "https://app.japati.id/api/send-message";
 
-    //     // Mengambil data dari request yang diterima oleh webhook
-    //     $requestData = $request->all();
-
-    //     // Membangun data yang akan dikirim ke endpoint
-    //     $data = [
-    //         "gateway" => $requestData['gateway'],
-    //         "number" => $requestData['from'], // Menggunakan nomor pengirim sebagai nomor penerima
-    //         "type" => "text",
-    //         "message" => $requestData['message'],
-    //     ];
-
-    //     // Log::debug('Mengirim pesan:', ['data' => $data]);
-
-    //     // Melakukan permintaan HTTP
-    //     $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-    //         ->post($url, $data);
-
-    //     // Menulis pesan debug setelah melakukan permintaan HTTP
-    //     // Log::debug('Respon dari permintaan:', ['response' => $response->getBody()->getContents()]);
-    // }
-
+    public function index()
+    {
+        return response()->json([
+            'message' => 'Webhook endpoint',
+            'status' => true
+        ]);
+    }
+    //webhook untuk mengirim data history
     public function store(Request $request)
     {
         $url = "https://app.japati.id/api/send-message";
 
         // Check if the message is a history request
         $explodedMessage = explode(" ", $request->message);
-        if (str($request->message)->startsWith("history") && count($explodedMessage) == 2 && ($explodedMessage[1] ?? false)) {
+        if (str($request->message)->startsWith("lokasi") && count($explodedMessage) == 2 && ($explodedMessage[1] ?? false)) {
 
             // Extract the plat number from the message and convert it to uppercase
             $plat = strtoupper($explodedMessage[1]);
@@ -56,11 +40,11 @@ class WebhookController extends Controller
                     ->first();
 
                 if ($history) {
-                    // Get address from coordinates
+                    // mengambil di function getAddressFromCoordinates
                     $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
 
                     // Compose message with history details
-                    $message = "History terbaru untuk perangkat {$device->name} (Plat Nomor: {$plat}):\n";
+                    $message = "Lokari Terakhir (<b>{$plat}</b>):\n";
                     $message .= "Alamat: {$address}\n";
                     $message .= "Waktu: {$history->date_time}\n";
                     $message .= "Lokasi: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
@@ -93,7 +77,6 @@ class WebhookController extends Controller
         }
         return 'ok';
     }
-
     private function getAddressFromCoordinates($latitude, $longitude)
     {
         $url = "https://nominatim.openstreetmap.org/reverse?lat={$latitude}&lon={$longitude}&format=json";

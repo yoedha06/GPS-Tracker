@@ -116,9 +116,11 @@
                                         </div>
                                     @endif
 
-                                    <div class="logo-container">
-                                        <span class="h1">GEEX</span>
+                                    <div class="img-container d-flex align-items-center justify-content-center" style="height: 60px;">
+                                        <img src="/images/g.png" alt="login form" class="img-fluid me-2" style="max-height: 100%;" />
+                                        <span class="h1 m-0">GEEX</span>
                                     </div>
+                                    
                                     <h5 class="fw-normal mb-3">Sign into your account</h5>
                                     <form method="POST" action="{{ route('login') }}">
                                         @csrf
@@ -128,25 +130,29 @@
                                                 class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}"
                                                 name="username" value="{{ $registered_username ?? old('username') }}"
                                                 required>
-                                            @error('username')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            @if ($errors->has('password') && !$errors->has('username'))
+                                                <div class="invalid-feedback" style="display: block;">
+                                                    {{ $errors->first('password') }}</div>
+                                            @endif
                                         </div>
-
 
                                         <div class="form-outline mb-4 position-relative">
                                             <label class="form-label" for="password">Password</label>
                                             <div class="input-group"> <!-- Tambahkan input-group di sini -->
                                                 <input type="password" id="password"
-                                                    class="form-control form-control-lg" name="password" />
+                                                    class="form-control form-control-lg {{ $errors->has('password') ? 'is-invalid' : '' }}"
+                                                    name="password" />
                                                 <span id="showPasswordBtn"
-                                                    class="position-absolute end-0 top-50 translate-middle-y"
+                                                    class="position-absolute end-0 p-2 top-50 translate-middle-y"
                                                     style="cursor: pointer;">
                                                     <i id="showPasswordIcon" class="fas fa-eye"></i>
                                                 </span>
                                             </div>
+                                            @if ($errors->has('password') && !$errors->has('username'))
+                                                <div class="invalid-feedback" style="display: block;">
+                                                    {{ $errors->first('password') }}</div>
+                                            @endif
                                         </div>
-
 
                                         <div class="pt-1 mb-4">
                                             <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
@@ -160,8 +166,8 @@
                                         <a href="#!" class="small text-muted">Privacy policy</a>
                                         <hr>
                                         <a href="{{ route('index.homepage') }}" class="btn btn-dark mb-3">
-                                            <i class="fas fa-arrow-left me-2"></i> Back To Home
-                                        </a>
+                                            <i class="fas fa-arrow-left me-2"></i> Back To Home <i class="fas fa-home me-2"></i> 
+                                        </a>                                        
                                     </form>
                                 </div>
                             </div>
@@ -192,7 +198,8 @@
                                     <label class="form-label" for="form2ExampleForgetEmail">Email address</label>
                                 </div>
                                 <div class="pt-1 mb-4">
-                                    <button class="btn btn-dark btn-lg btn-block" type="button">Reset Password</button>
+                                    <button class="btn btn-dark btn-lg btn-block" type="button">Reset
+                                        Password</button>
                                 </div>
                                 <p class="mb-5" style="color: #393f81;">Remember your password? <a
                                         href="javascript:void(0);" onclick="showLoginForm()"
