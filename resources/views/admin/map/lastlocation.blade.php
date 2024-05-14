@@ -23,7 +23,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                     <a href="/admin">
-                        <i class="bi bi-person-square"></i> Admin
+                        <i class="bi bi-person-check-fill"></i> Admin
                     </a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-map-marker-alt"></i> LastLocation
