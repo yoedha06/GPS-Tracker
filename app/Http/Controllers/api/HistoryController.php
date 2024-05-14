@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\History;
 use App\Models\NotificationLogs;
+use App\Models\TypeNotif;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class HistoryController extends Controller
 {
@@ -24,9 +28,6 @@ class HistoryController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $requestData = $request->all();
@@ -90,11 +91,86 @@ class HistoryController extends Controller
             'original' => json_encode($request->all())
         ]);
 
+        //kirim ke wa
+        $typeNotifications = TypeNotif::all();
 
+        foreach ($typeNotifications as $typeNotification) {
+
+            list($hour, $minute) = explode(':', $typeNotification->time_schedule);
+            $scheduledDateTime = Carbon::today()->setHour($hour)->setMinute($minute);
+
+            if ($typeNotification->count > 0) {
+                $histories = History::where('device_id', $typeNotification->user_id)
+                    ->where('whatsapp_sent', 'belum terkirim')
+                    ->where('date_time', '>', $scheduledDateTime)
+                    ->orderBy('date_time')
+                    ->limit($typeNotification->count)
+                    ->get();
+
+                foreach ($histories as $history) {
+                    $message = "";
+                    $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
+
+                    $message .= "Device: " . $device->name . "\n";
+                    $message .= "Number Plat: " . $history->device->plat_nomor . "\n";
+                    $message .= "Address: " . $address . "\n";
+                    $message .= "Location: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
+                    $message .= "Date Time: " . $history->date_time;
+
+                    $this->sendWhatsapp($typeNotification->user_id, $request->phone, $message);
+
+                    $history->update(['whatsapp_sent' => 'terkirim']);
+
+                    $typeNotification->count -= 1;
+                    $typeNotification->save();
+
+                    if ($typeNotification->count == 0) {
+                        $typeNotification->delete();
+                    }
+                }
+            }
+        }
         return response()->json([
             'message' => true,
             'status' => $history,
         ], 201);
     }
-    
+
+    private function sendWhatsapp($userId, $phoneNumber, $message)
+    {
+        $url = "https://app.japati.id/api/send-message";
+
+        $user = User::find($userId);
+
+        $phoneNumber = $user->phone;
+
+        $data = [
+            'gateway' => '62895618632347',
+            'number' => $phoneNumber,
+            'type' => 'text',
+            'message' => $message
+        ];
+
+        $response = Http::timeout(60)->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+            ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post($url, $data);
+
+        if ($response->ok()) {
+            logger($response);
+            $errorResponse = $response->json();
+            logger($errorResponse);
+        }
+    }
+
+    private function getAddressFromCoordinates($latitude, $longitude)
+    {
+        $url = "https://nominatim.openstreetmap.org/reverse?lat={$latitude}&lon={$longitude}&format=json";
+        $response = Http::get($url);
+        $data = $response->json();
+        if (isset($data['display_name'])) {
+            return $data['display_name'];
+        } else {
+            return "Alamat tidak ditemukan";
+        }
+    }
 }

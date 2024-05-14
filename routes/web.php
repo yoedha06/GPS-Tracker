@@ -99,9 +99,10 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         Route::get('/customer/lastlocation', [MapController::class, 'lastloc'])->name('lastlocation');
         Route::get('/customer/notification', [NotificationController::class, 'index'])->name('customer.notification.index');
         Route::post('/customer/notification', [NotificationController::class, 'store'])->name('customer.notification.store');
+
+        // //url send wa
+        // Route::get('/send-history', [NotificationController::class, 'notificationtype'])->name('customer.notification.send-history');
         
-
-
         //device Customer
         Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
         Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
@@ -204,4 +205,6 @@ Route::post('/admin/filter-history', [HistoryController::class, 'filterHistory']
 
 Route::post('/customer/typenotif', [TypeNotifController::class, 'store'])->name('store.notiftype');
 Route::post('/customer/notificationAuto', [NotificationController::class, 'NotificationAuto'])->name('customer.notifauto');
+
+
 
