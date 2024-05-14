@@ -105,125 +105,121 @@ class NotificationController extends Controller
         }
     }
 
-    public function notificationtype(Request $request)
-    {
-        $url = "https://app.japati.id/api/send-message";
+    // public function notificationtype(Request $request)
+    // {
+    //     $url = "https://app.japati.id/api/send-message";
 
-        $user = auth()->user();
+    //     $user = auth()->user();
 
-        if ($request->notificationType === 'lt8' && Carbon::now()->format('H') > 8) {
+    //     if ($request->notificationType === 'lt8' && Carbon::now()->format('H') > 8) {
             
-            $sendData = History::where('date_time', '>', Carbon::now()->startOfDay()->addHours(8))
-                ->where('date_time', '<', Carbon::now())
-                ->orderBy('date_time', 'asc')
-                ->first();
+    //         $sendData = History::where('date_time', '>', Carbon::now()->startOfDay()->addHours(8))
+    //             ->where('date_time', '<', Carbon::now())
+    //             ->orderBy('date_time', 'asc')
+    //             ->first();
 
-            if ($sendData) {
-                $notificationType = TypeNotif::where('user_id', $user->id)
-                    ->where('notification_type', 2)
-                    ->first();
+    //         if ($sendData) {
+    //             $notificationType = TypeNotif::where('user_id', $user->id)
+    //                 ->where('notification_type', 2)
+    //                 ->first();
 
-                if ($notificationType) {
-                    $message = "New data received:\n";
-                    $message .= "Date Time: " . $sendData->date_time . "\n";
+    //             if ($notificationType) {
+    //                 $message = "New data received:\n";
+    //                 $message .= "Date Time: " . $sendData->date_time . "\n";
 
-                    $phoneNumber = $user->phone;
+    //                 $phoneNumber = $user->phone;
 
-                    $data = [
-                        'gateway' => '62895618632347',
-                        'number' => $phoneNumber,
-                        'type' => 'text',
-                        'message' => $message
-                    ];
+    //                 $data = [
+    //                     'gateway' => '62895618632347',
+    //                     'number' => $phoneNumber,
+    //                     'type' => 'text',
+    //                     'message' => $message
+    //                 ];
 
-                    $response = Http::timeout(60)
-                        ->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-                        ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
-                        ->post($url, $data);
+    //                 $response = Http::timeout(60)
+    //                     ->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+    //                     ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+    //                     ->post($url, $data);
 
-                    if ($response->ok()) {
-                        $sendData->update(['whatsapp_sent' => 'terkirim']);
-                        Log::info($response);
-                    }
-<<<<<<< HEAD
+    //                 if ($response->ok()) {
+    //                     $sendData->update(['whatsapp_sent' => 'terkirim']);
+    //                     Log::info($response);
 
-                    return response()->json([
-                        'success' => true,
-                        'msg' => 'Data successfully sent',
-                    ]);
-=======
->>>>>>> 43daf75b650997dd58619bd59df9db74d7d3989b
-                }
-            }
-        } 
-        elseif ($request->notificationType === '5d') {
-            $hours = [7, 10, 13, 16, 19];
+    //                 return response()->json([
+    //                     'success' => true,
+    //                     'msg' => 'Data successfully sent',
+    //                 ]);
+    //             }
+    //         }
+    //     } 
+    //     elseif ($request->notificationType === '5d') {
+    //         $hours = [7, 10, 13, 16, 19];
         
-            foreach ($hours as $hour) {
-                $time = Carbon::now()->startOfDay()->addHours($hour);
-                $sendData = History::where('date_time', '>=', $time)->first();
+    //         foreach ($hours as $hour) {
+    //             $time = Carbon::now()->startOfDay()->addHours($hour);
+    //             $sendData = History::where('date_time', '>=', $time)->first();
         
-                if ($sendData) {
-                    $notificationType = TypeNotif::where('user_id', $user->id)
-                        ->where('notification_type', 1)
-                        ->first();
+    //             if ($sendData) {
+    //                 $notificationType = TypeNotif::where('user_id', $user->id)
+    //                     ->where('notification_type', 1)
+    //                     ->first();
         
-                    if ($notificationType) {
-                        $message = "New data received:\n";
-                        $message .= "Date Time: " . $sendData->date_time . "\n";
+    //                 if ($notificationType) {
+    //                     $message = "New data received:\n";
+    //                     $message .= "Date Time: " . $sendData->date_time . "\n";
         
-                        $phoneNumber = $user->phone;
-                        $postData = [
-                            'gateway' => '6285954906329',
-                            'number' => $phoneNumber,
-                            'type' => 'text',
-                            'message' => $message
-                        ];
+    //                     $phoneNumber = $user->phone;
+    //                     $postData = [
+    //                         'gateway' => '6285954906329',
+    //                         'number' => $phoneNumber,
+    //                         'type' => 'text',
+    //                         'message' => $message
+    //                     ];
         
-                        $response = Http::timeout(60)
-                            ->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-                            ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
-                            ->post($url, $postData);
+    //                     $response = Http::timeout(60)
+    //                         ->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+    //                         ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+    //                         ->post($url, $postData);
         
-                        if ($response->ok()) {
-                            $sendData->update(['whatsapp_sent' => 'terkirim']);
-                            Log::info($response);
-                        }
-                    }
-                } else {
-                    continue;
-                }
-            }
+    //                     if ($response->ok()) {
+    //                         $sendData->update(['whatsapp_sent' => 'terkirim']);
+    //                         Log::info($response);
+    //                     }
+    //                 }
+    //             } else {
+    //                 continue;
+    //             }
+    //         }
         
-            return response()->json([
-                'success' => true,
-                'msg' => 'Data successfully sent',
-            ]);
-        } 
-        // elseif( $request->notificationType === 'itv') {
+    //         return response()->json([
+    //             'success' => true,
+    //             'msg' => 'Data successfully sent',
+    //         ]);
+    //     } 
+    //     // elseif( $request->notificationType === 'itv') {
 
-        //     $user = auth()->user();
+    //     //     $user = auth()->user();
 
-        //     $typeNotification = TypeNotif::where('notification_type', 3)->first();
+    //     //     $typeNotification = TypeNotif::where('notification_type', 3)->first();
 
-        //     if ($typeNotification && $typeNotification->custom_interval_hours == '1jam') 
-        //     {
-        //         $startTime = History::whereDate('date_time', Carbon::today())->min('date_time');
+    //     //     if ($typeNotification && $typeNotification->custom_interval_hours == '1jam') 
+    //     //     {
+    //     //         $startTime = History::whereDate('date_time', Carbon::today())->min('date_time');
 
-        //         if ($startTime) {
+    //     //         if ($startTime) {
             
-        //             $interval = CarbonInterval::hour();
+    //     //             $interval = CarbonInterval::hour();
             
-        //             $currentTime = Carbon::parse($startTime);
+    //     //             $currentTime = Carbon::parse($startTime);
             
-        //             while ($currentTime <= Carbon::now()) {
-        //                 $data = History::where('date_time', '>=', $currentTime)
-        //                                ->where('date_time', '<', $currentTime->copy()->add($interval))
-        //                                ->get();
-        //             }
-        //         }
+    //     //             while ($currentTime <= Carbon::now()) {
+    //     //                 $data = History::where('date_time', '>=', $currentTime)
+    //     //                                ->where('date_time', '<', $currentTime->copy()->add($interval))
+    //     //                                ->get();
+    //     //             }
+    //     //         }
 
-        //     }
-        // }
-    }
+    //     //     }
+    //     // }
+    // }
 }
