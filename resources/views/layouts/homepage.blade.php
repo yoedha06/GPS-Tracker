@@ -135,7 +135,7 @@
                                     alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                             <div class="member-info">
-                                <h4>{{ $username_1 ?: 'TEAM 1' }}</h4>
+                                <h4>{{ $username_1 ?: 'NAMA 1' }}</h4>
                                 <span>{{ $posisi_1 ?: 'POSISI 1' }}</span>
                                 <p>{{ $deskripsi_1 ?: 'DESKRIPSI 1' }}
                                 </p>
