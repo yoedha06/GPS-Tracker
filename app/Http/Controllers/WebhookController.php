@@ -51,7 +51,7 @@ class WebhookController extends Controller
 
                     // Send message
                     $data = [
-                        'gateway' => 'broadcast',
+                        'gateway' => $request->gateway,
                         'number' => $request->from,
                         'type' => 'text',
                         'message' => $message,
