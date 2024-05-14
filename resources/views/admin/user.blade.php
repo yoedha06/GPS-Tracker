@@ -3,7 +3,7 @@
 <title>GEEX - Data User</title>
 
 @section('content')
-@include('layouts.navbaradmin')
+    @include('layouts.navbaradmin')
 
     <div id="main">
         <div class="page-heading">
@@ -17,7 +17,7 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a href="/admin">
-                                        <i class="bi bi-person-square"></i> Admin
+                                        <i class="bi bi-person-check-fill"></i> Admin
                                     </a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">
@@ -53,7 +53,6 @@
                         </thead>
                         <tbody id="userTableBody">
                             @if (count($users) > 0)
-                                @php $iteration = 1 @endphp
                                 @foreach ($users as $user)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
@@ -70,11 +69,10 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                            @else
-                                <tr id="noDataFound" style="display: none;">
-                                    <td colspan="6" class="text-center">Data not found.</td>
-                                </tr>
                             @endif
+                            <tr id="noDataFound" style="display: none;">
+                                <td colspan="6" class="text-center">Data not found.</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -83,6 +81,7 @@
                 </div>
             </div>
         </section>
+
 
         <footer>
             <div class="footer clearfix mb-0 text-muted">
@@ -101,10 +100,16 @@
             const searchTerm = searchInput.value.toLowerCase();
             const tableBody = document.getElementById('userTableBody');
             const tableRows = tableBody.getElementsByTagName('tr');
+            const noDataFound = document.getElementById('noDataFound');
             let dataFound = false;
 
             for (let i = 0; i < tableRows.length; i++) {
                 const user = tableRows[i];
+
+                if (user.id === 'noDataFound') {
+                    continue;
+                }
+
                 const name = user.getElementsByTagName('td')[1].innerText.toLowerCase();
                 const username = user.getElementsByTagName('td')[2].innerText.toLowerCase();
                 const email = user.getElementsByTagName('td')[3].innerText.toLowerCase();
@@ -118,6 +123,12 @@
                 } else {
                     user.style.display = 'none';
                 }
+            }
+
+            if (dataFound) {
+                noDataFound.style.display = 'none';
+            } else {
+                noDataFound.style.display = '';
             }
         }
     </script>

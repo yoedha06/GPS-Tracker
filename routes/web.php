@@ -127,14 +127,19 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         //admin settings
         Route::get('/admin/settings', [SettingsController::class, 'index'])->name('admin.settings');
         Route::put('/admin/pengaturan/{id}', [SettingsController::class, 'updatepengaturan'])->name('pengaturan.update');
+        Route::post('/admin/pengaturan/store', [SettingsController::class, 'storepengaturan'])->name('pengaturan.store');
         Route::put('/admin/about/{id}', [SettingsController::class, 'updateabout'])->name('about.update');
+        Route::post('/admin/about/store', [SettingsController::class, 'storeabout'])->name('about.store');
+        Route::post('/admin/team/store', [SettingsController::class, 'storeteam'])->name('team.store');
         Route::put('/admin/informasi/{id}', [SettingsController::class, 'informasi'])->name('informasi.update');
         Route::put('/admin/team1/{id}', [SettingsController::class, 'updateteam1'])->name('team1.update');
         Route::put('/admin/team2/{id}', [SettingsController::class, 'updateteam2'])->name('team2.update');
         Route::put('/admin/team3/{id}', [SettingsController::class, 'updateteam3'])->name('team3.update');
         Route::put('/admin/team4/{id}', [SettingsController::class, 'updateteam4'])->name('team4.update');
         Route::put('/admin/informasicontact/{id}', [SettingsController::class, 'updateinformasicontact'])->name('informasicontact.update');
+        Route::post('/admin/informasicontact/store', [SettingsController::class, 'storeinformasicontact'])->name('informasicontact.store');
         Route::put('/admin/informasisosmed/{id}', [SettingsController::class, 'updateinformasisosmed'])->name('informasisosmed.update');
+        Route::post('/admin/informasisosmed/store', [SettingsController::class, 'storeinformasisosmed'])->name('informasisosmed.store');
     });
 });
 
@@ -199,8 +204,6 @@ Route::post('/filter-history', [HistoryController::class, 'filter'])->name('filt
 
 Route::get('/admin/map/filter', [HistoryController::class, 'filterByDeviceAndUser'])->name('admin.history.index');
 Route::post('/admin/filter-history', [HistoryController::class, 'filterHistory'])->name('admin.filter.history');
-
-
 
 Route::post('/customer/typenotif', [TypeNotifController::class, 'store'])->name('store.notiftype');
 Route::post('/customer/notificationAuto', [NotificationController::class, 'NotificationAuto'])->name('customer.notifauto');

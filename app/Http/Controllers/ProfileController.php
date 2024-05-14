@@ -31,12 +31,20 @@ class ProfileController extends Controller
             Storage::delete($user->photo);
             $user->photo = null;
             $user->save();
+
+            // Mengatur pesan sukses
+            $successMessage = 'Foto profil berhasil dihapus.';
+        } else {
+            // Mengatur pesan kesalahan
+            $successMessage = 'Tidak ada foto profil yang dapat dihapus.';
         }
 
         if ($user->role === 'admin') {
-            return redirect()->route('admin.profile')->with('success', 'Profil berhasil diperbarui!');
+            return redirect()->route('admin.profile')->with('success', $successMessage);
         } else {
-            return redirect()->route('customer.profile')->with('success', 'Profil berhasil diperbarui!');
+            return redirect()->route('customer.profile')->with('success', $successMessage);
         }
     }
+
+    
 }
