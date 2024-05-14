@@ -120,7 +120,8 @@
                 opacity: 1;
             }
         }
-                #map-container {
+
+        #map-container {
             position: relative;
         }
 
@@ -206,9 +207,6 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col-md-6">
-                    <button id="reset-btn" class="btn btn-danger btn-sm">Resett</button>
-                </div>
             </div>
 
 
@@ -225,14 +223,14 @@
         </div>
         </div>
         </div>
-         <div id="map-container">
-        <div id="map"></div>
-        <div id="loading-overlay">
-            <div class="spinner-border text-primary" role="status">
-                <span class="sr-only"></span>
+        <div id="map-container">
+            <div id="map"></div>
+            <div id="loading-overlay">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only"></span>
+                </div>
             </div>
         </div>
-    </div>
 
 
 
@@ -488,18 +486,19 @@
 
 
 
-   function showNotification(message) {
-                const notificationContainer = $('#notification-container');
-                const notification = $('#notification');
-                notification.html('<i class="fas fa-exclamation-circle"></i> ' + message);
-                notificationContainer.css('opacity', '1');
-                setTimeout(function() {
-                    notificationContainer.css('opacity', '0');
-                }, 5000);
-            }
+                function showNotification(message) {
+                    const notificationContainer = $('#notification-container');
+                    const notification = $('#notification');
+                    notification.html('<i class="fas fa-exclamation-circle"></i> ' + message);
+                    notificationContainer.css('opacity', '1');
+                    setTimeout(function() {
+                        notificationContainer.css('opacity', '0');
+                    }, 5000);
+                }
+
                 function filterHistory(selectedDevice, startDate, endDate, selectedUserId) {
                     if (startDate && endDate) {
-                          $('#loading-overlay').show();
+                        $('#loading-overlay').show();
                         var start = new Date(startDate);
                         var end = new Date(endDate);
                         var formattedStartDate = start.getFullYear() + '-' + ('0' + (start.getMonth() +
@@ -526,17 +525,17 @@
                             },
 
                             success: function(response) {
-                            if (response && response.length > 0) {
-                                filterMap(response, selectedDevice);
-                            } else {
-                                showNotification("No data found for the selected range.");
+                                if (response && response.length > 0) {
+                                    filterMap(response, selectedDevice);
+                                } else {
+                                    showNotification("No data found for the selected range.");
+                                }
+                                $('#loading-overlay').hide();
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(error);
+                                $('#loading-overlay').hide();
                             }
-                            $('#loading-overlay').hide();
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                            $('#loading-overlay').hide();
-                        }
                         });
                     }
                 }
@@ -554,7 +553,6 @@
                     window.history.pushState({}, '', window.location.pathname + queryString);
                     filterHistory(selectedDevice, startDate, endDate, selectedUserId);
                 });
-
 
             });
         </script>

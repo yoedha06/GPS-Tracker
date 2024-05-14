@@ -92,7 +92,7 @@ class HistoryController extends Controller
 
 
 
-   public function map(Request $request)
+  public function map(Request $request)
 {
     $user = Auth::user();
 
@@ -100,15 +100,21 @@ class HistoryController extends Controller
     $end = $request->end;
 
     if (! $start || ! $end) {
-         return redirect(route('customer.map.index') . '?start=' . now()->subHour(3)->format('Y-m-d H:i:s'). '&end=' . now()->format('Y-m-d H:i:s'));
+        return redirect(route('customer.map.index') . '?start=' . now()->subHour(3)->format('Y-m-d H:i:s') . '&end=' . now()->format('Y-m-d H:i:s'));
     }
 
     // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
     $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
         ->whereHas('history')
+        ->orderByDesc(function($query) {
+            $query->select('date_time')
+                ->from('history')
+                ->whereColumn('history.device_id', 'device.id_device')
+                ->latest()
+                ->limit(1);
+        })
         ->get();
 
-    
     $history = DB::table('history')
         ->whereIn('device_id', $devicesWithUniqueHistory->pluck('id_device'))
         ->where('date_time', '>=', $start)
@@ -120,13 +126,16 @@ class HistoryController extends Controller
         ->limit(10) // Batasan jumlah perangkat
         ->get();
 
+    // Ambil perangkat dengan riwayat terbaru
+    $latestDevice = $devicesWithUniqueHistory->first();
+
     // Buat array untuk menyimpan nama perangkat berdasarkan ID perangkat
     $deviceNames = $devices->pluck('name', 'id_device')->toArray();
 
-
     // Melewatkan data ke view menggunakan compact
-    return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames', 'start', 'end'));
+    return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames', 'start', 'end', 'latestDevice'));
 }
+
 
 
     public function filter(Request $request)

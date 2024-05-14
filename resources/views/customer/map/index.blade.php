@@ -160,12 +160,14 @@
                 style="display: flex; flex-direction: column; width: 100%; margin-top: 37px; margin-bottom: 0px;">
                 <div class="d-flex" style="gap:5px;">
                     <select id="device-select" class="form-select input" style="width: 100%;">
-                        <option value="" disabled selected>Select Devicee</option>
+                        <option value="" disabled>Select Device</option>
                         @foreach ($devices as $device)
-                            <option value="{{ $device->id_device }}" @selected(request('device') == $device->id_device)>{{ $device->user->name }}
-                                - {{ $device->name }}</option>
+                            <option value="{{ $device->id_device }}" @if ($device->id_device == $latestDevice->id_device) selected @endif>
+                                {{ $device->user->name }} - {{ $device->name }}
+                            </option>
                         @endforeach
                     </select>
+
                 </div>
             </div>
 
@@ -359,8 +361,14 @@
             if (queryStart && queryEnd) {
                 $('#date_range').val(queryStart + ' - ' + queryEnd);
                 filterHistory(queryDevice == 'null' ? '' : queryDevice, queryStart, queryEnd);
+            } else {
+                let latestDevice = "{{ $latestDevice->id_device }}";
+                $('#device-select').val(latestDevice).trigger('change');
+                let startDate = "{{ now()->subHour(3)->format('Y-m-d H:i:s') }}";
+                let endDate = "{{ now()->format('Y-m-d H:i:s') }}";
+                $('#date_range').val(startDate + ' - ' + endDate);
+                filterHistory(latestDevice, startDate, endDate);
             }
-
 
             $('#device-select').select2({
                 sorter: function(data) {
@@ -502,7 +510,7 @@
 
                     var polylinePoints = [];
                     var color, weight, opacity;
-                    var speed, accuracy; // Deklarasi variabel di luar forEach loop
+                    var speed, accuracy;
 
                     deviceHistory.forEach(historyItem => {
                         var lat = parseFloat(historyItem.latitude);
@@ -612,18 +620,18 @@
                 }
             }
 
-             $('#speed-checkbox').on('change', function() {
-        var showSpeed = $(this).is(":checked");
-        var showAccuracy = $('#accuracy-checkbox').is(":checked");
-        filterMap(historyData, showSpeed, showAccuracy);
-    });
+            $('#speed-checkbox').on('change', function() {
+                var showSpeed = $(this).is(":checked");
+                var showAccuracy = $('#accuracy-checkbox').is(":checked");
+                filterMap(historyData, showSpeed, showAccuracy);
+            });
 
-    // Event handler untuk checkbox Accuracy
-    $('#accuracy-checkbox').on('change', function() {
-        var showSpeed = $('#speed-checkbox').is(":checked");
-        var showAccuracy = $(this).is(":checked");
-        filterMap(historyData, showSpeed, showAccuracy);
-    });
+            // Event handler untuk checkbox Accuracy
+            $('#accuracy-checkbox').on('change', function() {
+                var showSpeed = $('#speed-checkbox').is(":checked");
+                var showAccuracy = $(this).is(":checked");
+                filterMap(historyData, showSpeed, showAccuracy);
+            });
 
             $('#device-select').on('change', function() {
                 var selectedDevice = $(this).val();
