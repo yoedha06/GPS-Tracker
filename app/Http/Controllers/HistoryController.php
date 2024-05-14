@@ -92,37 +92,41 @@ class HistoryController extends Controller
 
 
 
-    public function map(Request $request)
-    {
-        $user = Auth::user();
+   public function map(Request $request)
+{
+    $user = Auth::user();
 
-        $startTime = $request->star_date ?? now()->format('Y-m-d') . ' 00:00:00';
-        $endTime = $request->end_date ?? now()->format('Y-m-d') . ' 23:59:59';
+    $start = $request->start;
+    $end = $request->end;
 
-        // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
-        $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
-            ->whereHas('history')
-            ->get();
-
-        // Ambil semua riwayat dari basis data dengan batasan 100 riwayat
-        $history = DB::table('history')
-            ->whereIn('device_id', $devicesWithUniqueHistory->pluck('id_device'))
-            ->where('date_time', '>=', $startTime)
-            ->where('date_time', '<=', $endTime)
-            ->get();
-
-        // Ambil semua perangkat dengan batasan jumlah
-        $devices = Device::where('user_id', Auth::id())
-            ->limit(10) // Batasan jumlah perangkat
-            ->get();
-
-        // Buat array untuk menyimpan nama perangkat berdasarkan ID perangkat
-        $deviceNames = $devices->pluck('name', 'id_device')->toArray();
-
-
-        // Melewatkan data ke view menggunakan compact
-        return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames', 'startTime', 'endTime'));
+    if (! $start || ! $end) {
+         return redirect(route('customer.map.index') . '?start=' . now()->subHour(3)->format('Y-m-d H:i:s'). '&end=' . now()->format('Y-m-d H:i:s'));
     }
+
+    // Ambil data perangkat yang dimiliki oleh pengguna yang saat ini masuk dan memiliki riwayat
+    $devicesWithUniqueHistory = Device::where('user_id', Auth::id())
+        ->whereHas('history')
+        ->get();
+
+    
+    $history = DB::table('history')
+        ->whereIn('device_id', $devicesWithUniqueHistory->pluck('id_device'))
+        ->where('date_time', '>=', $start)
+        ->where('date_time', '<=', $end)
+        ->get();
+
+    // Ambil semua perangkat dengan batasan jumlah
+    $devices = Device::where('user_id', Auth::id())
+        ->limit(10) // Batasan jumlah perangkat
+        ->get();
+
+    // Buat array untuk menyimpan nama perangkat berdasarkan ID perangkat
+    $deviceNames = $devices->pluck('name', 'id_device')->toArray();
+
+
+    // Melewatkan data ke view menggunakan compact
+    return view('customer.map.index', compact('devicesWithUniqueHistory', 'history', 'devices', 'deviceNames', 'start', 'end'));
+}
 
 
     public function filter(Request $request)
@@ -311,40 +315,45 @@ $polylinePoints = []; // Inisialisasi array untuk menyimpan titik polyline
 
    public function showMap(Request $request)
 {
-  $start = $request->start;
-$end = $request->end;
+    $start = $request->start;
+    $end = $request->end;
 
-if (! $start || ! $end) {
-    return redirect(route('admin.map') . '?start=' . now()->subHour()->format('Y-m-d H:i:s'). '&end=' . now()->format('Y-m-d H:i:s'));
+
+  if (! $start || ! $end) {
+    // Jika $start atau $end kosong atau tidak valid, redirect ke halaman admin.map dengan waktu default
+    $defaultEnd = now()->format('Y-m-d H:i:s');
+    $defaultStart = now()->subHours(3)->format('Y-m-d H:i:s');
+    return redirect(route('admin.map') . '?start=' . $defaultStart . '&end=' . $defaultEnd);
 }
 
-// Mengambil daftar pengguna
-$users = User::all();
 
-// Mengambil daftar perangkat beserta pengguna
-$devices = Device::with('user')->get();
+    // Mengambil daftar pengguna
+    $users = User::all();
 
-// Mengambil daftar riwayat
-$startOfDay = Carbon::parse($start)->startOfDay(); // Gunakan waktu awal dari permintaan
-$endOfDay = Carbon::parse($end)->endOfDay(); // Gunakan waktu akhir dari permintaan
+    // Mengambil daftar perangkat beserta pengguna
+    $devices = Device::with('user')->get();
 
-$history = History::where('date_time', '>=', $startOfDay)
+    // Mengambil daftar riwayat
+    $startOfDay = Carbon::parse($start)->startOfDay(); // Gunakan waktu awal dari permintaan
+    $endOfDay = Carbon::parse($end)->endOfDay(); // Gunakan waktu akhir dari permintaan
+
+    $history = History::where('date_time', '>=', $startOfDay)
                     ->where('date_time', '<=', $endOfDay)
                     ->get();
 
-// Membuat array nama perangkat yang berisi id perangkat sebagai kunci dan nama perangkat sebagai nilai
-$deviceNames = $devices->pluck('name', 'id_device')->toArray();
-$userNames = $devices->pluck('user.name', 'id_device')->toArray();
+    // Membuat array nama perangkat yang berisi id perangkat sebagai kunci dan nama perangkat sebagai nilai
+    $deviceNames = $devices->pluck('name', 'id_device')->toArray();
+    $userNames = $devices->pluck('user.name', 'id_device')->toArray();
 
-return view('admin.map.index', [
-    'users' => $users, // Mengirim data pengguna ke tampilan
-    'devices' => $devices, // Mengirim data perangkat ke tampilan
-    'history' => $history, // Mengirim data riwayat ke tampilan
-    'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
-    'userNames' => $userNames, // Mengirim data nama pengguna ke tampilan
-]);
-
+    return view('admin.map.index', [
+        'users' => $users, // Mengirim data pengguna ke tampilan
+        'devices' => $devices, // Mengirim data perangkat ke tampilan
+        'history' => $history, // Mengirim data riwayat ke tampilan
+        'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
+        'userNames' => $userNames, // Mengirim data nama pengguna ke tampilan
+    ]);
 }
+
 
 
 

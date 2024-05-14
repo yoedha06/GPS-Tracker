@@ -120,10 +120,27 @@
                 opacity: 1;
             }
         }
+                #map-container {
+            position: relative;
+        }
+
+        #loading-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            display: none;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
     </style>
 
 
-        @section('content')
+    @section('content')
         @include('layouts.navbaradmin')
 
         <div class="notification-container" id="notification-container">
@@ -208,9 +225,15 @@
         </div>
         </div>
         </div>
-        <div id="map-container">
-            <div id="map"></div>
+         <div id="map-container">
+        <div id="map"></div>
+        <div id="loading-overlay">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only"></span>
+            </div>
         </div>
+    </div>
+
 
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -270,13 +293,19 @@
                 var selectedDevice;
                 var selectedDates;
 
+                // Mendapatkan waktu sekarang
+                var now = new Date();
+
+                // Mengatur waktu mulai 3 jam sebelum waktu sekarang
+                var start = new Date(now.getTime() - 3 * 60 * 60 * 1000); // Mengurangi 3 jam dalam milidetik
+
                 flatpickr("#date_range", {
                     mode: "range",
                     dateFormat: "Y-m-d H:i",
                     enableTime: true,
                     defaultDate: [
-                        new Date().setHours(0, 0, 0, 0), // Mulai dari jam 00:00
-                        new Date().setHours(23, 0, 0, 0) // Berakhir pada jam 23:00
+                        start, // Waktu mulai 3 jam sebelum waktu sekarang
+                        now // Waktu akhir adalah waktu sekarang
                     ],
                     onClose: function(selectedDates) {
                         startDate = selectedDates[0];
@@ -458,10 +487,19 @@
                 }
 
 
-                
 
+   function showNotification(message) {
+                const notificationContainer = $('#notification-container');
+                const notification = $('#notification');
+                notification.html('<i class="fas fa-exclamation-circle"></i> ' + message);
+                notificationContainer.css('opacity', '1');
+                setTimeout(function() {
+                    notificationContainer.css('opacity', '0');
+                }, 5000);
+            }
                 function filterHistory(selectedDevice, startDate, endDate, selectedUserId) {
                     if (startDate && endDate) {
+                          $('#loading-overlay').show();
                         var start = new Date(startDate);
                         var end = new Date(endDate);
                         var formattedStartDate = start.getFullYear() + '-' + ('0' + (start.getMonth() +
@@ -488,11 +526,17 @@
                             },
 
                             success: function(response) {
+                            if (response && response.length > 0) {
                                 filterMap(response, selectedDevice);
-                            },
-                            error: function(xhr, status, error) {
-                                console.error(error);
+                            } else {
+                                showNotification("No data found for the selected range.");
                             }
+                            $('#loading-overlay').hide();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            $('#loading-overlay').hide();
+                        }
                         });
                     }
                 }
