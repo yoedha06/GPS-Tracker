@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/history', [HistoryController::class, 'index']);
 Route::post('/history/store', [HistoryController::class, 'store']);
 
+Route::get('/webhook/ind', [WebhookController::class, 'index']); //untuk testing
 Route::post('/webhook', [WebhookController::class, 'store']);
 
 // Route::post('/register', [AuthRegisterController::class, 'register'])->name('register');
