@@ -91,16 +91,17 @@ class HistoryController extends Controller
             'original' => json_encode($request->all())
         ]);
 
-        //kirim ke wa
+        // kirim ke wa
         $typeNotifications = TypeNotif::all();
 
         foreach ($typeNotifications as $typeNotification) {
-
             list($hour, $minute) = explode(':', $typeNotification->time_schedule);
             $scheduledDateTime = Carbon::today()->setHour($hour)->setMinute($minute);
 
             if ($typeNotification->count > 0) {
-                $histories = History::where('device_id', $typeNotification->user_id)
+                $histories = History::whereHas('device', function ($query) use ($typeNotification) {
+                    $query->where('user_id', $typeNotification->user_id);
+                })
                     ->where('whatsapp_sent', 'belum terkirim')
                     ->where('date_time', '>', $scheduledDateTime)
                     ->orderBy('date_time')
@@ -111,13 +112,15 @@ class HistoryController extends Controller
                     $message = "";
                     $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
 
-                    $message .= "Device: " . $device->name . "\n";
+                    $message .= "Device: " . $history->device->name . "\n";
                     $message .= "Number Plat: " . $history->device->plat_nomor . "\n";
                     $message .= "Address: " . $address . "\n";
                     $message .= "Location: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
                     $message .= "Date Time: " . $history->date_time;
 
-                    $this->sendWhatsapp($typeNotification->user_id, $request->phone, $message);
+                    $phoneNumber = $history->device->user->phone;
+
+                    $this->sendWhatsapp($typeNotification->user_id, $phoneNumber, $message);
 
                     $history->update(['whatsapp_sent' => 'terkirim']);
 
@@ -130,7 +133,6 @@ class HistoryController extends Controller
                 }
             }
         }
-        //response
         return response()->json([
             'message' => true,
             'status' => $history,
@@ -141,13 +143,9 @@ class HistoryController extends Controller
     {
         $url = "https://app.japati.id/api/send-message";
 
-        $user = User::find($userId);
-
-        $phoneNumber = $user->phone;
-
         $data = [
             'gateway' => '62895618632347',
-            'number' => $phoneNumber,
+            'number' => $phoneNumber, // Menggunakan parameter phone number langsung
             'type' => 'text',
             'message' => $message
         ];
