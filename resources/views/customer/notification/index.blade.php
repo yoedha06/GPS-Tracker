@@ -55,55 +55,22 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="count" class="col-md-4 col-form-label text-md-right">amount of data<span style="color:red;">*</span></label>
+                                    <label for="count" class="col-md-4 col-form-label text-md-right">amount of data<span
+                                            style="color:red;">*</span></label>
                                     <div class="col-md-8">
-                                        <input type="number" class="form-control" name="count" id="count" placeholder="amount of data to send" min="1" style="font-style: italic;" required>
+                                        <input type="number" class="form-control" name="count" id="count"
+                                            placeholder="amount of data to send" min="1" value="{{ session('count') }}" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="scedhule" class="col-md-4 col-form-label text-md-right">schedule<span style="color:red;">*</span></label>
+                                    <label for="scedhule" class="col-md-4 col-form-label text-md-right">schedule<span
+                                            style="color:red;">*</span></label>
                                     <div class="col-md-8">
-                                        <input type="time" class="form-control" name="time_schedule" id="scedule" required>
+                                        <input type="time" class="form-control" name="time_schedule" id="scedule"
+                                            value="{{session('time_schedule')}}" required>
                                     </div>
                                 </div>
-
-                                {{-- <div class="form-group row">
-                                    <label for="notification_type"
-                                        class="col-md-4 col-form-label text-md-right">Notification Type</label>
-                                    <div class="col-md-8">
-                                        <select id="notification_type" class="form-select" name="notification_type" required
-                                            onchange="showCustomInterval()">
-                                            <option value="">Select Type</option>
-                                            <option value="1"
-                                                {{ session('notification_type') == 1 ? 'selected' : '' }}>Send 5 data per
-                                                day</option>
-                                            <option value="2"
-                                                {{ session('notification_type') == 2 ? 'selected' : '' }}>Send 1 data after
-                                                8 AM</option>
-                                            <option value="3"
-                                                {{ session('notification_type') == 3 ? 'selected' : '' }}>Custom Interval
-                                                (1-5 hours)</option>
-                                        </select>
-                                    </div>
-                                </div> --}}
-
-                                {{-- <div class="form-group row" id="custom_interval" style="display: none;">
-                                    <label for="notification_type" class="col-md-6 col-form-label text-md-right">Select
-                                        interval</label>
-                                    <div class="col-md-8">
-                                        <select id="custom_interval_hours" class="form-select" name="custom_interval_hours">
-                                            <option value="">Select Interval</option>
-                                            <option value="1jam">1 hour</option>
-                                            <option value="2jam">2 hours</option>
-                                            <option value="3jam">3 hours</option>
-                                            <option value="4jam">4 hours</option>
-                                            <option value="5jam">5 hours</option>
-                                        </select>
-                                    </div>
-                                </div> --}}
-
-
                                 <div class="form-group row mb-0">
                                     <div class="col-md-8 offset-md-4">
                                         <button type="submit" class="btn btn-primary">submit</button>
@@ -113,6 +80,7 @@
                         </div>
                     </div>
 
+                    {{-- send manual notification --}}
                     <div class="card">
                         <center>
                             <div class="card-header"><b style="font-size: 1.5rem;">Send Manual Notification</b></div>
@@ -188,6 +156,7 @@
                     </div>
                 </div>
 
+                {{-- tabel logs history today --}}
                 <div class="col-md-7" style="border-radius:10px;">
                     <div class="card">
                         <div class="card-header"><b style="font-size: 1.5rem;">Logs Today History</b></div>
@@ -222,15 +191,64 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+@endsection
 
-                <script>
-                    function showCustomInterval() {
-                        var selectedValue = document.getElementById("notification_type").value;
-                        if (selectedValue == 3) {
-                            document.getElementById("custom_interval").style.display = "block";
-                        } else {
-                            document.getElementById("custom_interval").style.display = "none";
-                        }
-                    }
-                </script>
-            @endsection
+
+{{-- automatic select type --}}
+{{-- <div class="form-group row">
+                                    <label for="notification_type"
+                                        class="col-md-4 col-form-label text-md-right">Notification Type</label>
+                                    <div class="col-md-8">
+                                        <select id="notification_type" class="form-select" name="notification_type" required
+                                            onchange="showCustomInterval()">
+                                            <option value="">Select Type</option>
+                                            <option value="1"
+                                                {{ session('notification_type') == 1 ? 'selected' : '' }}>Send 5 data per
+                                                day</option>
+                                            <option value="2"
+                                                {{ session('notification_type') == 2 ? 'selected' : '' }}>Send 1 data after
+                                                8 AM</option>
+                                            <option value="3"
+                                                {{ session('notification_type') == 3 ? 'selected' : '' }}>Custom Interval
+                                                (1-5 hours)</option>
+                                        </select>
+                                    </div>
+                                </div> --}}
+
+{{-- <div class="form-group row" id="custom_interval" style="display: none;">
+                                    <label for="notification_type" class="col-md-6 col-form-label text-md-right">Select
+                                        interval</label>
+                                    <div class="col-md-8">
+                                        <select id="custom_interval_hours" class="form-select" name="custom_interval_hours">
+                                            <option value="">Select Interval</option>
+                                            <option value="1jam">1 hour</option>
+                                            <option value="2jam">2 hours</option>
+                                            <option value="3jam">3 hours</option>
+                                            <option value="4jam">4 hours</option>
+                                            <option value="5jam">5 hours</option>
+                                        </select>
+                                    </div>
+                                </div> 
+
+                                <script>
+            function showCustomInterval() {
+                var selectedValue = document.getElementById("notification_type").value;
+                if (selectedValue == 3) {
+                    document.getElementById("custom_interval").style.display = "block";
+                } else {
+                    document.getElementById("custom_interval").style.display = "none";
+                }
+            }
+        </script>
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                --}}

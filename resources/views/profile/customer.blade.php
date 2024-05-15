@@ -59,7 +59,7 @@
                                         <form action="{{ route('delete.photo.customer') }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger mt-2">Hapus Foto</button>
+                                            <button type="submit" class="btn btn-danger mt-2">Delete Photo</button>
                                         </form>
                                     @endif
                                 </div>
@@ -143,8 +143,8 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                        <a href="/customer" class="btn btn-primary">Kembali</a>
+                                        <a href="/customer" class="btn btn-primary"><i class="fas fa-chevron-left"></i>&nbsp;Back</a>
+                                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>&nbsp;Save Changes</button>
                                         <a href="/logout" class="btn btn-danger">
                                             <i class="bi bi-box-arrow-left"></i> Logout
                                         </a>
@@ -161,9 +161,6 @@
             <div class="footer clearfix mb-0 text-muted">
                 <div class="float-start">
                     <p>2024 © BARUDAK CIGS</p>
-                </div>
-                <div class="float-end">
-                    <p>Crafted with <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span> by BARUDAK CIGS</p>
                 </div>
             </div>
         </footer>

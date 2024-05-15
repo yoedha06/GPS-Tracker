@@ -46,6 +46,7 @@
                                 <th>No</th>
                                 <th>Name</th>
                                 <th>Username</th>
+                                <th>No Telp</th>
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Status</th>
@@ -58,6 +59,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->username }}</td>
+                                        <td>{{ $user->phone }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->role }}</td>
                                         <td>
