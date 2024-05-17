@@ -11,7 +11,7 @@ class TypeNotif extends Model
     protected $table = "type_notification";
 
     protected $fillable = [
-         'count', 'time_schedule', 'user_id'
+         'count', 'time_schedule', 'user_id', 'phone_number', 'remaining_count',
     ];
     public function user()
     {

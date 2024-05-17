@@ -12,11 +12,13 @@ class TypeNotifController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'phone_number' => 'numeric|required',
             'count' => 'required',
             'time_schedule' => 'required',
         ]);
 
         session([
+            'phone_number' => $request->input('phone_number'),
             'count' => $request->input('count'),
             'time_schedule' => $request->input('time_schedule'),
         ]);
@@ -25,7 +27,7 @@ class TypeNotifController extends Controller
 
         TypeNotif::updateOrCreate(
             ['user_id' => Auth::id()],
-            ['count' => $request->count, 'time_schedule' => $request->time_schedule]
+            ['phone_number' => $request->phone_number,'count' => $request->count,'time_schedule' => $request->time_schedule,'remaining_count'=>$request->count]
         );
 
         $message = $existingNotification ? 'Update successfully' : 'You will receive the data at the time you specify';
