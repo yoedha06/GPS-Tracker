@@ -28,8 +28,11 @@
             <div class="row justify-content-left">
                 <div class="col-md-5">
                     <div class="card">
-                        <div class="card-header"><b style="font-size: 1.5rem;">Send Automatic Notification</b></div>
-
+                        <div class="card-header">
+                            <center>
+                                <b style="font-size: 1.5rem;">Send Automatic Notification</b>
+                            </center>
+                        </div>
                         <div class="card-body">
 
                             @if (Session::has('notif'))
@@ -44,13 +47,11 @@
                                 @csrf
 
                                 <div class="form-group row">
-                                    <label for="phone" class="col-md-4 col-form-label text-md-right">My phone
-                                        number</label>
+                                    <label for="phone" class="col-md-4 col-form-label text-md-right">phone
+                                        number<span style="color:red;">*</span></label>
                                     <div class="col-md-8">
-                                        <input id="phone" type="text" class="form-control" name="phone"
-                                            placeholder="your phone number" value="{{ auth()->user()->phone }}"
-                                            style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);"
-                                            readonly>
+                                        <input type="tel" id="phone" class="form-control" name="phone_number"
+                                            placeholder="phone number" value="{{ session('phone_number') }}">
                                     </div>
                                 </div>
 
@@ -59,16 +60,17 @@
                                             style="color:red;">*</span></label>
                                     <div class="col-md-8">
                                         <input type="number" class="form-control" name="count" id="count"
-                                            placeholder="amount of data to send" min="1" value="{{ session('count') }}" required>
+                                            placeholder="amount of data to send" min="1"
+                                            value="{{ session('count') }}" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="scedhule" class="col-md-4 col-form-label text-md-right">schedule<span
+                                    <label for="schedule" class="col-md-4 col-form-label text-md-right">schedule<span
                                             style="color:red;">*</span></label>
                                     <div class="col-md-8">
-                                        <input type="time" class="form-control" name="time_schedule" id="scedule"
-                                            value="{{session('time_schedule')}}" required>
+                                        <input type="time" class="form-control" name="time_schedule" id="schedule"
+                                            value="{{ session('time_schedule') }}" required>
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
@@ -93,11 +95,11 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                         aria-label="Close"></button>
                                 </div>
-                            @endif
-
-                            @if (Session::has('error'))
-                                <div class="alert alert-danger" role="alert">
+                            @elseif (Session::has('error'))
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                     {{ Session::get('error') }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
                                 </div>
                             @endif
 
@@ -105,24 +107,24 @@
                                 @csrf
 
                                 <div class="form-group row">
-                                    <label for="phone" class="col-md-4 col-form-label text-md-right">My phone
-                                        number</label>
+                                    <label for="number_phone" class="col-md-4 col-form-label text-md-right">phone
+                                        number<span style="color: red;">*</span></label>
                                     <div class="col-md-6">
-                                        <input id="phone" type="text" class="form-control" name="phone"
-                                            placeholder="your phone number" value="{{ auth()->user()->phone }}"
-                                            style="background-color: rgb(210, 210, 218); color: rgba(0, 0, 0, 0.423);"
-                                            readonly>
+                                        <input id="number_phone" type="tel" class="form-control" name="number_phone"
+                                            placeholder="your phone number" value="{{ session('number_phone') }}">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="device" class="col-md-4 col-form-label text-md-right">Select
-                                        Device</label>
+                                        Device<span style="color: red;">*</span></label>
                                     <div class="col-md-6">
                                         <select id="device" class="form-select" name="device" required>
                                             <option value="">Select Device</option>
                                             @foreach ($devices as $device)
-                                                <option value="{{ $device->id_device }}">{{ $device->name }}</option>
+                                                <option value="{{ $device->id_device }}"
+                                                    {{ session('device') == $device->id_device ? 'selected' : '' }}>
+                                                    {{ $device->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -130,19 +132,21 @@
 
                                 <div class="form-group row">
                                     <label for="scheduled_time" class="col-md-4 col-form-label text-md-right">Start Date
-                                    </label>
+                                        <span style="color: red;">*</span></label>
                                     <div class="col-md-6">
                                         <input id="scheduled_time" type="datetime-local" class="form-control"
-                                            name="scheduled_time" required step="1">
+                                            name="scheduled_time" value="{{ session('scheduled_time') }}" required
+                                            step="1">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="scheduled_end_time" class="col-md-4 col-form-label text-md-right">End
-                                        Date</label>
+                                        Date<span style="color: red;">*</span></label>
                                     <div class="col-md-6">
                                         <input id="scheduled_end_time" type="datetime-local" class="form-control"
-                                            name="scheduled_end_time" required step="1">
+                                            name="scheduled_end_time" value="{{ session('scheduled_end_time') }}"
+                                            required step="1">
                                     </div>
                                 </div>
 

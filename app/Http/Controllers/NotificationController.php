@@ -4,15 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Device;
 use App\Models\History;
-use App\Models\NotificationLogs;
-use App\Models\TypeNotif;
 use Carbon\Carbon;
-use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 
 class NotificationController extends Controller
 {
@@ -33,64 +28,72 @@ class NotificationController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'number_phone' => 'numeric|required',
+            'scheduled_time' => 'required|date',
+            'scheduled_end_time' => 'required|date|after_or_equal:scheduled_time',
+        ]);
+
         $url = "https://app.japati.id/api/send-message";
 
-        // Check if the device exists
-        $device = Device::find($request->device);
+        $phoneNumber = $request->number_phone;
+        $startDateTime = Carbon::parse($request->scheduled_time);
+        $endDateTime = Carbon::parse($request->scheduled_end_time);
 
-        if (!$device) {
-            return redirect()->route('customer.notification.index')->with('error', 'Perangkat tidak ditemukan');
-        }
-
-        $selectedStartDateTime = $request->scheduled_time;
-        $selectedEndDateTime = $request->scheduled_end_time;
-
-        $startDateTime = Carbon::parse($selectedStartDateTime);
-        $endDateTime = Carbon::parse($selectedEndDateTime);
+        session([
+            'number_phone' => $request->number_phone,
+            'device' => $request->device,
+            'scheduled_time' => $request->scheduled_time,
+            'scheduled_end_time' => $request->scheduled_end_time
+        ]);
 
         $histories = History::with('device')
-            ->where('device_id', $request->device) // Filter berdasarkan device yang dipilih
+            ->where('device_id', $request->device)
             ->whereBetween('date_time', [$startDateTime, $endDateTime])
             ->get();
 
-        if ($histories->isNotEmpty()) {
-            $message = "";
-            foreach ($histories as $history) {
-                $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
-                // // Mendapatkan URL foto perangkat
-                // $photoUrl = asset('storage/' . $device->photo); // Sesuaikan dengan lokasi penyimpanan foto perangkat
-                // // $photoUrl = "https://files.f-g.my.id/images/dummy/buku-2.jpg";
-
-                $message .= "Device: {$histories[0]->device->name}\n";
-                $message .= "Address: " . $address . "\n";
-                $message .= "Location: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
-                $message .= "Plat Nomor: " . $history->device->plat_nomor . "\n";
-                $message .= "Waktu: " . $history->date_time . "\n\n";
-
-                $data = [
-                    'gateway' => '62895618632347',
-                    'number' => $request->phone,
-                    'type' => 'text',
-                    'message' => $message
-                ];
-
-                $response = Http::timeout(60)->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-                    ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
-                    ->post($url, $data);
-
-                if (!$response->ok()) {
-                    logger($response);
-
-                    $errorResponse = $response->json();
-                    logger($errorResponse);
-                    return redirect()->route('customer.notification.index');
-                }
-            }
-
-            return redirect()->route('customer.notification.index')->with('success', 'Pesan terkirim');
-        } else {
-            return redirect()->route('customer.notification.index')->with('error', 'Tidak ada data dalam rentang waktu yang dipilih');
+        if ($histories->isEmpty()) {
+            return redirect()->route('customer.notification.index')->with('error', 'There is no data in the selected time range');
         }
+
+        $message = $this->sendWhattsapp($histories);
+
+        $data = [
+            'gateway' => '62895618632347',
+            'number' => $phoneNumber,
+            'type' => 'text',
+            'message' => $message
+        ];
+
+        $response = Http::timeout(60)
+            ->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+            ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post($url, $data);
+
+        if ($response->ok()) {
+            logger()->info('WhatsApp message sent successfully');
+            return redirect()->route('customer.notification.index')->with('success', 'send successfully');
+        }else {
+            logger()->error('Failed to send WhatsApp message');
+            return redirect()->route('customer.notification.index')->with('error', 'failed to send data');
+        }
+    }
+
+    private function sendWhattsapp($histories)
+    {
+        $message = "";
+
+        foreach ($histories as $history) {
+            $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
+
+            $message .= "Device: {$history->device->name}\n";
+            $message .= "Address: " . $address . "\n";
+            $message .= "Location: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
+            $message .= "Plat Nomor: " . $history->device->plat_nomor . "\n";
+            $message .= "Waktu: " . $history->date_time . "\n\n";
+        }
+
+        return $message;
     }
 
     private function getAddressFromCoordinates($latitude, $longitude)
@@ -98,12 +101,10 @@ class NotificationController extends Controller
         $url = "https://nominatim.openstreetmap.org/reverse?lat={$latitude}&lon={$longitude}&format=json";
         $response = Http::get($url);
         $data = $response->json();
-        if (isset($data['display_name'])) {
-            return $data['display_name'];
-        } else {
-            return "Alamat tidak ditemukan";
-        }
+
+        return $data['display_name'] ?? "Alamat tidak ditemukan";
     }
+}
 
     // public function notificationtype(Request $request)
     // {
@@ -222,4 +223,3 @@ class NotificationController extends Controller
     //     //     }
     //     // }
     // }
-}

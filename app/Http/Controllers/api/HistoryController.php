@@ -91,21 +91,20 @@ class HistoryController extends Controller
             'original' => json_encode($request->all())
         ]);
 
-        // kirim ke wa
         $typeNotifications = TypeNotif::all();
 
         foreach ($typeNotifications as $typeNotification) {
             list($hour, $minute) = explode(':', $typeNotification->time_schedule);
             $scheduledDateTime = Carbon::today()->setHour($hour)->setMinute($minute);
 
-            if ($typeNotification->count > 0) {
+            if ($typeNotification->remaining_count > 0) {
                 $histories = History::whereHas('device', function ($query) use ($typeNotification) {
                     $query->where('user_id', $typeNotification->user_id);
                 })
                     ->where('whatsapp_sent', 'belum terkirim')
                     ->where('date_time', '>', $scheduledDateTime)
                     ->orderBy('date_time')
-                    ->limit($typeNotification->count)
+                    ->limit($typeNotification->remaining_count)
                     ->get();
 
                 foreach ($histories as $history) {
@@ -113,29 +112,29 @@ class HistoryController extends Controller
                     $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
 
                     $message .= "Device: " . $history->device->name . "\n";
-                    $message .= "Number Plat: " . $history->device->plat_nomor . "\n";
-                    $message .= "Address: " . $address . "\n";
-                    $message .= "Location: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
-                    $message .= "Date Time: " . $history->date_time;
+                    $message .= "Nomor Plat: " . $history->device->plat_nomor . "\n";
+                    $message .= "Alamat: " . $address . "\n";
+                    $message .= "Lokasi: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
+                    $message .= "Tanggal Waktu: " . $history->date_time;
 
-                    $phoneNumber = $history->device->user->phone;
+                    // Gunakan nomor telepon dari type_notification
+                    $phoneNumber = $typeNotification->phone_number;
 
+                    // Kirim pesan WhatsApp
                     $this->sendWhatsapp($typeNotification->user_id, $phoneNumber, $message);
 
+                    // Perbarui histori sebagai terkirim
                     $history->update(['whatsapp_sent' => 'terkirim']);
 
-                    $typeNotification->count -= 1;
+                    $typeNotification->remaining_count -= 1;
                     $typeNotification->save();
-
-                    if ($typeNotification->count == 0) {
-                        $typeNotification->delete();
-                    }
                 }
             }
         }
+
         return response()->json([
             'message' => true,
-            'status' => $history,
+            'status' => $history, // Mengembalikan koleksi histori yang telah diproses
         ], 201);
     }
 
@@ -145,7 +144,7 @@ class HistoryController extends Controller
 
         $data = [
             'gateway' => '62895618632347',
-            'number' => $phoneNumber, // Menggunakan parameter phone number langsung
+            'number' => $phoneNumber,
             'type' => 'text',
             'message' => $message
         ];
@@ -155,9 +154,9 @@ class HistoryController extends Controller
             ->post($url, $data);
 
         if ($response->ok()) {
-            logger($response);
-            $errorResponse = $response->json();
-            logger($errorResponse);
+            logger()->info('WhatsApp message sent successfully');
+        } else {
+            logger()->error('Failed to send WhatsApp message');
         }
     }
 

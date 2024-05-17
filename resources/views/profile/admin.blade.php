@@ -23,7 +23,7 @@
                                 <li class="breadcrumb-item"><a href="/admin"> <i class="bi bi-person-check-fill"></i>
                                         Admin</a></li>
                                 <li class="breadcrumb-item active" aria-current="page"> <i class="fas fa-user-circle"></i>
-                                    Profileeb</li>
+                                    Profile</li>
                             </ol>
                         </nav>
                     </div>
@@ -131,9 +131,12 @@
                                             accept="image/*">
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary" fdprocessedid="vp6voe">Save
+                                        <a href="/admin" class="btn btn-primary"><i
+                                                class="fas fa-chevron-left"></i>&nbsp;Kembali</a>
+                                        <button type="submit" class="btn btn-primary" fdprocessedid="vp6voe"><i
+                                                class="fas fa-save"></i>&nbsp;Save
                                             Changes</button>
-                                        <a href="/admin" class="btn btn-primary">Kembali</a>
+
                                     </div>
                                 </form>
                             </div>

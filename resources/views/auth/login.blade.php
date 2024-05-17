@@ -141,7 +141,7 @@
                                             <div class="input-group"> <!-- Tambahkan input-group di sini -->
                                                 <input type="password" id="password"
                                                     class="form-control form-control-lg {{ $errors->has('password') ? 'is-invalid' : '' }}"
-                                                    name="password" />
+                                                    name="password" value="{{ old('password') }}"/>
                                                 <span id="showPasswordBtn"
                                                     class="position-absolute end-0 p-2 top-50 translate-middle-y"
                                                     style="cursor: pointer;">
