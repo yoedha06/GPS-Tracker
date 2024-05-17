@@ -206,7 +206,7 @@
     <div id="map-container">
         <div id="map"></div>
         <div id="loading-overlay">
-            <div class="spinner-border text-primary" role="status">
+            <div class="spinner-border text-prim ary" role="status">
                 <span class="sr-only"></span>
             </div>
         </div>
