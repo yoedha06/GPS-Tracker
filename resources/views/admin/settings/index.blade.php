@@ -3,7 +3,7 @@
 <title>GEEX - Settings</title>
 
 @section('content')
-@include('layouts.navbaradmin')
+    @include('layouts.navbaradmin')
 
     <div id="main">
         <div class="page-heading">
@@ -198,25 +198,25 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="title_pengaturan">Title <span style="color: red">*</span> :</label>
-                                <input type="text" class="form-control" id="title_pengaturan" name="title_pengaturan" value="{{ old('title_pengaturan') }}"
-                                    required>
+                                <input type="text" class="form-control" id="title_pengaturan" name="title_pengaturan"
+                                    value="{{ old('title_pengaturan') }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="name_pengaturan">Name <span style="color: red">*</span> :</label>
-                                <input type="text" class="form-control" id="name_pengaturan" name="name_pengaturan" value=" {{ old('name_pengaturan') }}"
-                                    required>
+                                <input type="text" class="form-control" id="name_pengaturan" name="name_pengaturan"
+                                    value=" {{ old('name_pengaturan') }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="logo">Logo:</label>
-                                <input type="file" class="form-control" id="logo" name="logo" value="{{ old('logo') }}"
-                                    onchange="previewImage(this, 'logoPreview')">
+                                <input type="file" class="form-control" id="logo" name="logo"
+                                    value="{{ old('logo') }}" onchange="previewImage(this, 'logoPreview')">
                                 <img id="logoPreview" src="#" alt="Preview Logo"
                                     style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
                             </div>
                             <div class="form-group">
                                 <label for="background">Background:</label>
-                                <input type="file" class="form-control" id="background" name="background" value="{{ old('background') }}"
-                                    onchange="previewImage(this, 'backgroundPreview')">
+                                <input type="file" class="form-control" id="background" name="background"
+                                    value="{{ old('background') }}" onchange="previewImage(this, 'backgroundPreview')">
                                 <img id="backgroundPreview" src="#" alt="backgroundPreview"
                                     style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
                             </div>
@@ -272,7 +272,6 @@
                 </div>
             </div>
         @endif
-
 
         <!-- Konten About -->
         <div class="card">
@@ -439,27 +438,33 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="title_about">Title About <span style="color: red">*</span>:</label>
-                                <input type="text" class="form-control" id="title_about" name="title_about" value="{{ old('title_about') }}" required>
+                                <input type="text" class="form-control" id="title_about" name="title_about"
+                                    value="{{ old('title_about') }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="left_description">Deskripsi Kiri <span style="color: red">*</span>:</label>
-                                <textarea class="form-control" id="left_description" name="left_description"  value ="{{ old('left_description') }}" rows="3" required></textarea>
+                                <textarea class="form-control" id="left_description" name="left_description" value ="{{ old('left_description') }}"
+                                    rows="3" required></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="right_description">Deskripsi Kanan <span style="color: red">*</span>:</label>
-                                <textarea class="form-control" id="right_description" name="right_description" value ="{{ old('right_description') }}" rows="3" required></textarea>
+                                <textarea class="form-control" id="right_description" name="right_description"
+                                    value ="{{ old('right_description') }}" rows="3" required></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="feature_1">Fitur 1:</label>
-                                <input type="text" class="form-control" id="feature_1" name="feature_1" value="{{ old('feature_1') }}">
+                                <input type="text" class="form-control" id="feature_1" name="feature_1"
+                                    value="{{ old('feature_1') }}">
                             </div>
                             <div class="form-group">
                                 <label for="feature_2">Fitur 2:</label>
-                                <input type="text" class="form-control" id="feature_2" name="feature_2" value="{{ old('feature_2') }}">
+                                <input type="text" class="form-control" id="feature_2" name="feature_2"
+                                    value="{{ old('feature_2') }}">
                             </div>
                             <div class="form-group">
                                 <label for="feature_3">Fitur 3:</label>
-                                <input type="text" class="form-control" id="feature_3" name="feature_3" value="{{ old('feature_3') }}">
+                                <input type="text" class="form-control" id="feature_3" name="feature_3"
+                                    value="{{ old('feature_3') }}">
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -470,7 +475,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- Tim -->
         <div class="card mt-4">
@@ -591,7 +595,10 @@
                                                 <div class="form-group">
                                                     <label for="photo_1">Photo 1:</label>
                                                     <input type="file" class="form-control" id="photo_1"
-                                                        name="photo_1">
+                                                        name="photo_1" value="{{ old('photo_1') }}"
+                                                        onchange="previewImage(this, 'photo_1 preview')">
+                                                    <img id="photo_1 preview" src="#" alt="photo_1 preview"
+                                                        style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
                                                 </div>
                                             </div>
 
@@ -615,7 +622,10 @@
                                                 <div class="form-group">
                                                     <label for="photo_2">Photo 2:</label>
                                                     <input type="file" class="form-control" id="photo_2"
-                                                        name="photo_2">
+                                                        name="photo_2" value="{{ old('photo_2') }}"
+                                                        onchange="previewImage(this, 'photo_2  preview')">
+                                                    <img id="photo_2  preview" src="#" alt="photo_2 preview"
+                                                        style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
                                                 </div>
                                             </div>
                                         </div>
@@ -640,9 +650,12 @@
                                                     <textarea class="form-control" id="deskripsi_3" name="deskripsi_3" rows="3">{{ old('deskripsi_3') }}</textarea>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="photo_3">Photo 3:</label>
+                                                    <label for="photo_2">Photo 3:</label>
                                                     <input type="file" class="form-control" id="photo_3"
-                                                        name="photo_3">
+                                                        name="photo_3" value="{{ old('photo_3') }}"
+                                                        onchange="previewImage(this, 'photo_3  preview')">
+                                                    <img id="photo_3  preview" src="#" alt="photo_3 preview"
+                                                        style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
                                                 </div>
                                             </div>
 
@@ -664,16 +677,18 @@
                                                     <textarea class="form-control" id="deskripsi_4" name="deskripsi_4" rows="3">{{ old('deskripsi_4') }}</textarea>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="photo_4">Photo 4:</label>
+                                                    <label for="photo_2">Photo 4:</label>
                                                     <input type="file" class="form-control" id="photo_4"
-                                                        name="photo_4">
+                                                        name="photo_4" value="{{ old('photo_4') }}" onchange="previewImage(this, 'photo_4  preview')">
+                                                        <img id="photo_4  preview" src="#" alt="photo_4 preview"
+                                                            style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary"><i
-                                                class="bi bi-plus"></i> Add Team</button>
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-plus"></i> Add
+                                            Team</button>
                                     </div>
                                 </form>
                             </div>
@@ -846,7 +861,7 @@
                                     <tr>
                                         <td>Photo 2</td>
                                         <td>
-                                            @if ($item->photo_1)
+                                            @if ($item->photo_2)
                                                 <img src="{{ asset('storage/' . $item->photo_2) }}" alt="Photo 2"
                                                     style="max-width: 150px; max-height: 150px; cursor: pointer; border-radius: 5px;"
                                                     data-toggle="modal" data-target="#phototeam2{{ $item->id }}">
@@ -1265,7 +1280,7 @@
                 @if ($contact->isEmpty())
                     <button type="button" class="btn btn-primary" data-toggle="modal"
                         data-target="#addModalInformasiContact">
-                        <i class="bi bi-plus"></i> Add Informasi Contact 
+                        <i class="bi bi-plus"></i> Add Informasi Contact
                     </button>
                 @endif
             </div>
@@ -1341,8 +1356,8 @@
                                 <div class="form-group">
                                     <label for="name_location">Name Location <span style="color: red">*</span>
                                         :</label>
-                                    <input type="text" class="form-control" id="name_location" name="name_location"
-                                        value="{{ $item->name_location }}">
+                                    <input type="text" class="form-control" id="name_location"
+                                        name="name_location" value="{{ $item->name_location }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="email_informasi">Email <span style="color: red">*</span>
@@ -1401,7 +1416,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-plus"></i> Add Informasi Contact 
+                                <i class="bi bi-plus"></i> Add Informasi Contact
                         </div>
                     </form>
                 </div>
@@ -1413,10 +1428,11 @@
             <div class="card-header d-flex justify-content-between">
                 <span>Sosmed</span>
                 <tr>
-                    @if($sosmed->isEmpty())
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAddsosmed">
-                        <i class="bi bi-plus"></i> Add Sosmed
-                    </button>
+                    @if ($sosmed->isEmpty())
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#modalAddsosmed">
+                            <i class="bi bi-plus"></i> Add Sosmed
+                        </button>
                     @endif
                 </tr>
             </div>
@@ -1562,8 +1578,8 @@
     @endforeach
 
     <!-- Modal Add Informasi Sosmed -->
-    <div class="modal fade" id="modalAddsosmed" tabindex="-1" role="dialog"
-     aria-labelledby="modalAddsosmed" aria-hidden="true">
+    <div class="modal fade" id="modalAddsosmed" tabindex="-1" role="dialog" aria-labelledby="modalAddsosmed"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1572,65 +1588,64 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('informasisosmed.store') }}" method="POST"
-                    enctype="multipart/form-data">
+                <form action="{{ route('informasisosmed.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="title_sosmed">Title Sosmed <span style="color: red">*</span>:</label>
-                            <input type="text" class="form-control" id="title_sosmed" name="title_sosmed" value="{{ old('title_sosmed') }}"
-                                required>
+                            <input type="text" class="form-control" id="title_sosmed" name="title_sosmed"
+                                value="{{ old('title_sosmed') }}" required>
                         </div>
                         <div class="form-group">
                             <label for="street_name">Street Name <span style="color: red">*</span>:</label>
-                            <input type="text" class="form-control" id="street_name"
-                                name="street_name" value="{{ old('street_name') }}" required>
+                            <input type="text" class="form-control" id="street_name" name="street_name"
+                                value="{{ old('street_name') }}" required>
                         </div>
                         <div class="form-group">
                             <label for="subdistrict">Subdistrict <span style="color: red">*</span>:</label>
-                            <input type="text" class="form-control" id="subdistrict" name="subdistrict"value="{{ old('subdistrict') }}"
-                                required>
+                            <input type="text" class="form-control" id="subdistrict"
+                                name="subdistrict"value="{{ old('subdistrict') }}" required>
                         </div>
                         <div class="form-group">
                             <label for="ward">Ward <span style="color: red">*</span>:</label>
-                            <input type="text" class="form-control" id="ward" name="ward" value="{{ old('ward') }}"
-                                required>
+                            <input type="text" class="form-control" id="ward" name="ward"
+                                value="{{ old('ward') }}" required>
                         </div>
                         <div class="form-group">
                             <label for="call">Call <span style="color: red">*</span>:</label>
-                            <input type="number" class="form-control" id="call" name="call" value="{{ old('call') }}"
-                                required>
+                            <input type="number" class="form-control" id="call" name="call"
+                                value="{{ old('call') }}" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email <span style="color: red">*</span>:</label>
-                            <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}"
-                                required>
+                            <input type="text" class="form-control" id="email" name="email"
+                                value="{{ old('email') }}" required>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-plus"></i> Add Informasi Contact 
+                            <i class="bi bi-plus"></i> Add Informasi Contact
                     </div>
                 </form>
             </div>
         </div>
-     </div>
+    </div>
 
-<!-- jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<script>
-    function previewImage(input, imgId) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById(imgId).src = e.target.result;
+    <script>
+        function previewImage(input, imgId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(imgId).src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]); // Mengkonversi gambar ke URL data
             }
-            reader.readAsDataURL(input.files[0]); // Mengkonversi gambar ke URL data
         }
-    }
-</script>
+    </script>
 
 @endsection
