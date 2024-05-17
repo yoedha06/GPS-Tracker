@@ -178,19 +178,21 @@
                 <div class="col-md-6">
                     <div class="form-group mb-3" style="width: 99%;">
                         <label class="form-label">Select Device Users And Device</label>
+                        <!-- Blade Template -->
                         <select id="user_device" class="form-select input" style="width: 100%;">
                             <option value="" disabled selected>Select</option>
                             @foreach ($devices->sortBy('name') as $device)
-                                @if ($device->latestHistory && $device->user)
+                                @if ($device && $device->user)
                                     <option value="{{ $device->id_device }}" data-device-id="{{ $device->id_device }}"
                                         data-user-id="{{ $device->user->id }}"
-                                        {{ request('device') == $device->id_device ? 'selected' : '' }}>
+                                        {{ request('device') == $device->id_device || $latestDeviceId == $device->id_device ? 'selected' : '' }}>
                                         {{ $device->name }} - {{ $device->user->name }}
                                     </option>
                                 @endif
-                                {{-- @dump($device) --}}
                             @endforeach
                         </select>
+
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -266,13 +268,43 @@
             $(document).ready(function() {
                 let queryParam = new URLSearchParams(window.location.search);
                 let queryDevice = queryParam.get('device');
+                let queryUser = queryParam.get('user');
                 let queryStart = queryParam.get('start');
                 let queryEnd = queryParam.get('end');
 
-                if (queryStart && queryEnd) {
-                    $('#date_range').val(queryStart + ' - ' + queryEnd);
-                    filterHistory(queryDevice == 'null' ? '' : queryDevice, queryStart, queryEnd);
+                // Use latest device and user from backend data
+                let latestDeviceId = "{{ $latestDeviceId }}";
+                let latestUserId = "{{ $latestUserId }}"; // Assuming you have a variable for the latest user ID
+
+                // If start and end date parameters are not in the URL, set the default range
+                if (!queryStart || !queryEnd) {
+                    let defaultStart = new Date(new Date().getTime() - 3 * 60 * 60 * 1000); // 3 hours ago
+                    let defaultEnd = new Date();
+                    queryStart = defaultStart.toISOString().slice(0, 16).replace('T', ' ');
+                    queryEnd = defaultEnd.toISOString().slice(0, 16).replace('T', ' ');
                 }
+
+                // If device or user parameters are not in the URL, set them to the latest data
+                if (!queryDevice || queryDevice === 'null') {
+                    queryDevice = latestDeviceId;
+                }
+
+                if (!queryUser || queryUser === 'undefined' || queryUser === null || queryUser === 'null') {
+                    queryUser = latestUserId;
+                }
+
+                // Set the date range input value
+                $('#date_range').val(queryStart + ' - ' + queryEnd);
+
+                // Set the selected device in the dropdown
+                $('#user_device').val(queryDevice).trigger('change');
+
+                // Update the URL with the correct parameters
+                let newQueryString = `?start=${queryStart}&end=${queryEnd}&device=${queryDevice}&user=${queryUser}`;
+                window.history.replaceState({}, '', newQueryString);
+
+                filterHistory(queryDevice, queryStart, queryEnd, queryUser);
+
                 $('#user_device').select2({
                     sorter: function(data) {
                         return data.sort(function(a, b) {
@@ -291,30 +323,31 @@
                 var selectedDevice;
                 var selectedDates;
 
-                // Mendapatkan waktu sekarang
-                var now = new Date();
+                var startDate;
+                var endDate;
 
-                // Mengatur waktu mulai 3 jam sebelum waktu sekarang
-                var start = new Date(now.getTime() - 3 * 60 * 60 * 1000); // Mengurangi 3 jam dalam milidetik
-
+                // Initialize the flatpickr date range picker
                 flatpickr("#date_range", {
                     mode: "range",
                     dateFormat: "Y-m-d H:i",
                     enableTime: true,
                     defaultDate: [
-                        start, // Waktu mulai 3 jam sebelum waktu sekarang
-                        now // Waktu akhir adalah waktu sekarang
+                        new Date(queryStart),
+                        new Date(queryEnd)
                     ],
                     onClose: function(selectedDates) {
-                        startDate = selectedDates[0];
-                        endDate = selectedDates[1];
-                        selectedDevice = $('#user_device').val();
-                        var formattedStartDate = formatDateForUrl(startDate);
-                        var formattedEndDate = formatDateForUrl(endDate);
-                        var queryString = `?start=${formattedStartDate}&end=${formattedEndDate}`;
-                        window.history.pushState({}, '', window.location.pathname + queryString);
-                        $(this.element).trigger('change');
-                        filterHistory(selectedDevice, startDate, endDate, selectedDates);
+                        if (selectedDates.length === 2) {
+                            startDate = selectedDates[0];
+                            endDate = selectedDates[1];
+                            queryDevice = $('#user_device').val();
+                            queryUser = $('#user_device').find(':selected').data('user-id');
+                            let formattedStartDate = formatDateForUrl(startDate);
+                            let formattedEndDate = formatDateForUrl(endDate);
+                            let queryString =
+                                `?start=${formattedStartDate}&end=${formattedEndDate}&device=${queryDevice}&user=${queryUser}`;
+                            window.history.pushState({}, '', window.location.pathname + queryString);
+                            filterHistory(queryDevice, formattedStartDate, formattedEndDate);
+                        }
                     }
                 });
 
@@ -336,7 +369,8 @@
                 var markers = [];
                 var devicePolylines = {};
 
-                function filterMap(historyData) {
+                function filterMap(historyData, showSpeed, showAccuracy) {
+                    
                     if (!Array.isArray(historyData)) {
                         console.error("Data is not an array.");
                         return;
@@ -394,96 +428,97 @@
                         }).addTo(map);
                         markers.push(endMarker);
 
-                        var startPopupContent = '<div style="text-align: center;"><b>Start</b></div>';
-                        if (startHistoryItem.device && startHistoryItem.device.name) {
-                            var deviceName = startHistoryItem.device.name;
-                            var userName = startHistoryItem.device.user && startHistoryItem.device.user.name ?
-                                startHistoryItem.device.user.name : "Unknown User";
-                            startPopupContent += '<b>Nama Pengguna:</b> ' + userName +
-                                '<br><b>Nama Device:</b> ' + deviceName;
-                        } else {
-                            startPopupContent += '<b>Nama Device:</b> Unknown Device';
-                        }
-                        startPopupContent += '<br><b>Latlng:</b> ' + startHistoryItem.latitude + ', ' +
-                            startHistoryItem.longitude +
-                            '<br><b>Date Time:</b> ' + startHistoryItem.date_time;
+                      var startPopupContent = '<div style="text-align: center;"><b>Start</b></div>';
+if (startHistoryItem.device && startHistoryItem.device.name) {
+    var deviceName = startHistoryItem.device.name;
+    var userName = startHistoryItem.device.user && startHistoryItem.device.user.name ? startHistoryItem.device.user.name : "Unknown User";
+    startPopupContent += '<i class="fas fa-user" style="margin-right: 5px;"></i><b>Nama Pengguna:</b> ' + userName +
+        '<br><i class="fas fa-car" style="margin-right: 5px;"></i><b>Nama Device:</b> ' + deviceName;
+} else {
+    startPopupContent += '<b>Nama Device:</b> Unknown Device';
+}
+startPopupContent += '<br><i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i><b>Latlng:</b> ' + startHistoryItem.latitude + ', ' + startHistoryItem.longitude +
+    '<br><i class="fas fa-calendar-alt" style="margin-right: 5px;"></i><b>Date Time:</b> ' + startHistoryItem.date_time;
 
-                        startMarker.bindPopup(startPopupContent);
+startMarker.bindPopup(startPopupContent);
 
-                        var endPopupContent = '<div style="text-align: center;"><b>End</b></div>';
-                        if (endHistoryItem.device && endHistoryItem.device.name) {
-                            var deviceName = endHistoryItem.device.name;
-                            var userName = endHistoryItem.device.user && endHistoryItem.device.user.name ?
-                                endHistoryItem.device.user.name : "Unknown User";
-                            endPopupContent += '<b>Nama Pengguna:</b> ' + userName +
-                                '<br><b>Nama Device:</b> ' + deviceName;
-                        } else {
-                            endPopupContent += '<b>Nama Device:</b> Unknown Device';
-                        }
-                        endPopupContent += '<br><b>Latlng:</b> ' + endHistoryItem.latitude + ', ' +
-                            endHistoryItem.longitude +
-                            '<br><b>Date Time:</b> ' + endHistoryItem.date_time;
+var endPopupContent = '<div style="text-align: center;"><b>End</b></div>';
+if (endHistoryItem.device && endHistoryItem.device.name) {
+    var deviceName = endHistoryItem.device.name;
+    var userName = endHistoryItem.device.user && endHistoryItem.device.user.name ? endHistoryItem.device.user.name : "Unknown User";
+    endPopupContent += '<i class="fas fa-user" style="margin-right: 5px;"></i><b>Nama Pengguna:</b> ' + userName +
+        '<br><i class="fas fa-car" style="margin-right: 5px;"></i><b>Nama Device:</b> ' + deviceName;
+} else {
+    endPopupContent += '<b>Nama Device:</b> Unknown Device';
+}
+endPopupContent += '<br><i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i><b>Latlng:</b> ' + endHistoryItem.latitude + ', ' + endHistoryItem.longitude +
+    '<br><i class="fas fa-calendar-alt" style="margin-right: 5px;"></i><b>Date Time:</b> ' + endHistoryItem.date_time;
 
-                        endMarker.bindPopup(endPopupContent);
+endMarker.bindPopup(endPopupContent);
+
 
                         var polylinePoints = [];
-                        var color, weight, opacity;
-                        var speed, accuracy; // Deklarasi variabel di luar forEach loop
+                var color = 'blue'; // Default color
+                var weight = 1; // Default weight
+                var opacity = 1; // Default opacity
 
-                        deviceHistory.forEach(historyItem => {
-                            var lat = parseFloat(historyItem.latitude);
-                            var lng = parseFloat(historyItem.longitude);
-                            speed = parseFloat(historyItem.speeds); // Assign value to speed variable
-                            accuracy = parseFloat(historyItem
-                                .accuracy); // Assign value to accuracy variable
+                deviceHistory.forEach(historyItem => {
+                    var lat = parseFloat(historyItem.latitude);
+                    var lng = parseFloat(historyItem.longitude);
+                    var speed = parseFloat(historyItem.speeds); // Get speed value
+                    var accuracy = parseFloat(historyItem.accuracy); // Get accuracy value
 
-                            if (!isNaN(speed)) {
-                                if (speed >= 0 && speed < 20) {
-                                    color = 'green';
-                                    weight = 5;
-                                } else if (speed >= 20 && speed < 40) {
-                                    color = 'yellow';
-                                    weight = 3;
-                                } else {
-                                    color = 'red';
-                                    weight = 1;
-                                }
-                            }
+                    // Log the accuracy value to debug
+                    console.log('Accuracy:', accuracy);
 
-                            if (!isNaN(accuracy)) {
-                                if (accuracy >= 0 && accuracy < 10) {
-                                    opacity = 1;
-                                } else if (accuracy >= 10 && accuracy < 20) {
-                                    opacity = 0.7;
-                                } else {
-                                    opacity = 0.3;
-                                }
-                            }
-
-                            polylinePoints.push([lat, lng]);
-                        });
-
-                        if (!devicePolylines[deviceId]) {
-                            devicePolylines[deviceId] = L.polyline(polylinePoints, {
-                                color: color || 'blue',
-                                weight: weight || 1,
-                                opacity: opacity || 1
-                            }).addTo(map);
+                    if (showSpeed && !isNaN(speed)) {
+                        // Set color based on speed value
+                        if (speed >= 0 && speed < 20) {
+                            color = 'green';
+                            weight = 5;
+                        } else if (speed >= 20 && speed < 40) {
+                            color = 'yellow';
+                            weight = 3;
                         } else {
-                            devicePolylines[deviceId].setLatLngs(polylinePoints);
+                            color = 'red';
+                            weight = 1;
                         }
+                    }
 
-                        var polylinePopupContent =
-                            '<b>Speed:</b> ' + speed +
-                            '<br><b>Accuracy:</b> ' + accuracy;
-                        devicePolylines[deviceId].bindPopup(polylinePopupContent);
-                    });
+                    if (showAccuracy && !isNaN(accuracy)) {
+                        // Set opacity based on accuracy value
+                        if (accuracy >= 0 && accuracy <= 10) {
+                            opacity = 1.0;
+                        } else if (accuracy > 10 && accuracy <= 20) {
+                            opacity = 0.7;
+                        } else if (accuracy > 20 && accuracy <= 100) { // Adjusted to consider values between 20 and 100
+                            opacity = 0.3;
+                        } else {
+                            opacity = 0.1; // For values greater than 100
+                        }
+                    }
 
-                    var allPolylines = Object.values(devicePolylines);
-                    var bounds = L.featureGroup(allPolylines).getBounds();
-                    map.fitBounds(bounds);
+                    polylinePoints.push([lat, lng]);
+                });
+
+                if (!devicePolylines[deviceId]) {
+                    devicePolylines[deviceId] = L.polyline(polylinePoints, {
+                        color: color,
+                        weight: weight,
+                        opacity: opacity
+                    }).addTo(map);
+                } else {
+                    devicePolylines[deviceId].setLatLngs(polylinePoints);
                 }
 
+                var polylinePopupContent = '<b>Speed:</b> ' + (deviceHistory[0].speeds || 'N/A') + '<br><b>Accuracy:</b> ' + (deviceHistory[0].accuracy || 'N/A');
+                devicePolylines[deviceId].bindPopup(polylinePopupContent);
+            });
+
+            var allPolylines = Object.values(devicePolylines);
+            var bounds = L.featureGroup(allPolylines).getBounds();
+            map.fitBounds(bounds);
+        }
 
 
                 function showNotification(message) {
@@ -496,64 +531,83 @@
                     }, 5000);
                 }
 
-                function filterHistory(selectedDevice, startDate, endDate, selectedUserId) {
-                    if (startDate && endDate) {
-                        $('#loading-overlay').show();
-                        var start = new Date(startDate);
-                        var end = new Date(endDate);
-                        var formattedStartDate = start.getFullYear() + '-' + ('0' + (start.getMonth() +
-                                1)).slice(-2) +
-                            '-' + ('0' + start.getDate()).slice(-2) + ' ' + ('0' + start.getHours())
-                            .slice(-2) + ':' + (
-                                '0' + start.getMinutes()).slice(-2);
-                        var formattedEndDate = end.getFullYear() + '-' + ('0' + (end.getMonth() + 1))
-                            .slice(-2) + '-' +
-                            ('0' + end.getDate()).slice(-2) + ' ' + ('0' + end.getHours()).slice(-2) +
-                            ':' + ('0' + end.getMinutes()).slice(-2);
-                        var queryString =
-                            `?start=${formattedStartDate}&end=${formattedEndDate}&device=${selectedDevice}&user=${selectedUserId}`;
-                        window.history.pushState({}, '', window.location.pathname + queryString);
-                        $.ajax({
-                            url: "{{ route('admin.filter.history') }}",
-                            type: "POST",
-                            data: {
-                                selectedUserId: selectedUserId,
-                                selectedDevice: selectedDevice,
-                                startDate: formattedStartDate,
-                                endDate: formattedEndDate,
-                                _token: "{{ csrf_token() }}"
-                            },
+               function filterHistory(selectedDevice, startDate, endDate, selectedUserId) {
+    // Definisikan selectedUserId di sini
+    var selectedUserId = $('#user_device').find(':selected').data('user-id');
+    if (startDate && endDate) {
+        $('#loading-overlay').show();
+        var start = new Date(startDate);
+        var end = new Date(endDate);
+        var formattedStartDate = start.getFullYear() + '-' + ('0' + (start.getMonth() +
+                1)).slice(-2) +
+            '-' + ('0' + start.getDate()).slice(-2) + ' ' + ('0' + start.getHours())
+            .slice(-2) + ':' + (
+                '0' + start.getMinutes()).slice(-2);
+        var formattedEndDate = end.getFullYear() + '-' + ('0' + (end.getMonth() + 1))
+            .slice(-2) + '-' +
+            ('0' + end.getDate()).slice(-2) + ' ' + ('0' + end.getHours()).slice(-2) +
+            ':' + ('0' + end.getMinutes()).slice(-2);
+        var queryString =
+            `?start=${formattedStartDate}&end=${formattedEndDate}&device=${selectedDevice}&user=${selectedUserId}`;
+        window.history.pushState({}, '', window.location.pathname + queryString);
+        $.ajax({
+            url: "{{ route('admin.filter.history') }}",
+            type: "POST",
+            data: {
+                selectedUserId: selectedUserId,
+                selectedDevice: selectedDevice,
+                startDate: formattedStartDate,
+                endDate: formattedEndDate,
+                _token: "{{ csrf_token() }}"
+            },
 
-                            success: function(response) {
-                                if (response && response.length > 0) {
-                                    filterMap(response, selectedDevice);
-                                } else {
-                                    showNotification("No data found for the selected range.");
-                                }
-                                $('#loading-overlay').hide();
-                            },
-                            error: function(xhr, status, error) {
-                                console.error(error);
-                                $('#loading-overlay').hide();
-                            }
-                        });
-                    }
-                }
+           success: function(response) {
+    if (response && response.length > 0) {
+        historyData = response; // Save the response to historyData
+        var showSpeed = $('#speed-checkbox').is(":checked");
+        var showAccuracy = $('#accuracy-checkbox').is(":checked");
+        filterMap(historyData, showSpeed, showAccuracy);
+    } else {
+        // Tidak ada data riwayat yang ditemukan, hapus marker dan garis pada peta
+        markers.forEach(marker => map.removeLayer(marker));
+        Object.values(devicePolylines).forEach(polyline => map.removeLayer(polyline));
+        showNotification("Tidak ada data yang ditemukan untuk rentang yang dipilih.");
+    }
+    $('#loading-overlay').hide();
+}
+        });
+    }
+}
 
-                $('#user_device').on('change', function() {
-                    var selectedDevice = $(this).val();
-                    var selectedUserId = $(this).find(':selected').data(
-                        'user-id'); // Ambil ID pengguna dari data attribute
-                    var dateRange = $('#date_range').val();
-                    var dates = dateRange.split(" - ");
-                    var startDate = dateRange.split(" to ")[0];
-                    var endDate = dateRange.split(" to ")[1];
-                    var queryString =
-                        `?start=${startDate}&end=${endDate}&device=${selectedDevice}&user=${selectedUserId}`;
-                    window.history.pushState({}, '', window.location.pathname + queryString);
-                    filterHistory(selectedDevice, startDate, endDate, selectedUserId);
-                });
+                   $('#speed-checkbox').on('change', function() {
+            var showSpeed = $(this).is(":checked");
+            filterMap(historyData, showSpeed, false); // Only update speed
+        });
 
-            });
+        $('#accuracy-checkbox').on('change', function() {
+            var showAccuracy = $(this).is(":checked");
+            filterMap(historyData, false, showAccuracy); // Only update accuracy
+        });
+
+               $('#user_device').on('change', function() {
+    var selectedDevice = $(this).val();
+    var dateRange = $('#date_range').val();
+    var startDate = dateRange.split(" to ")[0];
+    var endDate = dateRange.split(" to ")[1];
+    // Definisikan selectedUserId di sini
+    var selectedUserId = $('#user_device').find(':selected').data('user-id');
+    var queryString = `?start=${startDate}&end=${endDate}&device=${selectedDevice}&user=${selectedUserId}`;
+    window.history.pushState({}, '', window.location.pathname + queryString);
+    filterHistory(selectedDevice, startDate, endDate, selectedUserId);
+});
+
+
+        // Initialize the map with the default values or URL parameters
+        var selectedDevice = $('#user_device').val();
+        var dateRange = $('#date_range').val();
+        var startDate = dateRange.split(" to ")[0];
+        var endDate = dateRange.split(" to ")[1];
+      filterHistory(selectedDevice, startDate, endDate, selectedUserId);
+    });
         </script>
     @endsection

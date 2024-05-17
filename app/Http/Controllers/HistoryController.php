@@ -322,19 +322,17 @@ $polylinePoints = []; // Inisialisasi array untuk menyimpan titik polyline
 
 
 
-   public function showMap(Request $request)
+ public function showMap(Request $request)
 {
     $start = $request->start;
     $end = $request->end;
 
-
-  if (! $start || ! $end) {
-    // Jika $start atau $end kosong atau tidak valid, redirect ke halaman admin.map dengan waktu default
-    $defaultEnd = now()->format('Y-m-d H:i:s');
-    $defaultStart = now()->subHours(3)->format('Y-m-d H:i:s');
-    return redirect(route('admin.map') . '?start=' . $defaultStart . '&end=' . $defaultEnd);
-}
-
+    if (!$start || !$end) {
+        // Jika $start atau $end kosong atau tidak valid, redirect ke halaman admin.map dengan waktu default
+        $defaultEnd = now()->format('Y-m-d H:i:s');
+        $defaultStart = now()->subHours(3)->format('Y-m-d H:i:s');
+        return redirect(route('admin.map') . '?start=' . $defaultStart . '&end=' . $defaultEnd);
+    }
 
     // Mengambil daftar pengguna
     $users = User::all();
@@ -354,14 +352,30 @@ $polylinePoints = []; // Inisialisasi array untuk menyimpan titik polyline
     $deviceNames = $devices->pluck('name', 'id_device')->toArray();
     $userNames = $devices->pluck('user.name', 'id_device')->toArray();
 
+    // Dapatkan perangkat dengan data history terbaru
+    $latestHistory = History::orderBy('date_time', 'desc')->first();
+    $latestDeviceId = $latestHistory ? $latestHistory->device_id : null;
+    $latestUserId = $latestHistory && $latestHistory->device && $latestHistory->device->user ? $latestHistory->device->user->id : null;
+
+    // If device and user are not provided, use the latest ones
+    $device = $request->device ?? $latestDeviceId;
+    $user = $request->user ?? $latestUserId;
+
     return view('admin.map.index', [
         'users' => $users, // Mengirim data pengguna ke tampilan
         'devices' => $devices, // Mengirim data perangkat ke tampilan
         'history' => $history, // Mengirim data riwayat ke tampilan
         'deviceNames' => $deviceNames, // Mengirim data nama perangkat ke tampilan
         'userNames' => $userNames, // Mengirim data nama pengguna ke tampilan
+        'latestDeviceId' => $latestDeviceId, // Mengirim ID perangkat terbaru ke tampilan
+        'latestUserId' => $latestUserId, // Mengirim ID pengguna terbaru ke tampilan
+        'selectedDevice' => $device,
+        'selectedUser' => $user,
     ]);
 }
+
+
+
 
 
 
