@@ -12,6 +12,7 @@ class Pengaturan extends Model
     protected $table = 'pengaturan';
 
     protected $fillable = [
+        'api_token',
         'title_pengaturan',
         'name_pengaturan',
         'logo',

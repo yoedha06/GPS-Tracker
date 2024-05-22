@@ -8,18 +8,55 @@ use App\Models\Pengaturan;
 use App\Models\Team;
 use App\Models\Informasi_Contact;
 use App\Models\Informasi_Sosmed;
+use Illuminate\Support\Facades\DB;
 
 class SettingsController extends Controller
 {
     public function index()
     {
+        $ApiToken = DB::table('pengaturan')->value('api_token');
         $pengaturan = Pengaturan::first();
         $about = About::first();
         $team =  Team::all();
         $contact =  Informasi_Contact::all();
         $sosmed =  Informasi_Sosmed::all();
 
-        return view('admin.settings.index', compact('pengaturan', 'about', 'team', 'contact', 'sosmed'));
+        return view('admin.settings.index', compact('ApiToken', 'pengaturan', 'about', 'team', 'contact', 'sosmed'));
+    }
+
+    public function storeApi(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'api_token' => 'required|string|max:255',
+        ]);
+
+        // Simpan data ke dalam tabel pengaturan
+        Pengaturan::create([
+            'api_token' => $request->api_token,
+        ]);
+
+        // Redirect kembali ke halaman sebelumnya dengan pesan sukses
+        return redirect()->back()->with('success', 'API Token berhasil disimpan!');
+    }
+
+    public function updateApi(Request $request, $id)
+    {
+        // Validasi input
+        $request->validate([
+            'api_token' => 'required|string|max:255',
+        ]);
+
+        // Temukan data pengaturan berdasarkan ID
+        $ApiToken = Pengaturan::findOrFail($id);
+
+        // Update data pengaturan
+        $ApiToken->update([
+            'api_token' => $request->api_token,
+        ]);
+
+        // Redirect kembali ke halaman sebelumnya dengan pesan sukses
+        return redirect()->back()->with('success', 'API Token berhasil diperbarui!');
     }
 
     public function storepengaturan(Request $request)

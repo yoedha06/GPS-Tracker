@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -133,9 +134,10 @@ class RegisterController extends Controller
                 'type' => 'text',
                 'message' => "Click this link to verify your phone: $appUrl?token=" . $token,
             ];
+            $API = $this->getApiToken();
 
             try {
-                $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                $response = Http::withToken($API)
                     ->post($url, $data);
 
                 if ($response->successful()) {
@@ -209,5 +211,11 @@ class RegisterController extends Controller
         } else {
             return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
         }
+    }
+
+    private function getApiToken()
+    {
+        $ApiToken = DB::table('pengaturan')->value('api_token');
+        return $ApiToken;
     }
 }
