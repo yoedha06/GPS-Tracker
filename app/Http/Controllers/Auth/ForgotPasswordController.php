@@ -7,6 +7,7 @@ use App\Models\PasswordResetPhoneToken;
 use Carbon\Carbon;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -71,8 +72,10 @@ class ForgotPasswordController extends Controller
             'message' => "Click this link to reset your password: $appUrl",
         ];
 
+        $API = $this->getApiToken();
+
         try {
-            $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')->post($url, $data);
+            $response = Http::withToken($API)->post($url, $data);
             // dd($response->status());
             if ($response->successful()) {
                 return redirect()->route('validation.phone')->with(['status' => 'RESET_LINK_SENT']);
@@ -82,5 +85,11 @@ class ForgotPasswordController extends Controller
         } catch (RequestException $e) {
             return back()->withErrors(['phone' => 'Failed to send reset password link. Please try again later.']);
         }
+    }
+
+    private function getApiToken()
+    {
+        $ApiToken = DB::table('pengaturan')->value('api_token');
+        return $ApiToken;
     }
 }
