@@ -5,12 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Device;
 use App\Models\History;
 use Illuminate\Http\Request;
+use App\Http\Controllers\SettingsController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
-
+    private function getApiToken()
+    {
+        $ApiToken = DB::table('pengaturan')->value('api_token');
+        return $ApiToken;
+    }
     public function index()
     {
         return response()->json([
@@ -56,9 +62,10 @@ class WebhookController extends Controller
                         'type' => 'text',
                         'message' => $message,
                     ];
+                    $API = $this->getApiToken();
 
                     // Send HTTP request
-                    $response = Http::withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                    $response = Http::withToken($API)
                         ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
                         ->post($url, $data);
 

@@ -17,6 +17,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TampilanController;
 use App\Http\Controllers\TypeNotifController;
 use App\Http\Controllers\ValidationController;
+use App\Http\Controllers\WebhookController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -102,7 +103,7 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
 
         // //url send wa
         // Route::get('/send-history', [NotificationController::class, 'notificationtype'])->name('customer.notification.send-history');
-        
+
         //device Customer
         Route::get('/customer/device', [DeviceController::class, 'index'])->name('customer.device.index');
         Route::get('/device/create', [DeviceController::class, 'create'])->name('device.create');
@@ -141,6 +142,9 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         Route::post('/admin/informasicontact/store', [SettingsController::class, 'storeinformasicontact'])->name('informasicontact.store');
         Route::put('/admin/informasisosmed/{id}', [SettingsController::class, 'updateinformasisosmed'])->name('informasisosmed.update');
         Route::post('/admin/informasisosmed/store', [SettingsController::class, 'storeinformasisosmed'])->name('informasisosmed.store');
+
+        Route::put('/admin/api/{id}', [SettingsController::class, 'updateApi'])->name('api.update');
+        Route::post('/admin/api/store', [SettingsController::class, 'storeApi'])->name('apituran.store');
     });
 });
 

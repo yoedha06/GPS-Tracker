@@ -24,11 +24,136 @@
                 </div>
             </div>
         </div>
+        {{-- API TOKEN --}}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>API TOKEN</span>
+                @if (!$ApiToken)
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAddAPI">
+                        <i class="bi bi-plus"></i> Add Pengaturan
+                    </button>
+                @endif
+            </div>
+            <hr>
+            <div class="card-body">
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <div>
+                    <table class="table table-striped" id="table1" style="table-layout: auto">
+                        <thead>
+                            <tr>
+                        <tbody>
+                            @if ($ApiToken)
+                                <tr>
+                                    <td>TOKEN :</td>
+                                    <td>{{ $ApiToken }}</td>
+                                </tr>
+                                </tr>
+                                <tr>
+                                    <td>Action :</td>
+                                    {{-- <td colspan="3">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#editModalAPI{{ $ApiToken->id }}">
+                                            <i class="fa-regular fa-pen-to-square"></i> Edit Token
+                                        </button>
+                                    </td> --}}
+                                </tr>
+                            @else
+                                <tr>
+                                    <td>TOKEN :</td>
+                                    <td>No data available</td>
+                                </tr>
+                            @endif
+                        </tbody>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {{-- Modal Add API --}}
+        {{-- <div class="modal fade" id="modalAddAPI" tabindex="-1" role="dialog" aria-labelledby="modalAddAPILabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="xLabel">Add Pengaturan</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{{ route('apituran.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="api_token">TOKEN <span style="color: red">*</span> :</label>
+                                <input type="text" class="form-control" id="api_token" name="api_token"
+                                    value="{{ old('api_token') }}" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary"> <i class="bi bi-plus"></i> Add
+                                Pengaturan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div> --}}
+
+        {{-- Modal Edit API --}}
+        {{-- @if ($ApiToken)
+            <div class="modal fade" id="editModalAPI{{ $ApiToken->id }}" tabindex="-1" role="dialog"
+                aria-labelledby="editModalAPILabel{{ $ApiToken->id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalAPILabel{{ $ApiToken->id }}">Edit Pengaturan
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="{{ route('api.update', $ApiToken->id) }}" method="POST" enctype="multipart/form-data"
+                            id="editForm{{ $ApiToken->id }}">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="api_token">Title<span style="color: red">*</span> :</label>
+                                    <input type="text" class="form-control" id="api_token" name="api_token"
+                                        value="{{ $ApiToken->api_token }}">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i>
+                                    Save
+                                    changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endif --}}
+
 
         <!-- Pengaturan -->
         <div class="card">
             <div class="card-header d-flex justify-content-between">
-                <span>Team</span>
+                <span>Pengaturan</span>
                 @if (!$pengaturan)
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAddPengaturan">
                         <i class="bi bi-plus"></i> Add Pengaturan
@@ -133,7 +258,8 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editModalPengaturanLabel{{ $pengaturan->id }}">Edit Pengaturan</h5>
+                            <h5 class="modal-title" id="editModalPengaturanLabel{{ $pengaturan->id }}">Edit Pengaturan
+                            </h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -188,7 +314,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalAddPengaturanLabel">Add Pengaturan</h5>
+                        <h5 class="modal-title" id="xLabel">Add Pengaturan</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -679,9 +805,10 @@
                                                 <div class="form-group">
                                                     <label for="photo_2">Photo 4:</label>
                                                     <input type="file" class="form-control" id="photo_4"
-                                                        name="photo_4" value="{{ old('photo_4') }}" onchange="previewImage(this, 'photo_4  preview')">
-                                                        <img id="photo_4  preview" src="#" alt="photo_4 preview"
-                                                            style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
+                                                        name="photo_4" value="{{ old('photo_4') }}"
+                                                        onchange="previewImage(this, 'photo_4  preview')">
+                                                    <img id="photo_4  preview" src="#" alt="photo_4 preview"
+                                                        style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
                                                 </div>
                                             </div>
                                         </div>
@@ -1338,8 +1465,8 @@
 
         <!-- Modal Edit Informasi Contact -->
         @foreach ($contact as $item)
-            <div class="modal fade" id="editModalInformasiContact{{ $item->id }}" tabindex="-1" role="dialog"
-                aria-labelledby="editModalInformasiContact" aria-hidden="true">
+            <div class="modal fade" id="editModalInformasiContact{{ $item->id }}" tabindex="-1"
+                role="dialog" aria-labelledby="editModalInformasiContact" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">

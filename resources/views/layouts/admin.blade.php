@@ -173,7 +173,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="sidebar-item {{ request()->is('admin/Settings') || request()->is('admin/settings') ? 'active' : '' }}">
+                    <li
+                        class="sidebar-item {{ request()->is('admin/Settings') || request()->is('admin/settings') ? 'active' : '' }}">
                         <a href="{{ route('admin.settings') }}" class='sidebar-link'>
                             <i class="fas fa-cog"></i>
                             <span class="ml-1">Setings </span>
