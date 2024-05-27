@@ -12,10 +12,22 @@ class TypeNotifController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'phone_number' => 'numeric|required',
-            'count' => 'required',
-            'time_schedule' => 'required',
+            'phone_number' => 'required|string',
+            'count' => 'required|integer|min:1',
+            'time_schedule' => 'required|date_format:H:i',
         ]);
+
+        $phoneNumbers = explode(';', $request->input('phone_number'));
+        $phoneNumbers = array_map('trim', $phoneNumbers);
+        $phoneNumbers = array_filter($phoneNumbers);
+
+        foreach ($phoneNumbers as $number) {
+            if (!is_numeric($number)) {
+                return redirect()->back()->withErrors(['phone_number' => 'All phone numbers must be numeric.']);
+            }
+        }
+
+        $formattedPhoneNumbers = implode(';', $phoneNumbers);
 
         session([
             'phone_number' => $request->input('phone_number'),
@@ -27,14 +39,15 @@ class TypeNotifController extends Controller
 
         TypeNotif::updateOrCreate(
             ['user_id' => Auth::id()],
-            ['phone_number' => $request->phone_number,'count' => $request->count,'time_schedule' => $request->time_schedule,'remaining_count'=>$request->count]
+            [
+                'phone_number' => $formattedPhoneNumbers,
+                'count' => $request->count,
+                'time_schedule' => $request->time_schedule,
+                'remaining_count' => $request->count,
+            ]
         );
 
         $message = $existingNotification ? 'Update successfully' : 'You will receive the data at the time you specify';
-
-        if ($existingNotification && $request->count == 0) {
-            session()->forget(['count', 'time_schedule']);
-        }
 
         return redirect()->back()->with('notif', $message);
     }

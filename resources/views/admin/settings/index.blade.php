@@ -36,9 +36,9 @@
             </div>
             <hr>
             <div class="card-body">
-                @if (session('success'))
+                @if (session('berhasil'))
                     <div class="alert alert-success">
-                        {{ session('success') }}
+                        {{ session('berhasil') }}
                     </div>
                 @endif
 
@@ -64,12 +64,12 @@
                                 </tr>
                                 <tr>
                                     <td>Action :</td>
-                                    {{-- <td colspan="3">
+                                    <td colspan="3">
                                         <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-target="#editModalAPI{{ $ApiToken->id }}">
+                                            data-target="#">
                                             <i class="fa-regular fa-pen-to-square"></i> Edit Token
                                         </button>
-                                    </td> --}}
+                                    </td>
                                 </tr>
                             @else
                                 <tr>
@@ -86,7 +86,7 @@
         </div>
 
         {{-- Modal Add API --}}
-        {{-- <div class="modal fade" id="modalAddAPI" tabindex="-1" role="dialog" aria-labelledby="modalAddAPILabel"
+        <div class="modal fade" id="modalAddAPI" tabindex="-1" role="dialog" aria-labelledby="modalAddAPILabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -112,8 +112,7 @@
                     </form>
                 </div>
             </div>
-        </div> --}}
-
+        </div>
         {{-- Modal Edit API --}}
         {{-- @if ($ApiToken)
             <div class="modal fade" id="editModalAPI{{ $ApiToken->id }}" tabindex="-1" role="dialog"
@@ -148,7 +147,6 @@
                 </div>
             </div>
         @endif --}}
-
 
         <!-- Pengaturan -->
         <div class="card">

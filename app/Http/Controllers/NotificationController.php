@@ -29,14 +29,14 @@ class NotificationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'number_phone' => 'numeric|required',
+            'number_phone' => 'required|string',
             'scheduled_time' => 'required|date',
             'scheduled_end_time' => 'required|date|after_or_equal:scheduled_time',
         ]);
 
         $url = "https://app.japati.id/api/send-message";
 
-        $phoneNumber = $request->number_phone;
+        $phoneNumbers = explode(';', $request->number_phone);
         $startDateTime = Carbon::parse($request->scheduled_time);
         $endDateTime = Carbon::parse($request->scheduled_end_time);
 
@@ -58,24 +58,32 @@ class NotificationController extends Controller
 
         $message = $this->sendWhattsapp($histories);
 
-        $data = [
-            'gateway' => '62895618632347',
-            'number' => $phoneNumber,
-            'type' => 'text',
-            'message' => $message
-        ];
+        $errors = [];
 
-        $response = Http::timeout(60)
-            ->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
-            ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
-            ->post($url, $data);
+        foreach ($phoneNumbers as $phoneNumber) {
+            $data = [
+                'gateway' => '62895618632347',
+                'number' => trim($phoneNumber),
+                'type' => 'text',
+                'message' => $message
+            ];
 
-        if ($response->ok()) {
-            logger()->info('WhatsApp message sent successfully');
-            return redirect()->route('customer.notification.index')->with('success', 'send successfully');
-        }else {
-            logger()->error('Failed to send WhatsApp message');
-            return redirect()->route('customer.notification.index')->with('error', 'failed to send data');
+            $response = Http::timeout(60)
+                ->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+                ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+                ->post($url, $data);
+
+            if (!$response->ok()) {
+                logger()->error('Failed to send WhatsApp message to ' . $phoneNumber);
+                $errors[] = 'Failed to send data to ' . $phoneNumber;
+            }
+        }
+
+        if (empty($errors)) {
+            logger()->info('WhatsApp messages sent successfully');
+            return redirect()->route('customer.notification.index')->with('success', 'Send successfully');
+        } else {
+            return redirect()->route('customer.notification.index')->with('error', implode(', ', $errors));
         }
     }
 
@@ -95,6 +103,7 @@ class NotificationController extends Controller
 
         return $message;
     }
+
 
     private function getAddressFromCoordinates($latitude, $longitude)
     {

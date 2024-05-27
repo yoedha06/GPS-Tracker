@@ -37,7 +37,7 @@ class SettingsController extends Controller
         ]);
 
         // Redirect kembali ke halaman sebelumnya dengan pesan sukses
-        return redirect()->back()->with('success', 'API Token berhasil disimpan!');
+        return redirect()->back()->with('berhasil', 'API Token berhasil disimpan!');
     }
 
     public function updateApi(Request $request, $id)
@@ -56,7 +56,7 @@ class SettingsController extends Controller
         ]);
 
         // Redirect kembali ke halaman sebelumnya dengan pesan sukses
-        return redirect()->back()->with('success', 'API Token berhasil diperbarui!');
+        return redirect()->back()->with('berhasil', 'API Token berhasil diperbarui!');
     }
 
     public function storepengaturan(Request $request)
