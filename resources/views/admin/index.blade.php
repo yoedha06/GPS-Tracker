@@ -164,11 +164,18 @@
                                                 <option value="altitude_acuracy">Altitude Accuracy</option>
                                             </select>
                                         </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12 d-flex justify-content-end">
+                                                <button class="btn btn-primary" id="export_pdf_admin_btn"
+                                                    style="display: none;">Export PDF</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Validation message -->
                                 <div id="validation-message" class="alert alert-success mt-3" style="display: none;">
-                                    <i class="bi bi-check-circle-fill"></i> <span class="fw-bold">Sukses!</span> Anda telah
+                                    <i class="bi bi-check-circle-fill"></i> <span class="fw-bold">Sukses!</span> Anda
+                                    telah
                                     berhasil memilih chart.
                                 </div>
 
@@ -500,6 +507,33 @@
                     });
                 }
 
+                document.getElementById('export_pdf_admin_btn').addEventListener('click', function() {
+                    var selectedDate = document.getElementById('selected_date').value;
+                    var selectedDevice = document.getElementById('selected_device').value;
+                    var selectedChart = document.getElementById('selected_chart').value;
+
+                    if (!selectedDate || !selectedDevice || !selectedChart) {
+                        alert('Please make sure all selections are made.');
+                        return;
+                    }
+
+                    var url =
+                        `/admin/pdf?selected_date=${encodeURIComponent(selectedDate)}&selected_device=${encodeURIComponent(selectedDevice)}&selected_chart=${encodeURIComponent(selectedChart)}`;
+                    window.location.href = url;
+                });
+
+                function checkSelections() {
+                    var selectedDate = $('#selected_date').val();
+                    var selectedDevice = $('#selected_device').val();
+                    var selectedChart = $('#selected_chart').val();
+
+                    if (selectedDate && selectedDevice && selectedChart) {
+                        $('#export_pdf_admin_btn').show(); // Show the Export PDF button
+                    } else {
+                        $('#export_pdf_admin_btn').hide(); // Hide the Export PDF button
+                    }
+                }
+
                 // Add event listener for date input change
                 $('#selected_date').change(function() {
                     var selectedDate = $(this).val(); // Get the selected date
@@ -516,10 +550,10 @@
                         // Hide the chart select if the date is empty
                         $('#chart_select_col').hide();
                     }
+                    checkSelections();
                     // Call updateChart function without arguments
                     updateChart();
                 });
-
 
                 // Add event listener for device select change
                 $('#selected_device').change(function() {
@@ -533,6 +567,7 @@
                         // Hide chart select if no device is selected
                         $('#chart_select_col').hide();
                     }
+                    checkSelections();
                     // Get the selected chart
                     console.log("Selected Device:", selectedDevice);
                     console.log("Selected Chart:", selectedChart);
@@ -553,7 +588,7 @@
                         alert('Silahkan pilih perangkat terlebih dahulu.');
                         return;
                     }
-
+                    checkSelections();
                     updateChart(selectedDevice, selectedChart, selectedDate);
                 });
 
