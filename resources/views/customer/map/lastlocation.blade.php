@@ -96,8 +96,7 @@
                                 <li class="breadcrumb-item"><a href="/customer"> <i class="fas fa-user"></i></i>
                                         Customer</a></li>
                                 <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-geo-alt-fill"></i>
-                                    Last
-                                    Location</li>
+                                    Last Location</li>
                             </ol>
                         </nav>
                     </div>
@@ -423,7 +422,7 @@
                                     });
 
                                     updatePolyline
-                                (); // Memperbarui polylane dengan menambahkan koordinat latest location
+                                        (); // Memperbarui polylane dengan menambahkan koordinat latest location
                                     map.setView(latestLocationCoordinates, 25, {
                                         maxZoom: 18
                                     });
