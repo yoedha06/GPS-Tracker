@@ -90,23 +90,7 @@
         <script src="https://unpkg.com/leaflet.animatedmarker/src/AnimatedMarker.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-editable/1.2.0/Leaflet.Editable.min.js"></script>
 
-        <!-- Include Select2 JS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
         <script>
-            // select 2
-            document.addEventListener('DOMContentLoaded', function() {
-                // Initialize Select2 on the 'geofence' element
-                $('#geofence').select2({
-                    placeholder: 'Select a name',
-                    sorter: function(data) {
-                        return data.sort(function(a, b) {
-                            return a.text.localeCompare(b.text);
-                        });
-                    }
-                });
-            });
             // Map
             document.addEventListener('DOMContentLoaded', function() {
 
