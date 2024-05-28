@@ -67,16 +67,6 @@
                             </div>
 
                             <button type="submit" class="btn btn-primary">Create</button>
-
-                            <div class="form-group">
-                                <label for="geofence">Data:</label>
-                                <select name="geofence" id="geofence" class="geofence form-control" style="width: 100%;">
-                                    <option value="" disabled selected>Select</option>
-                                    @foreach ($geofences as $geofence)
-                                        <option value="{{ $geofence->name }}">{{ $geofence->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
                         </form>
                     </div>
                 </div>
@@ -196,33 +186,6 @@
 
                 var drawnItems = new L.FeatureGroup();
                 map.addLayer(drawnItems);
-
-                var geofencesData = {!! json_encode($geofences) !!};
-                geofencesData.forEach(function(geofence) {
-                    if (geofence.type === 'circle') {
-                        var coordinates = geofence.coordinates.split(',').map(function(coord) {
-                            return parseFloat(coord.trim());
-                        });
-                        var circle = L.circle(coordinates, {
-                            color: 'red',
-                            fillColor: '#f03',
-                            fillOpacity: 0.5,
-                            radius: parseFloat(geofence.radius)
-                        }).addTo(map);
-                    } else if (geofence.type === 'polygon') {
-                        var polygonCoordinates = geofence.coordinates.split(';').map(function(coordPair) {
-                            var coords = coordPair.split(',').map(function(coord) {
-                                return parseFloat(coord.trim());
-                            });
-                            return coords;
-                        });
-                        var polygon = L.polygon(polygonCoordinates, {
-                            color: 'blue',
-                            fillColor: '#00f',
-                            fillOpacity: 0.5
-                        }).addTo(map);
-                    }
-                });
 
                 map.on(L.Draw.Event.CREATED, function(event) {
                     var layer = event.layer;
