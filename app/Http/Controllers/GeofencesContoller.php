@@ -14,7 +14,7 @@ class GeofencesContoller extends Controller
     {
         $user_id = $request->user()->id; // Assuming you have authentication in place and user is logged in
         $geofences = geofences::where('user_id', $user_id)->select('id', 'name', 'type', 'coordinates', 'radius')->get();
-        return view('customer.map.geofences', ['geofences' => $geofences]);
+        return view('customer.map.geofences.index', ['geofences' => $geofences]);
     }
 
     /**
