@@ -66,7 +66,7 @@ class ForgotPasswordController extends Controller
         $appUrl = route('password.phone.reset', ['token' => $token, 'phone' => $request->phone]);
 
         $data = [
-            'gateway' => $request->geteway,
+            'gateway' => '6285954906329',
             'number' => $request->phone,
             'type' => 'text',
             'message' => "Click this link to reset your password: $appUrl",
