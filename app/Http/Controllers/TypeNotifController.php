@@ -43,7 +43,6 @@ class TypeNotifController extends Controller
                 'phone_number' => $formattedPhoneNumbers,
                 'count' => $request->count,
                 'time_schedule' => $request->time_schedule,
-                'remaining_count' => $request->count,
             ]
         );
 

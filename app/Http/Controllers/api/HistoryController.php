@@ -92,25 +92,35 @@ class HistoryController extends Controller
             'original' => json_encode($request->all())
         ]);
 
+        // Kirim WA sesuai kriteria
         $typeNotifications = TypeNotif::all();
 
         foreach ($typeNotifications as $typeNotification) {
             list($hour, $minute) = explode(':', $typeNotification->time_schedule);
             $scheduledDateTime = Carbon::today()->setHour($hour)->setMinute($minute);
 
-            if ($typeNotification->remaining_count > 0) {
-                $histories = History::whereHas('device', function ($query) use ($typeNotification) {
-                    $query->where('user_id', $typeNotification->user_id);
-                })
-                    ->where('whatsapp_sent', 'belum terkirim')
-                    ->where('date_time', '>', $scheduledDateTime)
-                    ->orderBy('date_time')
-                    ->limit($typeNotification->remaining_count)
-                    ->get();
+            $histories = History::whereHas('device', function ($query) use ($typeNotification) {
+                $query->where('user_id', $typeNotification->user_id);
+            })
+                ->where('whatsapp_sent', 'belum terkirim')
+                ->where('date_time', '>', $scheduledDateTime)
+                ->orderBy('date_time')
+                ->get();
 
+            // Hitung jumlah data yang diproses
+            $countProcessed = $histories->count();
+
+            // Jika jumlah data yang diproses sama dengan atau melebihi count yang ditentukan oleh user
+            if ($countProcessed >= $typeNotification->count) {
+                // Tandai semua data yang memenuhi kriteria sebagai "proses"
+                foreach ($histories as $history) {
+                    $history->update(['whatsapp_sent' => 'proses']);
+                }
+
+                // Kirimkan pesan WhatsApp untuk setiap data yang ditandai sebagai "proses"
                 foreach ($histories as $history) {
                     $message = "";
-                    $address = $this->getAddressFromCoordinates($history->latitude, $history->longitude);
+                    $address = $this->getAddress($history->latitude, $history->longitude);
 
                     $message .= "Device: " . $history->device->name . "\n";
                     $message .= "Nomor Plat: " . $history->device->plat_nomor . "\n";
@@ -118,27 +128,23 @@ class HistoryController extends Controller
                     $message .= "Lokasi: https://www.google.com/maps?q={$history->latitude},{$history->longitude}\n";
                     $message .= "Tanggal Waktu: " . $history->date_time;
 
-                    // Gunakan nomor telepon dari type_notification
+                    // Kirim pesan WhatsApp
                     $phoneNumbers = explode(';', $typeNotification->phone_number);
-                    $phoneNumbers = array_map('trim', $phoneNumbers); // Remove whitespace
+                    $phoneNumbers = array_map('trim', $phoneNumbers);
 
                     foreach ($phoneNumbers as $phoneNumber) {
-                        // Kirim pesan WhatsApp ke setiap nomor telepon
                         $this->sendWhatsapp($typeNotification->user_id, $phoneNumber, $message);
                     }
 
-                    // Perbarui histori sebagai terkirim
+                    // Update status pengiriman WhatsApp
                     $history->update(['whatsapp_sent' => 'terkirim']);
-
-                    $typeNotification->remaining_count -= 1;
-                    $typeNotification->save();
                 }
             }
         }
 
         return response()->json([
             'message' => true,
-            'status' => $history, // Mengembalikan koleksi histori yang telah diproses
+            'status' => 'Data has been processed and WhatsApp messages sent.',
         ], 201);
     }
 
@@ -172,7 +178,7 @@ class HistoryController extends Controller
         return $api;
     }
 
-    private function getAddressFromCoordinates($latitude, $longitude)
+    private function getAddress($latitude, $longitude)
     {
         $url = "https://nominatim.openstreetmap.org/reverse?lat={$latitude}&lon={$longitude}&format=json";
         $response = Http::get($url);
