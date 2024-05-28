@@ -11,6 +11,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Auth\PhoneVerificationController;
+use App\Http\Controllers\GeofencesContoller;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
@@ -101,6 +102,10 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         Route::get('/customer/lastlocation', [MapController::class, 'lastloc'])->name('lastlocation');
         Route::get('/customer/notification', [NotificationController::class, 'index'])->name('customer.notification.index');
         Route::post('/customer/notification', [NotificationController::class, 'store'])->name('customer.notification.store');
+
+        //geofence
+        Route::get('customer/geofences', [GeofencesContoller::class, 'index'])->name('customer.geofences.index');
+        Route::post('customer/geofences', [GeofencesContoller::class, 'store'])->name('customer.geofences.store');
 
         // //url send wa
         // Route::get('/send-history', [NotificationController::class, 'notificationtype'])->name('customer.notification.send-history');
