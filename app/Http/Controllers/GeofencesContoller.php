@@ -20,8 +20,11 @@ class GeofencesContoller extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        $user_id = $request->user()->id; // Assuming you have authentication in place and user is logged in
+        $geofences = geofences::where('user_id', $user_id)->select('id', 'name', 'type', 'coordinates', 'radius')->get();
+        return view('customer.map.geofences.create', ['geofence' => $geofences]);
     }
 
     /**

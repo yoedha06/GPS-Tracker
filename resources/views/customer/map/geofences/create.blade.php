@@ -10,7 +10,7 @@
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
             integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-        <title>Geofence Index</title>
+        <title>Geofence CRUD</title>
     </head>
 
     <style>
@@ -37,22 +37,53 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12" style="padding-left: 18%">
-                    <h3 class="mt-4">Geofences</h3>
+                    <h3>Create New Entry</h3>
                     <div class="mt-4">
-                        <div class="form-group">
-                            <label for="geofence">Data:</label>
-                            <select name="geofence" id="geofence" class="geofence form-control" style="width: 100%;">
-                                <option value="" disabled selected>Select</option>
-                                @foreach ($geofences as $geofence)
-                                    <option value="{{ $geofence->name }}">{{ $geofence->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <a href="{{ route('customer.geofences.create') }}" class="btn btn-primary">Create</a>
+                        <form method="POST" action="{{ route('customer.geofences.store') }}">
+                            @csrf
+                            <div class="form-group">
+                                <label for="name">Name:</label>
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="type">Type:</label>
+                                <select name="type" id="type" class="form-control" required>
+                                    <option value="">Select Type</option>
+                                    <option value="circle">Circle</option>
+                                    <option value="polygon">Polygon</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="coordinates">Coordinates:</label>
+                                <textarea class="form-control" name="coordinates" id="coordinates" placeholder="Coordinates"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="radius">Radius:</label>
+                                <input type="text" class="form-control" name="radius" id="radius"
+                                    placeholder="Radius">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Create</button>
+
+                            <div class="form-group">
+                                <label for="geofence">Data:</label>
+                                <select name="geofence" id="geofence" class="geofence form-control" style="width: 100%;">
+                                    <option value="" disabled selected>Select</option>
+                                    @foreach ($geofences as $geofence)
+                                        <option value="{{ $geofence->name }}">{{ $geofence->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+
+
 
         {{-- index --}}
         <div class="map-container" style="margin-top:10px;">
