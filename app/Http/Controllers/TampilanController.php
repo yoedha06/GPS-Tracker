@@ -10,6 +10,8 @@ use App\Models\Informasi_Sosmed;
 use App\Models\Pengaturan;
 use App\Models\User;
 use App\Models\Team;
+use PDF;
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -88,6 +90,7 @@ class TampilanController extends Controller
     {
         // Pengaturan
         $pengaturan = Pengaturan::first(); // Ambil data pengaturan sekali saja
+        $api_token = $pengaturan ? $pengaturan->api_token : null;
         $title_pengaturan = $pengaturan ? $pengaturan->title_pengaturan : null;
         $name_pengaturan =  $pengaturan ? $pengaturan->name_pengaturan : null;
         $background =  $pengaturan ? $pengaturan->background : null;
@@ -141,7 +144,7 @@ class TampilanController extends Controller
         $email = $informasi_sosmed ? $informasi_sosmed->email : null;
 
 
-        return view('layouts.homepage', compact('title_pengaturan', 'name_pengaturan', 'background', 'logo', 'title_about', 'left_description', 'pengaturan', 'about', 'right_description', 'feature_1', 'feature_2', 'feature_3', 'informasi', 'username_1', 'posisi_1', 'deskripsi_1', 'photo_1', 'username_2', 'posisi_2', 'deskripsi_2', 'photo_2', 'username_3', 'posisi_3', 'deskripsi_3', 'photo_3','username_4', 'posisi_4', 'deskripsi_4', 'photo_4','name_location', 'email_informasi', 'call_informasi','title_sosmed', 'street_name', 'subdistrict', 'ward', 'call', 'email'));
+        return view('layouts.homepage', compact('title_pengaturan', 'name_pengaturan', 'background', 'logo', 'title_about', 'left_description', 'pengaturan', 'about', 'right_description', 'feature_1', 'feature_2', 'feature_3', 'informasi', 'username_1', 'posisi_1', 'deskripsi_1', 'photo_1', 'username_2', 'posisi_2', 'deskripsi_2', 'photo_2', 'username_3', 'posisi_3', 'deskripsi_3', 'photo_3', 'username_4', 'posisi_4', 'deskripsi_4', 'photo_4', 'name_location', 'email_informasi', 'call_informasi', 'title_sosmed', 'street_name', 'subdistrict', 'ward', 'call', 'email'));
     }
 
 
@@ -195,9 +198,9 @@ class TampilanController extends Controller
                 })
                 ->get();
             $chartData = $historyQuery->toArray();
-        } elseif ($selectedChart === 'accuracy') { // Tambahkan logika untuk opsi "Accuracy"
+        } elseif ($selectedChart === 'accuracy') {
             $historyQuery = History::query()
-                ->select('date_time', 'accuracy as count') // Memilih kolom date_time dan accuracy
+                ->select('date_time', 'accuracy as count')
                 ->whereDate('date_time', $selectedDate)
                 ->when($selectedDevice, function ($query) use ($selectedDevice) {
                     $query->whereHas('device', function ($query) use ($selectedDevice) {
@@ -206,9 +209,9 @@ class TampilanController extends Controller
                 })
                 ->get();
             $chartData = $historyQuery->toArray();
-        } elseif ($selectedChart === 'heading') { // Tambahkan logika untuk opsi "Accuracy"
+        } elseif ($selectedChart === 'heading') {
             $historyQuery = History::query()
-                ->select('date_time', 'heading as count') // Memilih kolom date_time dan accuracy
+                ->select('date_time', 'heading as count')
                 ->whereDate('date_time', $selectedDate)
                 ->when($selectedDevice, function ($query) use ($selectedDevice) {
                     $query->whereHas('device', function ($query) use ($selectedDevice) {
@@ -217,9 +220,9 @@ class TampilanController extends Controller
                 })
                 ->get();
             $chartData = $historyQuery->toArray();
-        } elseif ($selectedChart === 'altitude_acuracy') { // Tambahkan logika untuk opsi "Accuracy"
+        } elseif ($selectedChart === 'altitude_accuracy') {
             $historyQuery = History::query()
-                ->select('date_time', 'altitude_acuracy as count') // Memilih kolom date_time dan accuracy
+                ->select('date_time', 'altitude_accuracy as count')
                 ->whereDate('date_time', $selectedDate)
                 ->when($selectedDevice, function ($query) use ($selectedDevice) {
                     $query->whereHas('device', function ($query) use ($selectedDevice) {
@@ -228,9 +231,9 @@ class TampilanController extends Controller
                 })
                 ->get();
             $chartData = $historyQuery->toArray();
-        } elseif ($selectedChart === 'latitude') { // Tambahkan logika untuk opsi "Accuracy"
+        } elseif ($selectedChart === 'latitude') {
             $historyQuery = History::query()
-                ->select('date_time', 'latitude as count') // Memilih kolom date_time dan accuracy
+                ->select('date_time', 'latitude as count')
                 ->whereDate('date_time', $selectedDate)
                 ->when($selectedDevice, function ($query) use ($selectedDevice) {
                     $query->whereHas('device', function ($query) use ($selectedDevice) {
@@ -239,9 +242,9 @@ class TampilanController extends Controller
                 })
                 ->get();
             $chartData = $historyQuery->toArray();
-        } elseif ($selectedChart === 'longitude') { // Tambahkan logika untuk opsi "Accuracy"
+        } elseif ($selectedChart === 'longitude') {
             $historyQuery = History::query()
-                ->select('date_time', 'longitude as count') // Memilih kolom date_time dan accuracy
+                ->select('date_time', 'longitude as count')
                 ->whereDate('date_time', $selectedDate)
                 ->when($selectedDevice, function ($query) use ($selectedDevice) {
                     $query->whereHas('device', function ($query) use ($selectedDevice) {
@@ -249,7 +252,6 @@ class TampilanController extends Controller
                     });
                 })
                 ->get();
-
             $chartData = $historyQuery->toArray();
         } else {
             foreach ($historyData as $data) {
@@ -288,6 +290,130 @@ class TampilanController extends Controller
             'deviceOptions' => $deviceOptions,
             'deviceCount' => count($deviceOptions)
         ]);
+    }
+
+    public function downloadPdf(Request $request)
+    {
+        $selectedDate = $request->input('selected_date');
+        $selectedDevice = $request->input('selected_device');
+        $selectedChart = $request->input('selected_chart');
+
+        // Lakukan logika yang sama untuk mengambil data history
+        $chartData = $this->getChartData($selectedDate, $selectedDevice, $selectedChart);
+
+        // Generate PDF
+        $pdf = PDF::loadView('pdf.history', compact('selectedDate', 'selectedDevice', 'selectedChart', 'chartData'));
+
+        return $pdf->download('history_report.pdf');
+    }
+
+    private function getChartData($selectedDate, $selectedDevice, $selectedChart)
+    {
+        $query = History::query()->whereDate('date_time', $selectedDate);
+
+        if ($selectedDevice) {
+            $query->whereHas('device', function ($query) use ($selectedDevice) {
+                $query->where('name', $selectedDevice)->where('user_id', Auth::id());
+            });
+        } else {
+            $query->whereHas('device', function ($query) {
+                $query->where('user_id', Auth::id());
+            });
+        }
+
+        $historyData = $query->get();
+
+        if ($historyData->isEmpty()) {
+            return [];
+        }
+
+        $chartData = [];
+
+        if ($selectedChart === 'speed') {
+            $historyQuery = History::query()
+                ->select('date_time', 'speeds as count')
+                ->whereDate('date_time', $selectedDate)
+                ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                    $query->whereHas('device', function ($query) use ($selectedDevice) {
+                        $query->where('name', $selectedDevice);
+                    });
+                })
+                ->get();
+            $chartData = $historyQuery->toArray();
+        } elseif ($selectedChart === 'accuracy') {
+            $historyQuery = History::query()
+                ->select('date_time', 'accuracy as count')
+                ->whereDate('date_time', $selectedDate)
+                ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                    $query->whereHas('device', function ($query) use ($selectedDevice) {
+                        $query->where('name', $selectedDevice);
+                    });
+                })
+                ->get();
+            $chartData = $historyQuery->toArray();
+        } elseif ($selectedChart === 'heading') {
+            $historyQuery = History::query()
+                ->select('date_time', 'heading as count')
+                ->whereDate('date_time', $selectedDate)
+                ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                    $query->whereHas('device', function ($query) use ($selectedDevice) {
+                        $query->where('name', $selectedDevice);
+                    });
+                })
+                ->get();
+            $chartData = $historyQuery->toArray();
+        } elseif ($selectedChart === 'altitude_accuracy') {
+            $historyQuery = History::query()
+                ->select('date_time', 'altitude_accuracy as count')
+                ->whereDate('date_time', $selectedDate)
+                ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                    $query->whereHas('device', function ($query) use ($selectedDevice) {
+                        $query->where('name', $selectedDevice);
+                    });
+                })
+                ->get();
+            $chartData = $historyQuery->toArray();
+        } elseif ($selectedChart === 'latitude') {
+            $historyQuery = History::query()
+                ->select('date_time', 'latitude as count')
+                ->whereDate('date_time', $selectedDate)
+                ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                    $query->whereHas('device', function ($query) use ($selectedDevice) {
+                        $query->where('name', $selectedDevice);
+                    });
+                })
+                ->get();
+            $chartData = $historyQuery->toArray();
+        } elseif ($selectedChart === 'longitude') {
+            $historyQuery = History::query()
+                ->select('date_time', 'longitude as count')
+                ->whereDate('date_time', $selectedDate)
+                ->when($selectedDevice, function ($query) use ($selectedDevice) {
+                    $query->whereHas('device', function ($query) use ($selectedDevice) {
+                        $query->where('name', $selectedDevice);
+                    });
+                })
+                ->get();
+            $chartData = $historyQuery->toArray();
+        } else {
+            foreach ($historyData as $data) {
+                $dateTime = is_string($data->date_time) ? new \DateTime($data->date_time) : $data->date_time;
+
+                $date = $dateTime->format('Y-m-d H:i:s');
+                $value = 1;
+
+                if (isset($chartData[$date])) {
+                    $chartData[$date]['count'] += $value;
+                } else {
+                    $chartData[$date] = [
+                        'date_time' => $date,
+                        'count' => $value
+                    ];
+                }
+            }
+        }
+
+        return $chartData;
     }
 
 

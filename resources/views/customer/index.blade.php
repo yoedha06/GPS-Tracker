@@ -160,20 +160,26 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-6" id="chart_select_col" style="display: none;">
-                                                <label for="selected_chart" class="form-label">Select Chart:</label>
-                                                <select class="form-select" id="selected_chart">
-                                                    <option value="" selected disabled>Select Chart</option>
-                                                    <option value="latitude">Latitude</option>
-                                                    <option value="longitude">Longitude</option>
-                                                    <option value="speed">Speed</option>
-                                                    <option value="accuracy">Accuracy</option>
-                                                    <option value="heading">Heading</option>
-                                                    <option value="altitude_acuracy">Altitude Accuracy</option>
-                                                </select>
+                                                <div class="d-flex align-items-end">
+                                                    <div class="w-100 me-2">
+                                                        <label for="selected_chart" class="form-label">Select Chart:</label>
+                                                        <select class="form-select" id="selected_chart">
+                                                            <option value="" selected disabled>Select Chart</option>
+                                                            <option value="latitude">Latitude</option>
+                                                            <option value="longitude">Longitude</option>
+                                                            <option value="speed">Speed</option>
+                                                            <option value="accuracy">Accuracy</option>
+                                                            <option value="heading">Heading</option>
+                                                            <option value="altitude_acuracy">Altitude Accuracy</option>
+                                                        </select>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary" id="generate_pdf">Export To PDF</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                
 
                                 <!-- Validation message -->
                                 <div id="validation-message" class="alert alert-success mt-3" style="display: none;">

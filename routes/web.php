@@ -144,7 +144,7 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         Route::post('/admin/informasisosmed/store', [SettingsController::class, 'storeinformasisosmed'])->name('informasisosmed.store');
 
         Route::put('/admin/api/{id}', [SettingsController::class, 'updateApi'])->name('api.update');
-        Route::post('/admin/api/store', [SettingsController::class, 'storeApi'])->name('apituran.store');
+        Route::post('/admin/api/store', [SettingsController::class, 'storeApi'])->name('tokenapi.store');
     });
 });
 
@@ -201,6 +201,7 @@ Route::get('/admin/latestlocation/{deviceId}', [LocationController::class, 'getL
 //filter chart
 Route::get('/chart', [TampilanController::class, 'customer']);
 Route::get('/admin-chart', [TampilanController::class, 'grafikadmin']);
+Route::get('/download-pdf', [TampilanController::class, 'downloadPdf'])->name('download-pdf');
 
 //map history
 // Route::get('/customer/map', [HistoryController::class, 'updateMapData']);
