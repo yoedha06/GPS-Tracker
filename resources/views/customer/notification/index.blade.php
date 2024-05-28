@@ -47,11 +47,13 @@
                                 @csrf
 
                                 <div class="form-group row">
-                                    <label for="phone" class="col-md-4 col-form-label text-md-right">phone
-                                        number<span style="color:red;">*</span></label>
+                                    <label for="phone" class="col-md-4 col-form-label text-md-right">Phone Numbers<span
+                                            style="color:red;">*</span></label>
                                     <div class="col-md-8">
-                                        <input type="tel" id="phone" class="form-control" name="phone_number"
-                                            placeholder="phone number" value="{{ session('phone_number') }}">
+                                        <textarea id="phone" class="form-control" name="phone_number" placeholder="Enter phone numbers" rows="2"
+                                            required>{{ session('phone_number') }}</textarea>
+                                        <small class="form-text text-muted">You can enter more than one phone number
+                                            separated by a semicolon (;)</small>
                                     </div>
                                 </div>
 
@@ -107,18 +109,19 @@
                                 @csrf
 
                                 <div class="form-group row">
-                                    <label for="number_phone" class="col-md-4 col-form-label text-md-right">phone
-                                        number<span style="color: red;">*</span></label>
-                                    <div class="col-md-6">
+                                    <label for="number_phone" class="col-md-4 col-form-label text-md-right">Phone
+                                        Numbers<span style="color: red;">*</span></label>
+                                    <div class="col-md-8">
                                         <input id="number_phone" type="tel" class="form-control" name="number_phone"
-                                            placeholder="your phone number" value="{{ session('number_phone') }}">
+                                            placeholder="Enter phone numbers separated by ;"
+                                            value="{{ session('number_phone') }}" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="device" class="col-md-4 col-form-label text-md-right">Select
                                         Device<span style="color: red;">*</span></label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         <select id="device" class="form-select" name="device" required>
                                             <option value="">Select Device</option>
                                             @foreach ($devices as $device)
@@ -133,7 +136,7 @@
                                 <div class="form-group row">
                                     <label for="scheduled_time" class="col-md-4 col-form-label text-md-right">Start Date
                                         <span style="color: red;">*</span></label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         <input id="scheduled_time" type="datetime-local" class="form-control"
                                             name="scheduled_time" value="{{ session('scheduled_time') }}" required
                                             step="1">
@@ -143,7 +146,7 @@
                                 <div class="form-group row">
                                     <label for="scheduled_end_time" class="col-md-4 col-form-label text-md-right">End
                                         Date<span style="color: red;">*</span></label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         <input id="scheduled_end_time" type="datetime-local" class="form-control"
                                             name="scheduled_end_time" value="{{ session('scheduled_end_time') }}"
                                             required step="1">

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\History;
 use App\Models\NotificationLogs;
+use App\Models\Pengaturan;
 use App\Models\TypeNotif;
 use App\Models\User;
 use Carbon\Carbon;
@@ -118,10 +119,13 @@ class HistoryController extends Controller
                     $message .= "Tanggal Waktu: " . $history->date_time;
 
                     // Gunakan nomor telepon dari type_notification
-                    $phoneNumber = $typeNotification->phone_number;
+                    $phoneNumbers = explode(';', $typeNotification->phone_number);
+                    $phoneNumbers = array_map('trim', $phoneNumbers); // Remove whitespace
 
-                    // Kirim pesan WhatsApp
-                    $this->sendWhatsapp($typeNotification->user_id, $phoneNumber, $message);
+                    foreach ($phoneNumbers as $phoneNumber) {
+                        // Kirim pesan WhatsApp ke setiap nomor telepon
+                        $this->sendWhatsapp($typeNotification->user_id, $phoneNumber, $message);
+                    }
 
                     // Perbarui histori sebagai terkirim
                     $history->update(['whatsapp_sent' => 'terkirim']);
@@ -149,7 +153,9 @@ class HistoryController extends Controller
             'message' => $message
         ];
 
-        $response = Http::timeout(60)->withToken('API-TOKEN-iGIXgP7hUwO08mTokHFNYSiTbn36gI7PRntwoEAUXmLbSWI6p7cXqq')
+        $api = $this->getApiToken();
+
+        $response = Http::timeout(60)->withToken($api)
             ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post($url, $data);
 
@@ -158,6 +164,12 @@ class HistoryController extends Controller
         } else {
             logger()->error('Failed to send WhatsApp message');
         }
+    }
+
+    private function getApiToken()
+    {
+        $api = DB::table('pengaturan')->value('api_token');
+        return $api;
     }
 
     private function getAddressFromCoordinates($latitude, $longitude)

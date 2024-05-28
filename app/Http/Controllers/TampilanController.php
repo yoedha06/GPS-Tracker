@@ -10,6 +10,7 @@ use App\Models\Informasi_Sosmed;
 use App\Models\Pengaturan;
 use App\Models\User;
 use App\Models\Team;
+use PDF;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -88,6 +89,7 @@ class TampilanController extends Controller
     {
         // Pengaturan
         $pengaturan = Pengaturan::first(); // Ambil data pengaturan sekali saja
+        $api_token = $pengaturan ? $pengaturan->api_token : null;
         $title_pengaturan = $pengaturan ? $pengaturan->title_pengaturan : null;
         $name_pengaturan =  $pengaturan ? $pengaturan->name_pengaturan : null;
         $background =  $pengaturan ? $pengaturan->background : null;

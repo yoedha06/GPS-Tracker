@@ -24,13 +24,14 @@
                 </div>
             </div>
         </div>
+
         {{-- API TOKEN --}}
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <span>API TOKEN</span>
-                @if (!$ApiToken)
+                @if (empty($pengaturan) || empty($pengaturan->api_token))
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAddAPI">
-                        <i class="bi bi-plus"></i> Add Pengaturan
+                        <i class="bi bi-plus"></i> Add Api Token
                     </button>
                 @endif
             </div>
@@ -51,29 +52,36 @@
                         </ul>
                     </div>
                 @endif
+
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+
                 <div>
                     <table class="table table-striped" id="table1" style="table-layout: auto">
                         <thead>
                             <tr>
                         <tbody>
-                            @if ($ApiToken)
+                            @if ($pengaturan)
                                 <tr>
-                                    <td>TOKEN :</td>
-                                    <td>{{ $ApiToken }}</td>
+                                    <td>API Token :</td>
+                                    <td>{{ $pengaturan->api_token }}</td>
                                 </tr>
                                 </tr>
                                 <tr>
+                                    @if (!empty($pengaturan->api_token))
                                     <td>Action :</td>
-                                    {{-- <td colspan="3">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-target="#editModalAPI{{ $ApiToken->id }}">
-                                            <i class="fa-regular fa-pen-to-square"></i> Edit Token
-                                        </button>
-                                    </td> --}}
+                                    <td colspan="3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#editModalTokenApi{{ $pengaturan->id }}">
+                                                <i class="fa-regular fa-pen-to-square"></i> Edit
+                                            </button>
+                                        @endif
+                                    </td>
                                 </tr>
                             @else
                                 <tr>
-                                    <td>TOKEN :</td>
+                                    <td>API Token :</td>
                                     <td>No data available</td>
                                 </tr>
                             @endif
@@ -86,7 +94,7 @@
         </div>
 
         {{-- Modal Add API --}}
-        {{-- <div class="modal fade" id="modalAddAPI" tabindex="-1" role="dialog" aria-labelledby="modalAddAPILabel"
+        <div class="modal fade" id="modalAddAPI" tabindex="-1" role="dialog" aria-labelledby="modalAddAPILabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -96,46 +104,46 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{{ route('apituran.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('tokenapi.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="api_token">TOKEN <span style="color: red">*</span> :</label>
+                                <label for="api_token">API Token <span style="color: red">*</span> :</label>
                                 <input type="text" class="form-control" id="api_token" name="api_token"
                                     value="{{ old('api_token') }}" required>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary"> <i class="bi bi-plus"></i> Add
-                                Pengaturan</button>
+                                API</button>
                         </div>
                     </form>
                 </div>
             </div>
-        </div> --}}
+        </div>
 
         {{-- Modal Edit API --}}
-        {{-- @if ($ApiToken)
-            <div class="modal fade" id="editModalAPI{{ $ApiToken->id }}" tabindex="-1" role="dialog"
-                aria-labelledby="editModalAPILabel{{ $ApiToken->id }}" aria-hidden="true">
+        @if ($pengaturan)
+            <div class="modal fade" id="editModalTokenApi{{ $pengaturan->id }}" tabindex="-1" role="dialog"
+                aria-labelledby="editModalTokenApi{{ $pengaturan->id }}" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editModalAPILabel{{ $ApiToken->id }}">Edit Pengaturan
+                            <h5 class="modal-title" id="editModalTokenApi{{ $pengaturan->id }}">Edit API Token
                             </h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="{{ route('api.update', $ApiToken->id) }}" method="POST" enctype="multipart/form-data"
-                            id="editForm{{ $ApiToken->id }}">
+                        <form action="{{ route('api.update', $pengaturan->id) }}" method="POST"
+                            enctype="multipart/form-data" id="editForm{{ $pengaturan->id }}">
                             @csrf
                             @method('PUT')
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="api_token">Title<span style="color: red">*</span> :</label>
+                                    <label for="api_token">API Token <span style="color: red">*</span> :</label>
                                     <input type="text" class="form-control" id="api_token" name="api_token"
-                                        value="{{ $ApiToken->api_token }}">
+                                        value="{{ $pengaturan->api_token }}">
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -147,36 +155,25 @@
                     </div>
                 </div>
             </div>
-        @endif --}}
-
+        @endif
 
         <!-- Pengaturan -->
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <span>Pengaturan</span>
-                @if (!$pengaturan)
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAddPengaturan">
+                @if (empty($pengaturan) ||
+                        empty($pengaturan->title_pengaturan) ||
+                        empty($pengaturan->name_pengaturan) ||
+                        empty($pengaturan->logo) ||
+                        empty($pengaturan->background))
+                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                        data-target="#modalAddPengaturan">
                         <i class="bi bi-plus"></i> Add Pengaturan
                     </button>
                 @endif
             </div>
             <hr>
             <div class="card-body">
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
                 <div>
                     <table class="table table-striped" id="table1" style="table-layout: auto">
                         <thead>
@@ -197,7 +194,8 @@
                                         @if ($pengaturan->logo)
                                             <img src="{{ asset('storage/' . $pengaturan->logo) }}" alt="Logo"
                                                 style="max-width: 150px; max-height: 150px; cursor: pointer; border-radius: 5px;"
-                                                data-toggle="modal" data-target="#viewLogoPhotoModal{{ $pengaturan->id }}">
+                                                data-toggle="modal"
+                                                data-target="#viewLogoPhotoModal{{ $pengaturan->id }}">
                                         @else
                                             No Logo Available
                                         @endif
@@ -217,12 +215,14 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    @if ($pengaturan->title_pengaturan)
                                     <td>Action :</td>
                                     <td colspan="3">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-target="#editModalPengaturan{{ $pengaturan->id }}">
-                                            <i class="fa-regular fa-pen-to-square"></i> Edit
-                                        </button>
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#editModalPengaturan{{ $pengaturan->id }}">
+                                                <i class="fa-regular fa-pen-to-square"></i> Edit
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @else
@@ -271,13 +271,13 @@
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label for="title_pengaturan">Title<span style="color: red">*</span> :</label>
-                                    <input type="text" class="form-control" id="title_pengaturan" name="title_pengaturan"
-                                        value="{{ $pengaturan->title_pengaturan }}">
+                                    <input type="text" class="form-control" id="title_pengaturan"
+                                        name="title_pengaturan" value="{{ $pengaturan->title_pengaturan }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="name_pengaturan">Name<span style="color: red">*</span> :</label>
-                                    <input type="text" class="form-control" id="name_pengaturan" name="name_pengaturan"
-                                        value="{{ $pengaturan->name_pengaturan }}">
+                                    <input type="text" class="form-control" id="name_pengaturan"
+                                        name="name_pengaturan" value="{{ $pengaturan->name_pengaturan }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="logo">Logo:</label>
@@ -335,17 +335,29 @@
                             <div class="form-group">
                                 <label for="logo">Logo:</label>
                                 <input type="file" class="form-control" id="logo" name="logo"
-                                    value="{{ old('logo') }}" onchange="previewImage(this, 'logoPreview')">
-                                <img id="logoPreview" src="#" alt="Preview Logo"
-                                    style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
+                                    onchange="previewImage(this, 'logoPreview')" value="{{ old('logo') }}">
+                                @if ($pengaturan && $pengaturan->logo)
+                                    <img id="logoPreview" src="{{ asset('storage/' . $pengaturan->logo) }}"
+                                        alt="Preview Logo"
+                                        style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px;">
+                                @else
+                                    <p>No Logo Available</p>
+                                @endif
                             </div>
+
                             <div class="form-group">
                                 <label for="background">Background:</label>
                                 <input type="file" class="form-control" id="background" name="background"
-                                    value="{{ old('background') }}" onchange="previewImage(this, 'backgroundPreview')">
-                                <img id="backgroundPreview" src="#" alt="backgroundPreview"
-                                    style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
+                                    onchange="previewImage(this, 'backgroundPreview')" value="{{ old('background') }}">
+                                @if ($pengaturan && $pengaturan->background)
+                                    <img id="backgroundPreview" src="{{ asset('storage/' . $pengaturan->background) }}"
+                                        alt="backgroundPreview"
+                                        style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px;">
+                                @else
+                                    <p>No Background Available</p>
+                                @endif
                             </div>
+
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary"> <i class="bi bi-plus"></i> Add
@@ -694,14 +706,14 @@
                                     @csrf
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="form-group">
+                                            <div class="form-group col-md-12">
                                                 <label for="informasi">Informasi <span
                                                         style="color: red">*</span>:</label>
                                                 <textarea class="form-control" id="informasi" name="informasi" rows="3" required>{{ old('informasi') }}</textarea>
                                             </div>
-                                            <hr>
-
-                                            <!-- Team 1 -->
+                                        </div>
+                                        <hr>
+                                        <div class="row">
                                             <div class="col-md-6 mb-4">
                                                 <h4>Team 1</h4>
                                                 <div class="form-group">
@@ -727,8 +739,6 @@
                                                         style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
                                                 </div>
                                             </div>
-
-                                            <!-- Team 2 -->
                                             <div class="col-md-6 mb-4">
                                                 <h4>Team 2</h4>
                                                 <div class="form-group">
@@ -757,8 +767,6 @@
                                         </div>
                                         <hr>
                                         <div class="row">
-
-                                            <!-- Team 3 -->
                                             <div class="col-md-6 mb-4">
                                                 <h4>Team 3</h4>
                                                 <div class="form-group">
@@ -776,7 +784,7 @@
                                                     <textarea class="form-control" id="deskripsi_3" name="deskripsi_3" rows="3">{{ old('deskripsi_3') }}</textarea>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="photo_2">Photo 3:</label>
+                                                    <label for="photo_3">Photo 3:</label>
                                                     <input type="file" class="form-control" id="photo_3"
                                                         name="photo_3" value="{{ old('photo_3') }}"
                                                         onchange="previewImage(this, 'photo_3  preview')">
@@ -784,8 +792,6 @@
                                                         style="max-width: 200px; max-height: 200px; cursor: pointer; border-radius: 5px; display: none;">
                                                 </div>
                                             </div>
-
-                                            <!-- Team 4 -->
                                             <div class="col-md-6 mb-4">
                                                 <h4>Team 4</h4>
                                                 <div class="form-group">
@@ -803,7 +809,7 @@
                                                     <textarea class="form-control" id="deskripsi_4" name="deskripsi_4" rows="3">{{ old('deskripsi_4') }}</textarea>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="photo_2">Photo 4:</label>
+                                                    <label for="photo_4">Photo 4:</label>
                                                     <input type="file" class="form-control" id="photo_4"
                                                         name="photo_4" value="{{ old('photo_4') }}"
                                                         onchange="previewImage(this, 'photo_4  preview')">
@@ -1403,7 +1409,7 @@
         <!-- Informasi Kontak -->
         <div class="card mt-4">
             <div class="card-header d-flex justify-content-between">
-                <span>Informasi Contact </span>
+                <span>Contact </span>
                 @if ($contact->isEmpty())
                     <button type="button" class="btn btn-primary" data-toggle="modal"
                         data-target="#addModalInformasiContact">

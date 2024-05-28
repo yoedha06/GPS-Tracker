@@ -22,6 +22,7 @@ use App\Http\Controllers\WebhookController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PDFController;
 
 
 /*
@@ -149,7 +150,7 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         Route::post('/admin/informasisosmed/store', [SettingsController::class, 'storeinformasisosmed'])->name('informasisosmed.store');
 
         Route::put('/admin/api/{id}', [SettingsController::class, 'updateApi'])->name('api.update');
-        Route::post('/admin/api/store', [SettingsController::class, 'storeApi'])->name('apituran.store');
+        Route::post('/admin/api/store', [SettingsController::class, 'storeApi'])->name('tokenapi.store');
     });
 });
 
@@ -206,6 +207,7 @@ Route::get('/admin/latestlocation/{deviceId}', [LocationController::class, 'getL
 //filter chart
 Route::get('/chart', [TampilanController::class, 'customer']);
 Route::get('/admin-chart', [TampilanController::class, 'grafikadmin']);
+Route::get('/download-pdf', [TampilanController::class, 'downloadPdfCustomer'])->name('download-pdf');
 
 //map history
 // Route::get('/customer/map', [HistoryController::class, 'updateMapData']);
@@ -218,5 +220,6 @@ Route::post('/admin/filter-history', [HistoryController::class, 'filterHistory']
 Route::post('/customer/typenotif', [TypeNotifController::class, 'store'])->name('store.notiftype');
 Route::post('/customer/notificationAuto', [NotificationController::class, 'NotificationAuto'])->name('customer.notifauto');
 
-// routes/web.php
-// Route::get('/geofence-names', [GeofencesContoller::class, 'getNames'])->name('geofence.names');
+
+Route::get('/customer/pdf', [PDFController::class, 'pdfcustomer']);
+Route::get('/admin/pdf', [PDFController::class, 'pdfadmin']);
