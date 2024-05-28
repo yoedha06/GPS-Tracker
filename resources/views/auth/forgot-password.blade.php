@@ -76,6 +76,7 @@
 
                             <div class="form-outline mb-4">
                                 <label for="verification_option">Choose Contact Option</label>
+
                                 <select id="verification_option" class="form-control" name="verification_option"
                                     required>
                                     <option value="">Select</option>

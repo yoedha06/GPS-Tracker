@@ -11,6 +11,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Auth\PhoneVerificationController;
+use App\Http\Controllers\GeofencesContoller;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\WebhookController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PDFController;
 
 
 /*
@@ -101,6 +103,11 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         Route::get('/customer/notification', [NotificationController::class, 'index'])->name('customer.notification.index');
         Route::post('/customer/notification', [NotificationController::class, 'store'])->name('customer.notification.store');
 
+        //geofence
+        Route::get('customer/geofences', [GeofencesContoller::class, 'index'])->name('customer.geofences.index');
+        Route::get('customer/geofences/create', [GeofencesContoller::class, 'create'])->name('customer.geofences.create');
+        Route::post('customer/geofences', [GeofencesContoller::class, 'store'])->name('customer.geofences.store');
+
         // //url send wa
         // Route::get('/send-history', [NotificationController::class, 'notificationtype'])->name('customer.notification.send-history');
 
@@ -144,7 +151,7 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
         Route::post('/admin/informasisosmed/store', [SettingsController::class, 'storeinformasisosmed'])->name('informasisosmed.store');
 
         Route::put('/admin/api/{id}', [SettingsController::class, 'updateApi'])->name('api.update');
-        Route::post('/admin/api/store', [SettingsController::class, 'storeApi'])->name('apituran.store');
+        Route::post('/admin/api/store', [SettingsController::class, 'storeApi'])->name('tokenapi.store');
     });
 });
 
@@ -201,6 +208,7 @@ Route::get('/admin/latestlocation/{deviceId}', [LocationController::class, 'getL
 //filter chart
 Route::get('/chart', [TampilanController::class, 'customer']);
 Route::get('/admin-chart', [TampilanController::class, 'grafikadmin']);
+Route::get('/download-pdf', [TampilanController::class, 'downloadPdfCustomer'])->name('download-pdf');
 
 //map history
 // Route::get('/customer/map', [HistoryController::class, 'updateMapData']);
@@ -212,3 +220,7 @@ Route::post('/admin/filter-history', [HistoryController::class, 'filterHistory']
 
 Route::post('/customer/typenotif', [TypeNotifController::class, 'store'])->name('store.notiftype');
 Route::post('/customer/notificationAuto', [NotificationController::class, 'NotificationAuto'])->name('customer.notifauto');
+
+
+Route::get('/customer/pdf', [PDFController::class, 'pdfcustomer']);
+Route::get('/admin/pdf', [PDFController::class, 'pdfadmin']);
