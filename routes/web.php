@@ -105,6 +105,7 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
 
         //geofence
         Route::get('customer/geofences', [GeofencesContoller::class, 'index'])->name('customer.geofences.index');
+        Route::get('customer/geofences/create', [GeofencesContoller::class, 'create'])->name('customer.geofences.create');
         Route::post('customer/geofences', [GeofencesContoller::class, 'store'])->name('customer.geofences.store');
 
         // //url send wa
