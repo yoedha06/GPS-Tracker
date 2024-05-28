@@ -69,23 +69,7 @@
         <script src="https://unpkg.com/leaflet.animatedmarker/src/AnimatedMarker.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-editable/1.2.0/Leaflet.Editable.min.js"></script>
 
-        <!-- Include Select2 JS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
         <script>
-            // select 2
-            document.addEventListener('DOMContentLoaded', function() {
-                // Initialize Select2 on the 'geofence' element
-                $('#geofence').select2({
-                    placeholder: 'Select a name',
-                    sorter: function(data) {
-                        return data.sort(function(a, b) {
-                            return a.text.localeCompare(b.text);
-                        });
-                    }
-                });
-            });
             // Map
             document.addEventListener('DOMContentLoaded', function() {
 
@@ -94,77 +78,6 @@
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
-
-                var marker; // Variabel global untuk menyimpan marker
-                var drawControl; // Variabel global untuk menyimpan kontrol gambar
-
-                map.on('click', function(e) {
-                    var selectedType = typeDropdown.value;
-
-                    // Periksa apakah tipe yang dipilih adalah "polygon"
-                    if (selectedType === 'polygon') {
-                        var latlng = e.latlng;
-                        coordinatesInput.value += (coordinatesInput.value ? '; ' : '') + latlng.lat + ', ' +
-                            latlng.lng;
-                    } else if (selectedType === 'circle') {
-                        var latlng = e.latlng;
-                        if (marker) {
-                            map.removeLayer(marker); // Hapus marker sebelum menambahkan yang baru
-                        }
-                        marker = L.marker(latlng).addTo(map); // Tambahkan marker baru
-                        coordinatesInput.value = latlng.lat + ', ' + latlng.lng;
-                    }
-                });
-
-
-                var typeDropdown = document.getElementById('type');
-                var radiusInput = document.getElementById('radius');
-                var coordinatesInput = document.getElementById('coordinates');
-
-                typeDropdown.addEventListener('change', function() {
-                    var selectedType = typeDropdown.value;
-
-                    if (selectedType === 'circle') {
-                        radiusInput.required = true;
-                        coordinatesInput.readOnly = true;
-                        if (marker) {
-                            map.removeLayer(marker); // Hapus marker jika tipe diubah menjadi "circle"
-                            marker = null; // Atur marker menjadi null
-                        }
-                        if (drawControl) {
-                            map.removeControl(drawControl); // Hapus kontrol gambar jika ada
-                            drawControl = null;
-                        }
-                    } else if (selectedType === 'polygon') {
-                        radiusInput.required = false;
-                        coordinatesInput.readOnly = true;
-                        if (!drawControl) {
-                            drawControl = new L.Control.Draw({
-                                edit: {
-                                    featureGroup: drawnItems,
-                                    poly: {
-                                        allowIntersection: false
-                                    }
-                                },
-                                draw: {
-                                    polygon: {
-                                        allowIntersection: false,
-                                        showArea: true // Menampilkan area saat polygon digambar
-                                    },
-                                    polyline: false,
-                                    rectangle: false,
-                                    circlemarker: false,
-                                    circle: false,
-                                    marker: true
-                                }
-                            });
-                            map.addControl(drawControl);
-                        }
-                    }
-                });
-
-                var drawnItems = new L.FeatureGroup();
-                map.addLayer(drawnItems);
 
                 var geofencesData = {!! json_encode($geofences) !!};
                 geofencesData.forEach(function(geofence) {
@@ -192,34 +105,6 @@
                         }).addTo(map);
                     }
                 });
-
-                map.on(L.Draw.Event.CREATED, function(event) {
-                    var layer = event.layer;
-                    drawnItems.addLayer(layer);
-                    layer.enableEdit(); // Aktifkan edit mode pada layer yang baru dibuat
-                });
-
-                map.on('draw:created', function(event) {
-                    var layer = event.layer;
-                    drawnItems.addLayer(layer);
-
-                    // Jika yang digambar adalah poligon, tampilkan area
-                    if (layer instanceof L.Polygon) {
-                        var area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[
-                            0]); // Hitung luas poligon dalam meter persegi
-                        var formattedArea = L.GeometryUtil.readableArea(area,
-                            true); // Format luas untuk kenyamanan pembacaan
-                        // Tampilkan area, misalnya dalam sebuah pop-up
-                        layer.bindPopup("Area: " + formattedArea).openPopup();
-                    }
-                });
-
-                map.on('editable:created', function(event) {
-                    var layer = event.layer;
-                    layer.enableEdit(); // Aktifkan edit mode pada layer yang baru dibuat
-                });
-
-                typeDropdown.dispatchEvent(new Event('change')); // Trigger initial state
             });
         </script>
     @endsection
