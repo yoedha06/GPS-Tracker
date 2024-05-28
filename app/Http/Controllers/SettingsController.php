@@ -31,13 +31,25 @@ class SettingsController extends Controller
             'api_token' => 'required|string|max:255',
         ]);
 
-        // Simpan data ke dalam tabel pengaturan
-        Pengaturan::create([
-            'api_token' => $request->api_token,
-        ]);
+        // Check if a Pengaturan record already exists
+        $pengaturan = Pengaturan::first();
 
-        // Redirect kembali ke halaman sebelumnya dengan pesan sukses
-        return redirect()->back()->with('berhasil', 'API Token berhasil disimpan!');
+        if ($pengaturan) {
+            // Update the existing record
+            $pengaturan->api_token = $request->api_token;
+            $pengaturan->save();
+
+            // Redirect kembali ke halaman sebelumnya dengan pesan sukses
+            return redirect()->back()->with('success', 'API Token berhasil diperbarui!');
+        } else {
+            // Create a new Pengaturan record with only the api_token
+            Pengaturan::create([
+                'api_token' => $request->api_token,
+            ]);
+
+            // Redirect kembali ke halaman sebelumnya dengan pesan sukses
+            return redirect()->back()->with('success', 'API Token berhasil disimpan!');
+        }
     }
 
     public function updateApi(Request $request, $id)
@@ -56,7 +68,7 @@ class SettingsController extends Controller
         ]);
 
         // Redirect kembali ke halaman sebelumnya dengan pesan sukses
-        return redirect()->back()->with('berhasil', 'API Token berhasil diperbarui!');
+        return redirect()->back()->with('success', 'API Token berhasil diperbarui!');
     }
 
     public function storepengaturan(Request $request)
@@ -85,11 +97,19 @@ class SettingsController extends Controller
         ]);
 
         // Buat instance baru dari model Pengaturan
-        $pengaturan = new Pengaturan();
+        $pengaturan = Pengaturan::first();
 
-        // Set atribut-atribut yang sesuai dengan data yang dikirimkan dari formulir
-        $pengaturan->title_pengaturan = $request->input('title_pengaturan');
-        $pengaturan->name_pengaturan = $request->input('name_pengaturan');
+        if ($pengaturan) {
+            // Update existing Pengaturan
+            $pengaturan->title_pengaturan = $request->input('title_pengaturan');
+            $pengaturan->name_pengaturan = $request->input('name_pengaturan');
+        } else {
+            // Create a new Pengaturan instance
+            $pengaturan = new Pengaturan([
+                'title_pengaturan' => $request->input('title_pengaturan'),
+                'name_pengaturan' => $request->input('name_pengaturan')
+            ]);
+        }
 
         // Upload dan simpan gambar logo jika ada
         if ($request->hasFile('logo')) {
