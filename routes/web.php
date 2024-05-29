@@ -152,6 +152,9 @@ Route::middleware(['auth', 'ensureVerified'])->group(function () {
 
         Route::put('/admin/api/{id}', [SettingsController::class, 'updateApi'])->name('api.update');
         Route::post('/admin/api/store', [SettingsController::class, 'storeApi'])->name('tokenapi.store');
+
+        Route::put('/admin/gateway/{id}', [SettingsController::class, 'updategateway'])->name('gateway.update');
+        Route::post('/admin/gateway/store', [SettingsController::class, 'storegateway'])->name('gateway.store');
     });
 });
 

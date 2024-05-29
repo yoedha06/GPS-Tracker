@@ -50,8 +50,9 @@
                                     <label for="phone" class="col-md-4 col-form-label text-md-right">Phone Numbers<span
                                             style="color:red;">*</span></label>
                                     <div class="col-md-8">
-                                        <textarea id="phone" class="form-control" name="phone_number" placeholder="Enter phone numbers" rows="2"
-                                            required>{{ session('phone_number') }}</textarea>
+                                        <input type="tel" id="phone" class="form-control" name="phone_number"
+                                            placeholder="Enter phone numbers" rows="2"
+                                            value="{{ session('phone_number') }}" required>
                                         <small class="form-text text-muted">You can enter more than one phone number
                                             separated by a semicolon (;)</small>
                                     </div>
@@ -112,9 +113,11 @@
                                     <label for="number_phone" class="col-md-4 col-form-label text-md-right">Phone
                                         Numbers<span style="color: red;">*</span></label>
                                     <div class="col-md-8">
-                                        <input id="number_phone" type="tel" class="form-control" name="number_phone"
-                                            placeholder="Enter phone numbers separated by ;"
-                                            value="{{ session('number_phone') }}" required>
+                                        <input type="tel" id="number_phone" class="form-control" name="number_phone"
+                                            placeholder="Enter phone numbers" value="{{ session('number_phone') }}"
+                                            required>
+                                        <small class="form-text text-muted">You can enter more than one phone number
+                                            separated by a semicolon (;)</small>
                                     </div>
                                 </div>
 

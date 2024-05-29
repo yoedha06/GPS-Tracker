@@ -110,7 +110,7 @@
                             <div class="form-group">
                                 <label for="api_token">API Token <span style="color: red">*</span> :</label>
                                 <input type="text" class="form-control" id="api_token" name="api_token"
-                                    value="{{ old('api_token') }}" required>
+                                    value="{{ old('api_token') }}" min="0" required>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -144,6 +144,137 @@
                                     <label for="api_token">API Token <span style="color: red">*</span> :</label>
                                     <input type="text" class="form-control" id="api_token" name="api_token"
                                         value="{{ $pengaturan->api_token }}">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i>
+                                    Save
+                                    changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- Gateway --}}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span>Gateway</span>
+                @if (empty($pengaturan) || empty($pengaturan->gateway))
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAddgateway">
+                        <i class="bi bi-plus"></i> Add gateway
+                    </button>
+                @endif
+            </div>
+            <hr>
+            <div class="card-body">
+                @if (session('gateway'))
+                    <div class="alert alert-success">
+                        {{ session('gateway') }}
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+
+                <div>
+                    <table class="table table-striped" id="table1" style="table-layout: auto">
+                        <thead>
+                            <tr>
+                        <tbody>
+                            @if ($pengaturan)
+                                <tr>
+                                    <td>Gateway :</td>
+                                    <td>{{ $pengaturan->gateway }}</td>
+                                </tr>
+                                </tr>
+                                <tr>
+                                    @if (!empty($pengaturan->gateway))
+                                    <td>Action :</td>
+                                    <td colspan="3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#editModalgateway{{ $pengaturan->id }}">
+                                                <i class="fa-regular fa-pen-to-square"></i> Edit
+                                            </button>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td>gateway :</td>
+                                    <td>No data available</td>
+                                </tr>
+                            @endif
+                        </tbody>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {{-- Modal Add Gateway --}}
+        <div class="modal fade" id="modalAddgateway" tabindex="-1" role="dialog" aria-labelledby="modalAddgatewayLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="xLabel">Add Gateway</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{{ route('gateway.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="gateway">Gateway <span style="color: red">*</span> :</label>
+                                <input type="tel" class="form-control" id="gateway" name="gateway"
+                                    value="{{ old('gateway') }}" nullable>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary"> <i class="bi bi-plus"></i> Add Gateway</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- Modal Edit Gateway --}}
+        @if ($pengaturan)
+            <div class="modal fade" id="editModalgateway{{ $pengaturan->id }}" tabindex="-1" role="dialog"
+                aria-labelledby="editModalgateway{{ $pengaturan->id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalgateway{{ $pengaturan->id }}">Edit Gateway
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="{{ route('gateway.update', $pengaturan->id) }}" method="POST"
+                            enctype="multipart/form-data" id="editForm{{ $pengaturan->id }}">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="gateway">gateway <span style="color: red">*</span> :</label>
+                                    <input type="tel" class="form-control" id="gateway" name="gateway"
+                                        value="{{ $pengaturan->gateway }}">
                                 </div>
                             </div>
                             <div class="modal-footer">
