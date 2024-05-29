@@ -14,7 +14,7 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        $ApiToken = DB::table('pengaturan')->value('api_token');
+        $ApiToken = DB::table('pengaturan')->value('api_token', 'gateway');
         $pengaturan = Pengaturan::first();
         $about = About::first();
         $team =  Team::all();
@@ -69,6 +69,44 @@ class SettingsController extends Controller
 
         // Redirect kembali ke halaman sebelumnya dengan pesan sukses
         return redirect()->back()->with('success', 'API Token berhasil diperbarui!');
+    }
+
+    public function storegateway(Request $request)
+    {
+        $request->validate([
+            'gateway' => 'required|integer',
+        ]);
+
+        $pengaturan = Pengaturan::first();
+
+        if ($pengaturan) {
+            $pengaturan->gateway = $request->gateway;
+            $pengaturan->save();
+        } else {
+            Pengaturan::create([
+                'gateway' => $request->gateway,
+            ]);
+        }
+
+        // Redirect kembali ke halaman sebelumnya dengan pesan sukses
+        return redirect()->back()->with('gateway', 'Gateway berhasil disimpan!');
+    }
+
+    public function updategateway(Request $request, $id)
+    {
+        $request->validate([
+            'gateway' => 'required',
+        ]);
+
+        $pengaturan = Pengaturan::findOrFail($id);
+
+        // Update data pengaturan
+        $pengaturan->update([
+            'gateway' => $request->gateway,
+        ]);
+
+        // Redirect kembali ke halaman sebelumnya dengan pesan sukses
+        return redirect()->back()->with('gateway', 'gateway berhasil diperbarui!');
     }
 
     public function storepengaturan(Request $request)

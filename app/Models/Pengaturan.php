@@ -13,6 +13,7 @@ class Pengaturan extends Model
 
     protected $fillable = [
         'api_token',
+        'gateway',
         'title_pengaturan',
         'name_pengaturan',
         'logo',
